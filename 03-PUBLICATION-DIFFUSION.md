@@ -1,6 +1,6 @@
 # Publication et diffusion SNUM — relais humain privé
 
-V5. Consulter ce fichier au moment de préparer le HTML ou le courriel. Les adresses et preuves ne doivent jamais entrer dans les fichiers publics. Le dépôt conserve uniquement les contenus destinés au public.
+V5.1. Consulter ce fichier au moment de préparer le HTML ou le courriel. Les adresses et preuves ne doivent jamais entrer dans les fichiers publics. Le dépôt conserve uniquement les contenus destinés au public.
 
 ## Périmètre des actions
 
@@ -60,7 +60,7 @@ Les contrôles automatiques ne remplacent pas l'audit manuel. Une vérification 
 
 ### Avant commit
 
-Vérifier au minimum : validité HTML ; absence de liens internes cassés ; présence et cibles des accès rapides ; un seul h1 ; footer réglementaire ; mention et déclaration d'accessibilité ; indications des nouvelles fenêtres. Vérifier aussi le format court, les mots-clés et l'absence de sous-titres de remplissage ou comptage. Contrôler les autres exigences ci-dessus sur les éléments concernés par les changements.
+Vérifier au minimum : validité HTML ; absence de liens internes cassés ; présence et cibles des accès rapides ; un seul h1 ; footer réglementaire ; mention et déclaration d'accessibilité ; indications des nouvelles fenêtres. Vérifier aussi le format court, les mots-clés et l’absence de sous-titres de remplissage ou comptage. La revue exacte à intégrer doit avoir reçu le contrôle externe de P3.1 : faits, dates, réserves, mots, mots-clés et URL. Une réécriture dans l’HTML impose de recontrôler les champs modifiés ; une simple affirmation de l’assistant ne suffit pas. Contrôler les autres exigences ci-dessus sur les éléments concernés par les changements.
 
 La personne indique pour chaque contrôle méthode, périmètre et résultat. L'assistant peut relire le texte HTML disponible, mais ne doit pas présenter cette relecture comme l'exécution d'un validateur, d'un navigateur ou d'un test clavier. Les contrôles indisponibles restent NON_EXECUTE ou NON_VERIFIABLE.
 

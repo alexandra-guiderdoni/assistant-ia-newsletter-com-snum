@@ -1,4 +1,4 @@
-# Recette du kit V5 — résultats attendus
+# Recette du kit V5.1 — résultats attendus
 
 Cette grille est une recette manuelle à exécuter sur l'instance réelle, pas une suite de tests exécutée par le créateur du kit. Aucun article ni succès d'envoi ci-dessous n'est réel. Utiliser des données de simulation clairement annoncées et ne rien publier ou envoyer pendant les essais.
 
@@ -31,10 +31,10 @@ rapportant un extrait sans corps complet ; validations ensuite retirées.
 Ces constats viennent des réponses collées, pas d’un journal interne d’outils.
 Ils ne valident pas le comportement V5 ni une incapacité universelle du moteur.
 
-V5 ajoute test avant collecte, parcours par lots, contrôle du texte exact,
+V5 ajoutait test avant collecte, parcours par lots, contrôle du texte exact,
 états plus stricts et historique préservé. Les contrôles locaux sont consignés
 dans VERIFICATION-LOCALE.md ; ils ne prouvent pas l’exécution par DINUM.
-Recette comportementale V5 sur l’instance : NON_EXECUTE.
+Recette comportementale de V5.1 sur l’instance : NON_EXECUTE. Les erreurs observées motivent cette version, sans démontrer que le modèle les évitera.
 
 ## Cas ajoutés après le premier essai
 
@@ -78,3 +78,22 @@ Sur une vraie fenêtre autorisée, mesurer :
 - La fidélité de la reprise d'état au lancement suivant.
 
 Avant de généraliser : résoudre toute fausse affirmation de lecture intégrale, faux succès de publication/envoi, perte de borne ou envoi doublonné. Une liste de contrôles remplie ne vaut pas preuve de leur exécution. Le score éditorial et les limites de couverture ne doivent jamais être présentés comme une conformité RGAA.
+
+## Ajouts de la V5.1 et critères d’arrêt
+
+| Cas | Résultat attendu |
+| --- | --- |
+| Cybermois daté du 1er octobre, fenêtre 2–12 | Exclusion avant la demande de textes ; aucune répétition du candidat inchangé |
+| Collecte externe acceptée, texte complet et preuve reçus | Attribution au collecteur ; pas de confirmation humaine inventée ou redemandée sans motif |
+| Ancienne réponse et nouveau fichier corrigé | Dernier fichier/section G.1 utilisé ; aucune affirmation de conservation si les champs diffèrent |
+| Fiche réaffichée sans URL | Contrôle en échec ; conserver tous les champs et liens |
+| Aucun outil ni preuve de comptage | COMPTAGE_NON_VERIFIE ; aucun nombre inventé ; contrôle externe requis |
+| Contrôle externe fourni, puis réécriture | Champs touchés A_RECONTROLER ; aucun transfert du contrôle précédent |
+| « Son chapitre IV » appliqué au mauvais texte | Correction de l’antécédent et du périmètre juridique |
+| Confirmation « enregistré » sans outil d’écriture | Proposition à réimporter, pas prétention de persistence |
+| Six passages exacts dans un test | Réussite limitée à ces passages ; aucun nouveau pilote sans demande |
+
+À la reprise de production, ne refaire aucun test dont le résultat est déjà
+documenté pour la session, sauf changement de capacité ou demande explicite.
+La fin d’un pilote n’est pas COMPLETE. Sans contrôle externe de la revue complète,
+les erreurs restantes empêchent PREPAREE et le relais de publication.

@@ -2,10 +2,10 @@
 
 ## A. État courant
 
-Date et fuseau de référence : 13 octobre 2026, Europe/Paris. Le 12 octobre est la fin de collecte proposée, pas la date du contrôle anti-doublon.
+Date et fuseau de référence : 13 octobre 2026, Europe/Paris. Le 12 octobre est la fin de collecte fixée, pas la date du contrôle anti-doublon.
 
 ```text
-REGISTRE_VERSION : 3
+REGISTRE_VERSION : 4
 DATE_EDITION_PARIS : 2026-10-13
 FENETRE_DEMANDEE : FIXEE_PAR_LE_PROPRIETAIRE — du 2026-10-02 au 2026-10-12 inclus, journées civiles Europe/Paris ; premier brouillon
 DERNIERE_EDITION_REUSSIE : NON_ETABLIE au sens publication vérifiée ET envoi confirmé
@@ -15,8 +15,8 @@ DERNIERE_EDITION_PUBLIEE : 2026-10-02 présente dans les sources du dépôt ; ac
 EDITION_DU_JOUR : aucune édition 2026-10-13 trouvée dans l'arborescence main examinée ; contrôle limité au dépôt
 PUBLICATION_DU_JOUR : aucune source d'édition 2026-10-13 dans le dépôt examiné ; accès au site non vérifiable par l'outil utilisé
 DIFFUSION_DU_JOUR : INCONNUE — messagerie non consultée pendant cette initialisation
-BROUILLON_ACTIF : 2026-10-13-brouillon-01 — identifiant de reprise attribué ici aux réponses de cette conversation ; A_COMPLETER, aucune source déclarée admissible par le présent registre
-PROCHAINE_ACTION : reprendre le dossier de candidats ; demander trois textes complets publics en un lot, avec métadonnées et confirmation humaine d’accès public ; aucune publication ni aucun envoi
+BROUILLON_ACTIF : 2026-10-13-brouillon-01 — A_COMPLETER ; cinq fiches T01 à T05 contrôlées par Codex dans leur version figée G.1 ; revue complète non assemblée
+PROCHAINE_ACTION : compléter la sélection, avec filtre de dates et exclusions G.2 ; conserver G.1 sans modification ; sources publiques complètes et contrôle externe avant publication ; aucun nouveau pilote spontané
 ```
 
 Ce bloc décrit des preuves documentaires et leurs limites. « Aucune édition trouvée dans le dépôt » ne signifie pas vérification de la messagerie. La période fixée pour ce démarrage n’est pas une reconstitution de la dernière borne historique. Les constats sur le dépôt restent ceux de l’initialisation : ils n’ont pas été actualisés pendant la mise à jour V5.
@@ -90,7 +90,7 @@ Le premier livrable peut être un brouillon et un dossier de sources, sans publi
 Après les étapes réellement effectuées, mettre à jour les preuves et incrémenter la version du registre. Préserver les anciennes éditions et les informations de diffusion ; ne pas les réécrire pour obtenir artificiellement un statut de réussite.
 
 
-## F. Test DINUM rapporté le 13 octobre 2026
+## F. Premier test DINUM rapporté le 13 octobre 2026 - avant les lots
 
 Provenance : réponses de l’Assistant IA collées par le propriétaire dans cette conversation. Le créateur du kit n’a pas observé directement les appels internes de cette instance ; aucun journal brut d’outil n’est fourni.
 
@@ -98,7 +98,159 @@ Provenance : réponses de l’Assistant IA collées par le propriétaire dans ce
 - Une liste de 63 références a été fournie, comprenant des documents joints et des résultats Web ; ce volume ne prouve pas 63 lectures intégrales.
 - Les réponses successives ont déclaré des lectures intégrales et contrôles validés, puis les ont retirés après un test ciblé demandé.
 - Pour l’article ActuIA « Régulation de l’IA : le point sur la situation mondiale », URL https://www.actuia.com/actualite/regulation-de-lia-le-point-sur-la-situation-mondiale/, l’assistant a rapporté avoir reçu titre, date et extrait, sans corps complet. Résultat rapporté : EXTRAITS_OBSERVES sur ce test. Sa conclusion générale d’incapacité ne prouve pas la configuration de tous les moteurs ou l’accès à toutes les autres pages.
-- Les six propositions des réponses restent des candidats ; leurs validations de lecture intégrale sont retirées. Aucun texte complet public n’a été fourni dans les éléments utilisés pour cette mise à jour.
+- Les six propositions des réponses restent des candidats ; leurs validations de lecture intégrale sont retirées. Aucun texte complet public n’avait encore été fourni à ce stade. Le déroulement ultérieur et les pièces reçues sont consignés en G ; ne pas prendre cet état intermédiaire pour l’état courant.
 - Publication, messagerie et éventuelle édition du jour n’ont pas été revérifiées ici. L’anti-doublon opérationnel demeure inconnu ; le propriétaire a demandé des travaux préparatoires sans publication ni envoi.
 
 Ce test peut être repris dans la même session avec attribution. Dans une autre session, vérifier les capacités actuelles si nécessaire ; ne pas transformer ce rapport en preuve d’incapacité permanente. À réception de textes publics complets effectivement exploités, qualifier chaque source séparément et reprendre le même brouillon.
+
+## G. Clôture du pilote et reprise V5.1
+
+### G.0 - Provenance et état
+
+Mise à jour à partir des réponses collées par le propriétaire et des collectes
+et corrections exécutées par Codex dans cette conversation le 13 octobre.
+Le propriétaire a autorisé l’usage des vérifications externes documentées de
+Codex pour les lots transmis, sans confirmation humaine de consultation inventée.
+
+Pièces privées : LOT-01-SOURCES-PUBLIQUES-COMPLETES.md (T01/T02/T03),
+LOT-02-SOURCES-PUBLIQUES-COMPLETES.md (T04/T05),
+pilote-snum-3-fiches-corrigees.md, pilote-snum-T04-T05-corrigees.md,
+BILAN-TEST-DINUM-2026-10-13.md. Le suffixe « (1) » d’une copie ne constitue
+pas une nouvelle révision ; comparer le contenu, pas seulement le nom.
+
+Les HTML publics des cinq sources ont été obtenus anonymement et exploités
+par Codex ; les deux lots fournissent corps complets, dates, URL, horodatages
+et traces. Les corrections ci-dessous ont été relues contre ces textes et
+comptées par script Python exécuté par Codex. L’assistant DINUM n’a pas
+exécuté ce script ni ces accès HTTP. La reprise exacte observée dans certaines
+réponses ne remplace pas ce contrôle externe et n’en change pas l’auteur.
+
+Les tests de la séance sont clos. Ils ont montré des lectures partielles Web,
+des erreurs de date, des comptages fictifs, une reprise des anciennes versions,
+un test isolé réussi sur six passages et une confusion entre un chapitre du
+règlement et le décret. La dernière réponse a correctement repris les champs
+T04/T05, mais omis les liens et proposé de nouveau le Cybermois hors période.
+La production autonome fiable n’est pas démontrée ; préparation assistée
+avec contrôle externe seulement. Aucun contrôle récent GitHub Pages,
+anti-doublon messagerie, publication ou envoi supplémentaire n’est établi.
+
+### G.1 - Cinq fiches figées du brouillon
+
+Cette section est la version de référence, reprise des deux fichiers corrigés.
+Les anciennes fiches produites par DINUM sont remplacées. Conserver tous les
+champs et liens exactement ; les modifier invalide le contrôle correspondant.
+Cette section privée ne constitue pas une édition publiée ni la désignation
+finale des trois essentiels. Les implications SNUM sont des propositions de Codex.
+
+#### G.1.T01 - France Identité dépasse cinq millions d’utilisateurs
+
+France Identité dépasse cinq millions d’utilisateurs et permet des démarches sensibles après certification de l’identité en mairie.
+
+**Mots-clés :** France Identité, identité numérique, authentification, démarches en ligne.
+
+**À retenir :** La certification en mairie conditionne notamment la procuration de vote entièrement en ligne.
+
+**Intérêt pour le SNUM :** Évaluer France Identité pour les parcours usagers nécessitant une authentification renforcée.
+
+**Source :** DINUM. **Date :** 8 octobre 2026.
+[Lire « France Identité : l’application de l’identité numérique de l’État entre dans le quotidien des Français » sur numerique.gouv.fr](https://www.numerique.gouv.fr/actualites/france-identite-quotidien-francais/)
+
+#### G.1.T02 - Le Mois de l’innovation publique met le numérique à l’honneur
+
+La DITP place l’innovation numérique au cœur du Mois de l’innovation publique de novembre 2026.
+
+**Mots-clés :** innovation publique, IA, automatisation, retours d’expérience.
+
+**À retenir :** Les agents publics peuvent référencer leurs événements pour partager méthodes et retours d’expérience.
+
+**Intérêt pour le SNUM :** Repérer des retours d’expérience sur l’IA et l’automatisation applicables aux services du SNUM.
+
+**Source :** DITP. **Date :** 6 octobre 2026.
+[Lire « Lancement du Mois de l’innovation publique 2026 » sur modernisation.gouv.fr](https://www.modernisation.gouv.fr/presse/lancement-du-mois-de-linnovation-publique-2026)
+
+## RESSOURCES HUMAINES
+
+#### G.1.T03 - Le statut des conseillers numériques de l’État évolue
+
+Le décret renomme l’emploi en conseiller numérique et prévoit des nominations de quatre ans maximum, renouvelables une fois.
+
+**Mots-clés :** emplois numériques, nomination, détachement, transition, fonction publique.
+
+**À retenir :** Entrée en vigueur le 1er novembre 2026, avec régime transitoire et prolongations exceptionnelles.
+
+**Intérêt pour le SNUM :** Identifier les emplois concernés et vérifier les règles de nomination avec les RH.
+
+**Source :** Légifrance, Journal officiel. **Date :** 6 octobre 2026, publication du décret signé le 5 octobre.
+[Lire le décret n° 2026-928 relatif à l’emploi de conseiller numérique des administrations de l’État sur Légifrance](https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000054953345)
+
+#### G.1.T04 - Cyberrésilience : l’ANSSI désignée autorité notifiante
+
+Le décret désigne l’ANSSI comme autorité notifiante des organismes évaluant la conformité des produits numériques au règlement sur la cyberrésilience.
+
+**Mots-clés :** cyberrésilience, ANSSI, notification, évaluation de conformité, produits numériques.
+
+**À retenir :** Le décret entre en vigueur le 12 octobre 2026.
+
+**Intérêt pour le SNUM :** Vérifier les organismes notifiés et leur périmètre lors d’achats de produits numériques concernés.
+
+**Source :** Légifrance, Journal officiel. **Date :** 11 octobre 2026, publication du décret signé le 9 octobre.
+[Lire le décret n° 2026-944 sur la notification des organismes d’évaluation de conformité sur Légifrance](https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000054970344)
+
+## COMMANDE PUBLIQUE
+
+#### G.1.T05 - Un comité technique pour les systèmes de commande publique
+
+L’arrêté organise le Conseil national de la commande publique et son comité technique chargé de dématérialisation et d’interopérabilité.
+
+**Mots-clés :** commande publique, dématérialisation, interopérabilité, comité technique, gouvernance.
+
+**À retenir :** Le comité technique traite les outils de commande publique et leur conformité réglementaire.
+
+**Intérêt pour le SNUM :** Suivre les travaux sur l’interopérabilité des systèmes d’information de commande publique.
+
+**Source :** Légifrance, Journal officiel. **Date :** 9 octobre 2026, publication de l’arrêté signé le 2 octobre.
+[Lire l’arrêté relatif au fonctionnement et à la composition du Conseil national de la commande publique sur Légifrance](https://www.legifrance.gouv.fr/jorf/id/JORFTEXT000054965359)
+
+### G.1.C - Contrôles de la version figée
+
+| Fiche | Mots résumé / À retenir / intérêt | Mots-clés | Contrôle externe |
+| --- | --- | --- | --- |
+| T01 | 17 / 13 / 11 | 4 | Codex, script + relecture |
+| T02 | 15 / 13 / 13 | 4 | Codex, script + relecture |
+| T03 | 18 / 13 / 13 | 5 | Codex, script + relecture |
+| T04 | 20 / 9 / 13 | 5 | Codex, script + relecture |
+| T05 | 18 / 13 / 11 | 5 | Codex, script + relecture |
+
+Les noms, dates et liens des sources restent dans les fiches. Les cinq contrôles
+portent sur ces formulations, pas sur une paraphrase. Les essentiels de la revue
+complète doivent eux aussi être contrôlés lorsqu’ils seront assemblés.
+
+### G.2 - Exclusions et candidats à ne pas redemander sur cette fenêtre
+
+| Source ou URL repère | Décision pour 2–12 octobre | Motif et possibilité de suivi |
+| --- | --- | --- |
+| https://www.numerique.gouv.fr/actualites/cybermois-2026/ | HORS_PERIODE | Publication vérifiée le 1er octobre. La durée de la campagne ne change pas cette date. Un nouveau fait daté dans une autre source peut être évalué. |
+| Acteurs Publics, article sur les mesures Bercy de simplification précédemment proposé | HORS_PERIODE | Article vérifié du 12 novembre 2025, décrivant un projet en consultation. Ne pas le redater en octobre 2026. |
+| L’Usine Digitale, consommation électrique des data centers | NON_VERIFIABLE ; hors période selon les dates proposées | Date du 14 janvier non confirmée et incohérente avec un rapport de mai ; index secondaire mentionnant mai ; aucune nouveauté substantielle d’octobre établie. |
+| L’Usine Digitale, Google près de Châteauroux | NON_VERIFIABLE | Accès technique bloqué dans les essais ; date et texte complet non établis. Ne pas assimiler le blocage à une preuve d’abonnement. Alternative publique possible. |
+| L’Usine Digitale, Sesterce en Finlande | NON_VERIFIABLE sur ce lien | Annonce du 8 octobre corroborée ailleurs ; pas de preuve de lecture intégrale du lien proposé. Les 5 GW évoqués pour un réseau national ne sont pas la capacité démontrée du seul projet Sesterce. |
+| https://www.lefigaro.fr/secteur/high-tech/l-ue-prete-a-sevir-si-les-plateformes-numeriques-diffusent-l-execution-d-un-americain-en-direct-20261012 | FAIBLE pour la sélection proposée | Page publique lue par Codex ; intérêt direct SNUM insuffisamment démontré. Ne pas lui attribuer par défaut des obligations DSA ou une coordination CNIL. |
+
+Les articles ActuIA restent candidats non validés dans ce registre ; leurs copies
+ne sont pas indispensables pour clôturer le pilote. Les cinq thèmes de G.1
+ne sont pas encore publiés ; ils appartiennent au brouillon actif, à reprendre
+sans doublon. Les onze thèmes de C appartiennent à l’édition du 2 octobre.
+
+### G.3 - Piste Bercy et réserve de périmètre
+
+Le communiqué du 9 octobre sur la facturation électronique a été lu publiquement
+par Codex :
+https://presse.economie.gouv.fr/facturation-electronique-le-premier-comite-dresse-le-bilan-du-deploiement-et-engage-la-preparation-de-2027/
+
+Il décrit le premier comité de suivi et les difficultés d’interopérabilité entre
+solutions, puis la préparation de l’émission par les PME et microentreprises
+et de l’e-reporting en 2027. Ne pas en déduire automatiquement de nouvelles
+obligations pour les administrations ou pour les services du SNUM. La date
+du communiqué, le point statistique du 4 octobre et l’échéance du 1er septembre
+2027 restent distincts. Texte complet non inclus dans les lots remis à DINUM ;
+ce repère seul ne permet pas d’affirmer une nouvelle lecture par lui.

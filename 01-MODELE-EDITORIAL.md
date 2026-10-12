@@ -1,6 +1,6 @@
 # Modèle et vérification — revue SNUM
 
-V5. Le noyau court garde les protections essentielles ; PROMPT-PROJET.md contient les consignes détaillées à charger par sections. Ce fichier donne méthode et modèles à l'étape de rédaction. Les exemples entre crochets doivent disparaître de la sortie finale.
+V5.1. Le noyau court garde les protections essentielles ; PROMPT-PROJET.md contient les consignes détaillées à charger par sections. Ce fichier donne méthode et modèles à l'étape de rédaction. Les exemples entre crochets doivent disparaître de la sortie finale.
 
 ## Séquence et règle d'arrêt
 
@@ -8,10 +8,10 @@ V5. Le noyau court garde les protections essentielles ; PROMPT-PROJET.md contien
 2. Tester une lecture Web selon P2.1, ou réutiliser le test documenté de cette session. Vérifier d’abord l’activation Web si aucun résultat n’est obtenu. Consigner le type de contenu réellement retourné ; ne pas déduire une capacité générale d’une seule page.
 3. Premier passage : chercher dans les cinq rubriques et examiner les résultats pertinents du Monde et des Echos. Noter les requêtes effectivement lancées. Une recherche peut couvrir plusieurs rubriques. Les extraits servent à constituer des candidats, pas à valider les articles.
 4. Second passage : pour chaque lacune utile, effectuer une ou deux recherches ciblées sur les sources complémentaires ; une lacune ne crée aucune obligation de remplir une rubrique. En mode extraits, ne pas multiplier les tentatives de lecture avec un outil absent.
-5. Arrêter ensuite la découverte générale. Si les sources complètes manquent, livrer les meilleurs candidats et demander trois textes pour le pilote, puis trois à cinq par lot selon P2.2. Reprendre les apports sans nouvelle collecte ni changement de fenêtre. Un blocage technique peut justifier une relance ciblée, pas une boucle illimitée.
+5. Filtrer les dates selon P2.4 et les exclusions G de 02 avant de prioriser les demandes. Date hors période : aucune copie demandée ; date inconnue : A_DATER. Arrêter ensuite la découverte générale. Si les sources complètes manquent, livrer les meilleurs candidats et demander trois textes pour le pilote, puis trois à cinq par lot selon P2.2. Reprendre les apports sans nouvelle collecte ni changement de fenêtre. Un blocage technique peut justifier une relance ciblée, pas une boucle illimitée.
 6. Qualifier chaque source complète (Web ou fournie), vérifier métadonnées, faits, réserves et provenance publique. Un document joint complet mais récupéré seulement par fragments non exhaustifs ne suffit pas. Comparer les faits aux anciennes éditions ; les nouveaux développements restent admissibles.
 7. Viser 10 à 15 événements uniques utiles. Une sélection plus courte est recevable avec couverture et limites documentées ; moins de trois sujets admissibles implique A_COMPLETER. Désigner les trois essentiels parmi les sujets retenus, puis rédiger toutes les fiches.
-8. Contrôler l’exactitude, l’intérêt SNUM et le format du texte final, y compris chaque essentiel ; corriger, puis recontrôler les champs modifiés. Livrer revue et dossier privé avec les statuts conformes à P4.1.
+8. Relire l’exactitude, l’intérêt SNUM et le format ; demander ou exploiter le contrôle externe réel du texte final selon P3.1, y compris chaque essentiel. Toute modification invalide le contrôle du champ touché. Sans validation externe, livrer A_COMPLETER ; PREPAREE seulement avec preuve suffisante.
 
 Dans le dossier, distinguer couverture effectuée, sélection terminée et limites d’accès. Une rubrique vide ou aucun article retenu ne prouve pas l’absence d’actualité. La priorité donnée aux médias de référence ne justifie pas de retenir un article payant.
 
@@ -36,7 +36,8 @@ Contenu : A_COMPLETER. Aucune sélection validée sur des extraits.
 | C01 | | | | |
 
 Merci de fournir les [trois premiers / trois à cinq suivants] textes
-complets et de confirmer leur accès public anonyme à la date de collecte.
+complets et la preuve datée d’accès public anonyme : confirmation humaine
+ou collecte externe acceptée selon P2.5. Ne pas redemander une preuve reçue.
 Un unique document joint peut réunir le lot, avec les métadonnées
 et tableaux/réserves utiles pour chaque article.
 
@@ -125,7 +126,7 @@ Le résumé donne le dispositif, son périmètre et sa durée ; À retenir porte
 | Code | Observation | Décision |
 | --- | --- | --- |
 | INTEGRAL_LU | Texte complet de la source effectivement disponible, exploité ; accès public établi | Admissible si date, URL et faits sont vérifiés |
-| INTEGRAL_FOURNI | Texte complet fourni avec URL, date et confirmation humaine d'accès public anonyme à la collecte ; texte exploité | Admissible avec provenance humaine déclarée |
+| INTEGRAL_FOURNI | Texte complet exploité, URL/date, preuve humaine ou collecte externe documentée et acceptée selon P2.5 | Admissible avec provenance du collecteur déclarée |
 | EXTRAITS | Snippets, résumé tiers, passages RAG sans totalité disponible | Candidat, jamais assimilé à INTEGRAL_LU |
 | PAYANT_OU_LOGIN | Abonnement, essai payant ou authentification nécessaire | Exclu |
 | NON_VERIFIABLE | Blocage technique, texte partiel ou absence de preuve de gratuité/intégralité | Candidat à compléter ou exclu avec motif |
@@ -168,11 +169,11 @@ Une page HTML téléchargée peut contenir seulement un extrait ; un texte index
 
 - Fiche publique et rubrique :
 - Source principale, titre original, date et URL canonique :
-- Lecture : code, contenu disponible, consultation ; confirmation humaine si applicable
+- Lecture : code, contenu réellement disponible et exploité ; collecteur et preuve humaine/externe attribuée selon P2.5
 - Fait essentiel établi : reformulation
 - Repère de preuve : section/paragraphe/élément identifiable dans le texte réellement disponible
 - Citation éventuelle : mots exacts de la source seulement ; sinon mention « reformulation ». Une correction conversationnelle ne devient pas une preuve de lecture.
-- Accès public : vérification réellement effectuée ou confirmation humaine datée, distincte de l’analyse du texte
+- Accès public : contrôle effectivement effectué par le collecteur ou confirmation humaine datée, distinct de la lecture documentaire de l’assistant
 - Chiffres, dates, périmètre et réserves :
 - Complément officiel ou autre source si nécessaire :
 - Nouveauté depuis la dernière édition :
@@ -190,7 +191,8 @@ Une page HTML téléchargée peut contenir seulement un extrait ; un texte index
 | --- | --- | --- | --- | --- | --- |
 | | | | | | |
 
-- Méthode de comptage : contrôle de lecture/comptage sans outil, ou outil réellement utilisé.
+- Méthode de comptage : outil ou contrôle externe réellement exécuté ; sans preuve, COMPTAGE_NON_VERIFIE. L’autoévaluation sans outil n’est pas la validation finale.
+- Contrôleur externe : identité, méthode, date et version effectivement vérifiée.
 - Version contrôlée : texte final exact. Aucun résumé substitutif dans ce tableau ; recontrôler chaque champ modifié après vérification.
 - Résultats : VERIFIE / ECHEC / NON_EXECUTE / NON_VERIFIABLE, avec nombres réels ; les coches seules ne suffisent pas.
 - Contrôles transversaux : trois essentiels ; nombre de sujets uniques ; rubriques ; absence de remplissage, comptage et badge ; confidentialité ; intérêt SNUM concret ; faits distincts des implications.
@@ -221,3 +223,16 @@ Une page HTML téléchargée peut contenir seulement un extrait ; un texte index
 ```
 
 Le dossier fait office de compte rendu : pas de journal parallèle à maintenir. Une vérification préparée reste NON_EXECUTE. Une preuve humaine est attribuée à la personne, pas à un outil que l'assistant n'a pas utilisé.
+
+## Reprise des versions et registre des exclusions
+
+Le texte courant de G.1 dans 02 prime sur les anciennes réponses du pilote.
+Ce registre permet de réutiliser cinq fiches déjà contrôlées, sans réécriture
+ni transfert de validation sur d’autres formulations. Pour leur vérification
+de fond, les textes primaires des lots restent des pièces privées à joindre
+si nécessaires ; les références seules ne prouvent pas une nouvelle lecture.
+
+Consulter G.2 avant chaque nouvelle demande de textes sur la même fenêtre.
+Une exclusion concerne une URL et les faits déjà examinés, pas tout un thème.
+Les renvois au corps juridique doivent distinguer texte, chapitre et article.
+Un contrôle externe de longueur ne dispense pas d’une vérification factuelle.
