@@ -1,4 +1,4 @@
-# État et historique SNUM - V5.6
+# État et historique SNUM - V5.7
 
 ## VERROU-ETAT - lire avant toute date
 
@@ -7,7 +7,7 @@
 Le brouillon actif du 13 octobre conserve sa fenêtre explicitement fixée du 2 au 12 octobre 2026 inclus, journées civiles Europe/Paris. Pour une nouvelle date postérieure, ne réutilise pas cette fenêtre et n’invente pas de borne : pose uniquement la question indispensable sur la fenêtre initiale, sauf si le propriétaire demande explicitement de reprendre ce brouillon.
 
 ```text
-REGISTRE_VERSION : 8
+REGISTRE_VERSION : 9
 DATE_EDITION_PARIS : 2026-10-13
 FENETRE_DEMANDEE : 2026-10-02 au 2026-10-12 inclus
 DERNIERE_EDITION_REUSSIE : NON_ETABLIE
@@ -16,7 +16,7 @@ DERNIERE_EDITION_PUBLIEE : 2026-10-02, documentée dans le dépôt
 PUBLICATION_DU_JOUR : INCONNUE
 DIFFUSION_DU_JOUR : INCONNUE
 BROUILLON_ACTIF : 2026-10-13-brouillon-01 ; A_COMPLETER
-PROCHAINE_ACTION : reprendre ce brouillon, collecter, rédiger et livrer le JSON V5.6
+PROCHAINE_ACTION : reprendre ce brouillon, rechercher, rédiger et livrer la revue, le HTML complet et le dossier privé
 ```
 
 La date ci-dessus décrit le dernier état enregistré, pas une consigne perpétuelle « aujourd’hui ». Une preuve plus récente fournie par le propriétaire doit être conservée sans effacer les preuves antérieures.
@@ -54,6 +54,4 @@ Un suivi est possible seulement avec une évolution nouvelle et datée.
 
 Les anciens brouillons, fiches, exemples et HTML ne sont ni publiés ni des sources à recopier. Ils ont notamment mélangé dates de publication et d’événement, retenu des extraits ou contenus payants, inventé des lectures intégrales et reconstruit le gabarit.
 
-La tentative V5.6 de faire recopier une longue coque HTML par récupération de passages a aussi échoué : même après correction, l’assistant a réécrit le footer, omis des scripts et liens réglementaires et dépassé une limite de mots. Le format actif est donc le JSON structuré de `03-FORMAT-SORTIE.md`, assemblé ensuite par le générateur déterministe local.
-
-Ces essais ne font avancer aucune borne de réussite. Ils servent uniquement à empêcher la répétition de leurs erreurs.
+La V5.6 a obtenu un JSON depuis un lot de sources fourni dans la conversation, puis un programme local a généré le HTML. Ce parcours ne démontre pas l’autonomie demandée à DINUM et n’est plus le parcours actif. Les anciens fichiers et tests ne font avancer aucune borne de réussite.

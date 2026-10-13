@@ -1,4 +1,4 @@
-# Méthode éditoriale SNUM - V5.6
+# Méthode éditoriale SNUM - V5.7
 
 ## Collecter et prouver
 
@@ -34,12 +34,18 @@ Chaque événement contient :
 - « À retenir » en une phrase de 15 mots maximum ;
 - « Intérêt pour le SNUM » en une phrase de 15 mots maximum ;
 - titre original, source, date de publication et URL publique exacte ;
-- statut et preuve de lecture.
+- statut et preuve de lecture dans le dossier privé.
 
 Compter les mots par espaces. Les chiffres, dates, périmètres et réserves indispensables restent exacts. Distinguer les faits de la source des implications proposées pour le SNUM. Aucun emoji, slogan, promotion, rubrique artificielle, volume près du titre ou remplissage.
 
 Avec au moins trois événements, choisir exactement trois essentiels, repris sans duplication depuis les rubriques. Avec moins de trois, aucun essentiel. « À surveiller » reste facultatif et contient seulement des suivis courts, précis et utiles.
 
+## Contrôles de cohérence avant livraison
+
+Vérifier sur le texte exact : dates dans la fenêtre, unicité des événements et URL, rubriques admises, 3 à 5 mots-clés, limites de 25 et 15 mots, exactement trois essentiels à partir de trois événements et absence de fausse preuve. Une vérification manuelle du modèle reste une autoévaluation : la décrire comme telle, sans la transformer en contrôle extérieur.
+
+Le HTML doit reprendre exactement les mêmes faits, titres, dates, URL et essentiels que la revue. Toute modification ultérieure invalide les contrôles correspondants.
+
 ## État
 
-La sortie de l’assistant reste `A_COMPLETER` tant que le générateur local et les vérifications extérieures nécessaires n’ont pas été exécutés sur le texte exact. Une autoévaluation n’est pas un contrôle externe. `PREPAREE` exige un contenu terminé et contrôlé extérieurement. `COMPLETE` exige publication vérifiée et envoi confirmé. `ALREADY_COMPLETE` arrête le cycle si l’édition du jour est déjà publiée ou diffusée, sans certifier que les deux actions sont achevées.
+DINUM livre la revue et le HTML même si l’état reste `A_COMPLETER`. `PREPAREE` exige un contenu terminé et contrôlé extérieurement. `COMPLETE` exige publication vérifiée et envoi confirmé. `ALREADY_COMPLETE` arrête le cycle si l’édition du jour est déjà publiée ou diffusée, sans certifier que les deux actions sont achevées.
