@@ -16,6 +16,14 @@ Avec les capacités limitées de ce kit, aucun commit, push, envoi ou test techn
 
 Répéter les URL utiles dans le message courant lorsqu'elles doivent être utilisées ou rendues. Ne jamais construire une nouvelle URL de source à partir d'un souvenir.
 
+### Références HTML disponibles pour le brouillon du 13 octobre
+
+L’HTML rempli corrigé, les archives et les styles sont regroupés dans 04-INTEGRATION-HTML.md, sections B, C et D. Le rapport privé est en section E et le brouillon éditorial en section A. Les noms séparés cités dans l’historique renvoient à ces sections ; ils ne constituent pas des fichiers supplémentaires à importer ou demander. Consulter aussi la section I de 02-HISTORIQUE.md. Ce document de travail peut rester le cinquième fichier du Projet pendant cette préparation ; son contenu est propre à cette édition.
+
+Si ces pièces sont accessibles, les utiliser sans redemander un gabarit, un CSS ou un script applicatif imaginaire. Le dépôt conserve styles.css à sa racine ; les scripts DSFR 1.15.2 sont appelés depuis le CDN. L’aperçu avec CSS inclus est destiné à la consultation locale ; l’HTML de production garde les chemins du site.
+
+Les contrôles fournis sont attribués à Codex et limités à leur périmètre et date. Ils ne constituent ni un audit RGAA complet ni une vérification de publication. Aucune obligation n’impose que tous les liens externes s’ouvrent dans une nouvelle fenêtre : appliquer les indications accessibles lorsque cette ouverture est choisie.
+
 ### Préparer les fichiers
 
 Fournir dans la conversation, au besoin en textes ou pièces jointes temporaires, les sources courantes de `index.html`, `editions/index.html`, `styles.css` et de la déclaration d'accessibilité. Fournir aussi les pages réglementaires si elles doivent être contrôlées ou modifiées. Ne pas encombrer durablement le Projet avec tous ces fichiers.

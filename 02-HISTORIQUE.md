@@ -5,7 +5,7 @@
 Date et fuseau de référence : 13 octobre 2026, Europe/Paris. Le 12 octobre est la fin de collecte fixée, pas la date du contrôle anti-doublon.
 
 ```text
-REGISTRE_VERSION : 4
+REGISTRE_VERSION : 5
 DATE_EDITION_PARIS : 2026-10-13
 FENETRE_DEMANDEE : FIXEE_PAR_LE_PROPRIETAIRE — du 2026-10-02 au 2026-10-12 inclus, journées civiles Europe/Paris ; premier brouillon
 DERNIERE_EDITION_REUSSIE : NON_ETABLIE au sens publication vérifiée ET envoi confirmé
@@ -15,8 +15,8 @@ DERNIERE_EDITION_PUBLIEE : 2026-10-02 présente dans les sources du dépôt ; ac
 EDITION_DU_JOUR : aucune édition 2026-10-13 trouvée dans l'arborescence main examinée ; contrôle limité au dépôt
 PUBLICATION_DU_JOUR : aucune source d'édition 2026-10-13 dans le dépôt examiné ; accès au site non vérifiable par l'outil utilisé
 DIFFUSION_DU_JOUR : INCONNUE — messagerie non consultée pendant cette initialisation
-BROUILLON_ACTIF : 2026-10-13-brouillon-01 — A_COMPLETER ; cinq fiches T01 à T05 contrôlées par Codex dans leur version figée G.1 ; revue complète non assemblée
-PROCHAINE_ACTION : compléter la sélection, avec filtre de dates et exclusions G.2 ; conserver G.1 sans modification ; sources publiques complètes et contrôle externe avant publication ; aucun nouveau pilote spontané
+BROUILLON_ACTIF : 2026-10-13-brouillon-01 — A_COMPLETER pour finalisation ; dix fiches figées G.1/H.1 ; assemblage corrigé et contrôle externe décrits en H
+PROCHAINE_ACTION : utiliser l’HTML corrigé identifié en I ; conserver les dix fiches G.1/H.1 ; vérifier séparément publication et messages envoyés avant toute action externe ; aucun nouveau pilote ni nouvelle collecte
 ```
 
 Ce bloc décrit des preuves documentaires et leurs limites. « Aucune édition trouvée dans le dépôt » ne signifie pas vérification de la messagerie. La période fixée pour ce démarrage n’est pas une reconstitution de la dernière borne historique. Les constats sur le dépôt restent ceux de l’initialisation : ils n’ont pas été actualisés pendant la mise à jour V5.
@@ -254,3 +254,139 @@ obligations pour les administrations ou pour les services du SNUM. La date
 du communiqué, le point statistique du 4 octobre et l’échéance du 1er septembre
 2027 restent distincts. Texte complet non inclus dans les lots remis à DINUM ;
 ce repère seul ne permet pas d’affirmer une nouvelle lecture par lui.
+
+
+## H. Reprise du 13 octobre 2026 - après assemblage
+
+### H.0 - État de référence actuel
+
+Consigné par Codex le 2026-10-13T18:21:22+02:00, à partir des fichiers produits et des réponses DINUM collées par le propriétaire. Cette section complète G ; elle ne modifie pas les faits ou les contrôles des étapes antérieures.
+
+Le brouillon de référence est désormais SNUM-2026-10-13-BROUILLON-CORRIGE.md. Son contrôle est CONTROLE-SNUM-2026-10-13-ASSEMBLAGE.md. SHA-256 du Markdown corrigé : `040edc3bef90f0e745a9d6c334b56b8b3055a4033ae5b23492bfc47e5eccf126`.
+
+Dix fiches : T01–T05 inchangées en G.1 ; T06–T10 en H.1 ci-dessous. Les trois essentiels retenus sont T06, T07 et T09, repris sans modification de leurs champs. L’assemblage corrigé présente aussi les dix sujets sous NUMERIQUE, COMMANDE PUBLIQUE, RESSOURCES HUMAINES et VIE DE BERCY. Les reprises ne sont pas trois sujets supplémentaires. Aucun ajout IA artificiel ; sélection institutionnelle provisoire.
+
+Pièces privées de cette reprise : LOT-03-SOURCES-PUBLIQUES-COMPLETES.md, SNUM-10-FICHES-REFERENCE-CONTROLEES.md et les deux fichiers d’assemblage ci-dessus. Les textes primaires restent nécessaires pour une nouvelle vérification de fond ; leurs noms ne prouvent pas une lecture documentaire par DINUM.
+
+Codex a compté la version corrigée par script et vérifié la reprise exacte des champs et des trois essentiels. Les cinq nouvelles fiches ont été relues contre les pages publiques du lot 03. Les sources T01–T05 n’ont pas toutes été recollectées pendant cette reprise. Aucun contrôle HTML, audit RGAA, accès actuel à GitHub Pages, contrôle de messagerie, commit, push ou envoi supplémentaire n’est établi.
+
+Le statut global reste A_COMPLETER pour finalisation ; ne pas le transformer en COMPLETE. L’état inconnu de diffusion et les limites de vérification de publication demeurent ceux de A. Ne pas déclarer « aucune édition ou diffusion » sur la seule absence de preuve.
+
+### H.1 - Cinq compléments figés
+
+#### H.1.T06 - France Travail : la CNIL clôt l’injonction de sécurité
+
+La CNIL clôt l’injonction visant France Travail après renforcement de l’authentification, des journaux d’activité et des habilitations.
+
+**Mots-clés :** France Travail, authentification multifacteur, habilitations, journaux, RGPD.
+
+**À retenir :** L’astreinte n’est pas liquidée après la mise en conformité constatée.
+
+**Intérêt pour le SNUM :** Revoir l’authentification multifacteur, la supervision des journaux et les accès aux seules données nécessaires.
+
+**Source :** CNIL. **Date :** 2026-10-08.
+[Lire « Clôture de l’injonction prononcée à l’encontre de FRANCE TRAVAIL » sur le site de la source](https://www.cnil.fr/fr/cloture-injonction-france-travail)
+
+#### H.1.T07 - Facturation électronique : des difficultés d’interopérabilité signalées
+
+Le premier comité de suivi signale des difficultés d’interopérabilité entre solutions de facturation électronique et prépare l’échéance du 1er septembre 2027.
+
+**Mots-clés :** facturation électronique, interopérabilité, PME, e-reporting.
+
+**À retenir :** L’échéance concerne l’émission par les PME et microentreprises, ainsi que l’e-reporting.
+
+**Intérêt pour le SNUM :** Examiner les enseignements d’interopérabilité utiles aux chaînes de traitement du SNUM.
+
+**Source :** Ministères économiques et financiers, economie.gouv.fr. **Date :** 2026-10-12.
+[Lire « Facturation électronique : trois entreprises sur quatre déjà engagées dans la réforme » sur le site de la source](https://www.economie.gouv.fr/actualites/facturation-electronique-trois-entreprises-sur-quatre-deja-engagees-dans-la-reforme)
+
+#### H.1.T08 - Bercy vise 25 % d’achats informatiques et téléphoniques reconditionnés
+
+Bercy vise 25 % d’achats de matériels informatiques et téléphoniques reconditionnés à l’horizon 2027 dans son plan de transformation écologique.
+
+**Mots-clés :** Bercy Vert, achats informatiques, reconditionné, sobriété.
+
+**À retenir :** Il s’agit d’un objectif ministériel, pas d’un résultat déjà atteint.
+
+**Intérêt pour le SNUM :** Intégrer le reconditionné et l’allongement d’usage dans la préparation des achats informatiques.
+
+**Source :** Ministères économiques et financiers, economie.gouv.fr. **Date :** 2026-10-07.
+[Lire « Bercy Vert : le nouveau bilan carbone de Bercy identifie les principaux leviers de transformation écologique » sur le site de la source](https://www.economie.gouv.fr/actualites/bercy-vert-le-nouveau-bilan-carbone-de-bercy-identifie-les-principaux-leviers-de-transformation-ecologique)
+
+#### H.1.T09 - Violences au travail : la DGAFP rassemble les outils de prévention
+
+La DGAFP présente les ressources de prévention, de formation, de signalement et de protection contre les violences sexistes et sexuelles.
+
+**Mots-clés :** violences sexistes et sexuelles, prévention, signalement, formation, RH.
+
+**À retenir :** La publication du 9 octobre rassemble notamment des outils antérieurs.
+
+**Intérêt pour le SNUM :** Avec les RH, rendre les ressources et le dispositif de signalement accessibles aux agents.
+
+**Source :** DGAFP, portail de la fonction publique. **Date :** 2026-10-09.
+[Lire « Violences sexistes et sexuelles : les outils de la fonction publique pour prévenir et agir » sur le site de la source](https://www.fonction-publique.gouv.fr/toutes-les-actualites/violences-sexistes-et-sexuelles-les-outils-de-la-fonction-publique-pour-prevenir-et-agir)
+
+#### H.1.T10 - Fuites de données : l’indemnisation exige un préjudice établi
+
+La CNIL rappelle que l’indemnisation exige une violation du RGPD, un préjudice réel et un lien de causalité.
+
+**Mots-clés :** RGPD, fuite de données, préjudice, indemnisation.
+
+**À retenir :** L’indemnisation relève du juge, pas de la CNIL.
+
+**Intérêt pour le SNUM :** Documenter les incidents et leurs conséquences avec le DPO et le service juridique.
+
+**Source :** CNIL. **Date :** 2026-10-02.
+[Lire « Violations de données personnelles : dans quels cas peut-on être indemnisé ? » sur le site de la source](https://www.cnil.fr/fr/violations-de-donnees-personnelles-cas-indemnite)
+
+### H.2 - Contrôles et résultats observés
+
+| Fiche | Mots résumé | À retenir | Intérêt SNUM | Mots-clés |
+| --- | --- | --- | --- | --- |
+| T06 | 17 | 10 | 14 | 5 |
+| T07 | 21 | 11 | 11 | 4 |
+| T08 | 20 | 10 | 12 | 4 |
+| T09 | 20 | 10 | 14 | 5 |
+| T10 | 18 | 8 | 13 | 4 |
+
+Contrôles attribués à Codex et à la version exacte ci-dessus, pas à l’assistant DINUM. Les compteurs des reprises T06/T07/T09 dans L’essentiel sont identiques, car leurs champs sont repris exactement. T01–T05 conservent les comptes G.1.C. Une modification exige recontrôle.
+
+La revue produite par DINUM avait réécrit les dix fiches. Six résumés dépassaient 25 mots ; les trois essentiels comptaient 37, 43 et 41 mots. Elle attribuait à tort à l’ANSSI l’évaluation des produits et transférait des comptages sur un texte différent. Le document corrigé remplace cette réponse, sans validation rétroactive.
+
+Après correction explicite, la dernière réponse DINUM a distingué anti-doublon de publication et de diffusion, accepté confirmations humaines datées ou traces techniques pertinentes, inclus les trois URL restantes et demandé des contrôles réellement exécutés. Cela démontre la prise en compte de ces précisions dans cette réponse seulement, pas une collecte ou rédaction autonome fiable.
+
+### H.3 - Exclusions complémentaires et prochaines preuves
+
+- DITP « L’innovation ouverte au service de l’action publique » : publication du 28 septembre 2022, événement du 4 octobre 2022 ; HORS_PERIODE.
+- DINUM Ada Lovelace : l’URL initiale a renvoyé 404 au premier essai. Au contrôle suivant, elle redirige vers une page intitulée « 8 témoignages », publiée le 13 octobre 2026 ; HORS_PERIODE pour cette fenêtre. Ne pas reprendre la date du 6 octobre inventée dans la proposition initiale.
+- Les exclusions G.2 restent applicables aux mêmes faits et liens ; les thèmes ne sont pas interdits définitivement.
+
+Preuves restant à établir : contrôle actuel de publication ; contrôle séparé des messages envoyés ; canonical HTML de https://www.cnil.fr/fr/cloture-injonction-france-travail, https://www.fonction-publique.gouv.fr/toutes-les-actualites/violences-sexistes-et-sexuelles-les-outils-de-la-fonction-publique-pour-prevenir-et-agir et https://www.cnil.fr/fr/violations-de-donnees-personnelles-cas-indemnite ; gabarit courant et contrôles HTML réellement exécutés.
+
+Une capture d’écran n’est pas une exigence du kit : une confirmation humaine réelle, datée et précisant le périmètre du contrôle, ou une trace technique pertinente, peut être utilisée. Une simple assertion d’absence ne constitue pas un contrôle. Un fichier HTML généré ne prouve pas l’exécution des vérifications. Les contrôles techniques ciblés ne prouvent pas une conformité RGAA complète. Les liens externes n’ont pas à être systématiquement ouverts dans une nouvelle fenêtre ; appliquer les exigences accessibles uniquement si cette ouverture est choisie.
+
+Ne demander aucun nouveau pilote ni correction conversationnelle déjà traitée. Préparer le relais opérationnel sur preuves réelles, sans publication ni envoi à l’initiative de l’assistant. Les pièces temporaires s’attachent à la conversation ; elles ne deviennent pas automatiquement des consignes permanentes.
+
+
+## I - HTML corrigé dans le gabarit de Loïc - 13 octobre 2026
+
+Cette section actualise l’étape HTML ; les comptes rendus antérieurs restent historiques. Elle ne valide aucun déploiement ni aucun envoi.
+
+- HTML actif : `INDEX-ACCUEIL-SNUM.md` contient le code complet de `INDEX-ACCUEIL-SNUM.html`, identique à `INDEX-EDITION-SNUM.html`. SHA-256 : `feba1df0dcc2ce014fdaa35d0c403705483c963d15d5130a79fb6de3c0f7763b`.
+- Archives préparées : `INDEX-ARCHIVES-SNUM.md` / `INDEX-ARCHIVES-SNUM.html`. SHA-256 : `65f4d5570e3cce34c5d74dae3f8afc8f174865078a7df510d346b02c81635d22`.
+- Gabarit source : bacoco/revue-presse-snum, commit `dc3c87f4f4e7305de0cd9c71da25171252402a83`, captures du 13 octobre.
+- Contrôle Codex du 13 octobre à 22:26:58 Europe/Paris : structure comparée au gabarit, fidélité des treize fiches affichées aux dix références, format court, liens internes de la nouvelle édition sur captures locales, trois accès rapides, DSFR 1.15.2, footer et mention d’accessibilité. Nu local : zéro erreur HTML, six avertissements de rôles redondants conservés du gabarit sur deux documents distincts.
+- Corrections : France Travail est dans NUMERIQUE et présent dans la rubrique ; la source du décret de cyberrésilience est Légifrance, Journal officiel. Trois essentiels : T06, T07, T09. Dix sujets distincts, sans nouvelle collecte.
+- Rapport : `CONTROLE-SNUM-HTML-STYLE-LOIC.md`. Aucun audit RGAA complet ni contrôle visuel à 200 % exécuté. Aucun nouveau contrôle des articles ni des liens externes en ligne à cette étape.
+- `SNUM-2026-10-13-APERCU-STYLE-LOIC.html` inclut les CSS pour l’ouverture locale ; il ne doit pas remplacer le HTML de production. Polices et scripts chargés depuis le CDN.
+- Les modèles vides GABARIT-EDITION-SNUM et les captures ACTUEL/ACTUELLES sont des références. Ne pas régénérer cette édition depuis eux si l’HTML corrigé est disponible.
+- Les balises rel=canonical non inspectées restent signalées comme telles. Ne pas en faire une condition technique supplémentaire systématique : le contrôle de l’URL publique de référence porte sur l’article identifié, les éventuelles redirections et les éléments réellement disponibles. Une balise absente ou non inspectable n’est pas, à elle seule, un motif d’exclusion. Ne pas inventer sa présence ; une URL ambiguë ou un article non identifié reste à vérifier.
+- Avant publication, recouper l’état courant du dépôt et des archives avec la date cible. Avant envoi, vérifier les messages envoyés. Les captures du 13 octobre ne prouvent pas un état ultérieur et ne renseignent pas la messagerie.
+- Statut global conservé : A_COMPLETER pour finalisation opérationnelle. Anti-doublon de diffusion : INCONNU. Aucun commit, push, publication ou envoi dans cette préparation.
+
+L’HTML corrigé et les contrôles déjà documentés ne doivent pas être redemandés. Si le document joint est récupéré partiellement, demander seulement le bloc exact indispensable, sans traiter le document entier comme absent.
+
+
+### I.1 - Implantation compacte à cinq fichiers
+
+04-INTEGRATION-HTML.md regroupe les pièces de travail sans modifier leurs contenus : brouillon en A, HTML d’accueil/édition figée en B, archives en C, CSS en D et contrôle privé en E. Les noms de fichiers distincts utilisés ci-dessus sont des références historiques à ces sections. Ils ne doivent plus être redemandés comme pièces supplémentaires. Les hashes et contrôles de la section I restent valables pour les codes incorporés ; cette consolidation ne constitue aucun nouveau contrôle HTML ou RGAA. Statut A_COMPLETER et limites opérationnelles inchangés.

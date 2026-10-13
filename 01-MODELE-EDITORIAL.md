@@ -226,8 +226,9 @@ Le dossier fait office de compte rendu : pas de journal parallèle à maintenir.
 
 ## Reprise des versions et registre des exclusions
 
-Le texte courant de G.1 dans 02 prime sur les anciennes réponses du pilote.
-Ce registre permet de réutiliser cinq fiches déjà contrôlées, sans réécriture
+Les textes courants G.1/H.1 et l’assemblage identifié en H.0 de 02 priment sur
+les anciennes réponses du pilote. Ce registre permet de réutiliser dix fiches
+déjà contrôlées, sans réécriture
 ni transfert de validation sur d’autres formulations. Pour leur vérification
 de fond, les textes primaires des lots restent des pièces privées à joindre
 si nécessaires ; les références seules ne prouvent pas une nouvelle lecture.

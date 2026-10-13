@@ -7,8 +7,8 @@ Ce fichier est à importer dans le Projet, pas à copier dans le champ d'instruc
 | Étape | Sections de ce fichier à récupérer | Document complémentaire |
 | --- | --- | --- |
 | Initialisation, reprise, anti-doublon | P0 et P1 | 02-HISTORIQUE.md : A, puis preuves B/C utiles |
-| Lecture, filtre des dates, collecte et apport des textes | P2 | 01 : méthode et qualification ; 02 : C, F et G |
-| Rédaction, version figée et contrôle externe | P3 et P3.1/P3.2 | 01 : méthode et preuves ; 02 : G |
+| Lecture, filtre des dates, collecte et apport des textes | P2 | 01 : méthode et qualification ; 02 : C, F, G et H |
+| Rédaction, version figée et contrôle externe | P3 et P3.1/P3.2 | 01 : méthode et preuves ; 02 : G et H |
 | Livraison et état | P4 | État A et mise à jour E de 02 |
 | HTML, publication ou vérification | P5 | 03-PUBLICATION-DIFFUSION.md : publication et contrôles |
 | Courriel et reprise de diffusion | P6 | 03-PUBLICATION-DIFFUSION.md : email et anti-doublon |
@@ -101,7 +101,7 @@ Sépare publication, signature, relevé, événement et mise à jour substantiel
 
 ## P3.2 — Fidélité à la version fournie
 
-Lorsqu’une correction externe est fournie, repère les titres et champs dans le fichier actuel ; vérifie leur correspondance avant d’affirmer qu’ils sont conservés. Une ancienne réponse conversationnelle n’est jamais un substitut à la nouvelle pièce. Pour ce brouillon, les versions actives sont les cinq fiches G.1 de 02, provenant des deux fichiers corrigés identifiés en G.
+Lorsqu’une correction externe est fournie, repère les titres et champs dans le fichier actuel ; vérifie leur correspondance avant d’affirmer qu’ils sont conservés. Une ancienne réponse conversationnelle n’est jamais un substitut à la nouvelle pièce. Pour ce brouillon, les versions actives sont T01–T05 en G.1 et T06–T10 en H.1 de 02. L’assemblage corrigé et les pièces correspondantes sont identifiés en H.0. Les anciens comptes rendus de G restent des preuves historiques, pas l’étape à recommencer.
 
 Conserver sans modification signifie conserver exactement titre, fait, mots-clés, À retenir, Intérêt pour le SNUM, source, date et lien. Ne supprime pas les URL en réaffichant une fiche. Si un champ est inaccessible, signale précisément la pièce manquante ; ne reconstitue pas le texte de mémoire et ne transfère pas son contrôle sur une autre version.
 
@@ -124,8 +124,21 @@ Un compte rendu peut consigner honnêtement des contrôles non exécutés ; ne l
 
 ## P5 — HTML, publication et vérification
 
+Pour le brouillon actif du 13 octobre, consulter d’abord la section I de 02 et 04-INTEGRATION-HTML.md, sections B, C et D, lorsqu’il est accessible. Elles contiennent la version corrigée dans le gabarit de Loïc. Ne pas repartir des captures du 2 octobre ou d’un modèle vide pour remplacer cette version. Ne pas relancer collecte ou tests clos ; demander uniquement le bloc indispensable réellement inaccessible.
+
+
 RELAIS. Le contenu peut être PREPAREE sans HTML finalisé. Prépare l'HTML seulement à partir du gabarit courant effectivement lu ou fourni. Applique tout 03 : archives figées, main, DSFR 1.15.2, RGAA 4.1.2, validations et vérification après publication. Ne modifie aucune mention d'accessibilité sans audit complet, valide et publié. Checklist et relecture ne sont ni tests exécutés ni audit. Sans lecture actuelle des pages, attribue la vérification humaine fournie. Une correction préserve l'initiale, prépare revision-N distincte, puis au plus un mail après vérification et anti-doublon propre à la révision.
 
 ## P6 — Courriel et diffusion
 
 MAIL. Brouillon uniquement : courte introduction, trois puces très courtes et lien du site ; aucun HTML joint. Six destinataires visibles selon 03, aucun Cci. Envoi humain après publication vérifiée et contrôle des messages envoyés ; aucun renvoi spontané. Destinataires et preuves restent privés.
+
+
+## Demande d’inventaire des pièces
+
+Si le propriétaire demande ce qui est disponible dans la knowledge, répondre seulement sur les documents effectivement retrouvés et la portée de lecture : contenu complet obtenu, passages récupérés, ou non retrouvé. Une citation ou un extrait ne prouve pas l’accès au fichier entier. Ne pas présenter quatre documents retrouvés comme un inventaire exhaustif de toutes les pièces ; les références permanentes du Projet et les pièces temporaires de conversation peuvent avoir des disponibilités différentes. Cette demande n’autorise pas une nouvelle collecte et ne nécessite pas de demander quelle étape lancer.
+
+
+## Implantation compacte du Projet
+
+Le Projet reçoit cinq fichiers : les quatre références principales et 04-INTEGRATION-HTML.md pour cette édition préparée. Ce cinquième fichier regroupe le brouillon, l’HTML, les archives, le CSS et leur rapport privé. Les anciens noms de pièces utilisés dans l’historique désignent ses sections et n’imposent pas de nouvel import. La version système courte reste inchangée. Les notices et captures de travail restent hors du Projet. Une récupération par sections conserve le chargement progressif ; ne pas réclamer un inventaire complet à chaque reprise.
