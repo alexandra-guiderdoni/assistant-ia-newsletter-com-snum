@@ -1,4 +1,4 @@
-# Historique SNUM privé - V5.2
+# Historique SNUM privé - V5.3.1
 
 ## A - État courant à actualiser à chaque cycle
 
@@ -12,7 +12,7 @@ DERNIERE_EDITION_PUBLIEE : 2026-10-02 documentée dans le dépôt ; vérificatio
 PUBLICATION_DU_JOUR : INCONNUE ; aucune édition 2026-10-13 trouvée dans la capture main du 13 octobre, sans garantie d’état ultérieur
 DIFFUSION_DU_JOUR : INCONNUE ; messagerie non consultée dans ce travail
 BROUILLON_ACTIF : 2026-10-13-brouillon-01 ; A_COMPLETER
-PROCHAINE_ACTION : DINUM recherche, sélectionne et rédige selon la fenêtre déjà fixée ; écarte les candidats non admissibles ; utilise le gabarit vide de 04 ; ne prétend aucun contrôle externe ni envoi non documenté
+PROCHAINE_ACTION : DINUM ouvre les sources publiques exactes, sélectionne et rédige selon la fenêtre déjà fixée ; dès un événement admissible, il livre la revue courte et son HTML depuis 04 ; il ne prétend aucun contrôle externe ni envoi non documenté
 ```
 
 La date ci-dessus décrit le dernier état enregistré, pas une consigne perpétuelle « aujourd’hui ». Une nouvelle date d’édition reprend la méthode générique de PROMPT-PROJET.md ; ne pas copier silencieusement la fenêtre du 13 octobre. Les travaux préparatoires restent permis si l’anti-doublon est inconnu ; finalisation et actions externes attendent les preuves nécessaires. Si le propriétaire fournit des confirmations plus récentes, les conserver et actualiser ce bloc.
@@ -88,6 +88,8 @@ Dernier résultat DINUM transmis dans Texte collé(20261013-210217).txt : produc
 Contrôle local Codex de cet HTML transmis : zéro composant skiplinks, zéro nav navigation, zéro script DSFR, 33 span.fr-tag, dix liens d’ancres sans cible et seulement deux liens dans le footer. Ce contrôle porte sur le texte joint, pas sur un site publié ni sur les faits des articles. Le 13 octobre 2026 est un mardi ; le HTML fourni indique lundi. Aucun contrôle de cette page ne doit être présenté comme réussi du fait du contrôle d’une autre page.
 
 La revue DINUM transmise ne fait pas avancer la borne de réussite. Aucune absence d’envoi ni publication récente n’est confirmée. Les anciens brouillons et ce résultat rejeté ne deviennent pas des événements déjà publiés.
+
+Essai réel V5.3 du 13 octobre 2026 : DINUM s’est d’abord arrêté proprement en A_COMPLETER, mais a demandé des copies de trois articles PAYANT_OU_LOGIN, contrairement à la règle d’admissibilité. Après correction dans le chat, il a documenté ses requêtes puis déclaré deux décrets Légifrance inaccessibles en intégralité et n’a produit aucun HTML. Cette conclusion était erronée : les textes officiels complets étaient publiquement accessibles, dont le décret n° 2026-928 sous l’identifiant `JORFTEXT000054953345` et le décret n° 2026-944 par son URL ELI. Cet essai démontre l’arrêt de sécurité, pas l’autonomie de collecte ni la fidélité du HTML. La V5.3.1 impose l’ouverture des URL officielles exactes et la livraison d’un HTML court dès un événement admissible ; elle reste à tester dans DINUM.
 
 ## F - Mise à jour après une édition
 

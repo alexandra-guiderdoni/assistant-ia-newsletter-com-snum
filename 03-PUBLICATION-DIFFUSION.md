@@ -1,8 +1,8 @@
-# Publication et diffusion - relais humain privé - V5.2
+# Publication et diffusion - relais humain privé - V5.3.1
 
 ## Rôles et preuve
 
-DINUM produit les textes et prépare le HTML depuis 04. Une personne dispose du dépôt et des outils de validation ; une personne dispose de la messagerie. Ce kit n’accorde aucun outil d’écriture GitHub ou d’envoi. Une demande de préparation ne vaut pas autorisation de publier. Les contrôles doivent être attribués à l’acteur réel ; Loïc est la référence du gabarit, pas automatiquement son contrôleur. Un état NON_EXECUTE n’est pas automatiquement une exigence préalable : distinguer ce qui est requis de ce qui documente une limite.
+DINUM produit les textes et prépare le HTML depuis 04. Il fournit un fichier si une capacité réelle le permet, sinon un bloc HTML complet copiable ; aucune capacité générique de création de fichiers n’est supposée. Une personne dispose du dépôt et des outils de validation ; une personne dispose de la messagerie. Ce kit n’accorde aucun outil d’écriture GitHub ou d’envoi. Une demande de préparation ne vaut pas autorisation de publier. Les contrôles doivent être attribués à l’acteur réel ; Loïc est la référence du gabarit, pas automatiquement son contrôleur. Un état NON_EXECUTE n’est pas automatiquement une exigence préalable : distinguer ce qui est requis de ce qui documente une limite.
 
 ## Dépôt et publication
 
@@ -10,13 +10,13 @@ Dépôt : https://github.com/bacoco/revue-presse-snum ; site : https://bacoco.gi
 
 Avant production automatique, une édition déjà publiée ou diffusée pour la date cible impose ALREADY_COMPLETE. Avant publication, recouper les pages et le dépôt actuels ; une capture historique ne prouve pas l’état actuel. Ne pas transformer l’absence de preuve en preuve d’absence.
 
-La personne chargée de publier crée editions/YYYY-MM-DD/index.html figée, remplace index.html par cette édition avec chemins adaptés, ajoute une entrée en tête de editions/index.html et conserve toutes les entrées antérieures. Garder styles.css, .nojekyll, README.md, accessibilite/, mentions-legales/, plan-du-site/ et les autres ressources réglementaires. Ne jamais supprimer ni réécrire une édition précédente. Commit directement sur main et push après contrôles ; consigner le SHA réel. Aucun secret, destinataire, dossier privé ou article intégral dans le public.
+La personne chargée de publier crée `editions/YYYY-MM-DD/index.html` figée, remplace `index.html` par cette édition avec chemins adaptés, ajoute une entrée en tête de `editions/index.html` et conserve toutes les entrées antérieures. Garder `styles.css`, `.nojekyll`, `README.md`, `accessibilite/`, `mentions-legales/`, `plan-du-site/` et les autres ressources réglementaires. Ne jamais supprimer ni réécrire une édition précédente. Commit directement sur `main` et push après contrôles ; consigner le SHA réel. Aucun secret, destinataire, dossier privé ou article intégral dans le public.
 
 Une correction d’une édition publiée exige demande explicite du propriétaire : conserver l’initiale, préparer editions/YYYY-MM-DD/revision-N/index.html, mettre à jour accueil et archives, vérifier publication et chercher les messages envoyés propres à cette révision avant au plus un message. Aucun renvoi spontané ni nouvelle collecte prétendue.
 
 ## HTML, DSFR et RGAA
 
-Utiliser le gabarit vide de 04 ; conserver header, footer, composants et styles du site. CSS et scripts module/nomodule DSFR 1.15.2 ; langue fr, titre de page unique pertinent, un h1, structure et hiérarchie sémantiques. Trois skiplinks : contenu, menu des rubriques #navigation, footer ; cibles présentes et IDs uniques. Navigation clavier, focus visible, contrastes, redimensionnement sans débordement à 200 %, tableaux accessibles s’il y en a, alternatives pertinentes, aucune information seulement par couleur.
+Utiliser le gabarit vide de 04 ; conserver header, footer, composants, feuille publique et copie CSS intégrée permettant l’ouverture locale. CSS et scripts module/nomodule DSFR 1.15.2 ; langue fr, titre de page unique pertinent, un h1, structure et hiérarchie sémantiques. Trois skiplinks : contenu, menu des rubriques #navigation, footer ; cibles présentes et IDs uniques. Navigation clavier, focus visible, contrastes, redimensionnement sans débordement à 200 %, tableaux accessibles s’il y en a, alternatives pertinentes, aucune information seulement par couleur.
 
 .top-grid : auto-fit/minmax, éléments min-width: 0 et rupture des mots ; fr-grid-row et fr-col-* ; p.fr-tag, jamais span.fr-tag. Utilitaires d’espacement DSFR prioritaires ; marges, paddings et gaps personnalisés calculés multiples de 4 px, rem équivalents à racine 16 px. Dans header et footer, tiret simple - uniquement. Tout lien en nouvelle fenêtre indique textuellement l’ouverture et utilise target=_blank avec rel=noopener noreferrer ; aucun besoin d’ouvrir tous les liens externes ainsi.
 
