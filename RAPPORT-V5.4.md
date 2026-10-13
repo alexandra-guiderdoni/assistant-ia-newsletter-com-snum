@@ -1,14 +1,19 @@
-# Compte rendu du kit SNUM V5.3.1
+# Compte rendu du kit SNUM V5.4
 
 ## Résultat
 
-Le kit contient cinq fichiers de connaissance et un prompt système séparé de 1 151 caractères Unicode hors saut final, soit 1 152 avec celui-ci et 1 202 octets en UTF-8. Le gabarit HTML est vide, conserve la structure de Loïc et embarque le CSS de référence pour rester correctement présenté lorsqu’il est ouvert localement.
+Le kit contient cinq fichiers de connaissance et un prompt système séparé de 1 197 caractères Unicode hors saut final, soit 1 198 avec celui-ci et 1 249 octets en UTF-8. Le gabarit HTML reste vide et conserve la structure de Loïc ainsi que le CSS intégré.
 
-Cette validation établit la cohérence du kit et du gabarit. Deux sorties réelles V5.3 ont été observées : elles démontrent l’arrêt `A_COMPLETER`, mais ni une collecte autonome correcte ni la génération du HTML. La V5.3.1 reste à tester dans DINUM.
+Cette validation établit la cohérence locale du kit et la reconstruction du gabarit. La sortie réelle V5.3.1 a démontré une récupération partielle de 04, aucune collecte Web établie et aucun HTML. La V5.4 reste à tester dans DINUM.
 
 ## Changements principaux
 
-- Passage de V5.3 à V5.3.1 dans les cinq documents actifs.
+- Passage de V5.3.1 à V5.4 dans les cinq documents actifs.
+- Renommage du point d’entrée en `00-PROMPT-PROJET.md` et duplication limitée des règles de démarrage indispensables dans ce fichier : le kit ne dépend plus exclusivement du champ « Instructions (expérimental) ».
+- Conservation du prompt système séparé comme renfort court, sans créer de sixième fichier de connaissance.
+- Découpage de la coque inchangée en huit segments nommés de 1 213 à 3 040 octets, récupérables séparément.
+- Ordre d’assemblage déterministe et omission explicite des trois segments L’essentiel pour une édition d’un ou deux événements.
+- Collecte Web obligatoire avant toute décision `A_COMPLETER` ; un passage HTML manquant ne peut plus interrompre la collecte.
 - Ouverture obligatoire des URL officielles exactes, liens ELI, articles ou PDF publics avant de conclure qu’un texte est inaccessible.
 - Interdiction explicite de demander le corps ou la capture d’un article `PAYANT_OU_LOGIN`.
 - Livraison d’une revue courte et de son HTML dès un événement admissible ; avec un ou deux événements, suppression complète de L’essentiel et état `A_COMPLETER`.
@@ -52,27 +57,31 @@ Sources primaires :
 
 `test.html` charge le CSS personnalisé par un chemin absolu du site. Ouvert seul depuis le disque, ce chemin ne résout pas `styles.css` : le DSFR reste chargé depuis son CDN, mais l’organisation visuelle propre à Loïc disparaît. Le même fichier retrouve sa grille et sa hiérarchie lorsqu’il est servi avec le CSS au bon chemin.
 
-La V5.3.1 conserve le chemin requis pour GitHub Pages et embarque une copie figée du CSS. Le gabarit peut donc être prévisualisé localement sans pièce CSS séparée.
+La V5.4 conserve le chemin requis pour GitHub Pages et embarque une copie figée du CSS. Le gabarit peut donc être prévisualisé localement sans pièce CSS séparée.
 
-## Retours de l’essai réel V5.3
+## Retours des essais réels V5.3 et V5.3.1
 
 La première sortie a correctement respecté la fenêtre et refusé d’inventer une lecture intégrale, mais elle a demandé les copies de trois articles payants. La seconde a documenté les requêtes, puis a déclaré inaccessibles deux textes Légifrance publiquement disponibles et s’est arrêtée sans HTML. Le décret n° 2026-928 était publié sous `JORFTEXT000054953345`, différent de l’identifiant interrogé ; le décret n° 2026-944 était disponible par son URL ELI avec ses cinq articles.
 
 Ces résultats identifient deux causes : la conclusion d’inaccessibilité tirée d’une URL ou d’une extraction défaillante, puis la règle V5.3 imposant au moins trois événements avant toute livraison. Ils ne permettent pas d’évaluer la mise en page HTML, puisqu’aucun HTML V5.3 n’a été généré.
 
+Avec V5.3.1, DINUM a retrouvé la fenêtre et l’état historique, mais seulement des fragments de `04-INTEGRATION-HTML.md`. Il a déclaré la coque inaccessible, n’a pas démontré de collecte Web et a exigé à tort trois événements. Ce résultat motive le découpage de V5.4 ; il ne constitue pas un test réussi de la revue ou du HTML.
+
 ## Contrôles réellement exécutés
 
-- Validation Nu de la coque standard et de sa variante sans le lien ni la section L’essentiel : aucune erreur.
+- Reconstruction automatisée des huit segments : résultat strictement identique, octet pour octet, à la coque V5.3.1 avant segmentation.
+- Validation Nu de la reconstruction standard et de la variante courte sans les segments L’essentiel ni son lien : aucune erreur.
+- Taille des segments : 3 040, 2 681, 1 847, 1 470, 1 213, 1 241, 2 172 et 2 034 octets.
 - Comparaison du CSS intégré avec `styles.css` au SHA fixé : contenu identique après retrait de l’indentation du bloc HTML.
 - Structure de la coque standard : un `h1`, exactement trois cartes essentielles, trois accès rapides et leurs cibles, un identifiant `navigation`, un footer complet, un script module et un script `nomodule` DSFR 1.15.2. La variante courte retire entièrement le lien et la section L’essentiel.
 - Contenu vide : aucune actualité, date d’édition, URL d’article ni entrée d’archives figée.
 - Marquage : trois `p.fr-tag`, aucun `span.fr-tag` dans la coque.
 - Navigateur Chrome local sur la coque standard, dont le HTML et le CSS restent inchangés : CSS intégré appliqué ; trois colonnes à 1 440 px, une colonne à 360 px, aucun débordement horizontal à 200 %.
 - Contrôle des accents exécuté après chaque écriture Markdown.
-- Prompt système mesuré à 1 151 caractères Unicode hors saut final, soit 1 152 avec celui-ci et 1 202 octets en UTF-8.
-- Archive contrôlée : cinq entrées Markdown à la racine, aucune autre pièce. Empreinte SHA-256 : `6e9ed0fb31814f7f10cae4bdba5e00281f7c31ea3ccc46820461369cd7226722`.
+- Prompt système mesuré à 1 197 caractères Unicode hors saut final, soit 1 198 avec celui-ci et 1 249 octets en UTF-8.
+- Archive contrôlée après génération : cinq entrées Markdown à la racine, aucune autre pièce ; SHA-256 `a2b81ed69343ee8bb815e6da732f1ceeda0d01ada177f7f79ee4c31d4008909b`.
 
-Ces contrôles portent sur la coque V5.3.1. Ils ne valident ni les faits, ni les longueurs, ni les liens, ni l’accessibilité complète d’une future édition remplie. Nu n’est pas un audit RGAA.
+Ces contrôles portent sur la coque V5.4 reconstruite. Ils ne valident ni la récupération effective des huit segments par DINUM, ni les faits, longueurs, liens ou l’accessibilité complète d’une future édition remplie. Nu n’est pas un audit RGAA.
 
 ## Limites et inconnues
 
@@ -82,7 +91,9 @@ Ces contrôles portent sur la coque V5.3.1. Ils ne valident ni les faits, ni les
 - La variante courte sans L’essentiel passe Nu, mais n’a pas encore été produite ni contrôlée visuellement dans DINUM avec un contenu réel.
 - Aucune planification automatique n’est prévue : les deux lancements hebdomadaires restent manuels.
 - La publication, la vérification GitHub Pages et l’envoi restent humains et séparés.
-- Un essai réel V5.3.1 reste nécessaire. Son verdict doit porter sur la collecte, la production complète et le HTML rendu, pas sur la récitation des consignes.
+- Un essai réel V5.4 reste nécessaire. Son verdict doit vérifier la collecte avant décision, la récupération des huit segments, leur ordre et le HTML rendu.
+- Le caractère expérimental du champ d’instructions empêche de garantir son injection à chaque tour. La commande de lancement nomme donc explicitement `00-PROMPT-PROJET.md`, qui porte les règles de démarrage dans la connaissance du Projet.
+- Une revue PDD formelle n’a pas été exécutée : la commande `pdd` et l’inventaire `.pdd` sont absents, et aucune installation n’était autorisée. La couverture, l’ancrage et la régression ont été contrôlés directement par l’inventaire des fichiers, le diff, la reconstruction HTML et la comparaison du ZIP avec ses sources.
 
 ## PDG self-check, pas une revue indépendante
 

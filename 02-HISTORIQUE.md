@@ -1,4 +1,4 @@
-# Historique SNUM privé - V5.3.1
+# Historique SNUM privé - V5.4
 
 ## A - État courant à actualiser à chaque cycle
 
@@ -12,10 +12,10 @@ DERNIERE_EDITION_PUBLIEE : 2026-10-02 documentée dans le dépôt ; vérificatio
 PUBLICATION_DU_JOUR : INCONNUE ; aucune édition 2026-10-13 trouvée dans la capture main du 13 octobre, sans garantie d’état ultérieur
 DIFFUSION_DU_JOUR : INCONNUE ; messagerie non consultée dans ce travail
 BROUILLON_ACTIF : 2026-10-13-brouillon-01 ; A_COMPLETER
-PROCHAINE_ACTION : DINUM ouvre les sources publiques exactes, sélectionne et rédige selon la fenêtre déjà fixée ; dès un événement admissible, il livre la revue courte et son HTML depuis 04 ; il ne prétend aucun contrôle externe ni envoi non documenté
+PROCHAINE_ACTION : DINUM collecte d’abord les sources publiques exactes selon la fenêtre fixée, puis rédige ; dès un événement admissible, il récupère séparément les huit segments de 04 et livre la revue avec son HTML ; il ne prétend aucun contrôle externe ni envoi non documenté
 ```
 
-La date ci-dessus décrit le dernier état enregistré, pas une consigne perpétuelle « aujourd’hui ». Une nouvelle date d’édition reprend la méthode générique de PROMPT-PROJET.md ; ne pas copier silencieusement la fenêtre du 13 octobre. Les travaux préparatoires restent permis si l’anti-doublon est inconnu ; finalisation et actions externes attendent les preuves nécessaires. Si le propriétaire fournit des confirmations plus récentes, les conserver et actualiser ce bloc.
+La date ci-dessus décrit le dernier état enregistré, pas une consigne perpétuelle « aujourd’hui ». Une nouvelle date d’édition reprend la méthode générique de `00-PROMPT-PROJET.md` ; ne pas copier silencieusement la fenêtre du 13 octobre. Les travaux préparatoires restent permis si l’anti-doublon est inconnu ; finalisation et actions externes attendent les preuves nécessaires. Si le propriétaire fournit des confirmations plus récentes, les conserver et actualiser ce bloc.
 
 ## B. Dernière édition et comptes rendus
 
@@ -90,6 +90,8 @@ Contrôle local Codex de cet HTML transmis : zéro composant skiplinks, zéro na
 La revue DINUM transmise ne fait pas avancer la borne de réussite. Aucune absence d’envoi ni publication récente n’est confirmée. Les anciens brouillons et ce résultat rejeté ne deviennent pas des événements déjà publiés.
 
 Essai réel V5.3 du 13 octobre 2026 : DINUM s’est d’abord arrêté proprement en A_COMPLETER, mais a demandé des copies de trois articles PAYANT_OU_LOGIN, contrairement à la règle d’admissibilité. Après correction dans le chat, il a documenté ses requêtes puis déclaré deux décrets Légifrance inaccessibles en intégralité et n’a produit aucun HTML. Cette conclusion était erronée : les textes officiels complets étaient publiquement accessibles, dont le décret n° 2026-928 sous l’identifiant `JORFTEXT000054953345` et le décret n° 2026-944 par son URL ELI. Cet essai démontre l’arrêt de sécurité, pas l’autonomie de collecte ni la fidélité du HTML. La V5.3.1 impose l’ouverture des URL officielles exactes et la livraison d’un HTML court dès un événement admissible ; elle reste à tester dans DINUM.
+
+Essai réel V5.3.1 du 13 octobre 2026 : DINUM a retrouvé la fenêtre et l’état historique, mais seulement des passages partiels de 04. Il a déclaré la coque inaccessible, n’a démontré aucune collecte Web avant un lot vide et a exigé à tort au moins trois événements. Cet essai établit une récupération fragmentaire des documents du Projet ; il ne valide ni la collecte ni le HTML. La V5.4 découpe la coque inchangée en huit segments nommés, impose leur récupération séparée après la collecte et reste à tester dans DINUM.
 
 ## F - Mise à jour après une édition
 

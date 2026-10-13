@@ -1,4 +1,4 @@
-# Gabarit HTML vide SNUM - V5.3.1
+# Gabarit HTML vide SNUM - V5.4
 
 ## Source et usage
 
@@ -8,19 +8,20 @@ Ce document sert uniquement après la sélection et la rédaction de la revue. I
 
 La page conserve le lien public vers `/revue-presse-snum/styles.css?v=20260917`. Elle embarque aussi la même feuille dans `<style id="styles-snum-figes">` : le fichier HTML reste lisible lorsqu’il est ouvert seul sur un ordinateur. Ne pas supprimer ce bloc dans le livrable remis au propriétaire.
 
-## Procédure de remplissage
+## Procédure de récupération et d’assemblage
 
-1. Copier la coque HTML complète sans réécrire le header, le footer, le bloc de styles, les classes ni les scripts.
-2. Remplacer tous les champs `{{...}}`. Aucun champ ni commentaire `EMPLACEMENT_...` ne doit rester dans le livrable.
-3. Avec au moins trois événements, remplir exactement les trois cartes de L’essentiel avec trois événements déjà présents dans les rubriques. Avec un ou deux événements, supprimer entièrement le lien `#essentiel` et la section `#essentiel` ; ne conserver aucune carte vide.
-4. Pour chaque événement de rubrique, dupliquer le fragment ARTICLE dans l’emplacement correspondant. Le nombre de fragments n’est pas limité par le modèle.
-5. Retirer entièrement une rubrique vide et son lien de navigation. Ne jamais afficher une phrase de remplissage. Numéroter les rubriques visibles à partir de 02 lorsque L’essentiel existe, sinon à partir de 01.
-6. Ne pas créer une rubrique Cybersécurité, Régulation ou Données : classer naturellement dans les cinq rubriques de référence, sauf nécessité forte documentée.
-7. Ajouter À surveiller seulement avec le fragment optionnel prévu et un suivi précis.
-8. Utiliser `p.fr-tag`, jamais `span.fr-tag`. Pour chaque nouvelle fenêtre, conserver `target="_blank"`, `rel="noopener noreferrer"` et l’indication textuelle masquée.
-9. Livrer un document commençant par `<!doctype html>` et finissant par `</html>`, sans clôture de code Markdown dans le HTML.
+1. Après la rédaction, rechercher séparément chaque titre exact `COQUE-01` à `COQUE-08` dans ce fichier. Ne jamais demander la coque entière en une seule recherche de passages.
+2. Assembler sans texte ajouté : `COQUE-01`, `COQUE-02`, `COQUE-03`, puis `COQUE-04`, `COQUE-05`, `COQUE-06` seulement avec au moins trois événements, puis `COQUE-07` et `COQUE-08`.
+3. Avec un ou deux événements, omettre `COQUE-04` à `COQUE-06` et retirer dans `COQUE-03` le lien vers `#essentiel`. Avec au moins trois événements, remplir les trois cartes avec des événements déjà présents dans les rubriques.
+4. Remplacer dans `COQUE-03` le commentaire des liens de rubriques. Remplacer dans `COQUE-07` les deux commentaires par les blocs construits depuis les fragments nommés ci-dessous.
+5. Pour chaque événement, dupliquer `FRAGMENT-02-ARTICLE` dans `FRAGMENT-01-RUBRIQUE`. Retirer toute rubrique vide et son lien. Numéroter les rubriques à partir de 02 avec L’essentiel, sinon de 01.
+6. Remplacer tous les champs `{{...}}`. Aucun champ, commentaire `EMPLACEMENT_...`, clôture Markdown ou `example.invalid` ne doit rester dans le livrable.
+7. Ne jamais réécrire librement le header, le footer, les styles, les classes ou les scripts. Utiliser `p.fr-tag`, jamais `span.fr-tag`. Conserver les indications accessibles des nouvelles fenêtres.
+8. Livrer un document commençant par `<!doctype html>` et finissant par `</html>`.
 
-## Coque HTML complète
+## Segments de la coque HTML
+
+### COQUE-01-HEAD-STYLES-A
 
 ```html
 <!doctype html>
@@ -62,6 +63,11 @@ La page conserve le lien public vers `/revue-presse-snum/styles.css?v=20260917`.
     .top-card .impact { order:6; }
     .top-card .fr-card__end { order:7; }
     .top-card { min-height:28rem; border-top:5px solid var(--blue); overflow-wrap:anywhere; }
+```
+
+### COQUE-02-STYLES-B
+
+```html
     .fr-card__end .fr-link { align-self:flex-start; }
     .impact { order:3; margin-top:1.5rem; padding-top:1rem; border-top:1px solid var(--border-default-grey, #ddd); }
     .article-list { border-top:1px solid var(--border-default-grey, #bbb); }
@@ -107,6 +113,11 @@ La page conserve le lien public vers `/revue-presse-snum/styles.css?v=20260917`.
   </style>
 </head>
 <body>
+```
+
+### COQUE-03-HEADER-NAVIGATION
+
+```html
   <div class="fr-skiplinks">
     <nav class="fr-container" aria-label="Accès rapide">
       <ul class="fr-skiplinks__list">
@@ -152,6 +163,11 @@ La page conserve le lien public vers `/revue-presse-snum/styles.css?v=20260917`.
         </nav>
       </div>
     </section>
+```
+
+### COQUE-04-ESSENTIEL-CARTE-1
+
+```html
 
     <section id="essentiel" class="fr-container section-block">
       <div class="section-title">
@@ -172,6 +188,11 @@ La page conserve le lien public vers `/revue-presse-snum/styles.css?v=20260917`.
             </div></div>
           </article>
         </div>
+```
+
+### COQUE-05-ESSENTIEL-CARTE-2
+
+```html
         <div class="fr-col-12 fr-col-md-4">
           <article class="fr-card fr-card--shadow top-card">
             <div class="fr-card__body"><div class="fr-card__content">
@@ -185,6 +206,11 @@ La page conserve le lien public vers `/revue-presse-snum/styles.css?v=20260917`.
             </div></div>
           </article>
         </div>
+```
+
+### COQUE-06-ESSENTIEL-CARTE-3
+
+```html
         <div class="fr-col-12 fr-col-md-4">
           <article class="fr-card fr-card--shadow top-card">
             <div class="fr-card__body"><div class="fr-card__content">
@@ -200,6 +226,11 @@ La page conserve le lien public vers `/revue-presse-snum/styles.css?v=20260917`.
         </div>
       </div>
     </section>
+```
+
+### COQUE-07-MAIN-FOOTER
+
+```html
 
     <!-- EMPLACEMENT_RUBRIQUES : insérer uniquement les rubriques non vides -->
     <!-- EMPLACEMENT_A_SURVEILLER : facultatif -->
@@ -231,6 +262,11 @@ La page conserve le lien public vers `/revue-presse-snum/styles.css?v=20260917`.
       </div>
     </div>
   </footer>
+```
+
+### COQUE-08-DIALOGUE-SCRIPTS-FIN
+
+```html
 
   <dialog id="fr-theme-modal" class="fr-modal" aria-labelledby="fr-theme-modal-title">
     <div class="fr-container fr-container--fluid fr-container-md">
@@ -261,7 +297,7 @@ La page conserve le lien public vers `/revue-presse-snum/styles.css?v=20260917`.
 </html>
 ```
 
-## Fragment RUBRIQUE
+## FRAGMENT-01-RUBRIQUE
 
 Dupliquer ce bloc une fois par rubrique non vide. Utiliser seulement `numerique`, `ia`, `commande`, `rh` ou `bercy` comme identifiant. Alterner la classe `section-muted` entre les rubriques visibles.
 
@@ -279,7 +315,7 @@ Dupliquer ce bloc une fois par rubrique non vide. Utiliser seulement `numerique`
 </section>
 ```
 
-## Fragment ARTICLE
+## FRAGMENT-02-ARTICLE
 
 ```html
 <article class="fr-col-12">
@@ -294,7 +330,7 @@ Dupliquer ce bloc une fois par rubrique non vide. Utiliser seulement `numerique`
 </article>
 ```
 
-## Fragment À SURVEILLER, facultatif
+## FRAGMENT-03-A-SURVEILLER, facultatif
 
 ```html
 <section id="surveiller" class="section-muted">
@@ -309,7 +345,7 @@ Dupliquer ce bloc une fois par rubrique non vide. Utiliser seulement `numerique`
 </section>
 ```
 
-## Fragment d’entrée pour les archives
+## FRAGMENT-04-ARCHIVES
 
 Ne jamais reconstruire toute la page d’archives depuis une copie conservée dans le Projet. La personne chargée de publier fournit ou récupère la version actuelle de `editions/index.html`, puis ajoute seulement cette entrée en tête de la liste sans supprimer les précédentes.
 
