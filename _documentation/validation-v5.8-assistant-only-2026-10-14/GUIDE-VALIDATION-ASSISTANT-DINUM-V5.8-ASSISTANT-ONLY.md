@@ -6,7 +6,11 @@ Le parcours métier fonctionne entièrement dans l’Assistant DINUM, sans scrip
 
 Verdict de la recette du 14 octobre 2026 : **NO-GO pour une production ou une publication autonome**. Le premier HTML est invalide et incomplet ; le second est valide au sens général, mais ne respecte toujours pas les blocs canoniques. Le rendu n’est donc pas identique à celui du dépôt Bacoco.
 
+Un troisième passage, lancé après remplacement du prompt système et des six fichiers, confirme le fonctionnement de l’arrêt fermé : l’Assistant ne produit plus de HTML lorsque la conformité n’est pas établie. Il ne démontre toujours pas la génération d’un rendu identique.
+
 [Ouvrir la conversation du Projet](https://assistant.numerique.gouv.fr/chat/a62ca910-0a58-452a-af0d-cfea5364f066/)
+
+[Ouvrir la conversation neuve du troisième passage](https://assistant.numerique.gouv.fr/chat/de8a1439-402f-44b0-9d53-f6c0f47998b3/)
 
 [Ouvrir la première sortie HTML](./assistant-output.html)
 
@@ -62,7 +66,7 @@ Créer la conversation depuis le Projet et vérifier que son titre reste affich�
 Activer **Web**, puis envoyer une demande où les trois dates sont déjà remplacées :
 
 ```text
-Prépare à partir de zéro la revue SNUM du mercredi 14 octobre 2026, pour les informations publiées du 3 octobre 2026 au 13 octobre 2026 inclus, heure de Paris. Lance la recherche Web et réalise toute la production selon le Projet. Livre la revue, un unique bloc HTML complet strictement fidèle au gabarit de Loïc et le dossier privé. Ne reprends aucun ancien brouillon. Ne publie rien et n’envoie rien.
+Prépare à partir de zéro la revue SNUM du mercredi 14 octobre 2026, pour les informations publiées du 3 octobre 2026 au 13 octobre 2026 inclus, heure de Paris. Lance la recherche Web et réalise toute la production selon le Projet. Livre la revue, un unique bloc HTML complet strictement fidèle aux blocs canoniques et le dossier privé. Effectue la seconde passe Assistant-only avant d’afficher la réponse. Ne reprends aucun ancien brouillon. Ne publie rien et n’envoie rien.
 ```
 
 ### 6. Contrôler la réponse dans l’Assistant
@@ -110,6 +114,20 @@ Empreinte SHA-256 :
 295d041beeed4b041ad8c5350110ff74e8dc313946e984e73af132fd1881adfd
 ```
 
+### Troisième passage après remplacement du kit
+
+Le prompt système final et les six fichiers ont été remplacés dans les paramètres du même Projet. La demande a ensuite été envoyée depuis une conversation neuve avec Web activé.
+
+L’Assistant n’a retenu aucun article admissible et n’a livré aucun code HTML. La section `HTML COMPLET` contient exactement :
+
+```text
+A_COMPLETER — HTML canonique non établi
+```
+
+La transcription de preuve est conservée dans `assistant-output-final-fail-closed.md`.
+
+Ce passage valide le garde-fou, pas la fidélité d’un HTML complet : aucun rendu HTML n’était disponible à comparer au dépôt Bacoco.
+
 ## Comparaison visuelle
 
 La première capture montre le rendu DINUM brut : la structure DSFR est proche, mais la date reste un marqueur et la navigation est incomplète.
@@ -145,7 +163,7 @@ Nu HTML Checker signale des erreurs de fermeture au premier passage. Le second p
 
 ## Évolution après la recette
 
-Le kit local impose maintenant un arrêt fermé et interdit de rechercher `05-BLOCS-HTML-CANONIQUES.md` sur le Web. Cette modification a réussi les contrôles locaux, mais n’a pas été rejouée dans DINUM après les trois échecs observés. La prochaine recette doit repartir d’une conversation neuve dans le Projet.
+Le kit impose maintenant un arrêt fermé et interdit de rechercher `05-BLOCS-HTML-CANONIQUES.md` sur le Web. Cette modification a réussi les contrôles locaux et a été rejouée dans DINUM depuis une conversation neuve. L’arrêt fermé est effectif ; la génération d’un HTML complet fidèle reste à prouver avec une collecte admissible.
 
 ## Captures et vidéo
 
@@ -155,6 +173,5 @@ Les deux captures de comparaison sont conservées dans `captures/`. Les captures
 
 - aucune publication GitHub Pages ;
 - aucun envoi d’e-mail ;
-- aucun commit ni push ;
 - aucun audit RGAA manuel complet ;
-- aucune preuve que les nouvelles règles d’arrêt fermé sont déjà respectées par DINUM.
+- aucune preuve qu’un HTML complet produit par DINUM est identique au dépôt Bacoco.
