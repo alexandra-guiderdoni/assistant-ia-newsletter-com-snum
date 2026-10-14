@@ -16,6 +16,8 @@ Un troisième passage, lancé après remplacement du prompt système et des six 
 
 [Ouvrir la deuxième recette structurelle](https://assistant.numerique.gouv.fr/chat/03db0f50-58da-43d6-a34e-a6e49be4f1f9/)
 
+[Ouvrir la troisième recette structurelle](https://assistant.numerique.gouv.fr/chat/ef08e0aa-3241-4cb1-95a1-298dddf54e02/)
+
 [Ouvrir la première sortie HTML](./assistant-output.html)
 
 [Ouvrir la seconde sortie HTML](./assistant-output-second-pass.html)
