@@ -173,6 +173,16 @@ Le contrôle du bloc livré constate notamment :
 
 Verdict : le canal de livraison dans le chat fonctionne, mais cette recette est `NO-GO` pour une acceptation autonome. Le statut `A_COMPLETER` est cohérent ; le HTML affiché ne doit pas être utilisé.
 
+## Tentative de prompt monobloc
+
+Une tentative complémentaire a placé directement les blocs HTML canoniques dans le prompt système. Elle ne peut pas être livrée : le champ **Instructions (expérimental)** de l’Assistant DINUM accepte au maximum 4 000 caractères, alors que le prompt obtenu en compte 14 466.
+
+Après collage, l’interface a conservé exactement 4 000 caractères et a tronqué le texte avant `<!doctype html>`. Même la seule coque canonique compactée compte 5 464 caractères. Le Projet invalide a été fermé sans être créé et aucune conversation n’a été lancée avec ce contexte incomplet.
+
+La V5.8 reste donc fondée sur le prompt court et les six fichiers de connaissance. Cette limite n’annule pas le garde-fou `A_COMPLETER`, mais confirme que l’identité autonome du HTML avec Bacoco n’est pas garantie par le prompt système seul.
+
+Le protocole et les mesures sont consignés dans [le résultat de la recette monobloc](./_documentation/validation-v5.8-monobloc-2026-10-14/RESULTAT-RECETTE-MONOBLOC.md).
+
 ## Références et preuves
 
 - [Prompt système V5.8](./PROMPT-SYSTEME-SNUM-V5.8.md)
