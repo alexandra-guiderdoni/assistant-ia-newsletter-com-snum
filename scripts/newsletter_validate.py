@@ -70,6 +70,15 @@ def validate(html, blocks):
         "SECTION_NUMBERS",
         "les numéros de section ne sont pas continus",
     )
+    section_ids = set(re.findall(r'<section\b[^>]*\bid="([^"]+)"', html))
+    allowed_section_ids = {"essentiel", "surveiller", *RUBRICS}
+    unknown_section_ids = sorted(section_ids - allowed_section_ids)
+    require(
+        not unknown_section_ids,
+        "UNKNOWN_RUBRIC_ID",
+        "identifiants de rubrique non canoniques : "
+        + ", ".join(unknown_section_ids),
+    )
     for rubric_id, (_, _, muted) in RUBRICS.items():
         if f'id="{rubric_id}"' not in html:
             continue

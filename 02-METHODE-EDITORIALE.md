@@ -60,6 +60,12 @@ Compter les mots par espaces sur chaque phrase finale avant de produire le HTML.
 
 Avec au moins trois événements, choisir exactement trois essentiels, repris sans duplication depuis les rubriques. Avec moins de trois, aucun essentiel. « À surveiller » reste facultatif et contient seulement des suivis courts, précis et utiles.
 
+## Assemblage HTML dans l’Assistant
+
+Le métier n’exécute aucun script. L’Assistant assemble lui-même le bloc `HTML COMPLET` à partir de `05-BLOCS-HTML-CANONIQUES.md`, qui prime pour toute balise, classe, dépendance et enveloppe de rubrique. `03-GABARIT-HTML.md` conserve le contexte et le CSS de référence, mais ne sert pas à reconstruire librement la page.
+
+La seconde passe se fait sur la sortie exacte avant affichage : comparer les dates et URL de la revue au HTML, rechercher tout marqueur `@@`, compter les cartes essentielles et vérifier littéralement l’identifiant et l’enveloppe de chaque rubrique présente contre `RÈGLE-DE-COPIE`. Une divergence détectée entraîne la correction du bloc HTML avant livraison. Si elle ne peut pas être corrigée, remplacer le bloc de code par `A_COMPLETER — HTML canonique non établi` et nommer l’écart dans le dossier privé. Cette autoévaluation ne devient jamais un contrôle extérieur.
+
 ## Contrôles de cohérence avant livraison
 
 Vérifier sur le texte exact : dates de publication dans la fenêtre, accès intégral gratuit, unicité des événements et URL, rubriques admises, 3 à 5 mots-clés, limites de 25 et 15 mots, exactement trois essentiels à partir de trois événements et absence de fausse preuve. Comparer ensuite le tableau des retenus à la revue et au HTML : les trois ensembles d’URL doivent être identiques. Une vérification manuelle du modèle reste une autoévaluation : la décrire comme telle, sans la transformer en contrôle extérieur.
@@ -70,4 +76,4 @@ Le HTML doit reprendre exactement les mêmes faits, titres, dates, URL et essent
 
 ## État
 
-DINUM livre la revue et le HTML même si l’état reste `A_COMPLETER`. `PREPAREE` exige un contenu terminé et contrôlé extérieurement. `COMPLETE` exige publication vérifiée et envoi confirmé. `ALREADY_COMPLETE` arrête le cycle si l’édition du jour est déjà publiée ou diffusée, sans certifier que les deux actions sont achevées.
+DINUM livre la revue et la section `HTML COMPLET` même si l’état reste `A_COMPLETER`. Le code HTML n’est affiché que si la seconde passe établit sa conformité canonique ; sinon, la section contient uniquement le message d’arrêt prévu. `PREPAREE` exige un contenu terminé et contrôlé extérieurement. `COMPLETE` exige publication vérifiée et envoi confirmé. `ALREADY_COMPLETE` arrête le cycle si l’édition du jour est déjà publiée ou diffusée, sans certifier que les deux actions sont achevées.

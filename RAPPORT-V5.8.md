@@ -1,47 +1,67 @@
 # Rapport de contrôle du kit SNUM V5.8
 
-## Résultat
+## Verdict
 
-Le kit V5.8 corrige la stratégie de recherche Web, le filtre d’admissibilité, le prompt de lancement à variables et le gabarit HTML. La fidélité locale du gabarit est établie contre `bacoco/revue-presse-snum` au SHA `dc3c87f4f4e7305de0cd9c71da25171252402a83`.
+Le gabarit compact local est fidèle au dépôt `bacoco/revue-presse-snum`, mais l’Assistant DINUM ne le reproduit pas encore de manière fiable. Verdict : **NO-GO pour une production ou une publication autonome**.
 
-La réussite de DINUM n’est pas déduite de ces contrôles locaux. Elle dépend de la recette finale exécutée dans le Projet `newsletter_BGS` après remplacement des fichiers corrigés.
+Le kit V5.8 reste utilisable en recette avec arrêt fermé : si l’Assistant ne peut pas établir la conformité canonique, il doit répondre `A_COMPLETER — HTML canonique non établi` et ne livrer aucun code HTML.
 
-## Changements
+## Périmètre contrôlé
 
-- Prompt système ramené sous 1 200 caractères et recentré sur les règles éliminatoires.
-- Prompt de lancement paramétré par `{{DATE_EDITION_LONGUE}}`, `{{DATE_DEBUT}}` et `{{DATE_FIN}}`.
-- Requêtes Web courtes, domaines canoniques et poursuite après un échec technique.
-- Exclusion sans exception des dates hors fenêtre, accès partiels, payants ou avec compte.
-- Exclusions interdites dans la revue et le HTML.
-- Titres de sortie simples, sans gras ni séparateurs décoratifs.
-- Coque, cartes, articles, pied de page, modal et CSS alignés sur le dépôt de référence.
+- nouveau Projet DINUM distinct : `Newsletter SNUM - Validation V5.8 - Blocs canoniques` ;
+- prompt système V5.8 et six fichiers Markdown téléversés ;
+- génération du 14 octobre 2026 sur la fenêtre du 3 au 13 octobre 2026 inclus ;
+- correction dans la conversation du Projet, sans Web ;
+- extraction des deux sorties HTML, rendu local, comparaison visuelle avec GitHub Pages et contrôles déterministes ;
+- aucune publication de newsletter et aucun envoi d’e-mail pendant la recette.
 
-## Recettes DINUM rejetées
+## Résultats dans l’Assistant DINUM
 
-### Recette 1
+### Premier passage
 
-La recherche Web a produit une revue non vide, mais la sortie a retenu des contenus hors fenêtre et un article reconnu payant. Elle a aussi dépassé les limites de mots et indiqué un jour de semaine erroné. Verdict : rejetée.
+Le HTML contient quatre marqueurs `@@...@@`, des numéros de section incohérents et une enveloppe `ia` non canonique. Une source datée du 16 septembre 2026 est retenue hors de la fenêtre demandée, alors que le dossier privé affirme le contraire.
 
-### Recette 2
+Le validateur retourne :
 
-La recherche Web a retenu deux articles datés dans la fenêtre et a exclu l’article payant. Cependant, un candidat de novembre 2025 est resté dans la revue avec la mention « exclu », certains champs dépassaient les limites et la coque HTML ne correspondait pas au gabarit. Le HTML contenait notamment un attribut de header mal formé et omettait le modal de thème. Verdict : rejetée.
+```text
+SECTION_NUMBERS: les numéros de section ne sont pas continus
+RUBRIC_WRAPPER_IA: l’enveloppe de la rubrique ia n’est pas canonique
+UNRESOLVED_MARKER: un marqueur @@...@@ subsiste
+```
 
-Les titres `REVUE`, `HTML COMPLET` et `DOSSIER PRIVÉ` n’étaient plus entourés de gras dans cette deuxième sortie.
+Nu HTML Checker signale aussi des balises `div` non fermées.
 
-## Contrôles locaux exécutés
+### Second passage
 
-- SHA du dépôt de référence obtenu par clonage en lecture seule : `dc3c87f4f4e7305de0cd9c71da25171252402a83`.
-- Coque paramétrée comparée au `index.html` de référence après substitution des seules zones variables : identité normalisée confirmée.
-- Structure d’une carte « L’essentiel » et d’un article de rubrique comparée à la source : identité confirmée.
-- Bloc `CSS-DE-RÉFÉRENCE` comparé à `styles.css` : identité octet par octet confirmée hors saut final.
-- Document synthétique rempli avec le contenu de référence soumis localement à Nu : aucune erreur.
-- ZIP contrôlé : cinq Markdown à la racine et contenus identiques aux fichiers sources.
-- Prompt système : 1 193 caractères hors saut final.
+La correction élimine les marqueurs et produit un HTML généralement valide, mais seulement deux cartes dans « L’essentiel », deux identifiants de rubrique inventés et une navigation réduite aux archives.
 
-Nu contrôle la validité HTML, pas la conformité RGAA. La comparaison locale du modèle ne valide pas automatiquement un futur HTML généré par DINUM.
+Le validateur retourne :
 
-## Limites
+```text
+ESSENTIALS_CARD_COUNT: L’essentiel doit contenir exactement trois cartes
+UNKNOWN_RUBRIC_ID: identifiants de rubrique non canoniques : formation_continue, octobre_numerique
+```
 
-- Aucun audit RGAA complet n’a été exécuté.
-- Aucune newsletter n’a été publiée et aucun courriel n’a été envoyé.
-- Un HTML ouvert directement comme fichier local ne charge pas nécessairement `/revue-presse-snum/styles.css?v=20260917` ; ce comportement ne constitue pas une différence avec le gabarit publié.
+Nu HTML Checker ne remonte aucune erreur, seulement trois avertissements de rôles ARIA redondants. La validité générale ne démontre donc pas la fidélité au gabarit.
+
+## Contrôles locaux
+
+- six tests unitaires réussis ;
+- le gabarit compact `05-BLOCS-HTML-CANONIQUES.md` génère localement le même HTML que `03-GABARIT-HTML.md` ;
+- le validateur rejette désormais les identifiants de rubrique non canoniques ;
+- le prompt système mesure 2 060 caractères, saut final inclus ;
+- `ruff` n’était pas disponible dans le `PATH` ; les tests Python et la compilation restent exécutés séparément ;
+- aucun audit RGAA complet n’a été réalisé.
+
+## Évolution appliquée après la recette
+
+Les instructions exigent maintenant une recherche des blocs dans les ressources du Projet, jamais sur le Web, une seconde passe explicite et un arrêt fermé dès qu’un marqueur, une enveloppe, un identifiant ou un compte de cartes reste incorrect.
+
+Cette évolution est contrôlée localement mais **n’a pas été rejouée dans l’Assistant DINUM** : trois tentatives de génération ou de correction avaient déjà échoué. Une nouvelle recette devra repartir d’une conversation neuve dans le Projet.
+
+## Preuves
+
+- guide : `_documentation/validation-v5.8-assistant-only-2026-10-14/GUIDE-VALIDATION-ASSISTANT-DINUM-V5.8-ASSISTANT-ONLY.md` ;
+- première sortie : `_documentation/validation-v5.8-assistant-only-2026-10-14/assistant-output.html` ;
+- seconde sortie : `_documentation/validation-v5.8-assistant-only-2026-10-14/assistant-output-second-pass.html` ;
+- captures : `_documentation/validation-v5.8-assistant-only-2026-10-14/captures/`.

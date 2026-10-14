@@ -8,6 +8,7 @@ from pathlib import Path
 PROJECT = Path(__file__).resolve().parents[1]
 SCRIPT = PROJECT / "scripts" / "newsletter_html.py"
 TEMPLATE = PROJECT / "03-GABARIT-HTML.md"
+COMPACT_TEMPLATE = PROJECT / "05-BLOCS-HTML-CANONIQUES.md"
 
 
 def article(title, rubric, *, essential=False):
@@ -53,7 +54,7 @@ class NewsletterHtmlCliTests(unittest.TestCase):
             ],
         }
 
-    def build_html(self):
+    def build_html(self, template=TEMPLATE):
         payload = self.payload()
         with tempfile.TemporaryDirectory() as temporary_directory:
             input_path = Path(temporary_directory) / "newsletter.json"
@@ -66,10 +67,13 @@ class NewsletterHtmlCliTests(unittest.TestCase):
                 "--output",
                 str(output_path),
                 "--template",
-                str(TEMPLATE),
+                str(template),
             )
             self.assertEqual(result.returncode, 0, result.stderr)
             return output_path.read_text(encoding="utf-8")
+
+    def test_compact_assistant_template_matches_the_reference_template(self):
+        self.assertEqual(self.build_html(COMPACT_TEMPLATE), self.build_html())
 
     def test_build_uses_the_canonical_bacoco_structure(self):
         html = self.build_html()
@@ -153,6 +157,23 @@ class NewsletterHtmlCliTests(unittest.TestCase):
             "NONINTERACTIVE_TAG",
         ):
             self.assertIn(error_code, invalid_result.stderr)
+
+    def test_validate_rejects_an_invented_rubric_id(self):
+        valid_html = self.build_html()
+        invalid_html = valid_html.replace(
+            '<section id="ia" class="section-muted">',
+            '<section id="formation_continue" class="section-muted">',
+            1,
+        )
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            invalid_path = Path(temporary_directory) / "invalid-rubric.html"
+            invalid_path.write_text(invalid_html, encoding="utf-8")
+            result = self.run_cli(
+                "validate", "--input", str(invalid_path), "--template", str(TEMPLATE)
+            )
+
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn("UNKNOWN_RUBRIC_ID", result.stderr)
 
     def test_build_blocks_an_internally_invalid_page(self):
         payload = self.payload()
