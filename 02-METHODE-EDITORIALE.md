@@ -1,10 +1,30 @@
-# Méthode éditoriale SNUM - V5.7
+# Méthode éditoriale SNUM - V5.8
+
+## COLLECTE-WEB
+
+Procéder par requêtes courtes et séparées : une source ou un thème par requête, avec le mois et l’année écrits en toutes lettres. Ne jamais utiliser une plage `AAAA-MM-JJ..AAAA-MM-JJ`, une longue chaîne de `OR` ou un domaine deviné.
+
+Domaines canoniques : `lemonde.fr`, `lesechos.fr`, `economie.gouv.fr`, `presse.economie.gouv.fr`, `numerique.gouv.fr`, `acteurspublics.fr`, `itforbusiness.fr`, `journaldunet.com` et `usine-digitale.fr`. Compléter avec `cnil.fr`, `cyber.gouv.fr`, `legifrance.gouv.fr`, `data.gouv.fr` et d’autres sources pertinentes réellement trouvées.
+
+Pour chaque rubrique, commencer sans filtre `site:`, puis cibler un domaine si nécessaire. Si une recherche échoue ou ne rend aucun résultat exploitable, la reformuler au plus deux fois : retirer le domaine, simplifier les mots ou chercher le titre présumé. Continuer les autres requêtes. Ne conclure à zéro événement qu’après avoir essayé plusieurs sources officielles et éditoriales distinctes.
+
+À partir des résultats, ouvrir chaque URL exacte. Une page ouverte et datée peut être retenue seulement après lecture du corps intégral. Consigner séparément les erreurs techniques, les résultats vides, les URL ouvertes et les exclusions. Ne jamais transformer une requête exécutée en preuve de lecture.
 
 ## Collecter et prouver
 
 Priorité nette aux médias français généralistes et économiques de référence, notamment Le Monde et Les Échos, puis aux sources françaises officielles et spécialisées pertinentes. Compléter avec economie.gouv.fr, presse.economie.gouv.fr, numerique.gouv.fr, Acteurs Publics, IT for Business, Journal du Net, L’Usine Digitale et de bonnes sources étrangères quand leur apport est réel.
 
 Pour chaque candidat, ouvrir l’URL exacte. Retenir seulement un contenu éditorial intégral, public sans compte ni abonnement, daté dans la fenêtre et réellement lu. Un titre, un extrait, une page d’accueil, une archive, HTTP 200 ou une date dans la requête ne prouve ni le corps intégral ni la date de publication.
+
+Filtre éliminatoire, à appliquer avant la sélection et la rédaction :
+
+1. date de publication comprise entre les deux bornes incluses ;
+2. corps complet effectivement accessible et lu ;
+3. accès gratuit, sans compte ni abonnement ;
+4. source éditoriale identifiable et URL exacte ;
+5. pertinence directe pour une rubrique admise.
+
+Si un seul critère échoue ou reste incertain, classer le candidat parmi les exclusions. La date de l’événement, une mise en œuvre ultérieure, un extrait jugé « suffisant » ou l’intérêt du sujet ne remplace jamais ces cinq critères.
 
 Un article payant reste exclu même si une copie est fournie. Une source complète apportée par une personne ou un collecteur identifié peut être `INTEGRAL_FOURNI` seulement si son accès public gratuit est établi et attribué. Sinon elle reste candidate privée. Pour une source officielle, essayer la page directe, son ELI, ses articles ou son PDF avant de la déclarer inaccessible.
 
@@ -36,13 +56,15 @@ Chaque événement contient :
 - titre original, source, date de publication et URL publique exacte ;
 - statut et preuve de lecture dans le dossier privé.
 
-Compter les mots par espaces. Les chiffres, dates, périmètres et réserves indispensables restent exacts. Distinguer les faits de la source des implications proposées pour le SNUM. Aucun emoji, slogan, promotion, rubrique artificielle, volume près du titre ou remplissage.
+Compter les mots par espaces sur chaque phrase finale avant de produire le HTML. Réécrire toute phrase trop longue ; ne jamais annoncer un contrôle réussi sans avoir effectué ce comptage sur le texte livré. Les chiffres, dates, périmètres et réserves indispensables restent exacts. Distinguer les faits de la source des implications proposées pour le SNUM. Aucun emoji, slogan, promotion, rubrique artificielle, volume près du titre ou remplissage.
 
 Avec au moins trois événements, choisir exactement trois essentiels, repris sans duplication depuis les rubriques. Avec moins de trois, aucun essentiel. « À surveiller » reste facultatif et contient seulement des suivis courts, précis et utiles.
 
 ## Contrôles de cohérence avant livraison
 
-Vérifier sur le texte exact : dates dans la fenêtre, unicité des événements et URL, rubriques admises, 3 à 5 mots-clés, limites de 25 et 15 mots, exactement trois essentiels à partir de trois événements et absence de fausse preuve. Une vérification manuelle du modèle reste une autoévaluation : la décrire comme telle, sans la transformer en contrôle extérieur.
+Vérifier sur le texte exact : dates de publication dans la fenêtre, accès intégral gratuit, unicité des événements et URL, rubriques admises, 3 à 5 mots-clés, limites de 25 et 15 mots, exactement trois essentiels à partir de trois événements et absence de fausse preuve. Comparer ensuite le tableau des retenus à la revue et au HTML : les trois ensembles d’URL doivent être identiques. Une vérification manuelle du modèle reste une autoévaluation : la décrire comme telle, sans la transformer en contrôle extérieur.
+
+Dans la date longue du HTML, ne jamais inventer le jour de la semaine : utiliser seulement le jour, le mois et l’année si le calendrier n’a pas été calculé par un outil.
 
 Le HTML doit reprendre exactement les mêmes faits, titres, dates, URL et essentiels que la revue. Toute modification ultérieure invalide les contrôles correspondants.
 

@@ -1,4 +1,4 @@
-# État et historique SNUM - V5.7
+# État et historique SNUM - V5.8
 
 ## VERROU-ETAT - lire avant toute date
 
@@ -7,7 +7,7 @@
 Le brouillon actif du 13 octobre conserve sa fenêtre explicitement fixée du 2 au 12 octobre 2026 inclus, journées civiles Europe/Paris. Pour une nouvelle date postérieure, ne réutilise pas cette fenêtre et n’invente pas de borne : pose uniquement la question indispensable sur la fenêtre initiale, sauf si le propriétaire demande explicitement de reprendre ce brouillon.
 
 ```text
-REGISTRE_VERSION : 9
+REGISTRE_VERSION : 10
 DATE_EDITION_PARIS : 2026-10-13
 FENETRE_DEMANDEE : 2026-10-02 au 2026-10-12 inclus
 DERNIERE_EDITION_REUSSIE : NON_ETABLIE
@@ -55,3 +55,5 @@ Un suivi est possible seulement avec une évolution nouvelle et datée.
 Les anciens brouillons, fiches, exemples et HTML ne sont ni publiés ni des sources à recopier. Ils ont notamment mélangé dates de publication et d’événement, retenu des extraits ou contenus payants, inventé des lectures intégrales et reconstruit le gabarit.
 
 La V5.6 a obtenu un JSON depuis un lot de sources fourni dans la conversation, puis un programme local a généré le HTML. Ce parcours ne démontre pas l’autonomie demandée à DINUM et n’est plus le parcours actif. Les anciens fichiers et tests ne font avancer aucune borne de réussite.
+
+La V5.7 a lancé la recherche Web, mais a utilisé des plages de dates et plusieurs domaines erronés, puis a assimilé les échecs de requêtes à une absence d’actualité. Ses revues vides ne font avancer aucune borne de réussite.
