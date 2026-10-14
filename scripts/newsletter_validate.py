@@ -5,17 +5,20 @@ import re
 from newsletter_render import MARKER, RUBRICS
 
 
-def template_pattern(template):
+def matches_template_shell(html, template):
     for name in ("ESSENTIELS", "RUBRIQUES", "A_SURVEILLER"):
         template = re.sub(rf"\s*@@{name}@@\s*", f"@@{name}@@", template)
-    parts = []
-    cursor = 0
-    for marker in MARKER.finditer(template):
-        parts.append(re.escape(template[cursor : marker.start()]))
-        parts.append(".*?")
-        cursor = marker.end()
-    parts.append(re.escape(template[cursor:]))
-    return "".join(parts)
+    html = compact_markup(html)
+    fragments = MARKER.split(compact_markup(template))
+    if not html.startswith(fragments[0]) or not html.endswith(fragments[-1]):
+        return False
+    cursor = len(fragments[0])
+    for fragment in fragments[1:-1]:
+        position = html.find(fragment, cursor)
+        if position < 0:
+            return False
+        cursor = position + len(fragment)
+    return cursor <= len(html) - len(fragments[-1])
 
 
 def compact_markup(value):
@@ -30,11 +33,7 @@ def validate(html, blocks):
             errors.append(f"{code}: {message}")
 
     require(
-        re.fullmatch(
-            template_pattern(compact_markup(blocks["page"])),
-            compact_markup(html),
-            re.DOTALL,
-        ),
+        matches_template_shell(html, blocks["page"]),
         "PAGE_SHELL",
         "la coque ne correspond pas au GABARIT-COMPLET",
     )

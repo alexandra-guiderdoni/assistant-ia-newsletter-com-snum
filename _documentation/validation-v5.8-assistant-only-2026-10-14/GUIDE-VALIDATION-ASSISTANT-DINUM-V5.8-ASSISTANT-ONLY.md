@@ -2,15 +2,19 @@
 
 ## Résultat
 
-Le parcours métier fonctionne entièrement dans l’Assistant DINUM, sans script sur le poste de travail. Le nouveau Projet contient le prompt système et les six fichiers du kit.
+Le parcours métier fonctionne entièrement dans l’Assistant DINUM, sans script sur le poste de travail. Le nouveau Projet contient le prompt système et les six fichiers du kit. La sortie finale attendue est désormais la réponse du chat ; la publication GitHub Pages et l’envoi d’e-mail ne font plus partie du critère de validation.
 
 Verdict de la recette du 14 octobre 2026 : **NO-GO pour une production ou une publication autonome**. Le premier HTML est invalide et incomplet ; le second est valide au sens général, mais ne respecte toujours pas les blocs canoniques. Le rendu n’est donc pas identique à celui du dépôt Bacoco.
 
-Un troisième passage, lancé après remplacement du prompt système et des six fichiers, confirme le fonctionnement de l’arrêt fermé : l’Assistant ne produit plus de HTML lorsque la conformité n’est pas établie. Il ne démontre toujours pas la génération d’un rendu identique.
+Un troisième passage, lancé après remplacement du prompt système et des six fichiers, confirme le fonctionnement de l’arrêt fermé : l’Assistant ne produit plus de HTML lorsque la conformité n’est pas établie. Trois recettes structurelles supplémentaires, réalisées avec les mêmes trois fiches fournies et sans recherche Web, montrent ensuite que l’Assistant peut produire un HTML complet, mais pas garantir sa fidélité littérale ni détecter ses propres écarts.
 
 [Ouvrir la conversation du Projet](https://assistant.numerique.gouv.fr/chat/a62ca910-0a58-452a-af0d-cfea5364f066/)
 
 [Ouvrir la conversation neuve du troisième passage](https://assistant.numerique.gouv.fr/chat/de8a1439-402f-44b0-9d53-f6c0f47998b3/)
+
+[Ouvrir la première recette structurelle](https://assistant.numerique.gouv.fr/chat/588bf1b2-4f53-4b5b-83ae-c3fd63a68ec9/)
+
+[Ouvrir la deuxième recette structurelle](https://assistant.numerique.gouv.fr/chat/03db0f50-58da-43d6-a34e-a6e49be4f1f9/)
 
 [Ouvrir la première sortie HTML](./assistant-output.html)
 
@@ -161,9 +165,52 @@ UNKNOWN_RUBRIC_ID
 
 Nu HTML Checker signale des erreurs de fermeture au premier passage. Le second passage n’a aucune erreur générale, mais trois avertissements de rôles ARIA redondants. Un HTML généralement valide peut donc rester non canonique.
 
+### Recettes structurelles sans Web
+
+La recette injecte trois fiches déjà vérifiées dans les rubriques `numerique`, `ia` et `commande`. Elle retire les aléas de collecte pour tester uniquement l’assemblage du HTML.
+
+Le premier essai livre bien trois cartes et les trois rubriques, mais il :
+
+- retire les liens « L’essentiel » et « À surveiller » de la navigation ;
+- abrège deux libellés de navigation ;
+- remplace les libellés canoniques de tags et de titres ;
+- remplace le séparateur `·` par `;` ;
+- déplace le modal d’affichage dans `<main>`.
+
+Le validateur retourne désormais immédiatement :
+
+```text
+PAGE_SHELL: la coque ne correspond pas au GABARIT-COMPLET
+```
+
+Le deuxième essai, après ajout des valeurs exactes dans le prompt système, rétablit la navigation, le séparateur et la position du modal. Il ajoute toutefois des jours de semaine erronés aux dates et réécrit encore les tags et les titres de rubrique.
+
+Le troisième essai, après ajout d’une table littérale de remplacement, respecte les tags et les dates, mais :
+
+- retire de la navigation les liens vers `numerique`, `ia` et `commande` ;
+- numérote les sections `01`, `01`, `02`, `03`, `01` au lieu d’une suite continue ;
+- réduit la revue à une synthèse globale au lieu des trois fiches ;
+- affirme malgré ces écarts : « Aucun écart détecté ».
+
+Une bannière « Trafic élevé - service dégradé » était visible pendant ce dernier essai. Cette condition peut expliquer une partie de la variabilité, mais elle ne transforme pas l’auto-contrôle en preuve.
+
+### Correction du validateur
+
+La comparaison de coque utilisait une expression régulière à plusieurs jokers et pouvait rester bloquée sur un HTML presque conforme. Un test de non-régression reproduit le déplacement du modal et impose un délai maximal de cinq secondes. La comparaison est maintenant linéaire : elle vérifie l’ordre des fragments statiques séparés par les marqueurs.
+
+Preuves locales :
+
+```text
+test_validate_rejects_a_moved_theme_modal_without_hanging ... ok
+Ran 7 tests in 0.499s
+OK
+```
+
 ## Évolution après la recette
 
-Le kit impose maintenant un arrêt fermé et interdit de rechercher `05-BLOCS-HTML-CANONIQUES.md` sur le Web. Cette modification a réussi les contrôles locaux et a été rejouée dans DINUM depuis une conversation neuve. L’arrêt fermé est effectif ; la génération d’un HTML complet fidèle reste à prouver avec une collecte admissible.
+Le kit impose maintenant un arrêt fermé, interdit de rechercher `05-BLOCS-HTML-CANONIQUES.md` sur le Web et décrit littéralement les valeurs des marqueurs. Ces modifications ont réussi les contrôles locaux et ont été rejouées dans DINUM depuis des conversations neuves.
+
+Le verdict reste `NO-GO` pour une production autonome garantissant un HTML identique au dépôt Bacoco. Le chat peut servir de canal de livraison, mais le modèle ne dispose d’aucun validateur déterministe dans l’Assistant DINUM et son auto-évaluation a été contredite trois fois par les sorties observées.
 
 ## Captures et vidéo
 
@@ -171,7 +218,7 @@ Les deux captures de comparaison sont conservées dans `captures/`. Les captures
 
 ## Limites
 
-- aucune publication GitHub Pages ;
-- aucun envoi d’e-mail ;
+- la sortie finale est limitée au chat de l’Assistant ;
+- aucune publication GitHub Pages et aucun envoi d’e-mail ne sont requis ;
 - aucun audit RGAA manuel complet ;
 - aucune preuve qu’un HTML complet produit par DINUM est identique au dépôt Bacoco.

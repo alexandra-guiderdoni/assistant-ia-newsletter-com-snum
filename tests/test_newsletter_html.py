@@ -34,6 +34,7 @@ class NewsletterHtmlCliTests(unittest.TestCase):
             capture_output=True,
             text=True,
             check=False,
+            timeout=5,
         )
 
     def payload(self):
@@ -174,6 +175,23 @@ class NewsletterHtmlCliTests(unittest.TestCase):
 
         self.assertEqual(result.returncode, 1, result.stderr)
         self.assertIn("UNKNOWN_RUBRIC_ID", result.stderr)
+
+    def test_validate_rejects_a_moved_theme_modal_without_hanging(self):
+        valid_html = self.build_html()
+        modal_start = valid_html.index('<dialog id="fr-theme-modal"')
+        modal_end = valid_html.index("</dialog>", modal_start) + len("</dialog>")
+        modal = valid_html[modal_start:modal_end]
+        invalid_html = valid_html[:modal_start] + valid_html[modal_end:]
+        invalid_html = invalid_html.replace("</main>", modal + "\n</main>", 1)
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            invalid_path = Path(temporary_directory) / "moved-modal.html"
+            invalid_path.write_text(invalid_html, encoding="utf-8")
+            result = self.run_cli(
+                "validate", "--input", str(invalid_path), "--template", str(TEMPLATE)
+            )
+
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn("PAGE_SHELL", result.stderr)
 
     def test_build_blocks_an_internally_invalid_page(self):
         payload = self.payload()
