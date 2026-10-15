@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Génère le paquet V5.12 progressif depuis le canon HTML unique."""
+"""Génère le paquet V5.16 progressif depuis le canon HTML unique."""
 
 import argparse
 import sys
@@ -11,7 +11,7 @@ from newsletter_render import canonical_blocks
 
 PROJECT = Path(__file__).resolve().parents[1]
 SOURCE = PROJECT / "05-BLOCS-HTML-CANONIQUES.md"
-ARCHIVE = PROJECT / "kit-dinum-snum-v5-12-progressif-9-fichiers.zip"
+ARCHIVE = PROJECT / "kit-dinum-snum-v5-16-progressif-9-fichiers.zip"
 UPLOAD_FILES = (
     "00-PROMPT-PROJET.md",
     "01-ETAT-HISTORIQUE.md",
@@ -77,21 +77,37 @@ def expected_files():
         '    <article class="fr-col-12">',
         "    </article>",
     )
-    index = """# Index HTML canonique - V5.12 progressive
+    index = """# Index HTML canonique - V5.16 progressive
 
-SNUM_CANON_V512_INDEX_START
+SNUM_CANON_V516_INDEX_START
 
 ## READ_NEXT
 
-Lire intégralement, dans cet ordre et un fichier à la fois :
+Lire dans cet ordre :
 
-1. `06-COQUE-DEBUT.md` : `SNUM_SHELL_HEAD_START` à `SNUM_SHELL_HEAD_END` ;
-2. `07-PIED-DE-PAGE.md` : `SNUM_FOOTER_START` à `SNUM_FOOTER_END` ;
-3. `08-BLOC-ESSENTIEL.md` : les trois paires `SNUM_ESSENTIALS_OPEN`, `SNUM_ESSENTIAL_CARD` et `SNUM_ESSENTIALS_CLOSE` ;
-4. `09-BLOCS-RUBRIQUES.md` : les cinq paires `SNUM_RUBRIC_OPEN`, `SNUM_RUBRIC_ARTICLE`, `SNUM_RUBRIC_CLOSE`, `SNUM_WATCH` et `SNUM_EMPTY`.
-5. `10-COQUE-FIN.md` : `SNUM_SHELL_CLOSE_START` à `SNUM_SHELL_CLOSE_END`.
+1. `06-COQUE-DEBUT.md` ;
+2. `07-PIED-DE-PAGE.md` ;
+3. `08-BLOC-ESSENTIEL.md` ;
+4. `09-BLOCS-RUBRIQUES.md` ;
+5. `10-COQUE-FIN.md`.
 
-La page complète est la concaténation exacte de `06`, du contenu éditorial, de `07`, puis de `10`. Pour `L’essentiel`, concaténer `ESSENTIALS_OPEN`, exactement trois répétitions de `ESSENTIAL_CARD`, puis `ESSENTIALS_CLOSE`. Pour chaque rubrique, concaténer `RUBRIC_OPEN`, une répétition de `RUBRIC_ARTICLE` par source valide de la rubrique, puis `RUBRIC_CLOSE`. Remplacer ensuite les marqueurs.
+## PAIRES_EXACTES
+
+- `SNUM_SHELL_HEAD_START / SNUM_SHELL_HEAD_END` ;
+- `SNUM_FOOTER_START / SNUM_FOOTER_END` ;
+- `SNUM_SHELL_CLOSE_START / SNUM_SHELL_CLOSE_END` ;
+- `SNUM_ESSENTIALS_OPEN_START / SNUM_ESSENTIALS_OPEN_END` ;
+- `SNUM_ESSENTIAL_CARD_START / SNUM_ESSENTIAL_CARD_END` ;
+- `SNUM_ESSENTIALS_CLOSE_START / SNUM_ESSENTIALS_CLOSE_END` ;
+- `SNUM_RUBRIC_OPEN_START / SNUM_RUBRIC_OPEN_END` ;
+- `SNUM_RUBRIC_ARTICLE_START / SNUM_RUBRIC_ARTICLE_END` ;
+- `SNUM_RUBRIC_CLOSE_START / SNUM_RUBRIC_CLOSE_END` ;
+- `SNUM_WATCH_START / SNUM_WATCH_END` ;
+- `SNUM_EMPTY_START / SNUM_EMPTY_END`.
+
+Recopier ces onze lignes sans fusion ni auto-fermant, sinon `CANON_HTML_INCOMPLET | paire incorrecte`.
+
+Concaténation exacte : `06`, contenu éditorial, `07`, puis `10`. Instancier les blocs essentiels uniquement si au moins trois sources sont valides : concaténer alors `ESSENTIALS_OPEN`, exactement trois répétitions de `ESSENTIAL_CARD`, puis `ESSENTIALS_CLOSE`. Sinon, remplacer `@@ESSENTIELS@@` par une chaîne vide. Pour chaque rubrique, concaténer `RUBRIC_OPEN`, une répétition de `RUBRIC_ARTICLE` par source valide de la rubrique, puis `RUBRIC_CLOSE`. Remplacer ensuite les marqueurs.
 
 Rubriques exactes :
 
@@ -107,9 +123,9 @@ Chaque source valide figure une fois dans sa rubrique. Une carte essentielle est
 
 Pour chaque lien `href="#id"` du menu de rubriques, produire exactement une section `id="id"`. Chaque rubrique produite possède exactement un lien dans ce menu.
 
-Si un jeton manque après une recherche ciblée, répondre `CANON_HTML_INCOMPLET | jeton manquant`. Pendant `RENDU`, un échec doit répondre `A_COMPLETER`, puis `## CONTROLES_EN_ECHEC` et une ligne `CODE | détail`, sans HTML.
+Si une paire manque ou diffère pendant `CANON_RENDU`, répondre `A_COMPLETER`, puis `## CONTROLES_EN_ECHEC` et `CANON_MANQUANT | <paire>`, sans HTML. Dans ce même tour, assembler, corriger, contrôler et livrer le HTML ; ne jamais demander un second message de rendu.
 
-SNUM_CANON_V512_INDEX_END
+SNUM_CANON_V516_INDEX_END
 """
     return {
         "05-INDEX-HTML.md": index,

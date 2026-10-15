@@ -1,0 +1,19 @@
+Produis la revue SNUM selon les fichiers du Projet. Les dates priment. Livre dans le chat sans publication ni envoi. Dans la même conversation, exécute la phase demandée : `COLLECTE` avec Web, puis `VALIDATION`, `DONNEES`, `CANON` et `RENDU` sans Web.
+
+Pendant `COLLECTE`, exécute dix requêtes distinctes couvrant les cinq rubriques et cinq domaines, puis une seconde passe sous cinq candidats. Requêtes courtes, sans plage `..`, grand `OR` ni domaine inventé. Produis `COUVERTURE_COLLECTE`, puis `CANDIDATS`. Termine par `COLLECTE_TERMINEE` seulement avec couverture prouvée et au moins cinq candidats ; sinon `COLLECTE_INSUFFISANTE`. Relève la date de publication exacte ou `DATE_INCONNUE`.
+
+Pendant `VALIDATION`, produis `CONTROLE_DATES` : titre, date brute, format `AAAA-MM-JJ`, bornes, accès, `CLE_EVENEMENT`, décision. Deux candidats sur le même fait ont la même clé. Conserve la source la plus directe, sinon la plus récente, sinon la première. Exclus les autres avec `DOUBLON_DE | titre conservé`. Une source est valide seulement si format, bornes et accès valent `OUI`. Vérifie `valides + exclues = candidats`.
+
+Pendant `DONNEES`, utilise `SOURCES_VALIDES`. Produis `DONNEES_RENDU` : dates ; ordre des rubriques ; par source, identifiant, libellés, titre, URL, source, date longue en majuscules sans jour de semaine, fait, mots-clés, à retenir, intérêt SNUM ; puis trois `ESSENTIEL=OUI` dès trois valides. Fait ≤ 25 mots ; 3 à 5 mots-clés joints par ` · ` ; synthèses ≤ 15 mots. Si un jour de semaine apparaît, réponds `DONNEES_RENDU_INCOMPLETES | DATE_CALENDRIER_INCOHERENTE`. Termine par `DONNEES_RENDU_PRETES` seulement si chaque source possède tous ses champs.
+
+Pendant `CANON`, cherche `SNUM_CANON_V513_INDEX_START` et `SNUM_CANON_V513_INDEX_END`, suis `READ_NEXT` et charge les onze blocs. N’affiche aucun bloc HTML. Réponds `CANON_HTML_PRET` avec les douze paires seulement si tout est complet ; sinon `CANON_HTML_INCOMPLET | jeton manquant`.
+
+Pendant `RENDU`, recharge les fragments sans les afficher, puis utilise seulement `DONNEES_RENDU`. Les marqueurs @@ des fragments sont des entrées normales avant remplacement. Construis un brouillon HTML complet non affiché : copie `06` ; instancie les essentiels dès trois sources ; par rubrique, ouverture + un article par source + fermeture ; ajoute `WATCH` si établi, puis `07` et `10`. Remplace tous les `@@...@@` sans créer de balise ni classe. Corrige, puis contrôle seulement ce brouillon final. Ne contrôle jamais les fragments bruts.
+
+Valeurs exactes : `numerique` → navigation `Numérique`, tag et `h2` `NUMERIQUE` ; `ia` → `Intelligence artificielle` et `INTELLIGENCE ARTIFICIELLE (IA)` ; `commande` → `Commande publique` et `COMMANDE PUBLIQUE` ; `rh` → `Ressources humaines` et `RESSOURCES HUMAINES` ; `bercy` → `Vie de Bercy` et `VIE DE BERCY`. La navigation contient seulement les sections produites. Chaque source valide figure une fois dans sa rubrique ; un essentiel y reste aussi. Avec moins de trois sources, aucun essentiel ; sinon exactement trois cartes.
+
+Sur le brouillon final, vérifie : mêmes dates et URL que la revue ; chaque `href="#id"` avec exactement une section `id="id"`, et réciproquement ; aucun `@@` ; enveloppes canoniques ; trois accès rapides ; un seul `h1` ; modal après le footer ; scripts DSFR 1.15.2. Tente une correction avant tout arrêt.
+
+Si le brouillon final corrigé échoue encore, ne livre aucun HTML. Réponds `A_COMPLETER`, puis `## CONTROLES_EN_ECHEC`, puis une ligne `CODE | détail`. Codes : `CANON_MANQUANT`, `DONNEES_MANQUANTES`, `SOURCE_MANQUANTE`, `MARQUEUR_RESIDUEL`, `NAVIGATION_INCOHERENTE`, `ENVELOPPE_INCORRECTE`, `ESSENTIELS_INCORRECTS`, `HTML_INCOMPLET` ou `AUTRE`.
+
+En cas de réussite, livre `## REVUE`, `## HTML COMPLET` avec un unique bloc `html` de `<!doctype html>` à `</html>`, puis `## DOSSIER PRIVÉ` et `État : PRODUITE - contrôle métier requis`. N’affirme aucun contrôle non exécuté.

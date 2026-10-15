@@ -1,4 +1,4 @@
-# Méthode éditoriale SNUM - V5.12
+# Méthode éditoriale SNUM - V5.16
 
 ## COLLECTE-WEB
 
@@ -12,7 +12,7 @@ Si la première passe produit moins de cinq candidats, effectuer une seconde pas
 
 Avant `CANDIDATS`, produire `COUVERTURE_COLLECTE` avec une ligne par requête : rubrique, requête, domaine, résultat et URL effectivement ouverte. Répondre `COLLECTE_TERMINEE` seulement si les cinq rubriques, les dix requêtes distinctes, les cinq domaines et au moins cinq candidats sont établis. Sinon répondre `COLLECTE_INSUFFISANTE` avec les critères manquants ; ne pas présenter la collecte comme réussie.
 
-À partir des résultats, ouvrir chaque URL exacte. Une page ouverte et datée peut être retenue seulement après lecture du corps intégral. Consigner séparément les erreurs techniques, les résultats vides, les URL ouvertes et les exclusions. Ne jamais transformer une requête exécutée en preuve de lecture.
+À partir des résultats, ouvrir chaque URL exacte. Pour chaque candidat, conserver une URL canonique absolue commençant par `https://` ; une URL sans schéma est invalide. Une page ouverte et datée peut être retenue seulement après lecture du corps intégral. Consigner séparément les erreurs techniques, les résultats vides, les URL ouvertes et les exclusions. Ne jamais transformer une requête exécutée en preuve de lecture.
 
 ## Collecter et prouver
 
@@ -76,7 +76,7 @@ Avec au moins trois événements, choisir exactement trois essentiels. Chaque es
 
 ## Assemblage HTML dans l’Assistant
 
-Le métier n’exécute aucun script. Après la collecte et la validation, dans une phase `CANON` sans Web qui précède immédiatement le rendu, l’Assistant lit `05-INDEX-HTML.md`, puis charge séparément les fragments `06`, `07`, `08` et `09` dans l’ordre `READ_NEXT`. Il vérifie pour chacun les jetons de début et de fin avant de poursuivre. Ces fragments générés depuis `05-BLOCS-HTML-CANONIQUES.md` priment pour toute balise, classe, dépendance et enveloppe de rubrique. `03-GABARIT-HTML.md` reste la référence locale détaillée, mais n’est pas téléversé dans le paquet progressif et ne sert jamais à reconstruire librement la page.
+Le métier n’exécute aucun script. Après la collecte et la validation, la phase unique `CANON_RENDU` travaille sans Web. Dans ce même tour, l’Assistant lit `05-INDEX-HTML.md`, charge séparément les fragments `06`, `07`, `08`, `09` et `10` dans l’ordre `READ_NEXT`, vérifie les onze paires de jetons, assemble le brouillon HTML, le corrige, le contrôle et livre le résultat. Il n’affiche pas les fragments avant leur assemblage. Ces fragments générés depuis `05-BLOCS-HTML-CANONIQUES.md` priment pour toute balise, classe, dépendance et enveloppe de rubrique. `03-GABARIT-HTML.md` reste la référence locale détaillée, mais n’est pas téléversé dans le paquet progressif et ne sert jamais à reconstruire librement la page.
 
 La seconde passe se fait sur la sortie exacte avant affichage : comparer les dates et URL de la revue au HTML, rechercher tout marqueur `@@`, compter les cartes essentielles et vérifier littéralement l’identifiant et l’enveloppe de chaque rubrique présente contre `05-INDEX-HTML.md`. Chaque source valide doit apparaître une fois dans sa rubrique, y compris lorsqu’elle est aussi essentielle. Chaque lien `href="#id"` du menu de rubriques doit viser exactement une section `id="id"`, et chaque rubrique produite doit posséder exactement un lien dans ce menu. Une divergence détectée entraîne la correction du bloc HTML avant livraison. Si elle ne peut pas être corrigée, ne livrer aucun code : répondre `A_COMPLETER`, puis `## CONTROLES_EN_ECHEC` et une ligne `CODE | détail` par écart. Cette autoévaluation ne devient jamais un contrôle extérieur.
 
@@ -84,7 +84,7 @@ La seconde passe se fait sur la sortie exacte avant affichage : comparer les dat
 
 Vérifier sur le texte exact : dates de publication dans la fenêtre, accès intégral gratuit, unicité des événements et URL, rubriques admises, 3 à 5 mots-clés, limites de 25 et 15 mots, exactement trois essentiels à partir de trois événements et absence de fausse preuve. Comparer ensuite le tableau des retenus à la revue et au HTML : les trois ensembles d’URL doivent être identiques. Une vérification manuelle du modèle reste une autoévaluation : la décrire comme telle, sans la transformer en contrôle extérieur.
 
-Dans la date longue du HTML, ne jamais inventer le jour de la semaine : utiliser seulement le jour, le mois et l’année si le calendrier n’a pas été calculé par un outil.
+Dans toute date longue, utiliser seulement le jour, le mois et l’année, sans jour de semaine. Si un jour de semaine apparaît dans `DONNEES_RENDU`, répondre `DONNEES_RENDU_INCOMPLETES | DATE_CALENDRIER_INCOHERENTE` et arrêter avant `CANON`.
 
 Le HTML doit reprendre exactement les mêmes faits, titres, dates, URL et essentiels que la revue. Toute modification ultérieure invalide les contrôles correspondants.
 
