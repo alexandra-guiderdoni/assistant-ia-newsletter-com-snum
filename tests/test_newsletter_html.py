@@ -176,6 +176,19 @@ class NewsletterHtmlCliTests(unittest.TestCase):
         self.assertEqual(result.returncode, 1, result.stderr)
         self.assertIn("UNKNOWN_RUBRIC_ID", result.stderr)
 
+    def test_validate_rejects_a_noncanonical_rubric_title(self):
+        valid_html = self.build_html()
+        invalid_html = valid_html.replace("<h2>NUMERIQUE</h2>", "<h2>Numérique</h2>", 1)
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            invalid_path = Path(temporary_directory) / "invalid-rubric-title.html"
+            invalid_path.write_text(invalid_html, encoding="utf-8")
+            result = self.run_cli(
+                "validate", "--input", str(invalid_path), "--template", str(TEMPLATE)
+            )
+
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn("RUBRIC_TITLE_NUMERIQUE", result.stderr)
+
     def test_validate_rejects_a_moved_theme_modal_without_hanging(self):
         valid_html = self.build_html()
         modal_start = valid_html.index('<dialog id="fr-theme-modal"')

@@ -87,6 +87,12 @@ def validate(html, blocks):
             f"RUBRIC_WRAPPER_{rubric_id.upper()}",
             f"l’enveloppe de la rubrique {rubric_id} n’est pas canonique",
         )
+        title = RUBRICS[rubric_id][1]
+        require(
+            f"<h2>{title}</h2>" in html,
+            f"RUBRIC_TITLE_{rubric_id.upper()}",
+            f"le titre de la rubrique {rubric_id} n’est pas canonique",
+        )
     require('id="fr-theme-modal"' in html, "THEME_MODAL", "le modal de thème manque")
     require(
         '<script type="module" src="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.15.2/dist/dsfr.module.min.js"></script>'

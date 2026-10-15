@@ -2,82 +2,79 @@
 
 ## Verdict
 
-Le gabarit compact local est fidèle au dépôt `bacoco/revue-presse-snum`, mais l’Assistant DINUM ne le reproduit pas encore de manière fiable. Verdict : **NO-GO pour une production ou une publication autonome**.
+Le canon local est fidèle au dépôt `bacoco/revue-presse-snum`. La divulgation progressive contourne la limite de 4 000 caractères de l’Assistant DINUM et permet de retrouver les six fragments HTML.
 
-Le kit V5.8 reste utilisable en recette avec arrêt fermé : si l’Assistant ne peut pas établir la conformité canonique, il doit répondre `A_COMPLETER — HTML canonique non établi` et ne livrer aucun code HTML.
+L’Assistant ne recopie toutefois pas ces fragments de façon déterministe dans une longue sortie. Verdict : **NO-GO pour une production ou une publication autonome garantissant un HTML identique à Bacoco**.
 
-## Périmètre contrôlé
+Le kit reste utilisable en recette avec arrêt fermé : si la conformité n’est pas établie, l’Assistant doit répondre `A_COMPLETER — HTML canonique non établi` sans afficher de code.
 
-- nouveau Projet DINUM distinct : `Newsletter SNUM - Validation V5.8 - Blocs canoniques` ;
-- prompt système V5.8 et six fichiers Markdown téléversés ;
-- génération du 14 octobre 2026 sur la fenêtre du 3 au 13 octobre 2026 inclus ;
-- correction dans la conversation du Projet, sans Web ;
-- nouvelle génération depuis une conversation vide après remplacement du prompt système et des six ressources du Projet ;
-- extraction des deux sorties HTML, rendu local, comparaison visuelle avec GitHub Pages et contrôles déterministes ;
-- aucune publication de newsletter et aucun envoi d’e-mail pendant la recette.
+## Solution progressive livrée
 
-## Résultats dans l’Assistant DINUM
+- prompt système inférieur à 4 000 caractères ;
+- index `05-INDEX-HTML.md` ;
+- coque répartie entre `06-COQUE-DEBUT.md` et `07-COQUE-FIN.md` ;
+- carte essentielle dans `08-BLOC-ESSENTIEL.md` ;
+- blocs de rubrique, surveillance et vide dans `09-BLOCS-RUBRIQUES.md` ;
+- ZIP `kit-dinum-snum-v5-8-progressif-8-fichiers.zip` ;
+- protocole en quatre messages : collecte, validation, canon, rendu ;
+- validateur renforcé sur les titres exacts de rubrique.
 
-### Premier passage
+Les fragments sont générés depuis `05-BLOCS-HTML-CANONIQUES.md`, qui reste la source unique.
 
-Le HTML contient quatre marqueurs `@@...@@`, des numéros de section incohérents et une enveloppe `ia` non canonique. Une source datée du 16 septembre 2026 est retenue hors de la fenêtre demandée, alors que le dossier privé affirme le contraire.
+## Recettes réelles du 14 octobre 2026
 
-Le validateur retourne :
+### Chargement progressif
 
-```text
-SECTION_NUMBERS: les numéros de section ne sont pas continus
-RUBRIC_WRAPPER_IA: l’enveloppe de la rubrique ia n’est pas canonique
-UNRESOLVED_MARKER: un marqueur @@...@@ subsiste
-```
+Deux conversations distinctes ont retrouvé `SNUM_CANON_V58_INDEX_START` et les six paires de jetons. La limite des 4 000 caractères n’empêche donc plus le chargement du canon.
 
-Nu HTML Checker signale aussi des balises `div` non fermées.
+### Génération en deux phases
 
-### Second passage
+Le canon a été retrouvé, puis un HTML complet a été produit. Le contrôle a néanmoins relevé des sources hors fenêtre, des libellés de rubrique non canoniques et une navigation trop large.
 
-La correction élimine les marqueurs et produit un HTML généralement valide, mais seulement deux cartes dans « L’essentiel », deux identifiants de rubrique inventés et une navigation réduite aux archives.
+[Conversation de recette](https://assistant.numerique.gouv.fr/chat/88b774da-c07b-4b78-a5bb-22739def300f)
 
-Le validateur retourne :
+### Durcissement des dates
 
-```text
-ESSENTIALS_CARD_COUNT: L’essentiel doit contenir exactement trois cartes
-UNKNOWN_RUBRIC_ID: identifiants de rubrique non canoniques : formation_continue, octobre_numerique
-```
+Après renforcement, l’Assistant a d’abord déclaré à tort le 6 octobre hors d’une fenêtre allant du 3 au 13 octobre. Une phase d’audit a corrigé l’arithmétique, mais la revue visible est restée incomplète.
 
-Nu HTML Checker ne remonte aucune erreur, seulement trois avertissements de rôles ARIA redondants. La validité générale ne démontre donc pas la fidélité au gabarit.
+[Conversation de durcissement](https://assistant.numerique.gouv.fr/chat/066f718b-db2f-432c-a576-ec96104ebb57)
 
-### Troisième passage après renforcement
+### Séparation collecte, validation, canon et rendu
 
-Le prompt système final et les six ressources V5.8 ont été remplacés dans le Projet, puis la même demande a été rejouée depuis une conversation neuve avec Web activé.
+La collecte structurée a produit cinq candidats. La validation sans Web a conservé trois sources et écarté une incohérence et un doublon. Un premier rendu, séparé de la collecte, a reconstruit un HTML non canonique.
 
-L’Assistant n’a retenu aucune source admissible et n’a produit aucun code HTML. Il a affiché exactement :
+Le canon a alors été rechargé juste avant un nouveau rendu. Le garde-fou a refusé la sortie et affiché :
 
 ```text
 A_COMPLETER — HTML canonique non établi
 ```
 
-Le garde-fou d’arrêt fermé fonctionne donc dans ce scénario : une collecte insuffisante ne débouche plus sur un HTML inventé ou non canonique. Ce résultat ne démontre toutefois pas que l’Assistant sait produire un HTML complet identique au dépôt lorsqu’il trouve des articles. Le verdict reste **NO-GO pour une production ou une publication autonome**.
+Cet arrêt est préférable au HTML inventé. Il démontre cependant que l’Assistant ne garantit pas l’assemblage littéral, même quand les fragments sont indexés et retrouvés.
 
-[Ouvrir la conversation du troisième passage](https://assistant.numerique.gouv.fr/chat/de8a1439-402f-44b0-9d53-f6c0f47998b3/)
+[Conversation en phases séparées](https://assistant.numerique.gouv.fr/chat/4dddefda-e5da-4736-b4ca-9464e8b5c9dd)
 
 ## Contrôles locaux
 
-- six tests unitaires réussis ;
-- le gabarit compact `05-BLOCS-HTML-CANONIQUES.md` génère localement le même HTML que `03-GABARIT-HTML.md` ;
-- le validateur rejette désormais les identifiants de rubrique non canoniques ;
-- le prompt système mesure 2 060 caractères, saut final inclus ;
-- `ruff` n’était pas disponible dans le `PATH` ; les tests Python et la compilation restent exécutés séparément ;
-- aucun audit RGAA complet n’a été réalisé.
+- prompt système mesuré à 3 715 caractères et plus grand fragment à 3 838 caractères ;
+- fragments recomposés et comparés au canon source ;
+- contenu exact du ZIP contrôlé ;
+- scripts Python compilés ;
+- treize tests unitaires réussis après la documentation finale ;
+- contrôle d’accents exécuté sur les Markdown modifiés ;
+- `git diff --check` exécuté ;
+- aucun audit RGAA complet réalisé.
 
-## Évolution appliquée et rejouée
+Le ZIP final porte l’empreinte SHA-256 `11dcbc556a647ee22ae6bcfbd4331026a0405e7ab7ef907304e4a97b8809e431`.
 
-Les instructions exigent maintenant une recherche des blocs dans les ressources du Projet, jamais sur le Web, une seconde passe explicite et un arrêt fermé dès qu’un marqueur, une enveloppe, un identifiant ou un compte de cartes reste incorrect.
+## Limite et décision
 
-Cette évolution a été contrôlée localement puis rejouée dans l’Assistant DINUM depuis une conversation neuve. L’arrêt fermé est observé. La production d’un HTML complet fidèle n’est pas encore démontrée.
+La contrainte technique n’est plus la taille du prompt. La limite restante est comportementale : la recherche documentaire peut retrouver un fragment, mais la génération ne garantit ni sa conservation exacte dans le contexte ni sa copie littérale.
+
+Sans outil déterministe externe à l’Assistant, l’identité HTML avec Bacoco ne peut pas être promise. Le métier peut utiliser la recette progressive pour préparer et contrôler une édition, mais doit conserver `A_COMPLETER` tant qu’un contrôle extérieur n’a pas validé le HTML.
 
 ## Preuves
 
-- guide : `_documentation/validation-v5.8-assistant-only-2026-10-14/GUIDE-VALIDATION-ASSISTANT-DINUM-V5.8-ASSISTANT-ONLY.md` ;
-- première sortie : `_documentation/validation-v5.8-assistant-only-2026-10-14/assistant-output.html` ;
-- seconde sortie : `_documentation/validation-v5.8-assistant-only-2026-10-14/assistant-output-second-pass.html` ;
-- troisième sortie : `_documentation/validation-v5.8-assistant-only-2026-10-14/assistant-output-final-fail-closed.md` ;
-- captures : `_documentation/validation-v5.8-assistant-only-2026-10-14/captures/`.
+- [notice et pas à pas](./NOTICE-V5.8.md) ;
+- [compte rendu progressif](./_documentation/validation-v5.8-progressive-2026-10-14/RESULTAT-RECETTE-PROGRESSIVE.md) ;
+- [source canonique](./05-BLOCS-HTML-CANONIQUES.md) ;
+- [rapport du test monobloc](./_documentation/validation-v5.8-monobloc-2026-10-14/RESULTAT-RECETTE-MONOBLOC.md).

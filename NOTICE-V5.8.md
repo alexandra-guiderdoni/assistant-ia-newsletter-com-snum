@@ -1,193 +1,107 @@
-# Configurer l’Assistant DINUM pour la revue SNUM V5.8
+# Configurer l’Assistant DINUM pour la revue SNUM V5.8 progressive
 
-Ce guide permet à une personne métier de créer son Projet dans l’Assistant DINUM et d’obtenir la revue, le HTML complet ou un arrêt explicite directement dans le chat. Aucun script, terminal, dépôt GitHub ou outil local n’est nécessaire sur son poste.
+Ce guide permet de configurer un Projet dans l’Assistant DINUM sans script, terminal ni accès GitHub sur le poste métier. La sortie reste dans le chat.
 
-## Résultat attendu
+## Verdict vérifié
 
-La réponse finale apparaît dans une seule conversation, dans cet ordre :
+La limite de 4 000 caractères du champ **Instructions (expérimental)** est contournée : le prompt système mesure moins de 4 000 caractères et le canon HTML est réparti en fragments Markdown indexés.
 
-1. `REVUE` ;
-2. `HTML COMPLET` ;
-3. `DOSSIER PRIVÉ`.
+La récupération des six fragments a été observée deux fois dans l’Assistant. En revanche, leur copie littérale dans une longue réponse reste non déterministe. La livraison est donc :
 
-Le chat est le canal de livraison. La V5.8 ne publie pas sur GitHub Pages et n’envoie pas de courriel.
+- exploitable pour une recette assistée ;
+- sûre grâce à l’arrêt `A_COMPLETER — HTML canonique non établi` ;
+- **NO-GO pour une production autonome garantissant un HTML identique à Bacoco**.
 
-Le modèle peut encore s’écarter du gabarit malgré son auto-contrôle. Si le HTML canonique n’est pas établi, la sortie sûre est :
+Le garde-fou est volontaire : un arrêt explicite vaut mieux qu’un HTML inventé.
 
-```text
-A_COMPLETER — HTML canonique non établi
-```
+## Fichiers à utiliser
 
-Cette sortie constitue un arrêt contrôlé, pas une newsletter publiable.
+Utiliser le paquet `kit-dinum-snum-v5-8-progressif-8-fichiers.zip` et le prompt `PROMPT-SYSTEME-SNUM-V5.8.md`.
 
-## Choisir le bon paquet source
-
-Utiliser `kit-dinum-snum-v5-8-assistant-only-6-fichiers.zip`.
-
-Le paquet `kit-dinum-snum-v5-8-production-5-fichiers.zip` reste une archive V5.8, mais il ne contient pas `05-BLOCS-HTML-CANONIQUES.md`. Il ne suffit donc pas, seul, pour le parcours Assistant-only.
-
-Préparer également le fichier `PROMPT-SYSTEME-SNUM-V5.8.md`, situé à côté du ZIP dans le code source.
-
-## Étape 1 — Extraire le paquet
-
-Décompresser le ZIP dans un dossier de travail. Le dossier doit contenir exactement ces six fichiers :
+Après extraction, téléverser exactement :
 
 1. `00-PROMPT-PROJET.md` ;
 2. `01-ETAT-HISTORIQUE.md` ;
 3. `02-METHODE-EDITORIALE.md` ;
-4. `03-GABARIT-HTML.md` ;
-5. `04-RELAIS-HUMAIN.md` ;
-6. `05-BLOCS-HTML-CANONIQUES.md`.
+4. `05-INDEX-HTML.md` ;
+5. `06-COQUE-DEBUT.md` ;
+6. `07-COQUE-FIN.md` ;
+7. `08-BLOC-ESSENTIEL.md` ;
+8. `09-BLOCS-RUBRIQUES.md`.
 
-Ne pas téléverser le ZIP lui-même. Ne pas ajouter `_documentation/prompt-loic.md` : il archive un ancien prompt de planification et ne remplace pas le prompt système V5.8.
+`05-BLOCS-HTML-CANONIQUES.md` reste la source locale unique. Les fichiers `05` à `09` du paquet progressif sont générés depuis cette source ; ils ne doivent pas être modifiés séparément.
 
-## Étape 2 — Créer un Projet
+## Créer le Projet
 
 1. Ouvrir <https://assistant.numerique.gouv.fr/>.
-2. Ouvrir le panneau de gauche.
-3. Choisir **Nouveau projet**.
-4. Donner un nom explicite, par exemple `Newsletter SNUM - Production V5.8`.
+2. Ouvrir le panneau de gauche, puis choisir **Nouveau projet**.
+3. Donner un nom explicite au Projet.
+4. Copier intégralement `PROMPT-SYSTEME-SNUM-V5.8.md` dans **Instructions (expérimental)**.
+5. Vérifier que le champ n’est pas tronqué et se termine par `N’affirme aucun contrôle non exécuté.`
+6. Ajouter les huit fichiers Markdown.
+7. Créer le Projet et attendre la disparition du message d’indexation.
+8. Ouvrir une conversation depuis ce Projet.
 
-Créer un Projet neuf évite de mélanger la V5.8 avec d’anciennes instructions ou pièces jointes.
+Les captures de l’interface restent disponibles dans [le guide de validation précédent](./_documentation/validation-v5.8-2026-10-14/GUIDE-VALIDATION-ASSISTANT-DINUM-V5.8.md).
 
-![Projet et conversation dans l’Assistant](./_documentation/validation-v5.8-2026-10-14/captures/02-projet-et-conversation.png)
+## Recette progressive en quatre messages
 
-## Étape 3 — Ajouter le prompt système
+Les quatre messages doivent être envoyés dans la même conversation. Le canon est chargé en troisième position, juste avant le rendu : un chargement effectué trop tôt se dégrade dans le contexte.
 
-1. Ouvrir `PROMPT-SYSTEME-SNUM-V5.8.md` depuis le code source.
-2. Copier tout son contenu, de la première à la dernière ligne.
-3. Le coller dans **Instructions (expérimental)**.
-4. Ne pas le résumer, le reformuler ni retirer les blocs HTML, les marqueurs ou la règle d’arrêt.
-
-Le premier contrôle consiste à retrouver dans le champ les expressions suivantes :
-
-- `05-BLOCS-HTML-CANONIQUES.md` ;
-- `RÈGLE-DE-COPIE` ;
-- `A_COMPLETER — HTML canonique non établi` ;
-- `## REVUE`, `## HTML COMPLET` et `## DOSSIER PRIVÉ`.
-
-## Étape 4 — Téléverser les six fichiers
-
-1. Dans la zone **Fichiers**, choisir **Ajouter des fichiers**.
-2. Sélectionner ensemble les six fichiers Markdown extraits.
-3. Vérifier leurs six noms dans le formulaire.
-4. Choisir **Créer un projet**.
-5. Attendre la disparition du message indiquant que les fichiers sont en cours d’indexation.
-
-Ne pas envoyer de demande tant que l’interface annonce que les fichiers seront ignorés : la conversation partirait sans sa base de connaissances.
-
-## Étape 5 — Ouvrir une conversation liée au Projet
-
-Utiliser **Nouvelle conversation** depuis le Projet créé. Dans le panneau de gauche, la conversation doit apparaître sous le nom du Projet.
-
-Une conversation générale créée hors du Projet ne garantit pas l’accès aux six fichiers.
-
-![Conversation neuve](./_documentation/validation-v5.8-2026-10-14/captures/01-conversation-neuve.png)
-
-## Étape 6 — Préparer les trois dates
-
-Avant l’envoi, déterminer :
-
-- la date de l’édition ;
-- le début inclus de la collecte ;
-- la fin incluse de la collecte.
-
-Ne jamais laisser les variables entre accolades dans la demande. Si la fenêtre n’est pas connue, la faire confirmer par le responsable éditorial avant la génération.
-
-## Étape 7 — Activer la recherche Web
-
-Dans le menu des actions de la zone de saisie, activer **Rechercher sur le web** lorsqu’elle est proposée. Le démarrage effectif se reconnaît au message `Recherche…`.
-
-Si le Web n’est pas disponible, ne pas prétendre qu’une collecte réelle a été faite. La conversation peut seulement traiter des sources intégrales fournies et correctement datées.
-
-## Étape 8 — Envoyer la demande
-
-Remplacer les trois dates dans ce modèle, puis l’envoyer en un seul message :
+### 1. Collecte — Web activé
 
 ```text
-Prépare à partir de zéro la revue SNUM du {{DATE_EDITION_LONGUE}}, pour les informations publiées du {{DATE_DEBUT}} au {{DATE_FIN}} inclus, heure de Paris. Lance la recherche Web et réalise toute la production selon le Projet. Livre la revue, un unique bloc HTML complet strictement fidèle aux blocs canoniques et le dossier privé directement dans ce chat. Ne reprends aucun ancien brouillon. Ne publie rien et n’envoie rien.
+PHASE COLLECTE. Utilise le Web. Édition du {{DATE_EDITION}}, fenêtre du {{DEBUT}} au {{FIN}} inclus. Ne rédige ni REVUE ni HTML. Recherche et ouvre les sources publiques intégralement accessibles. Réponds sous CANDIDATS avec une liste numérotée ; pour chaque candidat : titre, URL canonique, date de publication explicitement lue sur la page au format AAAA-MM-JJ ou DATE_INCONNUE, accès intégral OUI/NON, rubrique exacte et fait essentiel. Ne décide pas encore si la date est dans la fenêtre. Termine par COLLECTE_TERMINEE, sans question.
 ```
 
-Exemple renseigné :
+### 2. Validation — Web désactivé
 
 ```text
-Prépare à partir de zéro la revue SNUM du 14 octobre 2026, pour les informations publiées du 3 octobre 2026 au 13 octobre 2026 inclus, heure de Paris. Lance la recherche Web et réalise toute la production selon le Projet. Livre la revue, un unique bloc HTML complet strictement fidèle aux blocs canoniques et le dossier privé directement dans ce chat. Ne reprends aucun ancien brouillon. Ne publie rien et n’envoie rien.
+PHASE VALIDATION. N’utilise pas le Web et ne rédige ni REVUE ni HTML. Relis uniquement CANDIDATS. Applique exactement {{DEBUT_ISO}} <= DATE_PUBLICATION <= {{FIN_ISO}} et exige accès intégral OUI. Rejette DATE_INCONNUE, incohérence manifeste et doublon ; conserve une seule URL canonique par événement. Réponds sous SOURCES_VALIDES avec titre, URL, date, rubrique exacte et fait essentiel ; puis SOURCES_EXCLUES avec chaque motif ; termine par VALIDATION_TERMINEE. Ne pose aucune question.
 ```
 
-## Étape 9 — Attendre la livraison complète
+### 3. Canon — Web désactivé
 
-Ne pas interrompre la conversation pendant `Lecture des instructions du projet…` ou `Recherche…`. La livraison est terminée lorsque le bouton **Stop** disparaît et que la zone de saisie redevient disponible.
+```text
+PHASE CANON. N’utilise pas le Web. Recherche SNUM_CANON_V58_INDEX_START dans les ressources du Projet, suis READ_NEXT et charge intégralement les fragments 06, 07, 08 et 09. Vérifie les six paires START/END et conserve littéralement les blocs html. Ne rends pas encore la newsletter. Réponds seulement CANON_HTML_PRET puis les six paires, ou CANON_HTML_INCOMPLET puis le jeton manquant.
+```
 
-![Réponse finalisée dans le chat](./_documentation/validation-v5.8-2026-10-14/captures/03-reponse-finalisee.png)
+Ne continuer que si la réponse contient `CANON_HTML_PRET` et les six paires :
 
-## Étape 10 — Contrôler avant utilisation
+- `SNUM_SHELL_HEAD_START / SNUM_SHELL_HEAD_END` ;
+- `SNUM_SHELL_TAIL_START / SNUM_SHELL_TAIL_END` ;
+- `SNUM_ESSENTIAL_START / SNUM_ESSENTIAL_END` ;
+- `SNUM_RUBRIC_START / SNUM_RUBRIC_END` ;
+- `SNUM_WATCH_START / SNUM_WATCH_END` ;
+- `SNUM_EMPTY_START / SNUM_EMPTY_END`.
 
-La vérification métier minimale porte sur la réponse exacte du chat :
+### 4. Rendu — Web désactivé
 
-- les trois titres sont présents dans le bon ordre ;
-- chaque source retenue est datée dans la fenêtre et intégralement accessible ;
+```text
+PHASE RENDU. N’utilise pas le Web. Utilise exclusivement SOURCES_VALIDES et les fragments canoniques chargés au tour précédent. Copie littéralement 06, insère les blocs 08 et 09 nécessaires, puis 07 ; remplace seulement les marqueurs @@. Ne crée aucune balise ni classe absente des fragments. Livre exactement ## REVUE, ## HTML COMPLET avec un unique bloc html de <!doctype html> à </html>, puis ## DOSSIER PRIVÉ. Avant affichage, vérifie le title, /revue-presse-snum/styles.css?v=20260917, l’absence de marqueur @@, fr-theme-modal et les scripts DSFR 1.15.2. Si un point n’est pas établi, réponds A_COMPLETER — HTML canonique non établi sans afficher de code. Ne pose aucune question.
+```
+
+## Contrôle métier minimal
+
+Ne pas utiliser le HTML si l’un de ces contrôles échoue :
+
+- les trois titres sont présents dans l’ordre attendu ;
+- chaque source est dans `SOURCES_VALIDES` ;
 - aucun marqueur `@@` ne subsiste ;
-- à partir de trois événements, « L’essentiel » contient exactement trois cartes ;
-- seules les rubriques `numerique`, `ia`, `commande`, `rh` et `bercy` sont utilisées ;
-- chaque rubrique affichée figure aussi dans la navigation ;
-- un seul `h1`, trois accès rapides et les deux scripts DSFR 1.15.2 sont présents ;
-- le modal `fr-theme-modal` se trouve après le footer ;
-- aucune affirmation de contrôle n’est contredite par le texte ou le HTML.
+- un seul bloc HTML va de `<!doctype html>` à `</html>` ;
+- le titre est `Revue de presse du … - SNUM` ;
+- la feuille `/revue-presse-snum/styles.css?v=20260917` est présente ;
+- les trois accès rapides, un seul `h1` et le modal `fr-theme-modal` sont présents ;
+- les scripts DSFR 1.15.2 module et nomodule sont présents ;
+- les rubriques et la navigation utilisent uniquement les libellés canoniques.
 
-Si un seul de ces points reste incertain, conserver l’état `A_COMPLETER` et demander un contrôle extérieur. L’auto-évaluation du modèle n’est pas une preuve de conformité.
+Si l’Assistant renvoie `A_COMPLETER`, le garde-fou a fonctionné. Ce résultat nécessite une reprise ou un contrôle extérieur ; il ne doit pas être présenté comme une édition prête.
 
-## Incidents courants
+## Preuves de la recette du 14 octobre 2026
 
-### Les fichiers sont annoncés comme ignorés
+- [conversation à deux phases : canon retrouvé, écarts éditoriaux](https://assistant.numerique.gouv.fr/chat/88b774da-c07b-4b78-a5bb-22739def300f) ;
+- [conversation de durcissement : date corrigée après audit](https://assistant.numerique.gouv.fr/chat/066f718b-db2f-432c-a576-ec96104ebb57) ;
+- [conversation en phases séparées : collecte et validation réussies, rendu arrêté proprement](https://assistant.numerique.gouv.fr/chat/4dddefda-e5da-4736-b4ca-9464e8b5c9dd) ;
+- [compte rendu détaillé](./_documentation/validation-v5.8-progressive-2026-10-14/RESULTAT-RECETTE-PROGRESSIVE.md).
 
-Attendre la fin de l’indexation. Si le message persiste, ouvrir une nouvelle conversation depuis le Projet après indexation.
-
-### L’Assistant demande encore la fenêtre
-
-Répondre avec les deux bornes incluses. Ne pas lui demander de les inventer depuis un ancien brouillon.
-
-### Le HTML contient des marqueurs ou des rubriques inventées
-
-Ne pas le corriger manuellement dans le chat et ne pas le publier. La réponse acceptable est l’arrêt `A_COMPLETER — HTML canonique non établi`.
-
-### La réponse ne contient pas de HTML
-
-Lire `DOSSIER PRIVÉ`. Si le modèle explique qu’il ne peut pas établir le HTML canonique, le garde-fou a fonctionné. Ce résultat doit être repris ou contrôlé, pas présenté comme une édition prête.
-
-## Recette autonome du 14 octobre 2026
-
-Un Projet neuf a été créé avec le prompt source exact et les six fichiers. La demande portait sur l’édition du 14 octobre et la fenêtre du 3 au 13 octobre 2026 inclus. L’envoi a attendu la fin de l’indexation et la recherche Web s’est exécutée.
-
-[Ouvrir la conversation de recette](https://assistant.numerique.gouv.fr/chat/33dab78f-39a8-4140-b364-10c9023b8e20/)
-
-L’Assistant n’a retenu aucun événement. Il a déclaré dans `DOSSIER PRIVÉ` que le bloc `COQUE` n’avait pas été retrouvé et que le HTML était une reconstruction partielle. Il a pourtant affiché 5 454 caractères de HTML au lieu de l’arrêt obligatoire.
-
-Le contrôle du bloc livré constate notamment :
-
-- dépendances `cdn.gouv.fr` non canoniques à la place de `cdn.jsdelivr.net` ;
-- absence du composant `fr-skiplinks` ;
-- absence de `<main id="main">` ;
-- absence du script module `dsfr.module.min.js` ;
-- présence du script nomodule et du modal de thème ;
-- aucun marqueur `@@` restant.
-
-Verdict : le canal de livraison dans le chat fonctionne, mais cette recette est `NO-GO` pour une acceptation autonome. Le statut `A_COMPLETER` est cohérent ; le HTML affiché ne doit pas être utilisé.
-
-## Tentative de prompt monobloc
-
-Une tentative complémentaire a placé directement les blocs HTML canoniques dans le prompt système. Elle ne peut pas être livrée : le champ **Instructions (expérimental)** de l’Assistant DINUM accepte au maximum 4 000 caractères, alors que le prompt obtenu en compte 14 466.
-
-Après collage, l’interface a conservé exactement 4 000 caractères et a tronqué le texte avant `<!doctype html>`. Même la seule coque canonique compactée compte 5 464 caractères. Le Projet invalide a été fermé sans être créé et aucune conversation n’a été lancée avec ce contexte incomplet.
-
-La V5.8 reste donc fondée sur le prompt court et les six fichiers de connaissance. Cette limite n’annule pas le garde-fou `A_COMPLETER`, mais confirme que l’identité autonome du HTML avec Bacoco n’est pas garantie par le prompt système seul.
-
-Le protocole et les mesures sont consignés dans [le résultat de la recette monobloc](./_documentation/validation-v5.8-monobloc-2026-10-14/RESULTAT-RECETTE-MONOBLOC.md).
-
-## Références et preuves
-
-- [Prompt système V5.8](./PROMPT-SYSTEME-SNUM-V5.8.md)
-- [Blocs HTML canoniques](./05-BLOCS-HTML-CANONIQUES.md)
-- [Guide de validation Assistant-only](./_documentation/validation-v5.8-assistant-only-2026-10-14/GUIDE-VALIDATION-ASSISTANT-DINUM-V5.8-ASSISTANT-ONLY.md)
-- [Rendu Bacoco de référence](./_documentation/validation-v5.8-assistant-only-2026-10-14/captures/02-reference-bacoco.png)
-
-Le résultat d’une recette prouve seulement le cas exécuté. Il ne garantit pas que toutes les futures générations reproduiront littéralement le gabarit Bacoco.
+Une recette prouve seulement le cas exécuté. L’autoévaluation de l’Assistant ne remplace pas un validateur indépendant ni un audit RGAA.

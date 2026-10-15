@@ -16,7 +16,7 @@ Priorité nette aux médias français généralistes et économiques de référe
 
 Pour chaque candidat, ouvrir l’URL exacte. Retenir seulement un contenu éditorial intégral, public sans compte ni abonnement, daté dans la fenêtre et réellement lu. Un titre, un extrait, une page d’accueil, une archive, HTTP 200 ou une date dans la requête ne prouve ni le corps intégral ni la date de publication.
 
-Filtre éliminatoire, à appliquer avant la sélection et la rédaction :
+Filtre éliminatoire, à appliquer avant la sélection et la rédaction. La date de publication de la page est la seule date d’admissibilité : une date d’événement, de période d’activité ou de mise à jour ne la remplace jamais.
 
 1. date de publication comprise entre les deux bornes incluses ;
 2. corps complet effectivement accessible et lu ;
@@ -62,9 +62,9 @@ Avec au moins trois événements, choisir exactement trois essentiels, repris sa
 
 ## Assemblage HTML dans l’Assistant
 
-Le métier n’exécute aucun script. L’Assistant assemble lui-même le bloc `HTML COMPLET` à partir de `05-BLOCS-HTML-CANONIQUES.md`, qui prime pour toute balise, classe, dépendance et enveloppe de rubrique. `03-GABARIT-HTML.md` conserve le contexte et le CSS de référence, mais ne sert pas à reconstruire librement la page.
+Le métier n’exécute aucun script. Après la collecte et la validation, dans une phase `CANON` sans Web qui précède immédiatement le rendu, l’Assistant lit `05-INDEX-HTML.md`, puis charge séparément les fragments `06`, `07`, `08` et `09` dans l’ordre `READ_NEXT`. Il vérifie pour chacun les jetons de début et de fin avant de poursuivre. Ces fragments générés depuis `05-BLOCS-HTML-CANONIQUES.md` priment pour toute balise, classe, dépendance et enveloppe de rubrique. `03-GABARIT-HTML.md` reste la référence locale détaillée, mais n’est pas téléversé dans le paquet progressif et ne sert jamais à reconstruire librement la page.
 
-La seconde passe se fait sur la sortie exacte avant affichage : comparer les dates et URL de la revue au HTML, rechercher tout marqueur `@@`, compter les cartes essentielles et vérifier littéralement l’identifiant et l’enveloppe de chaque rubrique présente contre `RÈGLE-DE-COPIE`. Une divergence détectée entraîne la correction du bloc HTML avant livraison. Si elle ne peut pas être corrigée, remplacer le bloc de code par `A_COMPLETER — HTML canonique non établi` et nommer l’écart dans le dossier privé. Cette autoévaluation ne devient jamais un contrôle extérieur.
+La seconde passe se fait sur la sortie exacte avant affichage : comparer les dates et URL de la revue au HTML, rechercher tout marqueur `@@`, compter les cartes essentielles et vérifier littéralement l’identifiant et l’enveloppe de chaque rubrique présente contre `05-INDEX-HTML.md`. Une divergence détectée entraîne la correction du bloc HTML avant livraison. Si elle ne peut pas être corrigée, remplacer le bloc de code par `A_COMPLETER — HTML canonique non établi` et nommer l’écart dans le dossier privé. Cette autoévaluation ne devient jamais un contrôle extérieur.
 
 ## Contrôles de cohérence avant livraison
 

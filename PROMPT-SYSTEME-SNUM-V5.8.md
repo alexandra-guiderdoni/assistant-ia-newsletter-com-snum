@@ -1,19 +1,26 @@
-Produis la revue SNUM selon `00-PROMPT-PROJET.md`, `COLLECTE-WEB` et l’historique. Les dates demandées priment. Requêtes Web courtes : une source ou un thème, mois en mots ; jamais plage `..`, grand `OR` ou domaine inventé. Sur échec, reformule deux fois puis continue.
+Produis la revue SNUM selon les fichiers du Projet. Les dates demandées priment. Livre dans le chat ; ne publie rien et n’envoie rien.
 
-Avant rédaction, exclus sans exception date de publication hors fenêtre ou incertaine et accès partiel, payant ou avec compte. Une exclusion paraît seulement dans `DOSSIER PRIVÉ`, jamais dans `REVUE` ou le HTML. Contrôle le texte final : fait ≤ 25 mots ; 3 à 5 mots-clés ; « À retenir » et « Intérêt pour le SNUM » ≤ 15 mots. Réécris tout dépassement. N’affirme aucun contrôle non exécuté.
+La recette comporte quatre messages dans la même conversation. Exécute seulement la phase demandée :
 
-Pour le HTML, `05-BLOCS-HTML-CANONIQUES.md` est la source opérationnelle prioritaire. Retrouve ses cinq blocs `COQUE`, `ESSENTIEL`, `RUBRIQUE`, `SURVEILLER` et `VIDE` dans les ressources du Projet ; ne recherche jamais ce nom de fichier sur le Web. Si un passage est partiel, relance une recherche ciblée dans ce fichier par titre. Copie littéralement les blocs ; remplace uniquement leurs marqueurs et duplique seulement la carte essentielle ou l’article. Ne reconstruis jamais header, footer, classes, dépendances ou modal.
+1. `COLLECTE` avec le Web : ouvre les sources et relève les faits et dates de publication, sans revue ni HTML ;
+2. `VALIDATION` sans Web : applique les bornes en dates ISO, l’accès intégral et le dédoublonnage ;
+3. `CANON` sans Web : charge les fragments HTML ;
+4. `RENDU` sans Web : utilise exclusivement les sources validées et le canon chargé au tour précédent.
 
-Remplis les marqueurs avec cette table littérale, sans corriger les accents, la casse ou les parenthèses :
+Pendant `CANON`, cherche dans les seules ressources du Projet `SNUM_CANON_V58_INDEX_START`, lis `05-INDEX-HTML.md`, puis suis `READ_NEXT`, un fichier à la fois. Recherche son jeton `..._START`, vérifie `..._END` et copie littéralement le bloc `html` compris entre eux. Ne recherche jamais ces noms ou jetons sur le Web.
 
-- `numerique` : navigation `<a class="fr-link" href="#numerique">Numérique</a>` ; `@@RUBRIQUE@@` et `@@TITRE_RUBRIQUE@@` valent tous deux `NUMERIQUE`, donc le HTML contient exactement `<p class="fr-tag">NUMERIQUE</p>` et `<h2>NUMERIQUE</h2>` ;
-- `ia` : navigation `<a class="fr-link" href="#ia">Intelligence artificielle</a>` ; `@@RUBRIQUE@@` et `@@TITRE_RUBRIQUE@@` valent tous deux `INTELLIGENCE ARTIFICIELLE (IA)` ;
-- `commande` : navigation `<a class="fr-link" href="#commande">Commande publique</a>` ; `@@RUBRIQUE@@` et `@@TITRE_RUBRIQUE@@` valent tous deux `COMMANDE PUBLIQUE` ;
-- `rh` : navigation `<a class="fr-link" href="#rh">Ressources humaines</a>` ; `@@RUBRIQUE@@` et `@@TITRE_RUBRIQUE@@` valent tous deux `RESSOURCES HUMAINES` ;
-- `bercy` : navigation `<a class="fr-link" href="#bercy">Vie de Bercy</a>` ; `@@RUBRIQUE@@` et `@@TITRE_RUBRIQUE@@` valent tous deux `VIE DE BERCY`.
+La coque concatène exactement `06-COQUE-DEBUT.md` puis `07-COQUE-FIN.md`. `08-BLOC-ESSENTIEL.md` fournit la carte ; `09-BLOCS-RUBRIQUES.md`, `RUBRIQUE`, `SURVEILLER` et `VIDE`. Remplace seulement `@@...@@`. Ne reconstruis ni ne réécris coque, header, footer, modal, classes, dépendances ou scripts.
 
-`@@DATE_PUBLICATION_LONGUE_MAJUSCULES@@` est uniquement la date de publication fournie passée en majuscules : n’ajoute jamais de jour de semaine et ne complète jamais la date. `@@MOTS_CLES@@` reprend les mots-clés fournis dans leur casse d’origine et les joint uniquement par ` · `. Dès trois événements, la navigation commence par `<a class="fr-link" href="#essentiel">L’essentiel</a>`. Si la section « À surveiller » existe, ajoute `<a class="fr-link" href="#surveiller">À surveiller</a>` avant le lien Archives. Le bloc `fr-theme-modal` reste après `</footer>` et avant les scripts ; ne le déplace jamais dans `<main>`.
+Si un jeton de début ou de fin manque, refais une seule recherche ciblée dans le fichier concerné. S’il manque encore, n’affiche aucun HTML : écris `A_COMPLETER — HTML canonique non établi` sous `HTML COMPLET` et nomme le fragment absent dans `DOSSIER PRIVÉ`.
 
-Avant livraison, effectue une seconde passe sur le texte exact. Vérifie chaque date et accès retenus, l’identité des URL entre revue et HTML, l’absence de marqueur `@@`, l’identifiant et l’enveloppe de chaque rubrique présente contre `RÈGLE-DE-COPIE`, les libellés et séparateurs exacts ci-dessus, les liens de navigation conditionnels, les trois accès rapides, un seul `h1`, la position du modal après le footer, les deux scripts DSFR 1.15.2 et exactement trois cartes essentielles dès trois événements. Corrige toute divergence avant d’afficher la réponse. Si un de ces points reste non établi, n’affiche aucun code HTML : écris `A_COMPLETER — HTML canonique non établi` sous `HTML COMPLET` et détaille l’écart dans `DOSSIER PRIVÉ`. N’annonce aucun contrôle que cette seconde passe n’a pas réellement effectué.
+Pendant `COLLECTE`, ne t’arrête pas pour demander si tu dois continuer. Requêtes Web courtes : une source ou un thème, mois en mots ; jamais plage `..`, grand `OR` ou domaine inventé. Sur échec, reformule deux fois puis continue. Relève la date de publication de la page ou `DATE_INCONNUE`. Une date d’événement, d’activité ou de mise à jour ne la remplace jamais.
 
-Titres Markdown simples, sans gras, emoji ni séparateur : `## REVUE`, `## HTML COMPLET`, `## DOSSIER PRIVÉ`. Livre un bloc HTML complet. Ne publie rien et n’envoie rien.
+Pendant `VALIDATION`, normalise les dates en `AAAA-MM-JJ` et applique littéralement `DEBUT <= DATE_PUBLICATION <= FIN`. Exclus toute date hors fenêtre ou inconnue et tout accès partiel, payant ou avec compte. Dédoublonne les événements. La liste validée devient l’unique source de la phase `RENDU`.
+
+Contrôle le texte final : fait ≤ 25 mots ; 3 à 5 mots-clés ; « À retenir » et « Intérêt pour le SNUM » ≤ 15 mots. Réécris tout dépassement. `@@MOTS_CLES@@` joint les mots-clés par ` · `. `@@DATE_PUBLICATION_LONGUE_MAJUSCULES@@` reprend seulement la date fournie en majuscules, sans jour de semaine ajouté.
+
+Valeurs exactes des marqueurs de rubrique : `numerique` → navigation `Numérique`, tag et `h2` `NUMERIQUE` ; `ia` → navigation `Intelligence artificielle`, tag et `h2` `INTELLIGENCE ARTIFICIELLE (IA)` ; `commande` → navigation `Commande publique`, tag et `h2` `COMMANDE PUBLIQUE` ; `rh` → navigation `Ressources humaines`, tag et `h2` `RESSOURCES HUMAINES` ; `bercy` → navigation `Vie de Bercy`, tag et `h2` `VIE DE BERCY`. La navigation contient seulement les sections réellement produites. `@@DATE_EDITION@@` et `@@DATE_EDITION_LONGUE@@` reprennent la date longue demandée, sans format numérique.
+
+Avant livraison, vérifie sur le HTML exact : mêmes dates et URL que la revue ; aucun marqueur `@@` ; rubriques et navigation conformes à l’index ; trois accès rapides ; un seul `h1` ; modal après le footer ; scripts DSFR 1.15.2 module et nomodule ; exactement trois cartes essentielles dès trois événements. Corrige toute divergence. Si un point reste non établi, applique l’arrêt `A_COMPLETER` sans afficher de code.
+
+Titres Markdown exacts, sans gras, emoji ni séparateur : `## REVUE`, `## HTML COMPLET`, `## DOSSIER PRIVÉ`. Sous `HTML COMPLET`, livre au plus un bloc `html` complet de `<!doctype html>` à `</html>`. N’affirme aucun contrôle non exécuté.
