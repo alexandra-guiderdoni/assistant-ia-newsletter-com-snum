@@ -1,4 +1,4 @@
-# Méthode éditoriale SNUM - V5.8
+# Méthode éditoriale SNUM - V5.9
 
 ## COLLECTE-WEB
 
@@ -6,7 +6,11 @@ Procéder par requêtes courtes et séparées : une source ou un thème par requ
 
 Domaines canoniques : `lemonde.fr`, `lesechos.fr`, `economie.gouv.fr`, `presse.economie.gouv.fr`, `numerique.gouv.fr`, `acteurspublics.fr`, `itforbusiness.fr`, `journaldunet.com` et `usine-digitale.fr`. Compléter avec `cnil.fr`, `cyber.gouv.fr`, `legifrance.gouv.fr`, `data.gouv.fr` et d’autres sources pertinentes réellement trouvées.
 
-Pour chaque rubrique, commencer sans filtre `site:`, puis cibler un domaine si nécessaire. Si une recherche échoue ou ne rend aucun résultat exploitable, la reformuler au plus deux fois : retirer le domaine, simplifier les mots ou chercher le titre présumé. Continuer les autres requêtes. Ne conclure à zéro événement qu’après avoir essayé plusieurs sources officielles et éditoriales distinctes.
+Pour chaque rubrique, commencer sans filtre `site:`, puis cibler un domaine si nécessaire. Exécuter au minimum dix requêtes distinctes : au moins deux par rubrique, dont une générale et une ciblée, réparties sur au moins cinq domaines réellement connus. Si une recherche échoue ou ne rend aucun résultat exploitable, la reformuler au plus deux fois : retirer le domaine, simplifier les mots ou chercher le titre présumé. Continuer les autres requêtes.
+
+Si la première passe produit moins de cinq candidats, effectuer une seconde passe ciblée sur les sources officielles et spécialisées qui n’ont pas encore été interrogées. Ne jamais inventer un candidat pour atteindre ce seuil.
+
+Avant `CANDIDATS`, produire `COUVERTURE_COLLECTE` avec une ligne par requête : rubrique, requête, domaine, résultat et URL effectivement ouverte. Répondre `COLLECTE_TERMINEE` seulement si les cinq rubriques, les dix requêtes distinctes, les cinq domaines et au moins cinq candidats sont établis. Sinon répondre `COLLECTE_INSUFFISANTE` avec les critères manquants ; ne pas présenter la collecte comme réussie.
 
 À partir des résultats, ouvrir chaque URL exacte. Une page ouverte et datée peut être retenue seulement après lecture du corps intégral. Consigner séparément les erreurs techniques, les résultats vides, les URL ouvertes et les exclusions. Ne jamais transformer une requête exécutée en preuve de lecture.
 
@@ -30,7 +34,15 @@ Un article payant reste exclu même si une copie est fournie. Une source complè
 
 La date de publication est distincte de la date de l’événement et de la mise à jour d’un jeu de données. L’hébergement sur `data.gouv.fr` ne rend pas le producteur officiel. Exclure les sources promotionnelles, dates incertaines, lectures partielles et doublons. Regrouper les articles sur le même événement.
 
-Avant de conclure à zéro événement, consigner les domaines, requêtes, URL exactes et causes d’exclusion. Ne jamais inventer une consultation, une capture, une balise canonique, une preuve ou un contrôle.
+Avant de conclure à une collecte insuffisante, consigner les domaines, requêtes, URL exactes et causes d’exclusion. Ne jamais inventer une consultation, une capture, une balise canonique, une preuve ou un contrôle.
+
+## Validation déterministe des dates
+
+La phase `VALIDATION` travaille uniquement sur la valeur brute fournie dans `CANDIDATS`. Pour chaque candidat, elle affiche une ligne `CONTROLE_DATES` comportant : date brute, format exact `AAAA-MM-JJ`, test de borne basse, test de borne haute, accès intégral et décision.
+
+Une source rejoint `SOURCES_VALIDES` seulement si le format, les deux bornes et l’accès valent tous `OUI`. Ne pas retirer une mention ajoutée à la date pour la rendre conforme : `2026-08-12 (modification)` n’est pas une date brute au format exact. `2026-10-02` est antérieur à `2026-10-03` ; `2026-10-15` est postérieur à `2026-10-13`.
+
+Avant `VALIDATION_TERMINEE`, vérifier que le nombre de sources valides plus le nombre de sources exclues égale le nombre de candidats. Une erreur de comptage, une source présente dans les deux listes ou une date hors fenêtre conservée bloque la suite.
 
 ## Sélection
 
@@ -58,13 +70,13 @@ Chaque événement contient :
 
 Compter les mots par espaces sur chaque phrase finale avant de produire le HTML. Réécrire toute phrase trop longue ; ne jamais annoncer un contrôle réussi sans avoir effectué ce comptage sur le texte livré. Les chiffres, dates, périmètres et réserves indispensables restent exacts. Distinguer les faits de la source des implications proposées pour le SNUM. Aucun emoji, slogan, promotion, rubrique artificielle, volume près du titre ou remplissage.
 
-Avec au moins trois événements, choisir exactement trois essentiels, repris sans duplication depuis les rubriques. Avec moins de trois, aucun essentiel. « À surveiller » reste facultatif et contient seulement des suivis courts, précis et utiles.
+Avec au moins trois événements, choisir exactement trois essentiels. Chaque essentiel est une mise en avant supplémentaire d’un événement qui reste aussi présent dans sa rubrique. Il ne compte pas comme un nouvel événement. Avec moins de trois, aucun essentiel. « À surveiller » reste facultatif et contient seulement des suivis courts, précis et utiles.
 
 ## Assemblage HTML dans l’Assistant
 
 Le métier n’exécute aucun script. Après la collecte et la validation, dans une phase `CANON` sans Web qui précède immédiatement le rendu, l’Assistant lit `05-INDEX-HTML.md`, puis charge séparément les fragments `06`, `07`, `08` et `09` dans l’ordre `READ_NEXT`. Il vérifie pour chacun les jetons de début et de fin avant de poursuivre. Ces fragments générés depuis `05-BLOCS-HTML-CANONIQUES.md` priment pour toute balise, classe, dépendance et enveloppe de rubrique. `03-GABARIT-HTML.md` reste la référence locale détaillée, mais n’est pas téléversé dans le paquet progressif et ne sert jamais à reconstruire librement la page.
 
-La seconde passe se fait sur la sortie exacte avant affichage : comparer les dates et URL de la revue au HTML, rechercher tout marqueur `@@`, compter les cartes essentielles et vérifier littéralement l’identifiant et l’enveloppe de chaque rubrique présente contre `05-INDEX-HTML.md`. Une divergence détectée entraîne la correction du bloc HTML avant livraison. Si elle ne peut pas être corrigée, remplacer le bloc de code par `A_COMPLETER — HTML canonique non établi` et nommer l’écart dans le dossier privé. Cette autoévaluation ne devient jamais un contrôle extérieur.
+La seconde passe se fait sur la sortie exacte avant affichage : comparer les dates et URL de la revue au HTML, rechercher tout marqueur `@@`, compter les cartes essentielles et vérifier littéralement l’identifiant et l’enveloppe de chaque rubrique présente contre `05-INDEX-HTML.md`. Chaque source valide doit apparaître une fois dans sa rubrique, y compris lorsqu’elle est aussi essentielle. Chaque lien `href="#id"` du menu de rubriques doit viser exactement une section `id="id"`, et chaque rubrique produite doit posséder exactement un lien dans ce menu. Une divergence détectée entraîne la correction du bloc HTML avant livraison. Si elle ne peut pas être corrigée, remplacer le bloc de code par `A_COMPLETER — HTML canonique non établi` et nommer l’écart dans le dossier privé. Cette autoévaluation ne devient jamais un contrôle extérieur.
 
 ## Contrôles de cohérence avant livraison
 

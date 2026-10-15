@@ -1,6 +1,6 @@
-# Index HTML canonique - V5.8 progressive
+# Index HTML canonique - V5.9 progressive
 
-SNUM_CANON_V58_INDEX_START
+SNUM_CANON_V59_INDEX_START
 
 ## READ_NEXT
 
@@ -21,8 +21,12 @@ Rubriques exactes :
 - `rh` : navigation `Ressources humaines`, titre et tag `RESSOURCES HUMAINES`, enveloppe `<section id="rh" class="section-muted">` ;
 - `bercy` : navigation `Vie de Bercy`, titre et tag `VIE DE BERCY`, enveloppe `<section id="bercy">`.
 
-À partir de trois événements, insérer exactement trois cartes essentielles et ajouter la navigation `L’essentiel`. Ajouter `À surveiller` seulement si sa section existe. Ne jamais inventer une autre rubrique.
+Avec moins de trois événements, ne produire ni section ni lien `L’essentiel`. À partir de trois événements, insérer exactement trois cartes essentielles et ajouter la navigation `L’essentiel`. Ajouter `À surveiller` seulement si sa section existe. Ne jamais inventer une autre rubrique.
+
+Chaque source valide figure une fois dans sa rubrique. Une carte essentielle est une mise en avant supplémentaire et ne remplace jamais l’article de rubrique.
+
+Pour chaque lien `href="#id"` du menu de rubriques, produire exactement une section `id="id"`. Chaque rubrique produite possède exactement un lien dans ce menu.
 
 Si un jeton de fin manque après une nouvelle recherche ciblée, arrêter avec `A_COMPLETER — HTML canonique non établi` sans produire de code HTML.
 
-SNUM_CANON_V58_INDEX_END
+SNUM_CANON_V59_INDEX_END

@@ -1,4 +1,4 @@
-# Blocs HTML canoniques - V5.8 Assistant-only
+# Blocs HTML canoniques - V5.9 Assistant-only
 
 Ce fichier est la source opérationnelle unique du bloc `HTML COMPLET` dans l’Assistant DINUM. Il contient seulement les cinq blocs à copier. Pour l’assemblage HTML, il prime sur toute autre description.
 
@@ -15,9 +15,11 @@ Ce fichier est la source opérationnelle unique du bloc `HTML COMPLET` dans l’
    - `rh` : `<section id="rh" class="section-muted">`
    - `bercy` : `<section id="bercy">`
 6. Ne jamais reformuler, simplifier, traduire ou réindenter la coque, le header, le footer, le modal, les classes ou les scripts.
-7. Avant de livrer, relire le HTML produit et vérifier littéralement : les trois accès rapides, un seul `h1`, le modal `fr-theme-modal`, les deux scripts DSFR 1.15.2, aucun marqueur `@@`, exactement trois cartes essentielles à partir de trois événements et l’enveloppe exacte de chaque rubrique présente.
-8. Si un bloc est partiel, refaire une recherche ciblée dans ce fichier par son titre, dans les ressources du Projet et jamais sur le Web. Ne jamais reconstruire la partie manquante de mémoire.
-9. Si la seconde passe ne peut pas établir tous les points précédents, ne livrer aucun code HTML : écrire `A_COMPLETER — HTML canonique non établi` sous `HTML COMPLET` et décrire l’écart dans `DOSSIER PRIVÉ`.
+7. Chaque source valide figure une fois dans sa rubrique. Une carte essentielle est une mise en avant supplémentaire et ne remplace jamais l’article de rubrique. Avec moins de trois sources valides, ne produire ni section ni lien `L’essentiel`. À partir de trois sources valides, produire exactement trois cartes essentielles.
+8. Pour chaque lien `href="#id"` du menu de rubriques, le HTML contient exactement une section `id="id"`. Chaque rubrique produite possède exactement un lien dans ce menu.
+9. Avant de livrer, relire le HTML produit et vérifier littéralement : les trois accès rapides, un seul `h1`, le modal `fr-theme-modal`, les deux scripts DSFR 1.15.2, aucun marqueur `@@`, exactement trois cartes essentielles à partir de trois événements et l’enveloppe exacte de chaque rubrique présente.
+10. Si un bloc est partiel, refaire une recherche ciblée dans ce fichier par son titre, dans les ressources du Projet et jamais sur le Web. Ne jamais reconstruire la partie manquante de mémoire.
+11. Si la seconde passe ne peut pas établir tous les points précédents, ne livrer aucun code HTML : écrire `A_COMPLETER — HTML canonique non établi` sous `HTML COMPLET` et décrire l’écart dans `DOSSIER PRIVÉ`.
 
 ## COQUE
 

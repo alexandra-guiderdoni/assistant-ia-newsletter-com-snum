@@ -1,4 +1,4 @@
-# Gabarit HTML Loïc - V5.8
+# Gabarit HTML Loïc - V5.9
 
 <!-- PDG-LARGE-FILE-JUSTIFICATION: la coque, ses modèles et son contrat doivent rester dans un seul document récupérable par le Projet DINUM. -->
 

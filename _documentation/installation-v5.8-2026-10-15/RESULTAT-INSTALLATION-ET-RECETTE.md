@@ -123,6 +123,25 @@ Verdict limité aux preuves observées :
 
 Le test confirme la limite déjà documentée : l’Assistant retrouve le canon, mais ne garantit pas sa copie littérale dans une longue réponse.
 
+## Recette complémentaire dans le Projet
+
+Une nouvelle conversation a été créée depuis le bouton **Start new conversation in Newsletter SNUM**. Le panneau de gauche a ensuite confirmé son classement sous le Projet :
+
+<https://assistant.numerique.gouv.fr/chat/0913097f-cef5-4367-823a-9d3e2c0bead4>
+
+Résultats observés :
+
+1. `COLLECTE_TERMINEE` avec cinq candidats.
+2. `VALIDATION_TERMINEE` après contrôle ligne par ligne : une source du 8 octobre conservée et quatre sources exclues.
+3. `CANON_HTML_PRET` avec les six paires de jetons.
+4. `RENDU` avec un bloc HTML complet.
+
+Le contrôle du bloc HTML a confirmé le titre, la feuille de style, les trois accès rapides, un seul `h1`, le modal, le pied de page, les scripts DSFR 1.15.2 et l’absence de marqueur `@@`.
+
+Les défauts bloquants sont liés : le menu contient `href="#numerique"`, mais le document ne contient aucune section `id="numerique"`. La seule source valide apparaît dans « L’essentiel » et pas dans sa rubrique, alors que « L’essentiel » doit être absent avec moins de trois sources valides.
+
+Le kit a donc été renforcé sur quatre points : comparaison explicite des dates, conservation de chaque essentiel dans sa rubrique, seuil explicite des trois essentiels et correspondance exacte entre liens du menu et sections. Les tests locaux couvrent ces règles. Leur efficacité dans l’Assistant reste à confirmer après réinstallation du kit révisé.
+
 ## Limites des preuves
 
 Les captures locales prises pendant l’incident montraient un autre onglet Chrome que l’onglet piloté ; elles ont été supprimées et ne sont pas utilisées comme preuve. Les captures d’interface déjà vérifiées restent dans `_documentation/validation-v5.8-2026-10-14/captures/`.

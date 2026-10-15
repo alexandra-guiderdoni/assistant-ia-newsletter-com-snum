@@ -78,6 +78,29 @@ def validate(html, blocks):
         "identifiants de rubrique non canoniques : "
         + ", ".join(unknown_section_ids),
     )
+    navigation = re.search(
+        r'<nav\b[^>]*\bid="navigation"[^>]*>(.*?)</nav>', html, re.DOTALL
+    )
+    if navigation:
+        navigation_ids = re.findall(r'href="#([^"]+)"', navigation.group(1))
+        missing_targets = sorted(set(navigation_ids) - section_ids)
+        missing_links = sorted((section_ids & allowed_section_ids) - set(navigation_ids))
+        require(
+            not missing_targets,
+            "NAV_TARGET_MISSING",
+            "liens de navigation sans section cible : "
+            + ", ".join(missing_targets),
+        )
+        require(
+            not missing_links,
+            "NAV_SECTION_MISSING",
+            "sections absentes de la navigation : " + ", ".join(missing_links),
+        )
+        require(
+            len(navigation_ids) == len(set(navigation_ids)),
+            "NAV_TARGET_DUPLICATE",
+            "la navigation contient un lien interne en double",
+        )
     for rubric_id, (_, _, muted) in RUBRICS.items():
         if f'id="{rubric_id}"' not in html:
             continue

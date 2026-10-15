@@ -176,6 +176,40 @@ class NewsletterHtmlCliTests(unittest.TestCase):
         self.assertEqual(result.returncode, 1, result.stderr)
         self.assertIn("UNKNOWN_RUBRIC_ID", result.stderr)
 
+    def test_validate_rejects_a_navigation_target_without_section(self):
+        valid_html = self.build_html()
+        invalid_html = valid_html.replace(
+            '<section id="numerique">',
+            '<section>',
+            1,
+        )
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            invalid_path = Path(temporary_directory) / "missing-navigation-target.html"
+            invalid_path.write_text(invalid_html, encoding="utf-8")
+            result = self.run_cli(
+                "validate", "--input", str(invalid_path), "--template", str(TEMPLATE)
+            )
+
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn("NAV_TARGET_MISSING", result.stderr)
+
+    def test_validate_rejects_a_section_missing_from_navigation(self):
+        valid_html = self.build_html()
+        invalid_html = valid_html.replace(
+            '<a class="fr-link" href="#numerique">Numérique</a>',
+            "",
+            1,
+        )
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            invalid_path = Path(temporary_directory) / "missing-navigation-link.html"
+            invalid_path.write_text(invalid_html, encoding="utf-8")
+            result = self.run_cli(
+                "validate", "--input", str(invalid_path), "--template", str(TEMPLATE)
+            )
+
+        self.assertEqual(result.returncode, 1, result.stderr)
+        self.assertIn("NAV_SECTION_MISSING", result.stderr)
+
     def test_validate_rejects_a_noncanonical_rubric_title(self):
         valid_html = self.build_html()
         invalid_html = valid_html.replace("<h2>NUMERIQUE</h2>", "<h2>Numérique</h2>", 1)

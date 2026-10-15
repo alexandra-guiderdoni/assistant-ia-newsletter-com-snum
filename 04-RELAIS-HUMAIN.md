@@ -1,4 +1,4 @@
-# Relais humain, publication et diffusion - V5.8
+# Relais humain, publication et diffusion - V5.9
 
 Ce fichier ne sert pas à la production quotidienne. Le consulter seulement après livraison de la revue et du HTML ou sur demande explicite du propriétaire. L’Assistant DINUM ne dispose d’aucun outil GitHub d’écriture, de messagerie ou de planification démontré.
 

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Génère le paquet V5.8 progressif depuis le canon HTML unique."""
+"""Génère le paquet V5.9 progressif depuis le canon HTML unique."""
 
 import argparse
 import sys
@@ -9,10 +9,9 @@ from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 
 from newsletter_render import canonical_blocks
 
-
 PROJECT = Path(__file__).resolve().parents[1]
 SOURCE = PROJECT / "05-BLOCS-HTML-CANONIQUES.md"
-ARCHIVE = PROJECT / "kit-dinum-snum-v5-8-progressif-8-fichiers.zip"
+ARCHIVE = PROJECT / "kit-dinum-snum-v5-9-progressif-8-fichiers.zip"
 UPLOAD_FILES = (
     "00-PROMPT-PROJET.md",
     "01-ETAT-HISTORIQUE.md",
@@ -46,9 +45,9 @@ def expected_files():
     start, separator, end = blocks["page"].partition(footer)
     if not separator or start + separator + end != blocks["page"]:
         raise ValueError("point de découpe de la coque introuvable")
-    index = """# Index HTML canonique - V5.8 progressive
+    index = """# Index HTML canonique - V5.9 progressive
 
-SNUM_CANON_V58_INDEX_START
+SNUM_CANON_V59_INDEX_START
 
 ## READ_NEXT
 
@@ -69,11 +68,15 @@ Rubriques exactes :
 - `rh` : navigation `Ressources humaines`, titre et tag `RESSOURCES HUMAINES`, enveloppe `<section id="rh" class="section-muted">` ;
 - `bercy` : navigation `Vie de Bercy`, titre et tag `VIE DE BERCY`, enveloppe `<section id="bercy">`.
 
-À partir de trois événements, insérer exactement trois cartes essentielles et ajouter la navigation `L’essentiel`. Ajouter `À surveiller` seulement si sa section existe. Ne jamais inventer une autre rubrique.
+Avec moins de trois événements, ne produire ni section ni lien `L’essentiel`. À partir de trois événements, insérer exactement trois cartes essentielles et ajouter la navigation `L’essentiel`. Ajouter `À surveiller` seulement si sa section existe. Ne jamais inventer une autre rubrique.
+
+Chaque source valide figure une fois dans sa rubrique. Une carte essentielle est une mise en avant supplémentaire et ne remplace jamais l’article de rubrique.
+
+Pour chaque lien `href="#id"` du menu de rubriques, produire exactement une section `id="id"`. Chaque rubrique produite possède exactement un lien dans ce menu.
 
 Si un jeton de fin manque après une nouvelle recherche ciblée, arrêter avec `A_COMPLETER — HTML canonique non établi` sans produire de code HTML.
 
-SNUM_CANON_V58_INDEX_END
+SNUM_CANON_V59_INDEX_END
 """
     return {
         "05-INDEX-HTML.md": index,
@@ -125,7 +128,7 @@ def archive_bytes(source_files, generated):
     with ZipFile(buffer, "w", ZIP_DEFLATED) as archive:
         for name in UPLOAD_FILES:
             data = generated.get(name, source_files.get(name)).encode("utf-8")
-            info = ZipInfo(name, (2026, 10, 14, 0, 0, 0))
+            info = ZipInfo(name, (2026, 10, 15, 0, 0, 0))
             info.compress_type = ZIP_DEFLATED
             info.external_attr = 0o100644 << 16
             archive.writestr(info, data)

@@ -1,9 +1,8 @@
-"""Rendu à partir des blocs HTML qui restent canoniques dans le Markdown V5.8."""
+"""Rendu à partir des blocs HTML qui restent canoniques dans le Markdown V5.9."""
 
 import re
 from html import escape
 from urllib.parse import urlparse
-
 
 RUBRICS = {
     "numerique": ("Numérique", "NUMERIQUE", False),
@@ -120,7 +119,9 @@ def render_rubric(template, rubric_id, articles, number):
         section,
         {
             "ID_RUBRIQUE": rubric_id,
-            "SECTION_MUTED_ATTR": ' class="section-muted"' if RUBRICS[rubric_id][2] else "",
+            "SECTION_MUTED_ATTR": ' class="section-muted"'
+            if RUBRICS[rubric_id][2]
+            else "",
             "NUMERO": f"{number:02d}",
             "TITRE_RUBRIQUE": title,
         },
@@ -137,7 +138,10 @@ def render_watch(template, watch_items, number):
         rendered.append(
             fill(
                 article_model.group(0),
-                {"TITRE_SUIVI": text(item["title"]), "SUIVI_COURT": text(item["summary"])},
+                {
+                    "TITRE_SUIVI": text(item["title"]),
+                    "SUIVI_COURT": text(item["summary"]),
+                },
             )
         )
     section = article_pattern.sub("".join(rendered), template, count=1)
@@ -155,8 +159,12 @@ def build(payload, blocks):
 
     essentials = [article for article in articles if article.get("essential")]
     if len(articles) >= 3 and len(essentials) != 3:
-        raise ValueError("exactement trois articles essentiels sont requis à partir de trois articles")
-    essential_html = render_essentials(blocks["essential"], essentials) if len(articles) >= 3 else ""
+        raise ValueError(
+            "exactement trois articles essentiels sont requis à partir de trois articles"
+        )
+    essential_html = (
+        render_essentials(blocks["essential"], essentials) if len(articles) >= 3 else ""
+    )
     number = 2 if essential_html else 1
     rubric_sections = []
     navigation = (
@@ -170,11 +178,15 @@ def build(payload, blocks):
         navigation.append(
             f'<a class="fr-link" href="#{rubric_id}">{RUBRICS[rubric_id][0]}</a>'
         )
-        rubric_sections.append(render_rubric(blocks["rubric"], rubric_id, rubric_articles, number))
+        rubric_sections.append(
+            render_rubric(blocks["rubric"], rubric_id, rubric_articles, number)
+        )
         number += 1
 
     watch_items = payload.get("watch", [])
-    watch_html = render_watch(blocks["watch"], watch_items, number) if watch_items else ""
+    watch_html = (
+        render_watch(blocks["watch"], watch_items, number) if watch_items else ""
+    )
     if watch_html:
         navigation.append('<a class="fr-link" href="#surveiller">À surveiller</a>')
     empty_html = blocks["empty"] if not articles else ""
