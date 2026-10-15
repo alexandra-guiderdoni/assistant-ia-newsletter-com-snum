@@ -115,18 +115,56 @@ Dans cet exemple, l’édition est datée du 14 octobre 2026 et couvre la pério
 Le message `COLLECTE` entièrement rempli serait :
 
 ```text
-PHASE COLLECTE. Utilise le Web. Édition du 14 octobre 2026, fenêtre du 3 octobre 2026 au 13 octobre 2026 inclus. Ne rédige ni REVUE ni HTML. Recherche et ouvre les sources publiques intégralement accessibles. Réponds sous CANDIDATS avec une liste numérotée ; pour chaque candidat : titre, URL canonique, date de publication explicitement lue sur la page au format AAAA-MM-JJ ou DATE_INCONNUE, accès intégral OUI/NON, rubrique exacte et fait essentiel. Ne décide pas encore si la date est dans la fenêtre. Termine par COLLECTE_TERMINEE, sans question.
+PHASE COLLECTE.
+Utilise le Web.
+Édition du 14 octobre 2026.
+Fenêtre du 3 octobre 2026 au 13 octobre 2026 inclus.
+Ne rédige ni REVUE ni HTML.
+Recherche et ouvre les sources publiques intégralement accessibles.
+Réponds sous CANDIDATS avec une liste numérotée.
+Pour chaque candidat, indique :
+- le titre ;
+- l’URL canonique ;
+- la date de publication explicitement lue sur la page,
+  au format AAAA-MM-JJ ou DATE_INCONNUE ;
+- l’accès intégral OUI/NON ;
+- la rubrique exacte ;
+- le fait essentiel.
+Ne décide pas encore si la date est dans la fenêtre.
+Termine par COLLECTE_TERMINEE, sans question.
 ```
 
 Le message `VALIDATION` entièrement rempli serait :
 
 ```text
-PHASE VALIDATION. N’utilise pas le Web et ne rédige ni REVUE ni HTML. Relis uniquement CANDIDATS. Applique exactement 2026-10-03 <= DATE_PUBLICATION <= 2026-10-13 et exige accès intégral OUI. Rejette DATE_INCONNUE, incohérence manifeste et doublon ; conserve une seule URL canonique par événement. Réponds sous SOURCES_VALIDES avec titre, URL, date, rubrique exacte et fait essentiel ; puis SOURCES_EXCLUES avec chaque motif ; termine par VALIDATION_TERMINEE. Ne pose aucune question.
+PHASE VALIDATION.
+N’utilise pas le Web.
+Ne rédige ni REVUE ni HTML.
+Relis uniquement CANDIDATS.
+Applique exactement :
+2026-10-03 <= DATE_PUBLICATION <= 2026-10-13.
+Exige un accès intégral OUI.
+Rejette :
+- DATE_INCONNUE ;
+- toute incohérence manifeste ;
+- tout doublon.
+Conserve une seule URL canonique par événement.
+Réponds sous SOURCES_VALIDES avec, pour chaque source :
+- le titre ;
+- l’URL ;
+- la date ;
+- la rubrique exacte ;
+- le fait essentiel.
+Ajoute ensuite SOURCES_EXCLUES avec chaque motif.
+Termine par VALIDATION_TERMINEE.
+Ne pose aucune question.
 ```
 
 N’utilisez ces dates que pour cet exemple. Pour une autre édition, remplacez les cinq valeurs par les dates demandées.
 
 Les messages `CANON` et `RENDU` ne contiennent aucune valeur de date. Ils sont déjà complets et doivent être envoyés sans modification.
+
+Pour chaque prompt, copiez le bloc entier. Conservez les retours à la ligne : ils facilitent la lecture et ne changent pas le sens du message.
 
 ## Étape 5 : COLLECTE avec le Web
 
@@ -142,7 +180,23 @@ Les messages `CANON` et `RENDU` ne contiennent aucune valeur de date. Ils sont d
 **Message à copier :**
 
 ```text
-PHASE COLLECTE. Utilise le Web. Édition du {{DATE_EDITION}}, fenêtre du {{DEBUT}} au {{FIN}} inclus. Ne rédige ni REVUE ni HTML. Recherche et ouvre les sources publiques intégralement accessibles. Réponds sous CANDIDATS avec une liste numérotée ; pour chaque candidat : titre, URL canonique, date de publication explicitement lue sur la page au format AAAA-MM-JJ ou DATE_INCONNUE, accès intégral OUI/NON, rubrique exacte et fait essentiel. Ne décide pas encore si la date est dans la fenêtre. Termine par COLLECTE_TERMINEE, sans question.
+PHASE COLLECTE.
+Utilise le Web.
+Édition du {{DATE_EDITION}}.
+Fenêtre du {{DEBUT}} au {{FIN}} inclus.
+Ne rédige ni REVUE ni HTML.
+Recherche et ouvre les sources publiques intégralement accessibles.
+Réponds sous CANDIDATS avec une liste numérotée.
+Pour chaque candidat, indique :
+- le titre ;
+- l’URL canonique ;
+- la date de publication explicitement lue sur la page,
+  au format AAAA-MM-JJ ou DATE_INCONNUE ;
+- l’accès intégral OUI/NON ;
+- la rubrique exacte ;
+- le fait essentiel.
+Ne décide pas encore si la date est dans la fenêtre.
+Termine par COLLECTE_TERMINEE, sans question.
 ```
 
 Remplacez les trois repères par vos valeurs, supprimez toutes les accolades, relisez les trois dates, puis envoyez le message.
@@ -166,7 +220,27 @@ Remplacez les trois repères par vos valeurs, supprimez toutes les accolades, re
 **Message à copier :**
 
 ```text
-PHASE VALIDATION. N’utilise pas le Web et ne rédige ni REVUE ni HTML. Relis uniquement CANDIDATS. Applique exactement {{DEBUT_ISO}} <= DATE_PUBLICATION <= {{FIN_ISO}} et exige accès intégral OUI. Rejette DATE_INCONNUE, incohérence manifeste et doublon ; conserve une seule URL canonique par événement. Réponds sous SOURCES_VALIDES avec titre, URL, date, rubrique exacte et fait essentiel ; puis SOURCES_EXCLUES avec chaque motif ; termine par VALIDATION_TERMINEE. Ne pose aucune question.
+PHASE VALIDATION.
+N’utilise pas le Web.
+Ne rédige ni REVUE ni HTML.
+Relis uniquement CANDIDATS.
+Applique exactement :
+{{DEBUT_ISO}} <= DATE_PUBLICATION <= {{FIN_ISO}}.
+Exige un accès intégral OUI.
+Rejette :
+- DATE_INCONNUE ;
+- toute incohérence manifeste ;
+- tout doublon.
+Conserve une seule URL canonique par événement.
+Réponds sous SOURCES_VALIDES avec, pour chaque source :
+- le titre ;
+- l’URL ;
+- la date ;
+- la rubrique exacte ;
+- le fait essentiel.
+Ajoute ensuite SOURCES_EXCLUES avec chaque motif.
+Termine par VALIDATION_TERMINEE.
+Ne pose aucune question.
 ```
 
 Remplacez les deux repères par vos dates ISO, supprimez toutes les accolades, relisez les deux dates, puis envoyez le message.
@@ -188,7 +262,17 @@ Vérifiez que le badge bleu `Web` est absent et restez dans la même conversatio
 **Message à copier :**
 
 ```text
-PHASE CANON. N’utilise pas le Web. Recherche SNUM_CANON_V58_INDEX_START dans les ressources du Projet, suis READ_NEXT et charge intégralement les fragments 06, 07, 08 et 09. Vérifie les six paires START/END et conserve littéralement les blocs html. Ne rends pas encore la newsletter. Réponds seulement CANON_HTML_PRET puis les six paires, ou CANON_HTML_INCOMPLET puis le jeton manquant.
+PHASE CANON.
+N’utilise pas le Web.
+Recherche SNUM_CANON_V58_INDEX_START dans les ressources du Projet.
+Suis READ_NEXT.
+Charge intégralement les fragments 06, 07, 08 et 09.
+Vérifie les six paires START/END.
+Conserve littéralement les blocs html.
+Ne rends pas encore la newsletter.
+Réponds seulement :
+- CANON_HTML_PRET, puis les six paires ;
+- ou CANON_HTML_INCOMPLET, puis le jeton manquant.
 ```
 
 Envoyez ce message sans le modifier.
@@ -217,7 +301,30 @@ Vérifiez que le badge bleu `Web` est absent, restez dans la même conversation 
 **Message à copier :**
 
 ```text
-PHASE RENDU. N’utilise pas le Web. Utilise exclusivement SOURCES_VALIDES et les fragments canoniques chargés au tour précédent. Copie littéralement 06, insère les blocs 08 et 09 nécessaires, puis 07 ; remplace seulement les marqueurs @@. Ne crée aucune balise ni classe absente des fragments. Livre exactement ## REVUE, ## HTML COMPLET avec un unique bloc html de <!doctype html> à </html>, puis ## DOSSIER PRIVÉ. Avant affichage, vérifie le title, /revue-presse-snum/styles.css?v=20260917, l’absence de marqueur @@, fr-theme-modal et les scripts DSFR 1.15.2. Si un point n’est pas établi, commence ta réponse par A_COMPLETER et n’affiche aucun code. Ne pose aucune question.
+PHASE RENDU.
+N’utilise pas le Web.
+Utilise exclusivement SOURCES_VALIDES et les fragments canoniques
+chargés au tour précédent.
+Copie littéralement 06.
+Insère les blocs 08 et 09 nécessaires.
+Ajoute ensuite 07.
+Remplace seulement les marqueurs @@.
+Ne crée aucune balise ni classe absente des fragments.
+Livre exactement, dans cet ordre :
+1. ## REVUE
+2. ## HTML COMPLET, avec un unique bloc html allant de
+   <!doctype html> à </html>
+3. ## DOSSIER PRIVÉ
+Avant affichage, vérifie :
+- le title ;
+- /revue-presse-snum/styles.css?v=20260917 ;
+- l’absence de marqueur @@ ;
+- fr-theme-modal ;
+- les scripts DSFR 1.15.2.
+Si un point n’est pas établi :
+- commence ta réponse par A_COMPLETER ;
+- n’affiche aucun code.
+Ne pose aucune question.
 ```
 
 Envoyez ce message sans le modifier.
