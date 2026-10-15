@@ -84,17 +84,29 @@ Si elle apparaît sous **Vos conversations**, fermez-la. Revenez dans `Newslette
 
 Conservez cette même conversation jusqu’à la fin de `RENDU`. Ne cliquez pas sur **Nouvelle conversation** entre les quatre messages.
 
-### Étape 4 : préparer les cinq valeurs
+### Étape 4 : préparer les cinq valeurs avec un exemple réel
 
-Écrivez les cinq valeurs suivantes avant d’envoyer le premier message :
+Prenons une newsletter datée du 14 octobre 2026 qui doit couvrir tous les articles publiés du 3 au 13 octobre 2026 inclus.
 
-- `{{DATE_EDITION}}` : date affichée de la newsletter, par exemple `14 octobre 2026` ;
-- `{{DEBUT}}` : début de la collecte en toutes lettres, par exemple `3 octobre 2026` ;
-- `{{FIN}}` : fin de la collecte en toutes lettres, par exemple `13 octobre 2026` ;
-- `{{DEBUT_ISO}}` : même date que `{{DEBUT}}`, au format `AAAA-MM-JJ`, par exemple `2026-10-03` ;
-- `{{FIN_ISO}}` : même date que `{{FIN}}`, au format `AAAA-MM-JJ`, par exemple `2026-10-13`.
+Avant de commencer, écrivez cette fiche :
 
-Les caractères `{{` et `}}` sont des repères à remplacer. Ils ne doivent jamais apparaître dans un message envoyé.
+```text
+DATE_EDITION : 14 octobre 2026
+DEBUT : 3 octobre 2026
+FIN : 13 octobre 2026
+DEBUT_ISO : 2026-10-03
+FIN_ISO : 2026-10-13
+```
+
+Dans les messages fournis plus bas, effectuez exactement ces cinq remplacements :
+
+- remplacez `{{DATE_EDITION}}` par `14 octobre 2026` ;
+- remplacez `{{DEBUT}}` par `3 octobre 2026` ;
+- remplacez `{{FIN}}` par `13 octobre 2026` ;
+- remplacez `{{DEBUT_ISO}}` par `2026-10-03` ;
+- remplacez `{{FIN_ISO}}` par `2026-10-13`.
+
+Les caractères `{{` et `}}` signalent uniquement le texte à remplacer. Ils ne doivent jamais apparaître dans un message envoyé à l’Assistant.
 
 ### Exemple entièrement rempli
 
