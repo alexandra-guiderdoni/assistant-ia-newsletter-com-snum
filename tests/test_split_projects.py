@@ -10,6 +10,58 @@ PROJECT = Path(__file__).resolve().parents[1]
 
 
 class SplitProjectKitTests(unittest.TestCase):
+    def test_v520_collecte_runs_from_dates_then_short_commands(self):
+        prompt_path = PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.20.md"
+        method_path = PROJECT / "02-METHODE-COLLECTE-SNUM-V5.20.md"
+        contract_path = PROJECT / "03-CONTRAT-PAQUET-RENDU-SNUM-V5.20.md"
+
+        for path in (prompt_path, method_path, contract_path):
+            self.assertTrue(path.is_file(), path.name)
+            self.assertLessEqual(len(path.read_text(encoding="utf-8")), 4500, path.name)
+
+        prompt = prompt_path.read_text(encoding="utf-8")
+        prompt_normalized = " ".join(prompt.split())
+        self.assertLessEqual(len(prompt), 4000)
+        self.assertIn(method_path.name, prompt)
+        self.assertIn(contract_path.name, prompt)
+        self.assertIn("message initial", prompt_normalized)
+        self.assertIn("exactement `VALIDER`", prompt)
+        self.assertIn("exactement `GENERER_PAQUET`", prompt)
+        self.assertNotIn("`CONTINUE`", prompt)
+        self.assertNotIn("marqueur attendu", prompt)
+        self.assertIn(
+            "Ne compare jamais la date d’édition aux bornes", prompt_normalized
+        )
+        self.assertIn("`COLLECTE_TERMINEE`", prompt)
+        self.assertIn("`VALIDATION_TERMINEE`", prompt)
+        self.assertIn("`PAQUET_RENDU_PRET`", prompt)
+        self.assertIn("Ne lance jamais deux étapes dans le même tour", prompt)
+        self.assertNotIn("PARAMETRES_INVALIDES", prompt.split("COLLECTE", 1)[-1])
+        self.assertNotIn("une seule réponse finale", prompt)
+        self.assertNotIn("exécute uniquement la phase demandée", prompt.lower())
+
+        readme = (PROJECT / "README.md").read_text(encoding="utf-8")
+        self.assertIn("### Message initial dans le Projet Collecte", readme)
+        self.assertIn("DATE_EDITION = 14 octobre 2026", readme)
+        self.assertIn("PERIODE = du 3 octobre 2026 au 13 octobre 2026 inclus", readme)
+        self.assertEqual(readme.count("```text\nVALIDER\n```"), 1)
+        self.assertEqual(readme.count("```text\nGENERER_PAQUET\n```"), 1)
+        self.assertNotIn("```text\nCONTINUE\n```", readme)
+        self.assertNotIn("### Message 1 avec le Web", readme)
+        self.assertNotIn("### Message 2 sans le Web", readme)
+        self.assertNotIn("### Message 3 sans le Web", readme)
+
+        with ZipFile(PROJECT / "Newsletter SNUM - Collecte.zip") as archive:
+            self.assertEqual(
+                archive.namelist(),
+                [
+                    "Newsletter SNUM - Collecte/",
+                    f"Newsletter SNUM - Collecte/{prompt_path.name}",
+                    f"Newsletter SNUM - Collecte/{method_path.name}",
+                    f"Newsletter SNUM - Collecte/{contract_path.name}",
+                ],
+            )
+
     def test_technical_sources_are_kept_out_of_root(self):
         for name in ("03-GABARIT-HTML.md", "05-BLOCS-HTML-CANONIQUES.md"):
             self.assertFalse((PROJECT / name).exists(), name)
@@ -17,7 +69,9 @@ class SplitProjectKitTests(unittest.TestCase):
 
     def test_active_installation_files_are_available_at_root(self):
         expected = (
-            "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.19.md",
+            "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.20.md",
+            "02-METHODE-COLLECTE-SNUM-V5.20.md",
+            "03-CONTRAT-PAQUET-RENDU-SNUM-V5.20.md",
             "20-PROMPT-SYSTEME-RENDU-HTML-SNUM-V5.19.md",
             "21-CANON-HTML-COQUE-A-V5.19.md",
             "22-CANON-HTML-COQUE-B-V5.19.md",
@@ -26,6 +80,9 @@ class SplitProjectKitTests(unittest.TestCase):
         )
         for name in expected:
             self.assertTrue((PROJECT / name).is_file(), name)
+        self.assertFalse(
+            (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.19.md").exists()
+        )
 
     def test_historical_release_v5_17_is_preserved(self):
         archive = PROJECT / "_documentation" / "archives" / "releases" / "v5.17"
@@ -47,7 +104,7 @@ class SplitProjectKitTests(unittest.TestCase):
         self.assertEqual(inactive, [])
 
     def test_projects_have_isolated_responsibilities(self):
-        collecte = (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.19.md").read_text(
+        collecte = (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.20.md").read_text(
             encoding="utf-8"
         )
         rendu = (PROJECT / "20-PROMPT-SYSTEME-RENDU-HTML-SNUM-V5.19.md").read_text(
@@ -57,20 +114,55 @@ class SplitProjectKitTests(unittest.TestCase):
         self.assertLessEqual(len(collecte), 4000)
         self.assertIn("PAQUET_RENDU", collecte)
         self.assertNotIn("HTML COMPLET", collecte)
-        self.assertIn("Ne filtre aucun candidat selon sa date", collecte)
-        self.assertIn("nombre exact d’entrées sous `CANDIDATS`", collecte)
-        self.assertIn("date ISO >= DEBUT_ISO", collecte)
-        self.assertIn("date ISO <= FIN_ISO", collecte)
-        self.assertIn("`publication_date_iso`", collecte)
-        self.assertIn("`publication_date_long`", collecte)
-        self.assertNotIn("`publication_date`,", collecte)
-        self.assertEqual(
-            sorted(
-                ("`COLLECTE`", "`VALIDATION`", "`PAQUET`"),
-                key=collecte.index,
-            ),
-            ["`COLLECTE`", "`VALIDATION`", "`PAQUET`"],
+        self.assertIn("DATE_EDITION", collecte)
+        self.assertIn("PERIODE", collecte)
+        operational_steps = (
+            "Au tour du message initial, exécute seulement `COLLECTE`",
+            "Au tour du message `VALIDER`, exécute seulement `VALIDATION`",
+            "Au tour du message `GENERER_PAQUET`, exécute seulement `PAQUET`",
         )
+        self.assertEqual(
+            sorted(operational_steps, key=collecte.index), list(operational_steps)
+        )
+
+        method = (PROJECT / "02-METHODE-COLLECTE-SNUM-V5.20.md").read_text(
+            encoding="utf-8"
+        )
+        contract = (PROJECT / "03-CONTRAT-PAQUET-RENDU-SNUM-V5.20.md").read_text(
+            encoding="utf-8"
+        )
+        legacy_collecte = (
+            PROJECT
+            / "_documentation"
+            / "archives"
+            / "releases"
+            / "v5.19"
+            / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.19.md"
+        ).read_text(encoding="utf-8")
+        collecte_start = legacy_collecte.index("Pendant `COLLECTE`")
+        validation_start = legacy_collecte.index("Pendant `VALIDATION`")
+        paquet_start = legacy_collecte.index("Pendant `PAQUET`")
+        legacy_collecte_block = legacy_collecte[
+            collecte_start:validation_start
+        ].rstrip()
+        legacy_validation = legacy_collecte[validation_start:paquet_start].rstrip()
+        legacy_contract = legacy_collecte[paquet_start:].rstrip()
+
+        self.assertNotIn(legacy_collecte_block, method)
+        self.assertIn(legacy_validation, method)
+        self.assertIn(legacy_contract, contract)
+        self.assertIn("Chaque requête cible explicitement la fenêtre", method)
+        self.assertIn("au moins cinq candidats datés provisoirement", method)
+        self.assertIn("Après deux passes insuffisantes", method)
+        self.assertIn("Ne filtre aucun candidat selon sa date", method)
+        self.assertIn("seconde passe", method)
+        self.assertIn("au moins cinq candidats", " ".join(method.split()))
+        self.assertIn("date ISO >= DEBUT_ISO", method)
+        self.assertIn("date ISO <= FIN_ISO", method)
+        self.assertIn("SNUM_PAQUET_RENDU_V519", contract)
+        self.assertIn("`publication_date_iso`", contract)
+        self.assertIn("`publication_date_long`", contract)
+        self.assertNotIn("`publication_date`,", contract)
 
         self.assertLessEqual(len(rendu), 4000)
         self.assertIn("`RENDRE_EDITION`", rendu)
@@ -206,7 +298,9 @@ class SplitProjectKitTests(unittest.TestCase):
                 archive.namelist(),
                 [
                     f"{collecte_folder}/",
-                    f"{collecte_folder}/01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.19.md",
+                    f"{collecte_folder}/01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.20.md",
+                    f"{collecte_folder}/02-METHODE-COLLECTE-SNUM-V5.20.md",
+                    f"{collecte_folder}/03-CONTRAT-PAQUET-RENDU-SNUM-V5.20.md",
                 ],
             )
 
@@ -241,9 +335,9 @@ class SplitProjectKitTests(unittest.TestCase):
         self.assertIn("KIT_DECOUPLE_OK", result.stdout)
 
     def test_notice_documents_the_complete_two_project_sequence(self):
-        notice = (PROJECT / "NOTICE-V5.19.md").read_text(encoding="utf-8")
+        notice = (PROJECT / "NOTICE-V5.20.md").read_text(encoding="utf-8")
         collecte = (
-            (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.19.md")
+            (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.20.md")
             .read_text(encoding="utf-8")
             .rstrip("\n")
         )
@@ -255,24 +349,22 @@ class SplitProjectKitTests(unittest.TestCase):
 
         self.assertIn(f"```text\n{collecte}\n```", notice)
         self.assertIn(f"```text\n{rendu}\n```", notice)
-        for phase in (
-            "PHASE COLLECTE.",
-            "PHASE VALIDATION.",
-            "PHASE PAQUET.",
-            "PHASE RENDRE_EDITION.",
-        ):
-            self.assertEqual(notice.count(phase), 1, phase)
-        self.assertIn("n’ajoutez aucune ressource", notice)
+        self.assertNotIn("PHASE COLLECTE.", notice)
+        self.assertNotIn("PHASE VALIDATION.", notice)
+        self.assertNotIn("PHASE PAQUET.", notice)
+        self.assertEqual(notice.count("PHASE RENDRE_EDITION."), 1)
+        self.assertIn("02-METHODE-COLLECTE-SNUM-V5.20.md", notice)
+        self.assertIn("03-CONTRAT-PAQUET-RENDU-SNUM-V5.20.md", notice)
         self.assertIn("téléversez les quatre ressources `CANON-HTML-", notice)
         self.assertIn("copiez le bloc entier", notice)
         self.assertIn("A_COMPLETER", notice)
         self.assertIn("Newsletter SNUM - Collecte.zip", notice)
         self.assertIn("Newsletter SNUM - Rendu HTML.zip", notice)
 
-    def test_readme_is_the_pedagogical_v519_entry_point(self):
+    def test_readme_is_the_pedagogical_active_entry_point(self):
         readme = (PROJECT / "README.md").read_text(encoding="utf-8")
         collecte = (
-            (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.19.md")
+            (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.20.md")
             .read_text(encoding="utf-8")
             .rstrip("\n")
         )
@@ -282,7 +374,7 @@ class SplitProjectKitTests(unittest.TestCase):
             .rstrip("\n")
         )
 
-        self.assertIn("# Configurer les deux Projets Newsletter SNUM V5.19", readme)
+        self.assertIn("# Configurer les deux Projets Newsletter SNUM", readme)
         self.assertIn(f"```text\n{collecte}\n```", readme)
         self.assertIn(f"```text\n{rendu}\n```", readme)
         self.assertIn("Newsletter SNUM - Collecte.zip", readme)

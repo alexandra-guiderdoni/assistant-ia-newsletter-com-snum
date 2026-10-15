@@ -15,8 +15,10 @@ maintenance, à la génération des kits et à la vérification avant livraison.
 À lire au démarrage :
 
 - `README.md` : parcours pédagogique complet ;
-- `NOTICE-V5.19.md` : installation et séquence métier de la version active ;
-- `01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.19.md` : contrat de collecte ;
+- `NOTICE-V5.20.md` : installation et séquence métier de la version active ;
+- `01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.20.md` : orchestration de la collecte ;
+- `02-METHODE-COLLECTE-SNUM-V5.20.md` : collecte et validation ;
+- `03-CONTRAT-PAQUET-RENDU-SNUM-V5.20.md` : contrat V519 transmis au rendu ;
 - `20-PROMPT-SYSTEME-RENDU-HTML-SNUM-V5.19.md` : contrat de rendu ;
 - `_source/05-BLOCS-HTML-CANONIQUES.md` : source unique des blocs HTML ;
 - `scripts/build_split_kit.py` : génération des ressources et des deux ZIP ;
@@ -30,6 +32,9 @@ version active.
 
 - Conserver deux Projets Assistant séparés et la séquence
   `COLLECTE → VALIDATION → PAQUET → RENDU`.
+- Dans le Projet Collecte, l’utilisateur fournit uniquement `DATE_EDITION` et
+  `PERIODE` dans le message initial, puis envoie `VALIDER` et
+  `GENERER_PAQUET` ; aucun long prompt de phase n’est nécessaire.
 - Le Projet Collecte utilise le Web uniquement pendant `COLLECTE`.
 - Le Projet Rendu n’utilise jamais le Web ; toute modification du contenu
   éditorial est interdite.
@@ -76,8 +81,9 @@ bash scripts/check-accents.sh git-hors-workflow/assistant-ia-newsletter-com-snum
 - Python standard library uniquement pour le moteur et les tests actuels.
 - Tests publics via `scripts/newsletter_html.py`, sans tester les fonctions
   privées quand la CLI permet d’observer le comportement.
-- Les marqueurs de version doivent rester cohérents dans les prompts, ressources,
-  exemples, tests, notice et ZIP.
+- Les versions de fichiers doivent rester cohérentes dans chaque Projet. La
+  Collecte V5.20 conserve volontairement le schéma de paquet V519 consommé par le
+  Rendu V5.19.
 - Le saut de ligne entre `COQUE_A` et `COQUE_B` fait partie du contrat canonique.
 - Les dates affichées utilisent le mois en toutes lettres ; les dates ISO servent
   aux contrôles.
@@ -123,8 +129,9 @@ Une version est livrable seulement si :
 - la suite `unittest`, Ruff et `build_split_kit.py --check` est verte ;
 - les prompts respectent 4 000 caractères et les quatre ressources 4 500 ;
 - les ZIP contiennent exactement les fichiers attendus dans l’ordre documenté ;
-- la recette réelle produit un paquet sans URL dupliquée puis un HTML sans
-  `A_COMPLETER` ;
+- la recette réelle produit le paquet à partir du message `DATE_EDITION` et
+  `PERIODE`, puis des commandes `VALIDER` et `GENERER_PAQUET`, sans URL
+  dupliquée, puis un HTML sans `A_COMPLETER` ;
 - le rendu est comparé au gabarit canonique selon le contrat annoncé ;
 - `README.md`, la notice et le rapport décrivent les preuves et les limites ;
 - le commit local et `origin/main` désignent le même SHA après le push.

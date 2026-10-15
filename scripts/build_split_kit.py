@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Construit les deux paquets V5.19 des Projets Assistant DINUM."""
+"""Construit les deux paquets actifs des Projets Assistant DINUM."""
 
 import argparse
 import sys
@@ -28,7 +28,11 @@ RESOURCE_SPECS = (
         "SNUM_CANON_V519_SURVEILLER_VIDE",
     ),
 )
-COLLECTE_FILES = ("01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.19.md",)
+COLLECTE_FILES = (
+    "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.20.md",
+    "02-METHODE-COLLECTE-SNUM-V5.20.md",
+    "03-CONTRAT-PAQUET-RENDU-SNUM-V5.20.md",
+)
 RENDU_FILES = (
     "20-PROMPT-SYSTEME-RENDU-HTML-SNUM-V5.19.md",
     *(filename for filename, _ in RESOURCE_SPECS),

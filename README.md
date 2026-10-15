@@ -1,16 +1,20 @@
 <!-- PDG-LARGE-FILE-JUSTIFICATION: notice autonome pour une installation métier sans terminal ; elle contient les deux prompts système et les quatre messages dans leur ordre d’exécution. -->
 <!-- PDG-BINARY-ASSET-JUSTIFICATION: les deux ZIP regroupent les fichiers nécessaires à l’installation manuelle de chaque Projet ; leurs sources et leur générateur restent versionnés. -->
 
-# Configurer les deux Projets Newsletter SNUM V5.19
+# Configurer les deux Projets Newsletter SNUM
 
-Cette version sépare la collecte éditoriale du rendu HTML.
+Le dispositif actif associe la Collecte V5.20 au Rendu HTML V5.19. La Collecte V5.20
+remplace les trois anciens prompts métier par un message contenant les deux variables,
+puis les commandes courtes `VALIDER` et `GENERER_PAQUET`.
 
 - `Newsletter SNUM - Collecte` produit un `PAQUET_RENDU`.
 - `Newsletter SNUM - Rendu HTML` transforme ce paquet en HTML canonique.
 
-> **État de recette V5.19 au 15 octobre 2026 : NO-GO pour une livraison autonome.**
-> La collecte réelle a produit 10 candidats, 6 sources valides et 4 exclusions, puis
-> un paquet JSON valide avec 6 URL uniques. Le rendu local retourne
+> **État de recette au 15 octobre 2026 : Collecte V5.20 `GO`.** Une conversation neuve
+> a produit `COLLECTE_TERMINEE`, `VALIDATION_TERMINEE` et `PAQUET_RENDU_PRET` avec
+> `VALIDER`, puis `GENERER_PAQUET`. Le JSON a été analysé avec cinq articles, cinq URL
+> uniques et trois essentiels. Le Rendu V5.19 reste
+> `NO-GO` : le rendu local retourne
 > `HTML_CANONIQUE_OK`. Le Projet Rendu produit le gabarit complet, mais son dernier HTML
 > mesure 18 781 octets contre 18 756 pour le canon local, avec une empreinte différente,
 > un lien `#numerique` sans section cible et aucun saut de ligne final. L’identité à
@@ -24,13 +28,16 @@ HTML ne reçoit que le paquet JSON validé et assemble les blocs Bacoco. Cette s
 
 Les quatre ressources canoniques restent chacune sous 4 500 caractères. L’Assistant
 peut ainsi les récupérer intégralement malgré sa limite de contexte par ressource.
+Les deux ressources Collecte suivent la même limite.
 
 ## Fichiers actifs disponibles à la racine
 
-Pour `Newsletter SNUM - Collecte`, utilisez ce fichier unique :
+Pour `Newsletter SNUM - Collecte`, utilisez les fichiers dans cet ordre :
 
-1. `01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.19.md` : copiez tout son contenu dans
-   **Instructions (expérimental)**. Ne téléversez aucune ressource dans ce Projet.
+1. `01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.20.md` : copiez tout son contenu dans
+   **Instructions (expérimental)** ;
+2. `02-METHODE-COLLECTE-SNUM-V5.20.md` : téléversez cette ressource ;
+3. `03-CONTRAT-PAQUET-RENDU-SNUM-V5.20.md` : téléversez cette ressource.
 
 Pour `Newsletter SNUM - Rendu HTML`, utilisez les fichiers dans cet ordre :
 
@@ -41,7 +48,7 @@ Pour `Newsletter SNUM - Rendu HTML`, utilisez les fichiers dans cet ordre :
 4. `23-CANON-HTML-ESSENTIEL-RUBRIQUE-V5.19.md` : téléversez cette ressource ;
 5. `24-CANON-HTML-SURVEILLER-VIDE-V5.19.md` : téléversez cette ressource.
 
-Ces 6 fichiers sont présents directement à la racine du dépôt. Les deux ZIP contiennent
+Ces 8 fichiers sont présents directement à la racine du dépôt. Les deux ZIP contiennent
 les mêmes fichiers, répartis par Projet ; ne téléversez jamais un ZIP lui-même.
 Les sources techniques sont rangées dans `_source/` et ne doivent être ajoutées à
 aucun Projet.
@@ -57,7 +64,9 @@ Téléchargez puis décompressez les deux archives présentes à la racine :
 
 Le dossier `Newsletter SNUM - Collecte` doit contenir exactement :
 
-- `01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.19.md`.
+1. `01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.20.md` ;
+2. `02-METHODE-COLLECTE-SNUM-V5.20.md` ;
+3. `03-CONTRAT-PAQUET-RENDU-SNUM-V5.20.md`.
 
 Le dossier `Newsletter SNUM - Rendu HTML` doit contenir exactement :
 
@@ -76,70 +85,76 @@ un HTML copié depuis le chat perd les styles Bacoco quand il est ouvert hors du
 ## Installer Newsletter SNUM - Collecte
 
 1. Créez le Projet `Newsletter SNUM - Collecte`.
-2. Dans ce Projet, n’ajoutez aucune ressource.
-3. Copiez tout le bloc suivant dans **Instructions (expérimental)**.
-4. Enregistrez le Projet.
+2. Copiez tout le bloc suivant dans **Instructions (expérimental)**.
+3. Téléversez `02-METHODE-COLLECTE-SNUM-V5.20.md` et
+   `03-CONTRAT-PAQUET-RENDU-SNUM-V5.20.md` dans les ressources.
+4. Vérifiez que les deux ressources sont visibles et que leur indexation est terminée.
+5. Enregistrez le Projet.
 
 ```text
 Tu es le Projet `Newsletter SNUM - Collecte`. Tu recherches, vérifies et rédiges les
 données de la revue. Tu ne produis jamais de HTML, ne publies rien et n’envoies aucun
 courriel.
 
-Dans une même conversation, exécute uniquement la phase demandée : `COLLECTE` avec le
-Web, puis `VALIDATION` et `PAQUET` sans le Web. N’anticipe pas la phase suivante.
+L’utilisateur pilote un parcours en trois tours dans une même conversation. Il ne
+nomme jamais une phase et n’écrit aucun long prompt métier.
 
-Pendant `COLLECTE`, utilise la date d’édition et la fenêtre données par l’utilisateur.
-Exécute dix requêtes distinctes couvrant les cinq rubriques `NUMERIQUE`, `INTELLIGENCE
-ARTIFICIELLE (IA)`, `COMMANDE PUBLIQUE`, `RESSOURCES HUMAINES` et `VIE DE BERCY`, sur au
-moins cinq domaines. Sous cinq candidats, effectue une seconde passe. Ouvre chaque URL.
-Ne filtre aucun candidat selon sa date pendant `COLLECTE` : garde toute page lue dans
-`CANDIDATS`, même hors fenêtre.
-Conserve uniquement une URL canonique absolue commençant par `https://`, la date
-explicitement lue, l’accès intégral et le fait essentiel. Produis `COUVERTURE_COLLECTE`,
-puis `CANDIDATS`. Termine par `COLLECTE_TERMINEE` seulement avec dix requêtes, cinq
-rubriques, cinq domaines et au moins cinq candidats ; sinon `COLLECTE_INSUFFISANTE`.
+Le message initial contient uniquement :
+`DATE_EDITION = <date en français>`
+`PERIODE = du <date en français> au <date en français> inclus`
 
-Pendant `VALIDATION`, n’utilise pas le Web. Pour chaque candidat, produis
-`CONTROLE_DATES` : titre, date brute, format `AAAA-MM-JJ`, borne basse, borne haute,
-accès, `CLE_EVENEMENT`, décision. Trace séparément `date ISO >= DEBUT_ISO` pour la
-borne basse et `date ISO <= FIN_ISO` pour la borne haute, avec les valeurs réellement
-comparées et `OUI` ou `NON`. N’intervertis jamais les deux bornes. Déduplique d’abord
-par URL canonique : même URL = doublon, même si `CLE_EVENEMENT` diffère. Une source est
-valide seulement si le format, les deux bornes et l’accès valent `OUI`. Même fait réel = même
-clé. Garde la source la plus directe, sinon la plus récente, sinon la première. Exclus
-chaque doublon avec
-`DOUBLON_DE | titre conservé`. Compte le nombre exact d’entrées sous `CANDIDATS` et
-contrôle-les toutes, sans utiliser de sous-liste préfiltrée. Vérifie
-`valides + exclues = candidats`. Termine par
-`VALIDATION_TERMINEE` seulement si l’égalité est exacte et au moins une source reste
-valide.
+Extrais la date d’édition, la borne basse et la borne haute, puis convertis-les au
+format `AAAA-MM-JJ`. Si une valeur manque, est ambiguë ou si la borne basse dépasse la
+borne haute, réponds `A_COMPLETER | PARAMETRES_INVALIDES | <détail>` et arrête-toi.
+Seul le message initial peut produire `PARAMETRES_INVALIDES`. Ne compare jamais la
+date d’édition aux bornes : elle peut être postérieure à la période.
 
-Pendant `PAQUET`, n’utilise pas le Web. Transforme uniquement `SOURCES_VALIDES` en un
-bloc JSON strict placé entre `SNUM_PAQUET_RENDU_V519_START` et
-`SNUM_PAQUET_RENDU_V519_END`. `\"` et `\\` doivent être échappés dans les chaînes ;
-vérifie que le bloc est analysable comme JSON. Aucun commentaire.
+Après le message initial, l’utilisateur envoie successivement deux commandes courtes :
 
-Le JSON contient exactement : `schema_version`=`SNUM_PAQUET_RENDU_V519`, `edition_date`,
-`edition_date_long`, `window_start`, `window_end`, `articles`, `watch`. Chaque article
-contient : `id`, `rubric`, `title`, `source`, `publication_date_iso`,
-`publication_date_long`, `url`, `fact`, `keywords`, `takeaway`, `snum_interest`,
-`essential`. `rubric` vaut seulement `numerique`, `ia`, `commande`, `rh` ou `bercy`.
-`keywords` contient 3 à 5 chaînes. `fact` contient au plus 25 mots ; `takeaway` et
-`snum_interest` au plus 15 mots. `publication_date_iso` suit `AAAA-MM-JJ`.
-`edition_date`, `window_start` et `window_end` suivent aussi `AAAA-MM-JJ` ;
-`edition_date_long` écrit la date d’édition avec le mois en lettres.
-`publication_date_long` écrit la même date avec le mois en lettres, par exemple
-`6 octobre 2026`, sans jour de semaine, zéro initial ni barre oblique.
-Sous trois articles, tous portent `essential=false`. À partir de trois articles,
-exactement trois portent `essential=true`. `watch` contient seulement des objets `title`
-et `summary`, ou une liste vide. `id` est une chaîne non vide et unique. Une URL ne peut
-apparaître qu’une fois dans `articles`.
+- exactement `VALIDER` pour lancer `VALIDATION` ;
+- exactement `GENERER_PAQUET` pour lancer `PAQUET`.
 
-Avant de répondre, vérifie chaque champ, les URL, les limites de mots et le nombre
-d’essentiels. Si le nombre d’URL uniques diffère du nombre d’articles, réponds
-`PAQUET_INCOMPLET | URL_DUPLIQUEE | <URL>`, sans JSON. Pour tout autre échec, réponds
-`PAQUET_INCOMPLET | <identifiant> | <champ>`, sans JSON. Sinon termine après le marqueur
-de fin par `PAQUET_RENDU_PRET`.
+Toute autre commande vaut
+`A_COMPLETER | ETAT_INVALIDE | commande attendue : <VALIDER ou GENERER_PAQUET>`.
+
+Charge intégralement les ressources `02-METHODE-COLLECTE-SNUM-V5.20.md`, puis
+`03-CONTRAT-PAQUET-RENDU-SNUM-V5.20.md`. Un fichier absent, tronqué ou sans ses
+marqueurs de début et de fin vaut `A_COMPLETER | RESSOURCE_MANQUANTE | <nom>`.
+
+Au tour du message initial, exécute seulement `COLLECTE` selon la méthode. Utilise le
+Web, exécute les dix requêtes, ouvre les URL et affiche intégralement
+`COUVERTURE_COLLECTE`, puis `CANDIDATS`. En cas de succès, termine par :
+
+`COLLECTE_TERMINEE`
+`ETAPE_SUIVANTE | Envoyez VALIDER`
+
+En cas d’échec, réponds `A_COMPLETER`, puis `## CONTROLES_EN_ECHEC`, puis
+`COLLECTE_INSUFFISANTE | <détail>`. Ne lance pas `VALIDATION`.
+
+Au tour du message `VALIDER`, exécute seulement `VALIDATION` selon la méthode, sans
+Web. Réutilise toutes les entrées de `CANDIDATS` et les dates conservées dans la
+conversation. Si elles sont absentes ou incomplètes, réponds
+`A_COMPLETER | ETAT_INVALIDE | CANDIDATS absents ou incomplets`. Sinon, affiche
+intégralement `CONTROLE_DATES`, `SOURCES_VALIDES` et `SOURCES_EXCLUES`. En cas de
+succès, termine par :
+
+`VALIDATION_TERMINEE`
+`ETAPE_SUIVANTE | Envoyez GENERER_PAQUET`
+
+En cas d’échec, réponds `A_COMPLETER`, puis `## CONTROLES_EN_ECHEC`, puis le code et le
+détail de l’échec. Ne lance pas `PAQUET`.
+
+Au tour du message `GENERER_PAQUET`, exécute seulement `PAQUET` selon le contrat,
+sans Web. Réutilise exclusivement `SOURCES_VALIDES` et les dates conservées dans la
+conversation. Si elles sont absentes ou incomplètes, reproduis le jeton
+`PAQUET_INCOMPLET` du contrat, sans JSON. En cas de réussite, réponds uniquement avec
+le bloc JSON entre
+`SNUM_PAQUET_RENDU_V519_START` et `SNUM_PAQUET_RENDU_V519_END`, puis
+`PAQUET_RENDU_PRET`. En cas d’échec, reproduis le jeton `PAQUET_INCOMPLET` du contrat,
+sans JSON.
+
+Ne lance jamais deux étapes dans le même tour. Conserve intégralement toute structure
+dont le tour suivant a besoin.
 ```
 
 ## Installer Newsletter SNUM - Rendu HTML
@@ -223,73 +238,48 @@ contrôle métier requis`.
 Utilisez une conversation neuve dans chaque Projet. L’exemple couvre la période
 du 3 au 13 octobre 2026 pour l’édition du 14 octobre 2026.
 
-### Message 1 avec le Web
+### Message initial dans le Projet Collecte
+
+Activez le Web dans l’interface, puis envoyez uniquement ces deux lignes après avoir
+remplacé les dates. Ne saisissez aucun nom de phase.
 
 ```text
-PHASE COLLECTE.
-Utilise le Web.
-Édition du 14 octobre 2026.
-Fenêtre du 3 octobre 2026 au 13 octobre 2026 inclus.
-Exécute dix requêtes distinctes couvrant les cinq rubriques
-et au moins cinq domaines.
-Sous cinq candidats, effectue une seconde passe.
-Ouvre chaque URL et conserve seulement les pages intégrales.
-Ne filtre aucun candidat selon sa date pendant COLLECTE.
-Produis COUVERTURE_COLLECTE, puis CANDIDATS.
-Ne rédige ni PAQUET_RENDU ni HTML.
-Ne pose aucune question.
+DATE_EDITION = 14 octobre 2026
+PERIODE = du 3 octobre 2026 au 13 octobre 2026 inclus
 ```
 
-Passez à la suite uniquement si la réponse se termine par
-`COLLECTE_TERMINEE`.
+Le résultat doit contenir `COUVERTURE_COLLECTE`, `CANDIDATS`,
+`COLLECTE_TERMINEE` et `ETAPE_SUIVANTE | Envoyez VALIDER`.
 
-### Message 2 sans le Web
+Si la réponse commence par `A_COMPLETER`, arrêtez et n’envoyez pas le paquet au Projet
+Rendu.
+
+### Premier message de poursuite dans le Projet Collecte
+
+Restez dans la même conversation et envoyez uniquement :
 
 ```text
-PHASE VALIDATION.
-N’utilise pas le Web.
-Fenêtre inclusive :
-DEBUT_ISO = 2026-10-03
-FIN_ISO = 2026-10-13
-Pour chaque candidat, trace séparément :
-date ISO >= DEBUT_ISO pour la borne basse ;
-date ISO <= FIN_ISO pour la borne haute.
-Affiche les valeurs comparées et OUI ou NON.
-Valide aussi le format et l’accès intégral.
-Déduplique avec CLE_EVENEMENT.
-Produis CONTROLE_DATES, SOURCES_VALIDES et SOURCES_EXCLUES.
-Contrôle chaque entrée sous CANDIDATS, sans sous-liste préfiltrée.
-Vérifie que valides + exclues = candidats.
-Ne rédige ni PAQUET_RENDU ni HTML.
-Ne pose aucune question.
+VALIDER
 ```
 
-Passez à la suite uniquement si `VALIDATION_TERMINEE` est présent, si les
-volumes sont exacts et si au moins une source est valide.
+Le résultat doit contenir `CONTROLE_DATES`, `SOURCES_VALIDES`, `SOURCES_EXCLUES`,
+`VALIDATION_TERMINEE` et `ETAPE_SUIVANTE | Envoyez GENERER_PAQUET`. Si la réponse
+commence par `A_COMPLETER`, arrêtez.
 
-### Message 3 sans le Web
+### Second message de poursuite dans le Projet Collecte
+
+Restez dans la même conversation et envoyez uniquement :
 
 ```text
-PHASE PAQUET.
-N’utilise pas le Web.
-Utilise exclusivement SOURCES_VALIDES.
-Produis le JSON strict entre SNUM_PAQUET_RENDU_V519_START
-et SNUM_PAQUET_RENDU_V519_END.
-Vérifie les champs, les URL, les longueurs
-et le nombre d’essentiels.
-Exige publication_date_iso et publication_date_long
-pour chaque article et vérifie qu’ils désignent le même jour.
-Ne rédige aucun HTML.
-Ne pose aucune question.
+GENERER_PAQUET
 ```
 
-Le résultat doit se terminer par `PAQUET_RENDU_PRET`. Après vérification, copiez le bloc entier,
-du marqueur `SNUM_PAQUET_RENDU_V519_START` au marqueur
-`SNUM_PAQUET_RENDU_V519_END` inclus.
+Le résultat doit contenir le paquet entre `SNUM_PAQUET_RENDU_V519_START` et
+`SNUM_PAQUET_RENDU_V519_END`, puis se terminer par `PAQUET_RENDU_PRET`. Après
+vérification, copiez le bloc entier entre les deux marqueurs. Si la réponse contient
+`PAQUET_INCOMPLET`, arrêtez.
 
-Si la réponse contient `PAQUET_INCOMPLET`, arrêtez.
-
-### Message 4 dans le Projet Rendu HTML, sans le Web
+### Message suivant dans le Projet Rendu HTML, sans le Web
 
 Créez une conversation neuve dans `Newsletter SNUM - Rendu HTML`. Remplacez la
 dernière ligne par le bloc copié et envoyez :
@@ -319,8 +309,7 @@ Le résultat doit contenir `## HTML COMPLET`, un unique bloc de
 Le Projet Rendu ne recompte pas les mots. Ce contrôle appartient au Projet Collecte ;
 le refaire pendant l’assemblage HTML peut produire un faux rejet du paquet.
 
-Si la réponse commence par `A_COMPLETER`, arrêtez. N’envoyez pas
-`continue`.
+Si la réponse commence par `A_COMPLETER`, arrêtez. N’envoyez aucune autre commande.
 
 ## Contrôle métier minimal
 
@@ -340,12 +329,18 @@ Vérifiez :
 ## Sources de vérité
 
 - `EXEMPLE-PAQUET-RENDU-V5.19.json` : contrat d’exemple ;
+- `01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.20.md` : orchestration automatique ;
+- `02-METHODE-COLLECTE-SNUM-V5.20.md` : collecte et validation ;
+- `03-CONTRAT-PAQUET-RENDU-SNUM-V5.20.md` : paquet compatible V519 ;
 - `_source/05-BLOCS-HTML-CANONIQUES.md` : source HTML ;
 - `scripts/build_split_kit.py` : générateur du gabarit et du ZIP ;
 - `tests/test_split_projects.py` : contrôles du découpage ;
 - `RAPPORT-V5.19.md` : preuve de la recette réelle ;
+- `RAPPORT-V5.20.md` : preuve des recettes Collecte avec `VALIDER` et
+  `GENERER_PAQUET` ;
 - `_documentation/archives/` : versions antérieures, conservées hors de la racine.
 
-La racine contient uniquement la V5.19 active et les sources permanentes nécessaires à
-sa génération. Les 6 fichiers d’installation listés plus haut doivent y rester.
+La racine contient uniquement la Collecte V5.20, le Rendu V5.19 et les sources
+permanentes nécessaires à leur génération. Les 8 fichiers d’installation listés plus
+haut doivent y rester.
 N’installez aucun fichier depuis `_documentation/archives/`.
