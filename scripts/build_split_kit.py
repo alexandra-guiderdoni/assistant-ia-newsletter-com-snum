@@ -10,7 +10,7 @@ from zipfile import ZIP_DEFLATED, ZipFile, ZipInfo
 from newsletter_render import canonical_blocks
 
 PROJECT = Path(__file__).resolve().parents[1]
-SOURCE = PROJECT / "05-BLOCS-HTML-CANONIQUES.md"
+SOURCE = PROJECT / "_source" / "05-BLOCS-HTML-CANONIQUES.md"
 COLLECTE_PROJECT = "Newsletter SNUM - Collecte"
 RENDU_PROJECT = "Newsletter SNUM - Rendu HTML"
 COLLECTE_ARCHIVE = PROJECT / f"{COLLECTE_PROJECT}.zip"

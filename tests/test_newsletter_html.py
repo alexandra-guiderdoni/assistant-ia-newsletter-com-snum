@@ -7,8 +7,8 @@ from pathlib import Path
 
 PROJECT = Path(__file__).resolve().parents[1]
 SCRIPT = PROJECT / "scripts" / "newsletter_html.py"
-TEMPLATE = PROJECT / "03-GABARIT-HTML.md"
-COMPACT_TEMPLATE = PROJECT / "05-BLOCS-HTML-CANONIQUES.md"
+TEMPLATE = PROJECT / "_source" / "03-GABARIT-HTML.md"
+COMPACT_TEMPLATE = PROJECT / "_source" / "05-BLOCS-HTML-CANONIQUES.md"
 
 
 def article(title, rubric, *, essential=False):

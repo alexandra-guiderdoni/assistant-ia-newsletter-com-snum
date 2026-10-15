@@ -9,6 +9,11 @@ PROJECT = Path(__file__).resolve().parents[1]
 
 
 class SplitProjectKitTests(unittest.TestCase):
+    def test_technical_sources_are_kept_out_of_root(self):
+        for name in ("03-GABARIT-HTML.md", "05-BLOCS-HTML-CANONIQUES.md"):
+            self.assertFalse((PROJECT / name).exists(), name)
+            self.assertTrue((PROJECT / "_source" / name).is_file(), name)
+
     def test_active_installation_files_are_available_at_root(self):
         expected = (
             "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.18.md",
@@ -152,7 +157,7 @@ class SplitProjectKitTests(unittest.TestCase):
                     "--output",
                     str(output),
                     "--template",
-                    str(PROJECT / "05-BLOCS-HTML-CANONIQUES.md"),
+                    str(PROJECT / "_source" / "05-BLOCS-HTML-CANONIQUES.md"),
                 ],
                 cwd=PROJECT,
                 capture_output=True,

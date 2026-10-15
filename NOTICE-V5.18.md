@@ -47,6 +47,8 @@ Pour `Newsletter SNUM - Rendu HTML`, utilisez les fichiers dans cet ordre :
 
 Ces 6 fichiers sont présents directement à la racine du dépôt. Les deux ZIP contiennent
 les mêmes fichiers, répartis par Projet ; ne téléversez jamais un ZIP lui-même.
+Les sources techniques sont rangées dans `_source/` et ne doivent être ajoutées à
+aucun Projet.
 
 ## Télécharger les deux dossiers
 
@@ -326,7 +328,7 @@ Vérifiez :
 ## Sources de vérité
 
 - `EXEMPLE-PAQUET-RENDU-V5.18.json` : contrat d’exemple ;
-- `05-BLOCS-HTML-CANONIQUES.md` : source HTML ;
+- `_source/05-BLOCS-HTML-CANONIQUES.md` : source HTML ;
 - `21-CANON-HTML-COQUE-A-V5.18.md` à
   `24-CANON-HTML-SURVEILLER-VIDE-V5.18.md` : ressources à téléverser ;
 - `scripts/build_split_kit.py` : générateur des ressources et du ZIP ;

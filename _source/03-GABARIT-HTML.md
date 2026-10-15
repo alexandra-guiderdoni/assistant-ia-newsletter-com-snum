@@ -2,7 +2,7 @@
 
 <!-- PDG-LARGE-FILE-JUSTIFICATION: la coque, ses modèles et son contrat doivent rester dans un seul document récupérable par le Projet DINUM. -->
 
-Dans l’Assistant DINUM, utiliser `05-BLOCS-HTML-CANONIQUES.md` comme source opérationnelle prioritaire : ses cinq blocs reproduisent ceux-ci à l’identique dans un fichier plus court. Le présent fichier conserve le contrat détaillé et le CSS de référence.
+Dans l’Assistant DINUM, utiliser `_source/05-BLOCS-HTML-CANONIQUES.md` comme source opérationnelle prioritaire : ses cinq blocs reproduisent ceux-ci à l’identique dans un fichier plus court. Le présent fichier conserve le contrat détaillé et le CSS de référence.
 
 ## CONTRAT-DE-SORTIE
 
