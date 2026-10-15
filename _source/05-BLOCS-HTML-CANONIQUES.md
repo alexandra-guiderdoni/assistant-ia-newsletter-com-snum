@@ -1,6 +1,6 @@
-# Blocs HTML canoniques - V5.9 Assistant-only
+# Blocs HTML canoniques - V5.19
 
-Ce fichier est la source opérationnelle unique du bloc `HTML COMPLET` dans l’Assistant DINUM. Il contient seulement les cinq blocs à copier. Pour l’assemblage HTML, il prime sur toute autre description.
+Ce fichier est la source locale unique du générateur et des tests. Les quatre ressources V5.19 téléversées dans l’Assistant DINUM en sont dérivées. Pour l’assemblage HTML, il prime sur toute autre description.
 
 ## RÈGLE-DE-COPIE
 

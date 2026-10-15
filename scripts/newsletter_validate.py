@@ -38,7 +38,8 @@ def validate(html, blocks):
         "la coque ne correspond pas au GABARIT-COMPLET",
     )
     require(
-        '<nav class="fr-container" role="navigation" aria-label="Accès rapide">' in html,
+        '<nav class="fr-container" role="navigation" aria-label="Accès rapide">'
+        in html,
         "SKIPLINKS_ROLE",
         "le rôle navigation des accès rapides manque",
     )
@@ -63,20 +64,27 @@ def validate(html, blocks):
         "SECTION_NUMBER_ZERO",
         "la numérotation doit commencer à 01",
     )
-    numbers = [int(value) for value in re.findall(r'class="section-number">(\d{2})<', html)]
+    numbers = [
+        int(value) for value in re.findall(r'class="section-number">(\d{2})<', html)
+    ]
     require(
         numbers == list(range(1, len(numbers) + 1)),
         "SECTION_NUMBERS",
         "les numéros de section ne sont pas continus",
     )
-    section_ids = set(re.findall(r'<section\b[^>]*\bid="([^"]+)"', html))
+    section_id_list = re.findall(r'<section\b[^>]*\bid="([^"]+)"', html)
+    section_ids = set(section_id_list)
+    require(
+        len(section_id_list) == len(section_ids),
+        "SECTION_ID_DUPLICATE",
+        "un identifiant de section est utilisé plusieurs fois",
+    )
     allowed_section_ids = {"essentiel", "surveiller", *RUBRICS}
     unknown_section_ids = sorted(section_ids - allowed_section_ids)
     require(
         not unknown_section_ids,
         "UNKNOWN_RUBRIC_ID",
-        "identifiants de rubrique non canoniques : "
-        + ", ".join(unknown_section_ids),
+        "identifiants de rubrique non canoniques : " + ", ".join(unknown_section_ids),
     )
     navigation = re.search(
         r'<nav\b[^>]*\bid="navigation"[^>]*>(.*?)</nav>', html, re.DOTALL
@@ -84,12 +92,13 @@ def validate(html, blocks):
     if navigation:
         navigation_ids = re.findall(r'href="#([^"]+)"', navigation.group(1))
         missing_targets = sorted(set(navigation_ids) - section_ids)
-        missing_links = sorted((section_ids & allowed_section_ids) - set(navigation_ids))
+        missing_links = sorted(
+            (section_ids & allowed_section_ids) - set(navigation_ids)
+        )
         require(
             not missing_targets,
             "NAV_TARGET_MISSING",
-            "liens de navigation sans section cible : "
-            + ", ".join(missing_targets),
+            "liens de navigation sans section cible : " + ", ".join(missing_targets),
         )
         require(
             not missing_links,
@@ -104,7 +113,9 @@ def validate(html, blocks):
     for rubric_id, (_, _, muted) in RUBRICS.items():
         if f'id="{rubric_id}"' not in html:
             continue
-        expected = f'<section id="{rubric_id}"' + (' class="section-muted">' if muted else ">")
+        expected = f'<section id="{rubric_id}"' + (
+            ' class="section-muted">' if muted else ">"
+        )
         require(
             expected in html,
             f"RUBRIC_WRAPPER_{rubric_id.upper()}",
@@ -130,10 +141,30 @@ def validate(html, blocks):
         "le script DSFR nomodule manque",
     )
     require(
+        len(re.findall(r"<script\b", html)) == 2,
+        "SCRIPT_COUNT",
+        "la page doit contenir uniquement les deux scripts DSFR",
+    )
+    for link in re.findall(r'<a\b[^>]*\bhref="https://[^>]*>.*?</a>', html, re.DOTALL):
+        opening = link.split(">", 1)[0]
+        require(
+            'target="_blank"' in opening
+            and 'rel="noopener noreferrer"' in opening
+            and "nouvelle fenêtre" in link,
+            "EXTERNAL_LINK",
+            "un lien externe ne signale pas ou ne protège pas la nouvelle fenêtre",
+        )
+    require(
         '<span class="fr-tag">' not in html,
         "NONINTERACTIVE_TAG",
         "un tag non interactif doit être un p.fr-tag",
     )
-    require(not MARKER.search(html), "UNRESOLVED_MARKER", "un marqueur @@...@@ subsiste")
-    require(html.count("<h1>") == 1, "H1_COUNT", "la page doit contenir un seul h1")
+    require(
+        not MARKER.search(html), "UNRESOLVED_MARKER", "un marqueur @@...@@ subsiste"
+    )
+    require(
+        len(re.findall(r"<h1\b", html)) == 1,
+        "H1_COUNT",
+        "la page doit contenir un seul h1",
+    )
     return errors

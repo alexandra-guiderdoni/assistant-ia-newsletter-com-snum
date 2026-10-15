@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Construit les deux paquets V5.18 des Projets Assistant DINUM."""
+"""Construit les deux paquets V5.19 des Projets Assistant DINUM."""
 
 import argparse
 import sys
@@ -15,22 +15,22 @@ COLLECTE_PROJECT = "Newsletter SNUM - Collecte"
 RENDU_PROJECT = "Newsletter SNUM - Rendu HTML"
 COLLECTE_ARCHIVE = PROJECT / f"{COLLECTE_PROJECT}.zip"
 RENDU_ARCHIVE = PROJECT / f"{RENDU_PROJECT}.zip"
-LEGACY_ARCHIVE = PROJECT / "kit-dinum-snum-v5-18-deux-projets-6-fichiers.zip"
+LEGACY_ARCHIVE = PROJECT / "kit-dinum-snum-v5-19-deux-projets-6-fichiers.zip"
 RESOURCE_SPECS = (
-    ("21-CANON-HTML-COQUE-A-V5.18.md", "SNUM_CANON_V518_COQUE_A"),
-    ("22-CANON-HTML-COQUE-B-V5.18.md", "SNUM_CANON_V518_COQUE_B"),
+    ("21-CANON-HTML-COQUE-A-V5.19.md", "SNUM_CANON_V519_COQUE_A"),
+    ("22-CANON-HTML-COQUE-B-V5.19.md", "SNUM_CANON_V519_COQUE_B"),
     (
-        "23-CANON-HTML-ESSENTIEL-RUBRIQUE-V5.18.md",
-        "SNUM_CANON_V518_ESSENTIEL_RUBRIQUE",
+        "23-CANON-HTML-ESSENTIEL-RUBRIQUE-V5.19.md",
+        "SNUM_CANON_V519_ESSENTIEL_RUBRIQUE",
     ),
     (
-        "24-CANON-HTML-SURVEILLER-VIDE-V5.18.md",
-        "SNUM_CANON_V518_SURVEILLER_VIDE",
+        "24-CANON-HTML-SURVEILLER-VIDE-V5.19.md",
+        "SNUM_CANON_V519_SURVEILLER_VIDE",
     ),
 )
-COLLECTE_FILES = ("01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.18.md",)
+COLLECTE_FILES = ("01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.19.md",)
 RENDU_FILES = (
-    "20-PROMPT-SYSTEME-RENDU-HTML-SNUM-V5.18.md",
+    "20-PROMPT-SYSTEME-RENDU-HTML-SNUM-V5.19.md",
     *(filename for filename, _ in RESOURCE_SPECS),
 )
 
@@ -43,7 +43,7 @@ def canonical_resources():
     blocks = canonical_blocks(SOURCE.read_text(encoding="utf-8"))
     coque = blocks["page"]
     split_at = coque.index('  <footer id="footer"')
-    coque_a = coque[:split_at].rstrip("\n")
+    coque_a = coque[:split_at]
     coque_b = coque[split_at:]
     essentiel = blocks["essential"]
     rubrique = blocks["rubric"]
@@ -55,14 +55,14 @@ def canonical_resources():
         RESOURCE_SPECS[1][0]: fenced_block(RESOURCE_SPECS[1][1], coque_b) + "\n",
         RESOURCE_SPECS[2][0]: (
             f"{RESOURCE_SPECS[2][1]}_START\n"
-            f"{fenced_block('SNUM_BLOC_V518_ESSENTIEL', essentiel)}\n"
-            f"{fenced_block('SNUM_BLOC_V518_RUBRIQUE', rubrique)}\n"
+            f"{fenced_block('SNUM_BLOC_V519_ESSENTIEL', essentiel)}\n"
+            f"{fenced_block('SNUM_BLOC_V519_RUBRIQUE', rubrique)}\n"
             f"{RESOURCE_SPECS[2][1]}_END\n"
         ),
         RESOURCE_SPECS[3][0]: (
             f"{RESOURCE_SPECS[3][1]}_START\n"
-            f"{fenced_block('SNUM_BLOC_V518_SURVEILLER', surveiller)}\n"
-            f"{fenced_block('SNUM_BLOC_V518_VIDE', vide)}\n"
+            f"{fenced_block('SNUM_BLOC_V519_SURVEILLER', surveiller)}\n"
+            f"{fenced_block('SNUM_BLOC_V519_VIDE', vide)}\n"
             f"{RESOURCE_SPECS[3][1]}_END\n"
         ),
     }

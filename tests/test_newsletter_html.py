@@ -3,6 +3,7 @@ import re
 import subprocess
 import tempfile
 import unittest
+from copy import deepcopy
 from pathlib import Path
 
 PROJECT = Path(__file__).resolve().parents[1]
@@ -13,6 +14,7 @@ COMPACT_TEMPLATE = PROJECT / "_source" / "05-BLOCS-HTML-CANONIQUES.md"
 
 def article(title, rubric, *, essential=False):
     return {
+        "id": f"article-{rubric}-{title.lower().replace(' ', '-')}",
         "rubric": rubric,
         "title": title,
         "source": "Source & publique",
@@ -40,9 +42,11 @@ class NewsletterHtmlCliTests(unittest.TestCase):
 
     def payload(self):
         return {
-            "schema_version": "SNUM_PAQUET_RENDU_V518",
+            "schema_version": "SNUM_PAQUET_RENDU_V519",
             "edition_date": "2026-10-14",
             "edition_date_long": "mercredi 14 octobre 2026",
+            "window_start": "2026-10-03",
+            "window_end": "2026-10-13",
             "articles": [
                 article("Numérique un", "numerique", essential=True),
                 article("Numérique deux", "numerique"),
@@ -57,7 +61,7 @@ class NewsletterHtmlCliTests(unittest.TestCase):
             ],
         }
 
-    def test_v518_rejects_missing_or_incoherent_publication_dates(self):
+    def test_v519_rejects_missing_or_incoherent_publication_dates(self):
         cases = {
             "date ISO manquante": (
                 "publication_date_iso",
@@ -104,6 +108,120 @@ class NewsletterHtmlCliTests(unittest.TestCase):
 
                 self.assertEqual(result.returncode, 2)
                 self.assertIn(expected_error, result.stderr)
+
+    def test_build_rejects_duplicate_article_urls(self):
+        payload = self.payload()
+        payload["articles"][1]["url"] = payload["articles"][0]["url"]
+
+        with tempfile.TemporaryDirectory() as directory:
+            input_path = Path(directory) / "newsletter.json"
+            output_path = Path(directory) / "index.html"
+            input_path.write_text(json.dumps(payload), encoding="utf-8")
+
+            result = self.run_cli(
+                "build",
+                "--input",
+                str(input_path),
+                "--output",
+                str(output_path),
+                "--template",
+                str(COMPACT_TEMPLATE),
+            )
+
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("URL d’article dupliquée", result.stderr)
+        self.assertFalse(output_path.exists())
+
+    def test_v519_requires_text_article_ids(self):
+        payload = self.payload()
+        payload["articles"][0]["id"] = 1
+
+        with tempfile.TemporaryDirectory() as directory:
+            input_path = Path(directory) / "newsletter.json"
+            output_path = Path(directory) / "index.html"
+            input_path.write_text(json.dumps(payload), encoding="utf-8")
+
+            result = self.run_cli(
+                "build",
+                "--input",
+                str(input_path),
+                "--output",
+                str(output_path),
+                "--template",
+                str(COMPACT_TEMPLATE),
+            )
+
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("id d’article textuel requis", result.stderr)
+        self.assertFalse(output_path.exists())
+
+    def test_v519_rejects_invalid_packet_contracts(self):
+        cases = (
+            (
+                "schéma inattendu",
+                lambda payload: payload.update(schema_version="AUTRE_SCHEMA"),
+                "schéma V5.19 requis",
+            ),
+            (
+                "borne absente",
+                lambda payload: payload.pop("window_start"),
+                "champs paquet manquants : window_start",
+            ),
+            (
+                "date d’édition incohérente",
+                lambda payload: payload.update(edition_date_long="15 octobre 2026"),
+                "dates d’édition incohérentes",
+            ),
+            (
+                "publication hors fenêtre",
+                lambda payload: payload["articles"][0].update(
+                    publication_date_iso="2026-10-02",
+                    publication_date_long="2 octobre 2026",
+                ),
+                "date de publication hors fenêtre",
+            ),
+            (
+                "URL non HTTPS",
+                lambda payload: payload["articles"][0].update(
+                    url="http://example.org/article"
+                ),
+                "URL HTTPS requise",
+            ),
+            (
+                "mot-clé non textuel",
+                lambda payload: payload["articles"][0].update(
+                    keywords=["numérique", 2, "transformation"]
+                ),
+                "mot-clé textuel requis",
+            ),
+            (
+                "essentiel interdit sous trois articles",
+                lambda payload: payload.update(articles=payload["articles"][:2]),
+                "aucun article essentiel sous trois articles",
+            ),
+        )
+
+        for label, mutate, expected_error in cases:
+            with self.subTest(label=label), tempfile.TemporaryDirectory() as directory:
+                payload = deepcopy(self.payload())
+                mutate(payload)
+                input_path = Path(directory) / "newsletter.json"
+                output_path = Path(directory) / "index.html"
+                input_path.write_text(json.dumps(payload), encoding="utf-8")
+
+                result = self.run_cli(
+                    "build",
+                    "--input",
+                    str(input_path),
+                    "--output",
+                    str(output_path),
+                    "--template",
+                    str(COMPACT_TEMPLATE),
+                )
+
+                self.assertEqual(result.returncode, 2, result.stderr)
+                self.assertIn(expected_error, result.stderr)
+                self.assertFalse(output_path.exists())
 
     def build_html(self, template=TEMPLATE):
         payload = self.payload()
@@ -307,6 +425,53 @@ class NewsletterHtmlCliTests(unittest.TestCase):
 
         self.assertEqual(result.returncode, 1, result.stderr)
         self.assertIn("PAGE_SHELL", result.stderr)
+
+    def test_validate_rejects_noncanonical_html_variants(self):
+        valid_html = self.build_html()
+        variants = (
+            (
+                "marqueur alphanumérique",
+                valid_html.replace("</main>", "@@X1@@\n</main>", 1),
+                "UNRESOLVED_MARKER",
+            ),
+            (
+                "script ajouté",
+                valid_html.replace("</main>", "<script>alert(1)</script>\n</main>", 1),
+                "SCRIPT_COUNT",
+            ),
+            (
+                "second h1 avec attribut",
+                valid_html.replace("<h1>", '<h1 class="extra">Supplément</h1><h1>', 1),
+                "H1_COUNT",
+            ),
+            (
+                "identifiant de section dupliqué",
+                valid_html.replace(
+                    "</main>", '<section id="numerique"></section>\n</main>', 1
+                ),
+                "SECTION_ID_DUPLICATE",
+            ),
+            (
+                "lien externe sans protection",
+                valid_html.replace(' target="_blank" rel="noopener noreferrer"', "", 1),
+                "EXTERNAL_LINK",
+            ),
+        )
+
+        for label, invalid_html, expected_code in variants:
+            with self.subTest(label=label), tempfile.TemporaryDirectory() as directory:
+                invalid_path = Path(directory) / "invalid.html"
+                invalid_path.write_text(invalid_html, encoding="utf-8")
+                result = self.run_cli(
+                    "validate",
+                    "--input",
+                    str(invalid_path),
+                    "--template",
+                    str(TEMPLATE),
+                )
+
+                self.assertEqual(result.returncode, 1, result.stderr)
+                self.assertIn(expected_code, result.stderr)
 
     def test_build_blocks_an_internally_invalid_page(self):
         payload = self.payload()

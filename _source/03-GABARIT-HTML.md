@@ -1,8 +1,8 @@
-# Gabarit HTML Loïc - V5.9
+# Gabarit HTML Loïc - V5.19
 
 <!-- PDG-LARGE-FILE-JUSTIFICATION: la coque, ses modèles et son contrat doivent rester dans un seul document récupérable par le Projet DINUM. -->
 
-Dans l’Assistant DINUM, utiliser `_source/05-BLOCS-HTML-CANONIQUES.md` comme source opérationnelle prioritaire : ses cinq blocs reproduisent ceux-ci à l’identique dans un fichier plus court. Le présent fichier conserve le contrat détaillé et le CSS de référence.
+Ce fichier est une source locale de maintenance. Le générateur et les tests utilisent `_source/05-BLOCS-HTML-CANONIQUES.md`, dont les cinq blocs reproduisent ceux-ci à l’identique. Aucun fichier `_source/` ne doit être téléversé dans l’Assistant DINUM.
 
 ## CONTRAT-DE-SORTIE
 
@@ -10,7 +10,7 @@ Source de vérité : `index.html` et `styles.css` du dépôt `bacoco/revue-press
 
 Le bloc `HTML COMPLET` doit être un document unique depuis `<!doctype html>` jusqu’à `</html>`. Copier `GABARIT-COMPLET`, remplacer tous les marqueurs `@@...@@`, puis dupliquer `MODELE-ESSENTIEL` et `MODELE-RUBRIQUE` selon la sélection. Supprimer les commentaires de modèle et tout marqueur restant. Les parties invariantes doivent rester identiques à la source ; seules les dates, la navigation, les sections éditoriales, les textes et les URL d’articles varient.
 
-Conserver sans réécriture le doctype, `lang`, le `title`, les trois accès rapides, le header, le footer, les liens réglementaires, la mention « Accessibilité : non conforme », le modal et les scripts DSFR 1.15.2 `module` et `nomodule`. Conserver exactement `/revue-presse-snum/styles.css?v=20260917`. Un fichier ouvert isolément en local peut donc perdre cette feuille de style : cela ne justifie jamais de modifier le chemin du gabarit.
+Conserver sans réécriture le doctype, `lang`, le `title`, les trois accès rapides, le header, le footer, les liens réglementaires, la mention « Accessibilité : non conforme », le modal et les scripts DSFR 1.15.2 `module` et `nomodule`. Conserver exactement `https://bacoco.github.io/revue-presse-snum/styles.css?v=20260917`.
 
 Les rubriques vides et leurs liens de navigation sont omis. Les identifiants de rubriques sont uniquement `numerique`, `ia`, `commande`, `rh` et `bercy`. Les liens externes d’articles ont `target="_blank"`, `rel="noopener noreferrer"` et la mention masquée « nouvelle fenêtre ». Un tag non interactif utilise toujours `p.fr-tag`.
 

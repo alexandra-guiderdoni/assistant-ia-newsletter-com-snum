@@ -1,4 +1,5 @@
 import json
+import re
 import subprocess
 import tempfile
 import unittest
@@ -16,12 +17,12 @@ class SplitProjectKitTests(unittest.TestCase):
 
     def test_active_installation_files_are_available_at_root(self):
         expected = (
-            "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.18.md",
-            "20-PROMPT-SYSTEME-RENDU-HTML-SNUM-V5.18.md",
-            "21-CANON-HTML-COQUE-A-V5.18.md",
-            "22-CANON-HTML-COQUE-B-V5.18.md",
-            "23-CANON-HTML-ESSENTIEL-RUBRIQUE-V5.18.md",
-            "24-CANON-HTML-SURVEILLER-VIDE-V5.18.md",
+            "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.19.md",
+            "20-PROMPT-SYSTEME-RENDU-HTML-SNUM-V5.19.md",
+            "21-CANON-HTML-COQUE-A-V5.19.md",
+            "22-CANON-HTML-COQUE-B-V5.19.md",
+            "23-CANON-HTML-ESSENTIEL-RUBRIQUE-V5.19.md",
+            "24-CANON-HTML-SURVEILLER-VIDE-V5.19.md",
         )
         for name in expected:
             self.assertTrue((PROJECT / name).is_file(), name)
@@ -40,16 +41,16 @@ class SplitProjectKitTests(unittest.TestCase):
         for path in PROJECT.iterdir():
             if path.is_file() and any(
                 f"V5.{version}" in path.name or f"v5-{version}" in path.name
-                for version in range(8, 18)
+                for version in range(8, 19)
             ):
                 inactive.append(path.name)
         self.assertEqual(inactive, [])
 
     def test_projects_have_isolated_responsibilities(self):
-        collecte = (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.18.md").read_text(
+        collecte = (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.19.md").read_text(
             encoding="utf-8"
         )
-        rendu = (PROJECT / "20-PROMPT-SYSTEME-RENDU-HTML-SNUM-V5.18.md").read_text(
+        rendu = (PROJECT / "20-PROMPT-SYSTEME-RENDU-HTML-SNUM-V5.19.md").read_text(
             encoding="utf-8"
         )
 
@@ -75,10 +76,10 @@ class SplitProjectKitTests(unittest.TestCase):
         self.assertIn("`RENDRE_EDITION`", rendu)
         self.assertIn("N’utilise pas le Web", rendu)
         for resource in (
-            "21-CANON-HTML-COQUE-A-V5.18.md",
-            "22-CANON-HTML-COQUE-B-V5.18.md",
-            "23-CANON-HTML-ESSENTIEL-RUBRIQUE-V5.18.md",
-            "24-CANON-HTML-SURVEILLER-VIDE-V5.18.md",
+            "21-CANON-HTML-COQUE-A-V5.19.md",
+            "22-CANON-HTML-COQUE-B-V5.19.md",
+            "23-CANON-HTML-ESSENTIEL-RUBRIQUE-V5.19.md",
+            "24-CANON-HTML-SURVEILLER-VIDE-V5.19.md",
         ):
             self.assertIn(resource, rendu)
         self.assertNotIn("`COLLECTE`", rendu)
@@ -93,13 +94,13 @@ class SplitProjectKitTests(unittest.TestCase):
 
     def test_renderer_uses_four_small_canonical_resources(self):
         expected = {
-            "21-CANON-HTML-COQUE-A-V5.18.md": "SNUM_CANON_V518_COQUE_A",
-            "22-CANON-HTML-COQUE-B-V5.18.md": "SNUM_CANON_V518_COQUE_B",
-            "23-CANON-HTML-ESSENTIEL-RUBRIQUE-V5.18.md": (
-                "SNUM_CANON_V518_ESSENTIEL_RUBRIQUE"
+            "21-CANON-HTML-COQUE-A-V5.19.md": "SNUM_CANON_V519_COQUE_A",
+            "22-CANON-HTML-COQUE-B-V5.19.md": "SNUM_CANON_V519_COQUE_B",
+            "23-CANON-HTML-ESSENTIEL-RUBRIQUE-V5.19.md": (
+                "SNUM_CANON_V519_ESSENTIEL_RUBRIQUE"
             ),
-            "24-CANON-HTML-SURVEILLER-VIDE-V5.18.md": (
-                "SNUM_CANON_V518_SURVEILLER_VIDE"
+            "24-CANON-HTML-SURVEILLER-VIDE-V5.19.md": (
+                "SNUM_CANON_V519_SURVEILLER_VIDE"
             ),
         }
 
@@ -109,10 +110,10 @@ class SplitProjectKitTests(unittest.TestCase):
             self.assertTrue(resource.startswith(f"{marker}_START\n"), filename)
             self.assertTrue(resource.endswith(f"\n{marker}_END\n"), filename)
 
-        coque_a = (PROJECT / "21-CANON-HTML-COQUE-A-V5.18.md").read_text(
+        coque_a = (PROJECT / "21-CANON-HTML-COQUE-A-V5.19.md").read_text(
             encoding="utf-8"
         )
-        coque_b = (PROJECT / "22-CANON-HTML-COQUE-B-V5.18.md").read_text(
+        coque_b = (PROJECT / "22-CANON-HTML-COQUE-B-V5.19.md").read_text(
             encoding="utf-8"
         )
         self.assertIn("<!doctype html>", coque_a)
@@ -120,11 +121,27 @@ class SplitProjectKitTests(unittest.TestCase):
         self.assertIn("<footer", coque_b)
         self.assertIn("</html>", coque_b)
 
+    def test_split_shell_reassembles_byte_for_byte(self):
+        def html_block(filename):
+            content = (PROJECT / filename).read_bytes()
+            match = re.search(rb"```html\n(.*?)\n```", content, re.DOTALL)
+            self.assertIsNotNone(match, filename)
+            return match.group(1)
+
+        source = (PROJECT / "_source" / "05-BLOCS-HTML-CANONIQUES.md").read_bytes()
+        expected = re.search(rb"```html\n(<!doctype html>.*?)\n```", source, re.DOTALL)
+        self.assertIsNotNone(expected)
+
+        assembled = html_block("21-CANON-HTML-COQUE-A-V5.19.md") + html_block(
+            "22-CANON-HTML-COQUE-B-V5.19.md"
+        )
+        self.assertEqual(assembled, expected.group(1))
+
     def test_packet_contract_builds_reference_html(self):
-        packet_path = PROJECT / "EXEMPLE-PAQUET-RENDU-V5.18.json"
+        packet_path = PROJECT / "EXEMPLE-PAQUET-RENDU-V5.19.json"
         packet = json.loads(packet_path.read_text(encoding="utf-8"))
 
-        self.assertEqual(packet["schema_version"], "SNUM_PAQUET_RENDU_V518")
+        self.assertEqual(packet["schema_version"], "SNUM_PAQUET_RENDU_V519")
         self.assertEqual(packet["edition_date"], "2026-10-14")
         self.assertEqual(packet["edition_date_long"], "14 octobre 2026")
         for article in packet["articles"]:
@@ -189,7 +206,7 @@ class SplitProjectKitTests(unittest.TestCase):
                 archive.namelist(),
                 [
                     f"{collecte_folder}/",
-                    f"{collecte_folder}/01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.18.md",
+                    f"{collecte_folder}/01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.19.md",
                 ],
             )
 
@@ -200,16 +217,16 @@ class SplitProjectKitTests(unittest.TestCase):
                 archive.namelist(),
                 [
                     f"{rendu_folder}/",
-                    f"{rendu_folder}/20-PROMPT-SYSTEME-RENDU-HTML-SNUM-V5.18.md",
-                    f"{rendu_folder}/21-CANON-HTML-COQUE-A-V5.18.md",
-                    f"{rendu_folder}/22-CANON-HTML-COQUE-B-V5.18.md",
-                    f"{rendu_folder}/23-CANON-HTML-ESSENTIEL-RUBRIQUE-V5.18.md",
-                    f"{rendu_folder}/24-CANON-HTML-SURVEILLER-VIDE-V5.18.md",
+                    f"{rendu_folder}/20-PROMPT-SYSTEME-RENDU-HTML-SNUM-V5.19.md",
+                    f"{rendu_folder}/21-CANON-HTML-COQUE-A-V5.19.md",
+                    f"{rendu_folder}/22-CANON-HTML-COQUE-B-V5.19.md",
+                    f"{rendu_folder}/23-CANON-HTML-ESSENTIEL-RUBRIQUE-V5.19.md",
+                    f"{rendu_folder}/24-CANON-HTML-SURVEILLER-VIDE-V5.19.md",
                 ],
             )
 
         self.assertFalse(
-            (PROJECT / "kit-dinum-snum-v5-18-deux-projets-6-fichiers.zip").exists()
+            (PROJECT / "kit-dinum-snum-v5-19-deux-projets-6-fichiers.zip").exists()
         )
 
         result = subprocess.run(
@@ -224,14 +241,14 @@ class SplitProjectKitTests(unittest.TestCase):
         self.assertIn("KIT_DECOUPLE_OK", result.stdout)
 
     def test_notice_documents_the_complete_two_project_sequence(self):
-        notice = (PROJECT / "NOTICE-V5.18.md").read_text(encoding="utf-8")
+        notice = (PROJECT / "NOTICE-V5.19.md").read_text(encoding="utf-8")
         collecte = (
-            (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.18.md")
+            (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.19.md")
             .read_text(encoding="utf-8")
             .rstrip("\n")
         )
         rendu = (
-            (PROJECT / "20-PROMPT-SYSTEME-RENDU-HTML-SNUM-V5.18.md")
+            (PROJECT / "20-PROMPT-SYSTEME-RENDU-HTML-SNUM-V5.19.md")
             .read_text(encoding="utf-8")
             .rstrip("\n")
         )
@@ -252,25 +269,25 @@ class SplitProjectKitTests(unittest.TestCase):
         self.assertIn("Newsletter SNUM - Collecte.zip", notice)
         self.assertIn("Newsletter SNUM - Rendu HTML.zip", notice)
 
-    def test_readme_is_the_pedagogical_v518_entry_point(self):
+    def test_readme_is_the_pedagogical_v519_entry_point(self):
         readme = (PROJECT / "README.md").read_text(encoding="utf-8")
         collecte = (
-            (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.18.md")
+            (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.19.md")
             .read_text(encoding="utf-8")
             .rstrip("\n")
         )
         rendu = (
-            (PROJECT / "20-PROMPT-SYSTEME-RENDU-HTML-SNUM-V5.18.md")
+            (PROJECT / "20-PROMPT-SYSTEME-RENDU-HTML-SNUM-V5.19.md")
             .read_text(encoding="utf-8")
             .rstrip("\n")
         )
 
-        self.assertIn("# Configurer les deux Projets Newsletter SNUM V5.18", readme)
+        self.assertIn("# Configurer les deux Projets Newsletter SNUM V5.19", readme)
         self.assertIn(f"```text\n{collecte}\n```", readme)
         self.assertIn(f"```text\n{rendu}\n```", readme)
         self.assertIn("Newsletter SNUM - Collecte.zip", readme)
         self.assertIn("Newsletter SNUM - Rendu HTML.zip", readme)
-        self.assertNotIn("kit-dinum-snum-v5-18-deux-projets-6-fichiers.zip", readme)
+        self.assertNotIn("kit-dinum-snum-v5-19-deux-projets-6-fichiers.zip", readme)
         self.assertNotIn("guide V5.17", readme)
 
 

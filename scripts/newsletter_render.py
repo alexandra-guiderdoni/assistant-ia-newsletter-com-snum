@@ -1,4 +1,4 @@
-"""Rendu à partir des blocs HTML qui restent canoniques dans le Markdown V5.16."""
+"""Rendu à partir des blocs HTML canoniques du kit V5.19."""
 
 import re
 from datetime import date
@@ -12,7 +12,7 @@ RUBRICS = {
     "rh": ("Ressources humaines", "RESSOURCES HUMAINES", True),
     "bercy": ("Vie de Bercy", "VIE DE BERCY", False),
 }
-MARKER = re.compile(r"@@[A-Z_]+@@")
+MARKER = re.compile(r"@@[^@\r\n]+@@")
 FRENCH_MONTHS = {
     "janvier": 1,
     "février": 2,
@@ -27,6 +27,31 @@ FRENCH_MONTHS = {
     "novembre": 11,
     "décembre": 12,
 }
+SCHEMA_VERSION = "SNUM_PAQUET_RENDU_V519"
+PACKET_FIELDS = {
+    "schema_version",
+    "edition_date",
+    "edition_date_long",
+    "window_start",
+    "window_end",
+    "articles",
+    "watch",
+}
+ARTICLE_FIELDS = {
+    "id",
+    "rubric",
+    "title",
+    "source",
+    "publication_date_iso",
+    "publication_date_long",
+    "url",
+    "fact",
+    "keywords",
+    "takeaway",
+    "snum_interest",
+    "essential",
+}
+WEEKDAYS = "lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche"
 
 
 def canonical_blocks(markdown):
@@ -59,36 +84,121 @@ def text(value):
 
 def checked_url(value):
     parsed = urlparse(str(value))
-    if parsed.scheme not in {"http", "https"} or not parsed.netloc:
-        raise ValueError(f"URL publique invalide : {value}")
+    if parsed.scheme != "https" or not parsed.netloc:
+        raise ValueError(f"URL HTTPS requise : {value}")
     return text(value)
 
 
+def iso_date(value, label):
+    value = str(value)
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", value):
+        raise ValueError(f"{label} ISO invalide")
+    try:
+        return date.fromisoformat(value)
+    except ValueError as error:
+        raise ValueError(f"{label} ISO invalide") from error
+
+
+def long_date(value, label, allow_weekday=False):
+    prefix = rf"(?:(?:{WEEKDAYS}) )?" if allow_weekday else ""
+    match = re.fullmatch(
+        prefix
+        + r"([1-9]|[12]\d|3[01]) (janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre) (\d{4})",
+        str(value),
+    )
+    if not match:
+        raise ValueError(f"{label} longue invalide")
+    day, month_name, year = match.groups()
+    try:
+        return date(int(year), FRENCH_MONTHS[month_name], int(day))
+    except ValueError as error:
+        raise ValueError(f"{label} longue invalide") from error
+
+
 def publication_date(article, schema_version):
-    if schema_version != "SNUM_PAQUET_RENDU_V518":
-        return str(article["publication_date"])
     iso_value = str(article["publication_date_iso"])
     long_value = str(article["publication_date_long"])
-    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", iso_value):
-        raise ValueError("date de publication ISO invalide")
-    try:
-        iso_date = date.fromisoformat(iso_value)
-    except ValueError as error:
-        raise ValueError("date de publication ISO invalide") from error
-    long_match = re.fullmatch(
-        r"([1-9]|[12]\d|3[01]) (janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre) (\d{4})",
-        long_value,
-    )
-    if not long_match:
-        raise ValueError("date de publication longue invalide")
-    day, month_name, year = long_match.groups()
-    try:
-        long_date = date(int(year), FRENCH_MONTHS[month_name], int(day))
-    except ValueError as error:
-        raise ValueError("date de publication longue invalide") from error
-    if long_date != iso_date:
+    parsed_iso = iso_date(iso_value, "date de publication")
+    parsed_long = long_date(long_value, "date de publication")
+    if parsed_long != parsed_iso:
         raise ValueError("dates de publication incohérentes")
     return long_value
+
+
+def validate_packet(payload):
+    if not isinstance(payload, dict):
+        raise TypeError("objet JSON requis")
+    if payload.get("schema_version") != SCHEMA_VERSION:
+        raise ValueError("schéma V5.19 requis")
+    missing = sorted(PACKET_FIELDS - payload.keys())
+    if missing:
+        raise ValueError(f"champs paquet manquants : {', '.join(missing)}")
+    unexpected = sorted(payload.keys() - PACKET_FIELDS)
+    if unexpected:
+        raise ValueError(f"champs paquet inattendus : {', '.join(unexpected)}")
+    if not isinstance(payload["articles"], list) or not isinstance(
+        payload["watch"], list
+    ):
+        raise TypeError("articles et watch doivent être des listes")
+
+    edition = iso_date(payload["edition_date"], "date d’édition")
+    edition_long = long_date(
+        payload["edition_date_long"], "date d’édition", allow_weekday=True
+    )
+    if edition != edition_long:
+        raise ValueError("dates d’édition incohérentes")
+    window_start = iso_date(payload["window_start"], "borne basse")
+    window_end = iso_date(payload["window_end"], "borne haute")
+    if window_start > window_end:
+        raise ValueError("fenêtre de collecte inversée")
+
+    for article in payload["articles"]:
+        if not isinstance(article, dict):
+            raise TypeError("objet article requis")
+        missing = sorted(ARTICLE_FIELDS - article.keys())
+        if missing:
+            raise ValueError(f"champs article manquants : {', '.join(missing)}")
+        unexpected = sorted(article.keys() - ARTICLE_FIELDS)
+        if unexpected:
+            raise ValueError(f"champs article inattendus : {', '.join(unexpected)}")
+        if not isinstance(article["id"], str) or not article["id"].strip():
+            raise ValueError("id d’article textuel requis")
+        for field in (
+            "rubric",
+            "title",
+            "source",
+            "publication_date_iso",
+            "publication_date_long",
+            "url",
+            "fact",
+            "takeaway",
+            "snum_interest",
+        ):
+            if not isinstance(article[field], str) or not article[field].strip():
+                raise ValueError(f"champ article textuel requis : {field}")
+        if not isinstance(article["essential"], bool):
+            raise TypeError("champ essential booléen requis")
+        publication_date(article, SCHEMA_VERSION)
+        published = iso_date(article["publication_date_iso"], "date de publication")
+        if not window_start <= published <= window_end:
+            raise ValueError("date de publication hors fenêtre")
+        checked_url(article["url"])
+        keywords = article["keywords"]
+        if not isinstance(keywords, list) or not 3 <= len(keywords) <= 5:
+            raise ValueError("un article doit contenir de 3 à 5 mots-clés")
+        if any(
+            not isinstance(keyword, str) or not keyword.strip() for keyword in keywords
+        ):
+            raise ValueError("mot-clé textuel requis")
+
+    for item in payload["watch"]:
+        if not isinstance(item, dict) or set(item) != {"title", "summary"}:
+            raise ValueError("objet watch invalide")
+        if any(
+            not isinstance(item[field], str) or not item[field].strip()
+            for field in item
+        ):
+            raise ValueError("champ watch textuel requis")
 
 
 def article_values(article, rubric_title, schema_version):
@@ -101,10 +211,7 @@ def article_values(article, rubric_title, schema_version):
         "snum_interest",
         "url",
     }
-    if schema_version == "SNUM_PAQUET_RENDU_V518":
-        required.update({"publication_date_iso", "publication_date_long"})
-    else:
-        required.add("publication_date")
+    required.update({"publication_date_iso", "publication_date_long"})
     missing = sorted(required - article.keys())
     if missing:
         raise ValueError(f"champs article manquants : {', '.join(missing)}")
@@ -196,11 +303,22 @@ def render_watch(template, watch_items, number):
 
 
 def build(payload, blocks):
+    validate_packet(payload)
     schema_version = payload.get("schema_version")
     articles = payload.get("articles", [])
+    seen_ids = set()
+    seen_urls = set()
     for article in articles:
+        article_id = article.get("id")
+        if article_id in seen_ids:
+            raise ValueError(f"id d’article dupliqué : {article_id}")
+        seen_ids.add(article_id)
         if article.get("rubric") not in RUBRICS:
             raise ValueError(f"rubrique inconnue : {article.get('rubric')}")
+        article_url = article.get("url")
+        if article_url in seen_urls:
+            raise ValueError(f"URL d’article dupliquée : {article_url}")
+        seen_urls.add(article_url)
     grouped = {rubric_id: [] for rubric_id in RUBRICS}
     for article in articles:
         grouped[article["rubric"]].append(article)
@@ -210,6 +328,8 @@ def build(payload, blocks):
         raise ValueError(
             "exactement trois articles essentiels sont requis à partir de trois articles"
         )
+    if len(articles) < 3 and essentials:
+        raise ValueError("aucun article essentiel sous trois articles")
     essential_html = (
         render_essentials(blocks["essential"], essentials, schema_version)
         if len(articles) >= 3

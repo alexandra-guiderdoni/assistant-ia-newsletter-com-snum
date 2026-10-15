@@ -1,18 +1,20 @@
 <!-- PDG-LARGE-FILE-JUSTIFICATION: notice autonome pour une installation métier sans terminal ; elle contient les deux prompts système et les quatre messages dans leur ordre d’exécution. -->
 <!-- PDG-BINARY-ASSET-JUSTIFICATION: les deux ZIP regroupent les fichiers nécessaires à l’installation manuelle de chaque Projet ; leurs sources et leur générateur restent versionnés. -->
 
-# Configurer les deux Projets Newsletter SNUM V5.18
+# Configurer les deux Projets Newsletter SNUM V5.19
 
 Cette version sépare la collecte éditoriale du rendu HTML.
 
 - `Newsletter SNUM - Collecte` produit un `PAQUET_RENDU`.
 - `Newsletter SNUM - Rendu HTML` transforme ce paquet en HTML canonique.
 
-> **État de recette V5.18 au 15 octobre 2026 : validé.** Une collecte réelle a produit
-> 10 candidats. La validation en a retenu 3 et exclu 7. Une conversation RENDU neuve
-> a livré le HTML complet dès le premier message. Le validateur local retourne
-> `HTML_CANONIQUE_OK`. Le HTML de l’Assistant et le canon local ont la même empreinte
-> structurelle : 542 jetons, empreinte `fc262d9d0172f9fd`.
+> **État de recette V5.19 au 15 octobre 2026 : NO-GO pour une livraison autonome.**
+> La collecte réelle a produit 10 candidats, 6 sources valides et 4 exclusions, puis
+> un paquet JSON valide avec 6 URL uniques. Le rendu local retourne
+> `HTML_CANONIQUE_OK`. Le Projet Rendu produit le gabarit complet, mais son dernier HTML
+> mesure 18 781 octets contre 18 756 pour le canon local, avec une empreinte différente,
+> un lien `#numerique` sans section cible et aucun saut de ligne final. L’identité à
+> 100 % demandée n’est donc pas atteinte. Voir `RAPPORT-V5.19.md`.
 
 ## Pourquoi deux Projets
 
@@ -27,17 +29,17 @@ peut ainsi les récupérer intégralement malgré sa limite de contexte par ress
 
 Pour `Newsletter SNUM - Collecte`, utilisez ce fichier unique :
 
-1. `01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.18.md` : copiez tout son contenu dans
+1. `01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.19.md` : copiez tout son contenu dans
    **Instructions (expérimental)**. Ne téléversez aucune ressource dans ce Projet.
 
 Pour `Newsletter SNUM - Rendu HTML`, utilisez les fichiers dans cet ordre :
 
-1. `20-PROMPT-SYSTEME-RENDU-HTML-SNUM-V5.18.md` : copiez tout son contenu dans
+1. `20-PROMPT-SYSTEME-RENDU-HTML-SNUM-V5.19.md` : copiez tout son contenu dans
    **Instructions (expérimental)** ;
-2. `21-CANON-HTML-COQUE-A-V5.18.md` : téléversez cette ressource ;
-3. `22-CANON-HTML-COQUE-B-V5.18.md` : téléversez cette ressource ;
-4. `23-CANON-HTML-ESSENTIEL-RUBRIQUE-V5.18.md` : téléversez cette ressource ;
-5. `24-CANON-HTML-SURVEILLER-VIDE-V5.18.md` : téléversez cette ressource.
+2. `21-CANON-HTML-COQUE-A-V5.19.md` : téléversez cette ressource ;
+3. `22-CANON-HTML-COQUE-B-V5.19.md` : téléversez cette ressource ;
+4. `23-CANON-HTML-ESSENTIEL-RUBRIQUE-V5.19.md` : téléversez cette ressource ;
+5. `24-CANON-HTML-SURVEILLER-VIDE-V5.19.md` : téléversez cette ressource.
 
 Ces 6 fichiers sont présents directement à la racine du dépôt. Les deux ZIP contiennent
 les mêmes fichiers, répartis par Projet ; ne téléversez jamais un ZIP lui-même.
@@ -55,19 +57,19 @@ Téléchargez puis décompressez les deux archives présentes à la racine :
 
 Le dossier `Newsletter SNUM - Collecte` doit contenir exactement :
 
-- `01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.18.md`.
+- `01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.19.md`.
 
 Le dossier `Newsletter SNUM - Rendu HTML` doit contenir exactement :
 
-1. `20-PROMPT-SYSTEME-RENDU-HTML-SNUM-V5.18.md` ;
-2. `21-CANON-HTML-COQUE-A-V5.18.md` ;
-3. `22-CANON-HTML-COQUE-B-V5.18.md` ;
-4. `23-CANON-HTML-ESSENTIEL-RUBRIQUE-V5.18.md` ;
-5. `24-CANON-HTML-SURVEILLER-VIDE-V5.18.md`.
+1. `20-PROMPT-SYSTEME-RENDU-HTML-SNUM-V5.19.md` ;
+2. `21-CANON-HTML-COQUE-A-V5.19.md` ;
+3. `22-CANON-HTML-COQUE-B-V5.19.md` ;
+4. `23-CANON-HTML-ESSENTIEL-RUBRIQUE-V5.19.md` ;
+5. `24-CANON-HTML-SURVEILLER-VIDE-V5.19.md`.
 
 N’ajoutez jamais les ZIP eux-mêmes dans un Projet.
 
-Le fichier `21-CANON-HTML-COQUE-A-V5.18.md` utilise volontairement l’URL absolue
+Le fichier `21-CANON-HTML-COQUE-A-V5.19.md` utilise volontairement l’URL absolue
 `https://bacoco.github.io/revue-presse-snum/styles.css?v=20260917`. Sans cette URL,
 un HTML copié depuis le chat perd les styles Bacoco quand il est ouvert hors du site.
 
@@ -101,8 +103,9 @@ Pendant `VALIDATION`, n’utilise pas le Web. Pour chaque candidat, produis
 `CONTROLE_DATES` : titre, date brute, format `AAAA-MM-JJ`, borne basse, borne haute,
 accès, `CLE_EVENEMENT`, décision. Trace séparément `date ISO >= DEBUT_ISO` pour la
 borne basse et `date ISO <= FIN_ISO` pour la borne haute, avec les valeurs réellement
-comparées et `OUI` ou `NON`. N’intervertis jamais les deux bornes. Une source est valide
-seulement si le format, les deux bornes et l’accès valent `OUI`. Même fait réel = même
+comparées et `OUI` ou `NON`. N’intervertis jamais les deux bornes. Déduplique d’abord
+par URL canonique : même URL = doublon, même si `CLE_EVENEMENT` diffère. Une source est
+valide seulement si le format, les deux bornes et l’accès valent `OUI`. Même fait réel = même
 clé. Garde la source la plus directe, sinon la plus récente, sinon la première. Exclus
 chaque doublon avec
 `DOUBLON_DE | titre conservé`. Compte le nombre exact d’entrées sous `CANDIDATS` et
@@ -112,10 +115,11 @@ contrôle-les toutes, sans utiliser de sous-liste préfiltrée. Vérifie
 valide.
 
 Pendant `PAQUET`, n’utilise pas le Web. Transforme uniquement `SOURCES_VALIDES` en un
-bloc JSON strict placé entre `SNUM_PAQUET_RENDU_V518_START` et
-`SNUM_PAQUET_RENDU_V518_END`. N’ajoute aucun commentaire dans le bloc.
+bloc JSON strict placé entre `SNUM_PAQUET_RENDU_V519_START` et
+`SNUM_PAQUET_RENDU_V519_END`. `\"` et `\\` doivent être échappés dans les chaînes ;
+vérifie que le bloc est analysable comme JSON. Aucun commentaire.
 
-Le JSON contient exactement : `schema_version`=`SNUM_PAQUET_RENDU_V518`, `edition_date`,
+Le JSON contient exactement : `schema_version`=`SNUM_PAQUET_RENDU_V519`, `edition_date`,
 `edition_date_long`, `window_start`, `window_end`, `articles`, `watch`. Chaque article
 contient : `id`, `rubric`, `title`, `source`, `publication_date_iso`,
 `publication_date_long`, `url`, `fact`, `keywords`, `takeaway`, `snum_interest`,
@@ -128,11 +132,14 @@ contient : `id`, `rubric`, `title`, `source`, `publication_date_iso`,
 `6 octobre 2026`, sans jour de semaine, zéro initial ni barre oblique.
 Sous trois articles, tous portent `essential=false`. À partir de trois articles,
 exactement trois portent `essential=true`. `watch` contient seulement des objets `title`
-et `summary`, ou une liste vide.
+et `summary`, ou une liste vide. `id` est une chaîne non vide et unique. Une URL ne peut
+apparaître qu’une fois dans `articles`.
 
 Avant de répondre, vérifie chaque champ, les URL, les limites de mots et le nombre
-d’essentiels. Si un contrôle échoue, réponds `PAQUET_INCOMPLET | <identifiant> |
-<champ>`, sans JSON. Sinon termine après le marqueur de fin par `PAQUET_RENDU_PRET`.
+d’essentiels. Si le nombre d’URL uniques diffère du nombre d’articles, réponds
+`PAQUET_INCOMPLET | URL_DUPLIQUEE | <URL>`, sans JSON. Pour tout autre échec, réponds
+`PAQUET_INCOMPLET | <identifiant> | <champ>`, sans JSON. Sinon termine après le marqueur
+de fin par `PAQUET_RENDU_PRET`.
 ```
 
 ## Installer Newsletter SNUM - Rendu HTML
@@ -145,38 +152,36 @@ d’essentiels. Si un contrôle échoue, réponds `PAQUET_INCOMPLET | <identifia
 5. Attendez la fin de l’indexation et enregistrez le Projet.
 
 ```text
-Tu es le Projet `Newsletter SNUM - Rendu HTML`. Tu transformes un `PAQUET_RENDU` validé
-en HTML canonique. Tu ne recherches, ne sélectionnes et ne reformules aucune information
-éditoriale. Tu ne publies rien et n’envoies aucun courriel.
+Tu es le Projet `Newsletter SNUM - Rendu HTML`. Transforme un `PAQUET_RENDU` validé en
+HTML canonique, sans recherche, réécriture, publication ni courriel.
 
 Exécute uniquement `RENDRE_EDITION`. N’utilise pas le Web. L’entrée doit contenir un
-bloc JSON strict entre `SNUM_PAQUET_RENDU_V518_START` et `SNUM_PAQUET_RENDU_V518_END`,
-avec `schema_version`=`SNUM_PAQUET_RENDU_V518`.
+bloc JSON strict entre `SNUM_PAQUET_RENDU_V519_START` et `SNUM_PAQUET_RENDU_V519_END`,
+avec `schema_version`=`SNUM_PAQUET_RENDU_V519`.
 
-Charge séparément les quatre ressources suivantes, toutes requises :
-`21-CANON-HTML-COQUE-A-V5.18.md`, `22-CANON-HTML-COQUE-B-V5.18.md`,
-`23-CANON-HTML-ESSENTIEL-RUBRIQUE-V5.18.md` et
-`24-CANON-HTML-SURVEILLER-VIDE-V5.18.md`. Retrouve chaque contenu par ses marqueurs
-`SNUM_CANON_V518_*_START` et `SNUM_CANON_V518_*_END`. La troisième ressource contient
-les blocs `SNUM_BLOC_V518_ESSENTIEL` et `SNUM_BLOC_V518_RUBRIQUE` ; la quatrième les
-blocs `SNUM_BLOC_V518_SURVEILLER` et `SNUM_BLOC_V518_VIDE`. Assemble la coque en
-concaténant littéralement `COQUE_A` puis `COQUE_B`. Copie tous les blocs littéralement.
-N’ajoute, ne retire, ne reformule et ne réindente aucune balise, classe, dépendance,
-enveloppe, modale ou script. L’absence d’un des huit marqueurs de ressource vaut
-`CANON_MANQUANT`.
+Charge ces quatre ressources :
+`21-CANON-HTML-COQUE-A-V5.19.md`, `22-CANON-HTML-COQUE-B-V5.19.md`,
+`23-CANON-HTML-ESSENTIEL-RUBRIQUE-V5.19.md` et
+`24-CANON-HTML-SURVEILLER-VIDE-V5.19.md`. Lis les contenus entre leurs marqueurs
+`SNUM_CANON_V519_*_START` et `SNUM_CANON_V519_*_END`. La troisième contient les blocs
+`SNUM_BLOC_V519_ESSENTIEL` et `SNUM_BLOC_V519_RUBRIQUE` ; la quatrième les blocs
+`SNUM_BLOC_V519_SURVEILLER` et `SNUM_BLOC_V519_VIDE`. Concatène littéralement `COQUE_A`
+puis `COQUE_B`, sans séparateur et en conservant le saut de ligne final de `COQUE_A`.
+Copie les blocs sans ajouter, retirer, reformuler ni réindenter balise, classe,
+dépendance, enveloppe, modale ou script. Marqueur absent = `CANON_MANQUANT`.
 
-Valide uniquement la structure du paquet : JSON, schéma, champs obligatoires, URL
-absolues `https://`, rubriques autorisées, tableaux de 3 à 5 mots-clés et exactement
-trois essentiels à partir de trois articles. Sous trois articles, aucun essentiel. Le
-Projet Collecte a déjà validé les textes. Ne recompte pas les mots, ne reformule aucun
-champ et ne refuse jamais un paquet pour une longueur de texte supposée.
+Valide seulement : JSON, schéma, champs obligatoires, `id` textuels non vides et
+uniques, URL `https://` uniques, rubriques autorisées, 3 à 5 mots-clés et exactement
+trois essentiels à partir de trois articles. Sous trois articles, aucun essentiel. Les
+textes sont validés. Ne recompte pas les mots, ne reformule pas et n’invente aucun refus
+de longueur.
 
 Chaque article contient `publication_date_iso` au format `AAAA-MM-JJ` et
 `publication_date_long` avec le mois en lettres ; les deux désignent le même jour.
 Affiche seulement `publication_date_long`, sans conversion ni zéro initial. L’autre sert
 au contrôle du paquet.
 
-Assemble ensuite la page : `COQUE` ; section `ESSENTIEL` seulement si elle est requise,
+Assemble la page : `COQUE` ; section `ESSENTIEL` seulement si elle est requise,
 avec exactement trois cartes ; une section `RUBRIQUE` par rubrique présente et un
 article par source ; `SURVEILLER` seulement si `watch` n’est pas vide. Chaque essentiel
 reste aussi dans sa rubrique. Remplace uniquement les marqueurs `@@...@@`.
@@ -199,10 +204,12 @@ Contrôle le HTML final : aucun marqueur `@@`, trois accès rapides, un seul `h1
 lien interne avec exactement une section cible et réciproquement, `p.fr-tag`, modale
 après le footer, CSS et scripts DSFR 1.15.2, liens externes avec `target="_blank"`,
 `rel="noopener noreferrer"` et indication `nouvelle fenêtre`.
+Recharge les blocs et vérifie que tout caractère statique hors valeurs remplacées est
+inchangé. Toute modification de coque, indentation ou jonction vaut `COQUE_MODIFIEE`.
 
 Si le paquet, la ressource ou le HTML échoue, ne livre aucun HTML. Réponds
 `A_COMPLETER`, puis `## CONTROLES_EN_ECHEC` et une ligne `CODE | détail` par écart.
-Codes : `PAQUET_INVALIDE`, `CANON_MANQUANT`, `DONNEES_MANQUANTES`, `MARQUEUR_RESIDUEL`,
+Codes : `PAQUET_INVALIDE`, `URL_DUPLIQUEE`, `CANON_MANQUANT`, `COQUE_MODIFIEE`, `DONNEES_MANQUANTES`, `MARQUEUR_RESIDUEL`,
 `NAVIGATION_INCOHERENTE`, `ENVELOPPE_INCORRECTE`, `ESSENTIELS_INCORRECTS`,
 `HTML_INCOMPLET`.
 
@@ -266,8 +273,8 @@ volumes sont exacts et si au moins une source est valide.
 PHASE PAQUET.
 N’utilise pas le Web.
 Utilise exclusivement SOURCES_VALIDES.
-Produis le JSON strict entre SNUM_PAQUET_RENDU_V518_START
-et SNUM_PAQUET_RENDU_V518_END.
+Produis le JSON strict entre SNUM_PAQUET_RENDU_V519_START
+et SNUM_PAQUET_RENDU_V519_END.
 Vérifie les champs, les URL, les longueurs
 et le nombre d’essentiels.
 Exige publication_date_iso et publication_date_long
@@ -277,8 +284,8 @@ Ne pose aucune question.
 ```
 
 Le résultat doit se terminer par `PAQUET_RENDU_PRET`. Après vérification, copiez le bloc entier,
-du marqueur `SNUM_PAQUET_RENDU_V518_START` au marqueur
-`SNUM_PAQUET_RENDU_V518_END` inclus.
+du marqueur `SNUM_PAQUET_RENDU_V519_START` au marqueur
+`SNUM_PAQUET_RENDU_V519_END` inclus.
 
 Si la réponse contient `PAQUET_INCOMPLET`, arrêtez.
 
@@ -291,11 +298,18 @@ dernière ligne par le bloc copié et envoyez :
 PHASE RENDRE_EDITION.
 N’utilise pas le Web.
 Utilise le PAQUET_RENDU ci-dessous sans modifier ses données.
-Charge séparément les quatre ressources CANON-HTML V5.18.
+Charge séparément les quatre ressources CANON-HTML V5.19.
+Respecte l’ordre immuable des rubriques et de la navigation :
+numerique, ia, commande, rh, bercy.
+Numérote les sections dans cet ordre après L’essentiel.
+Remplace chaque marqueur sans supprimer les espaces placés avant lui.
+Joins les sections avec un seul saut de ligne, sans ligne vide ajoutée.
+Échappe toute valeur injectée comme HTML ; un apostrophe ASCII devient &#x27;.
+Termine le bloc par exactement un saut de ligne après </html>.
 Livre le HTML canonique au premier passage.
 Ne pose aucune question.
 
-COLLEZ ICI LE BLOC COMPLET SNUM_PAQUET_RENDU_V518
+COLLEZ ICI LE BLOC COMPLET SNUM_PAQUET_RENDU_V519
 ```
 
 Le résultat doit contenir `## HTML COMPLET`, un unique bloc de
@@ -325,13 +339,13 @@ Vérifiez :
 
 ## Sources de vérité
 
-- `EXEMPLE-PAQUET-RENDU-V5.18.json` : contrat d’exemple ;
+- `EXEMPLE-PAQUET-RENDU-V5.19.json` : contrat d’exemple ;
 - `_source/05-BLOCS-HTML-CANONIQUES.md` : source HTML ;
 - `scripts/build_split_kit.py` : générateur du gabarit et du ZIP ;
 - `tests/test_split_projects.py` : contrôles du découpage ;
-- `RAPPORT-V5.18.md` : preuve de la recette réelle ;
+- `RAPPORT-V5.19.md` : preuve de la recette réelle ;
 - `_documentation/archives/` : versions antérieures, conservées hors de la racine.
 
-La racine contient uniquement la V5.18 active et les sources permanentes nécessaires à
+La racine contient uniquement la V5.19 active et les sources permanentes nécessaires à
 sa génération. Les 6 fichiers d’installation listés plus haut doivent y rester.
 N’installez aucun fichier depuis `_documentation/archives/`.
