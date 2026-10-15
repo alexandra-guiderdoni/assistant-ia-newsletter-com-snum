@@ -1,4 +1,4 @@
-# État et historique SNUM - V5.9
+# État et historique SNUM - V5.12
 
 ## VERROU-ETAT - lire avant toute date
 

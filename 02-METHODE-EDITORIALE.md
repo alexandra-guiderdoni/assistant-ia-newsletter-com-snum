@@ -1,4 +1,4 @@
-# Méthode éditoriale SNUM - V5.9
+# Méthode éditoriale SNUM - V5.12
 
 ## COLLECTE-WEB
 
@@ -36,11 +36,13 @@ La date de publication est distincte de la date de l’événement et de la mise
 
 Avant de conclure à une collecte insuffisante, consigner les domaines, requêtes, URL exactes et causes d’exclusion. Ne jamais inventer une consultation, une capture, une balise canonique, une preuve ou un contrôle.
 
-## Validation déterministe des dates
+## Validation déterministe des dates et des doublons
 
-La phase `VALIDATION` travaille uniquement sur la valeur brute fournie dans `CANDIDATS`. Pour chaque candidat, elle affiche une ligne `CONTROLE_DATES` comportant : date brute, format exact `AAAA-MM-JJ`, test de borne basse, test de borne haute, accès intégral et décision.
+La phase `VALIDATION` travaille uniquement sur les valeurs fournies dans `CANDIDATS`. Pour chaque candidat, elle affiche une ligne `CONTROLE_DATES` comportant : titre, date brute, format exact `AAAA-MM-JJ`, test de borne basse, test de borne haute, accès intégral, `CLE_EVENEMENT` et décision.
 
 Une source rejoint `SOURCES_VALIDES` seulement si le format, les deux bornes et l’accès valent tous `OUI`. Ne pas retirer une mention ajoutée à la date pour la rendre conforme : `2026-08-12 (modification)` n’est pas une date brute au format exact. `2026-10-02` est antérieur à `2026-10-03` ; `2026-10-15` est postérieur à `2026-10-13`.
+
+Construire `CLE_EVENEMENT` avec quatre éléments factuels : organisation principale, action, objet et date ou période de l’événement. Deux articles décrivant le même fait réel reçoivent la même clé, même si leurs titres ou dates de publication diffèrent. Pour chaque clé répétée, conserver la source la plus directe ; à défaut la plus récente ; à défaut la première candidate. Classer chaque autre source dans `SOURCES_EXCLUES` avec `DOUBLON_DE | titre conservé`.
 
 Avant `VALIDATION_TERMINEE`, vérifier que le nombre de sources valides plus le nombre de sources exclues égale le nombre de candidats. Une erreur de comptage, une source présente dans les deux listes ou une date hors fenêtre conservée bloque la suite.
 
@@ -76,7 +78,7 @@ Avec au moins trois événements, choisir exactement trois essentiels. Chaque es
 
 Le métier n’exécute aucun script. Après la collecte et la validation, dans une phase `CANON` sans Web qui précède immédiatement le rendu, l’Assistant lit `05-INDEX-HTML.md`, puis charge séparément les fragments `06`, `07`, `08` et `09` dans l’ordre `READ_NEXT`. Il vérifie pour chacun les jetons de début et de fin avant de poursuivre. Ces fragments générés depuis `05-BLOCS-HTML-CANONIQUES.md` priment pour toute balise, classe, dépendance et enveloppe de rubrique. `03-GABARIT-HTML.md` reste la référence locale détaillée, mais n’est pas téléversé dans le paquet progressif et ne sert jamais à reconstruire librement la page.
 
-La seconde passe se fait sur la sortie exacte avant affichage : comparer les dates et URL de la revue au HTML, rechercher tout marqueur `@@`, compter les cartes essentielles et vérifier littéralement l’identifiant et l’enveloppe de chaque rubrique présente contre `05-INDEX-HTML.md`. Chaque source valide doit apparaître une fois dans sa rubrique, y compris lorsqu’elle est aussi essentielle. Chaque lien `href="#id"` du menu de rubriques doit viser exactement une section `id="id"`, et chaque rubrique produite doit posséder exactement un lien dans ce menu. Une divergence détectée entraîne la correction du bloc HTML avant livraison. Si elle ne peut pas être corrigée, remplacer le bloc de code par `A_COMPLETER — HTML canonique non établi` et nommer l’écart dans le dossier privé. Cette autoévaluation ne devient jamais un contrôle extérieur.
+La seconde passe se fait sur la sortie exacte avant affichage : comparer les dates et URL de la revue au HTML, rechercher tout marqueur `@@`, compter les cartes essentielles et vérifier littéralement l’identifiant et l’enveloppe de chaque rubrique présente contre `05-INDEX-HTML.md`. Chaque source valide doit apparaître une fois dans sa rubrique, y compris lorsqu’elle est aussi essentielle. Chaque lien `href="#id"` du menu de rubriques doit viser exactement une section `id="id"`, et chaque rubrique produite doit posséder exactement un lien dans ce menu. Une divergence détectée entraîne la correction du bloc HTML avant livraison. Si elle ne peut pas être corrigée, ne livrer aucun code : répondre `A_COMPLETER`, puis `## CONTROLES_EN_ECHEC` et une ligne `CODE | détail` par écart. Cette autoévaluation ne devient jamais un contrôle extérieur.
 
 ## Contrôles de cohérence avant livraison
 
@@ -88,4 +90,4 @@ Le HTML doit reprendre exactement les mêmes faits, titres, dates, URL et essent
 
 ## État
 
-DINUM livre la revue et la section `HTML COMPLET` même si l’état reste `A_COMPLETER`. Le code HTML n’est affiché que si la seconde passe établit sa conformité canonique ; sinon, la section contient uniquement le message d’arrêt prévu. `PREPAREE` exige un contenu terminé et contrôlé extérieurement. `COMPLETE` exige publication vérifiée et envoi confirmé. `ALREADY_COMPLETE` arrête le cycle si l’édition du jour est déjà publiée ou diffusée, sans certifier que les deux actions sont achevées.
+DINUM livre la revue et la section `HTML COMPLET` seulement si la seconde passe établit la conformité canonique. Le dossier indique alors `État : PRODUITE - contrôle métier requis`. `A_COMPLETER` est réservé à un arrêt sans HTML et doit toujours être suivi de `CONTROLES_EN_ECHEC`. `PREPAREE` exige un contrôle extérieur. `COMPLETE` exige publication vérifiée et envoi confirmé. `ALREADY_COMPLETE` arrête le cycle si l’édition du jour est déjà publiée ou diffusée, sans certifier que les deux actions sont achevées.

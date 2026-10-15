@@ -1,4 +1,4 @@
-"""Rendu à partir des blocs HTML qui restent canoniques dans le Markdown V5.9."""
+"""Rendu à partir des blocs HTML qui restent canoniques dans le Markdown V5.12."""
 
 import re
 from html import escape

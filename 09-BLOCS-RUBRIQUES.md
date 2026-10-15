@@ -1,6 +1,6 @@
-# Bloc HTML canonique - rubrique
+# Bloc HTML canonique - ouverture de rubrique
 
-SNUM_RUBRIC_START
+SNUM_RUBRIC_OPEN_START
 
 Copier uniquement le bloc HTML suivant, sans les jetons de contrôle.
 
@@ -8,6 +8,17 @@ Copier uniquement le bloc HTML suivant, sans les jetons de contrôle.
 <section id="@@ID_RUBRIQUE@@"@@SECTION_MUTED_ATTR@@><div class="fr-container section-block">
   <div class="section-title"><p class="section-number">@@NUMERO@@</p><div><h2>@@TITRE_RUBRIQUE@@</h2></div></div>
   <div class="article-list fr-grid-row">
+```
+
+SNUM_RUBRIC_OPEN_END
+
+# Bloc HTML canonique - article de rubrique
+
+SNUM_RUBRIC_ARTICLE_START
+
+Copier uniquement le bloc HTML suivant, sans les jetons de contrôle.
+
+```html
     <article class="fr-col-12">
       <div class="article-body"><p class="meta">@@SOURCE_MAJUSCULES@@ · @@DATE_PUBLICATION_LONGUE_MAJUSCULES@@</p><h3>@@TITRE@@</h3>
         <p class="summary"><span class="summary-text">@@FAIT@@</span><br><strong>Mots-clés :</strong> <span class="keywords">@@MOTS_CLES@@</span></p>
@@ -16,11 +27,22 @@ Copier uniquement le bloc HTML suivant, sans les jetons de contrôle.
       </div>
       <a class="fr-btn fr-btn--secondary fr-btn--icon-right fr-icon-external-link-line source-btn" href="@@URL@@" target="_blank" rel="noopener noreferrer">Lire la source<span class="fr-sr-only"> : @@TITRE@@ - nouvelle fenêtre</span></a>
     </article>
+```
+
+SNUM_RUBRIC_ARTICLE_END
+
+# Bloc HTML canonique - fermeture de rubrique
+
+SNUM_RUBRIC_CLOSE_START
+
+Copier uniquement le bloc HTML suivant, sans les jetons de contrôle.
+
+```html
   </div>
 </div></section>
 ```
 
-SNUM_RUBRIC_END
+SNUM_RUBRIC_CLOSE_END
 
 # Bloc HTML canonique - à surveiller
 

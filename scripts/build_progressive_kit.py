@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Génère le paquet V5.9 progressif depuis le canon HTML unique."""
+"""Génère le paquet V5.12 progressif depuis le canon HTML unique."""
 
 import argparse
 import sys
@@ -11,16 +11,17 @@ from newsletter_render import canonical_blocks
 
 PROJECT = Path(__file__).resolve().parents[1]
 SOURCE = PROJECT / "05-BLOCS-HTML-CANONIQUES.md"
-ARCHIVE = PROJECT / "kit-dinum-snum-v5-9-progressif-8-fichiers.zip"
+ARCHIVE = PROJECT / "kit-dinum-snum-v5-12-progressif-9-fichiers.zip"
 UPLOAD_FILES = (
     "00-PROMPT-PROJET.md",
     "01-ETAT-HISTORIQUE.md",
     "02-METHODE-EDITORIALE.md",
     "05-INDEX-HTML.md",
     "06-COQUE-DEBUT.md",
-    "07-COQUE-FIN.md",
+    "07-PIED-DE-PAGE.md",
     "08-BLOC-ESSENTIEL.md",
     "09-BLOCS-RUBRIQUES.md",
+    "10-COQUE-FIN.md",
 )
 
 
@@ -39,26 +40,58 @@ Copier uniquement le bloc HTML suivant, sans les jetons de contrôle.
 """
 
 
+def split_repeatable(block, start_marker, end_marker):
+    """Découpe un bloc en enveloppe ouvrante, élément répétable et fermeture."""
+    before, marker, after = block.partition(start_marker)
+    if not marker:
+        raise ValueError(f"début de bloc répétable introuvable : {start_marker}")
+    item_body, marker, after_item = after.partition(end_marker)
+    if not marker:
+        raise ValueError(f"fin de bloc répétable introuvable : {end_marker}")
+    return (
+        before.rstrip("\n"),
+        start_marker + item_body + end_marker,
+        after_item.lstrip("\n"),
+    )
+
+
 def expected_files():
     blocks = canonical_blocks(SOURCE.read_text(encoding="utf-8"))
-    footer = '  <footer id="footer"'
-    start, separator, end = blocks["page"].partition(footer)
-    if not separator or start + separator + end != blocks["page"]:
+    footer_marker = '  <footer id="footer"'
+    start, separator, after_footer = blocks["page"].partition(footer_marker)
+    if not separator:
         raise ValueError("point de découpe de la coque introuvable")
-    index = """# Index HTML canonique - V5.9 progressive
+    footer_and_tail = separator + after_footer
+    dialog_marker = '  <dialog id="fr-theme-modal"'
+    footer, separator, after_dialog = footer_and_tail.partition(dialog_marker)
+    if not separator or start + footer + separator + after_dialog != blocks["page"]:
+        raise ValueError("point de découpe de la modale introuvable")
+    tail = separator + after_dialog
+    essential_open, essential_card, essential_close = split_repeatable(
+        blocks["essential"],
+        '    <div class="fr-col-12 fr-col-md-4">',
+        "</article></div>",
+    )
+    rubric_open, rubric_article, rubric_close = split_repeatable(
+        blocks["rubric"],
+        '    <article class="fr-col-12">',
+        "    </article>",
+    )
+    index = """# Index HTML canonique - V5.12 progressive
 
-SNUM_CANON_V59_INDEX_START
+SNUM_CANON_V512_INDEX_START
 
 ## READ_NEXT
 
 Lire intégralement, dans cet ordre et un fichier à la fois :
 
 1. `06-COQUE-DEBUT.md` : `SNUM_SHELL_HEAD_START` à `SNUM_SHELL_HEAD_END` ;
-2. `07-COQUE-FIN.md` : `SNUM_SHELL_TAIL_START` à `SNUM_SHELL_TAIL_END` ;
-3. `08-BLOC-ESSENTIEL.md` : `SNUM_ESSENTIAL_START` à `SNUM_ESSENTIAL_END` ;
-4. `09-BLOCS-RUBRIQUES.md` : les trois paires `SNUM_RUBRIC`, `SNUM_WATCH` et `SNUM_EMPTY`.
+2. `07-PIED-DE-PAGE.md` : `SNUM_FOOTER_START` à `SNUM_FOOTER_END` ;
+3. `08-BLOC-ESSENTIEL.md` : les trois paires `SNUM_ESSENTIALS_OPEN`, `SNUM_ESSENTIAL_CARD` et `SNUM_ESSENTIALS_CLOSE` ;
+4. `09-BLOCS-RUBRIQUES.md` : les cinq paires `SNUM_RUBRIC_OPEN`, `SNUM_RUBRIC_ARTICLE`, `SNUM_RUBRIC_CLOSE`, `SNUM_WATCH` et `SNUM_EMPTY`.
+5. `10-COQUE-FIN.md` : `SNUM_SHELL_CLOSE_START` à `SNUM_SHELL_CLOSE_END`.
 
-La coque complète est la concaténation exacte des blocs HTML `06`, puis `07`. Remplacer ensuite ses marqueurs. Dupliquer uniquement la carte de `08` et l’élément `article` du bloc `RUBRIQUE` de `09`.
+La page complète est la concaténation exacte de `06`, du contenu éditorial, de `07`, puis de `10`. Pour `L’essentiel`, concaténer `ESSENTIALS_OPEN`, exactement trois répétitions de `ESSENTIAL_CARD`, puis `ESSENTIALS_CLOSE`. Pour chaque rubrique, concaténer `RUBRIC_OPEN`, une répétition de `RUBRIC_ARTICLE` par source valide de la rubrique, puis `RUBRIC_CLOSE`. Remplacer ensuite les marqueurs.
 
 Rubriques exactes :
 
@@ -74,9 +107,9 @@ Chaque source valide figure une fois dans sa rubrique. Une carte essentielle est
 
 Pour chaque lien `href="#id"` du menu de rubriques, produire exactement une section `id="id"`. Chaque rubrique produite possède exactement un lien dans ce menu.
 
-Si un jeton de fin manque après une nouvelle recherche ciblée, arrêter avec `A_COMPLETER — HTML canonique non établi` sans produire de code HTML.
+Si un jeton manque après une recherche ciblée, répondre `CANON_HTML_INCOMPLET | jeton manquant`. Pendant `RENDU`, un échec doit répondre `A_COMPLETER`, puis `## CONTROLES_EN_ECHEC` et une ligne `CODE | détail`, sans HTML.
 
-SNUM_CANON_V59_INDEX_END
+SNUM_CANON_V512_INDEX_END
 """
     return {
         "05-INDEX-HTML.md": index,
@@ -86,25 +119,53 @@ SNUM_CANON_V59_INDEX_END
             "SNUM_SHELL_HEAD_END",
             start.rstrip("\n"),
         ),
-        "07-COQUE-FIN.md": document(
-            "Coque HTML canonique - fin",
-            "SNUM_SHELL_TAIL_START",
-            "SNUM_SHELL_TAIL_END",
-            separator + end,
+        "07-PIED-DE-PAGE.md": document(
+            "Pied de page HTML canonique",
+            "SNUM_FOOTER_START",
+            "SNUM_FOOTER_END",
+            footer.rstrip("\n"),
         ),
-        "08-BLOC-ESSENTIEL.md": document(
-            "Bloc HTML canonique - essentiel",
-            "SNUM_ESSENTIAL_START",
-            "SNUM_ESSENTIAL_END",
-            blocks["essential"],
+        "08-BLOC-ESSENTIEL.md": "\n".join(
+            (
+                document(
+                    "Bloc HTML canonique - ouverture de L’essentiel",
+                    "SNUM_ESSENTIALS_OPEN_START",
+                    "SNUM_ESSENTIALS_OPEN_END",
+                    essential_open,
+                ),
+                document(
+                    "Bloc HTML canonique - carte essentielle",
+                    "SNUM_ESSENTIAL_CARD_START",
+                    "SNUM_ESSENTIAL_CARD_END",
+                    essential_card,
+                ),
+                document(
+                    "Bloc HTML canonique - fermeture de L’essentiel",
+                    "SNUM_ESSENTIALS_CLOSE_START",
+                    "SNUM_ESSENTIALS_CLOSE_END",
+                    essential_close,
+                ),
+            )
         ),
         "09-BLOCS-RUBRIQUES.md": "\n".join(
             (
                 document(
-                    "Bloc HTML canonique - rubrique",
-                    "SNUM_RUBRIC_START",
-                    "SNUM_RUBRIC_END",
-                    blocks["rubric"],
+                    "Bloc HTML canonique - ouverture de rubrique",
+                    "SNUM_RUBRIC_OPEN_START",
+                    "SNUM_RUBRIC_OPEN_END",
+                    rubric_open,
+                ),
+                document(
+                    "Bloc HTML canonique - article de rubrique",
+                    "SNUM_RUBRIC_ARTICLE_START",
+                    "SNUM_RUBRIC_ARTICLE_END",
+                    rubric_article,
+                ),
+                document(
+                    "Bloc HTML canonique - fermeture de rubrique",
+                    "SNUM_RUBRIC_CLOSE_START",
+                    "SNUM_RUBRIC_CLOSE_END",
+                    rubric_close,
                 ),
                 document(
                     "Bloc HTML canonique - à surveiller",
@@ -119,6 +180,12 @@ SNUM_CANON_V59_INDEX_END
                     blocks["empty"],
                 ),
             )
+        ),
+        "10-COQUE-FIN.md": document(
+            "Coque HTML canonique - fin",
+            "SNUM_SHELL_CLOSE_START",
+            "SNUM_SHELL_CLOSE_END",
+            tail,
         ),
     }
 

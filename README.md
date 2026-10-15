@@ -1,50 +1,80 @@
-# Newsletter SNUM avec l’Assistant DINUM - guide V5.9
+# Newsletter SNUM avec l’Assistant DINUM - guide V5.12
 
 Ce guide s’adresse à une personne qui découvre l’Assistant DINUM. Suivez les étapes dans l’ordre et ne sautez aucune vérification.
 
 La newsletter et son code HTML sont produits dans le chat. Ce kit ne publie aucun site et n’envoie aucun courriel.
 
-> **Limite connue.** L’Assistant peut modifier le HTML canonique sans détecter son erreur. La V5.9 impose une collecte observable et une recette assistée, mais ne garantit pas un rendu strictement identique au site Bacoco. N’utilisez jamais un résultat qui échoue au contrôle final.
+> **Limite connue.** La V5.12 sépare les données éditoriales du rendu HTML et maintient chaque ressource canonique sous 3 000 octets. N’utilisez jamais un résultat qui échoue au contrôle final ; une recette réelle reste nécessaire avant de déclarer la production autonome.
 
 ## Parcours express
 
 1. Une seule fois, créez le Projet `Newsletter SNUM`.
-2. Une seule fois, installez le prompt système et les huit fichiers Markdown.
+2. Une seule fois, installez le prompt système et les neuf fichiers Markdown.
 3. Pour une nouvelle édition, ouvrez une conversation depuis ce Projet.
 4. Préparez les cinq valeurs de date demandées.
 5. Activez le Web et envoyez `COLLECTE`.
 6. Désactivez le Web et envoyez `VALIDATION`.
-7. Sans le Web, envoyez `CANON`.
-8. Sans le Web et sans message intermédiaire, envoyez `RENDU`.
-9. Si la réponse commence par `A_COMPLETER`, arrêtez. Sinon, appliquez toute la checklist avant de copier le HTML.
+7. Sans le Web, envoyez `DONNEES`.
+8. Sans le Web, envoyez `CANON`.
+9. Sans le Web et sans message intermédiaire, envoyez `RENDU`.
+10. Si la réponse commence par `A_COMPLETER`, arrêtez. Sinon, appliquez toute la checklist avant de copier le HTML.
 
-Les étapes 1 et 2 sont réalisées une seule fois. Les étapes 3 à 9 sont répétées pour chaque édition.
+Les étapes 1 et 2 sont réalisées une seule fois. Les étapes 3 à 10 sont répétées pour chaque édition.
 
 ## Comprendre les deux niveaux de prompts
 
 Le **prompt système** contient les règles permanentes. Il est installé une seule fois dans les instructions du Projet.
 
-Les **prompts utilisateur** sont les quatre messages `COLLECTE`, `VALIDATION`, `CANON` et `RENDU`. Ils sont envoyés pour chaque édition dans une même conversation.
+Les **prompts utilisateur** sont les cinq messages `COLLECTE`, `VALIDATION`, `DONNEES`, `CANON` et `RENDU`. Ils sont envoyés pour chaque édition dans une même conversation.
 
-Ne collez jamais le prompt système dans la conversation. Ne placez jamais les quatre prompts utilisateur dans les instructions du Projet.
+Ne collez jamais le prompt système dans la conversation. Ne placez jamais les cinq prompts utilisateur dans les instructions du Projet.
+
+## Prompt système V5.12 complet à installer
+
+Copiez l’intégralité du bloc ci-dessous dans le champ **Instructions (expérimental)** du Projet. Ne modifiez aucun mot, aucun signe ni aucun retour à la ligne.
+
+Le même contenu est disponible dans [`PROMPT-SYSTEME-SNUM-V5.12.md`](./PROMPT-SYSTEME-SNUM-V5.12.md).
+
+```text
+Produis la revue SNUM selon les fichiers du Projet. Les dates priment. Livre dans le chat sans publication ni envoi. Dans la même conversation, exécute la phase demandée : `COLLECTE` avec Web, puis `VALIDATION`, `DONNEES`, `CANON` et `RENDU` sans Web.
+
+Pendant `COLLECTE`, exécute dix requêtes distinctes couvrant les cinq rubriques et cinq domaines, puis une seconde passe sous cinq candidats. Requêtes courtes, sans plage `..`, grand `OR` ni domaine inventé. Produis `COUVERTURE_COLLECTE`, puis `CANDIDATS`. Termine par `COLLECTE_TERMINEE` seulement avec couverture prouvée et au moins cinq candidats ; sinon `COLLECTE_INSUFFISANTE`. Relève la date de publication exacte ou `DATE_INCONNUE`.
+
+Pendant `VALIDATION`, produis `CONTROLE_DATES` : titre, date brute, format `AAAA-MM-JJ`, bornes, accès, `CLE_EVENEMENT`, décision. Deux candidats sur le même fait ont la même clé. Conserve la source la plus directe, sinon la plus récente, sinon la première. Exclus les autres avec `DOUBLON_DE | titre conservé`. Une source est valide seulement si format, bornes et accès valent `OUI`. Vérifie `valides + exclues = candidats`.
+
+Pendant `DONNEES`, utilise `SOURCES_VALIDES`. Produis `DONNEES_RENDU` : dates ; ordre des rubriques ; pour chaque source, identifiant, libellés, titre, URL, source, date longue en majuscules, fait, mots-clés, à retenir, intérêt SNUM ; puis `ESSENTIEL=OUI` pour trois sources dès trois valides. Fait ≤ 25 mots ; 3 à 5 mots-clés joints par ` · ` ; les deux synthèses ≤ 15 mots. Termine par `DONNEES_RENDU_PRETES` seulement si chaque source possède tous ses champs ; sinon `DONNEES_RENDU_INCOMPLETES`.
+
+Pendant `CANON`, cherche `SNUM_CANON_V512_INDEX_START` et `SNUM_CANON_V512_INDEX_END`, suis `READ_NEXT` et affiche les onze blocs `html` avec leurs paires. Réponds `CANON_HTML_PRET` seulement si tout est complet ; sinon recherche le jeton puis réponds `CANON_HTML_INCOMPLET | jeton manquant`.
+
+Pendant `RENDU`, ne recherche rien : utilise seulement `DONNEES_RENDU` et le `CANON` précédent. Les marqueurs @@ des fragments sont des entrées normales, jamais un échec avant leur remplacement. Construis un brouillon HTML complet non affiché : copie `06` ; instancie les essentiels dès trois sources ; pour chaque rubrique, ouverture + un article par source + fermeture ; ajoute `WATCH` si établi, puis `07` et `10`. Remplace tous les `@@...@@` sans créer de balise ni classe. Corrige, puis contrôle seulement ce brouillon final. Ne classe jamais les fragments bruts comme `MARQUEUR_RESIDUEL`, `SOURCE_MANQUANTE` ou `NAVIGATION_INCOHERENTE`.
+
+Valeurs exactes : `numerique` → navigation `Numérique`, tag et `h2` `NUMERIQUE` ; `ia` → `Intelligence artificielle` et `INTELLIGENCE ARTIFICIELLE (IA)` ; `commande` → `Commande publique` et `COMMANDE PUBLIQUE` ; `rh` → `Ressources humaines` et `RESSOURCES HUMAINES` ; `bercy` → `Vie de Bercy` et `VIE DE BERCY`. La navigation contient seulement les sections produites. Chaque source valide figure une fois dans sa rubrique ; un essentiel y reste aussi. Avec moins de trois sources, aucun essentiel ; sinon exactement trois cartes.
+
+Sur le brouillon final, vérifie : mêmes dates et URL que la revue ; chaque `href="#id"` avec exactement une section `id="id"`, et réciproquement ; aucun `@@` ; enveloppes canoniques ; trois accès rapides ; un seul `h1` ; modal après le footer ; scripts DSFR 1.15.2. Tente une correction avant tout arrêt.
+
+Si le brouillon final corrigé échoue encore, ne livre aucun HTML. Réponds `A_COMPLETER`, puis `## CONTROLES_EN_ECHEC`, puis une ligne `CODE | détail`. Codes : `CANON_MANQUANT`, `DONNEES_MANQUANTES`, `SOURCE_MANQUANTE`, `MARQUEUR_RESIDUEL`, `NAVIGATION_INCOHERENTE`, `ENVELOPPE_INCORRECTE`, `ESSENTIELS_INCORRECTS`, `HTML_INCOMPLET` ou `AUTRE`.
+
+En cas de réussite, livre `## REVUE`, `## HTML COMPLET` avec un unique bloc `html` de `<!doctype html>` à `</html>`, puis `## DOSSIER PRIVÉ` et `État : PRODUITE - contrôle métier requis`. N’affirme aucun contrôle non exécuté.
+```
 
 ## Première partie : installer le Projet une seule fois
 
 ### Étape 1 : télécharger et décompresser le kit
 
-1. Téléchargez [`kit-dinum-snum-v5-9-progressif-8-fichiers.zip`](./kit-dinum-snum-v5-9-progressif-8-fichiers.zip).
-2. Téléchargez [`PROMPT-SYSTEME-SNUM-V5.9.md`](./PROMPT-SYSTEME-SNUM-V5.9.md).
+1. Téléchargez [`kit-dinum-snum-v5-12-progressif-9-fichiers.zip`](./kit-dinum-snum-v5-12-progressif-9-fichiers.zip).
+2. Téléchargez [`PROMPT-SYSTEME-SNUM-V5.12.md`](./PROMPT-SYSTEME-SNUM-V5.12.md).
 3. Sur votre poste, double-cliquez sur le fichier ZIP pour le décompresser.
 4. Ouvrez le dossier obtenu.
-5. Vérifiez que le dossier contient exactement les huit fichiers suivants :
+5. Vérifiez que le dossier contient exactement les neuf fichiers suivants :
    - `00-PROMPT-PROJET.md` ;
    - `01-ETAT-HISTORIQUE.md` ;
    - `02-METHODE-EDITORIALE.md` ;
    - `05-INDEX-HTML.md` ;
    - `06-COQUE-DEBUT.md` ;
-   - `07-COQUE-FIN.md` ;
+   - `07-PIED-DE-PAGE.md` ;
    - `08-BLOC-ESSENTIEL.md` ;
-   - `09-BLOCS-RUBRIQUES.md`.
+   - `09-BLOCS-RUBRIQUES.md` ;
+   - `10-COQUE-FIN.md`.
 
 N’ajoutez pas le ZIP, le README, la notice ou un autre fichier dans le Projet.
 
@@ -55,20 +85,20 @@ N’ajoutez pas le ZIP, le README, la notice ou un autre fichier dans le Projet.
 3. Ouvrez le panneau situé à gauche de l’écran.
 4. Cliquez sur **Nouveau projet**.
 5. Saisissez exactement `Newsletter SNUM` comme nom du Projet.
-6. Sur votre poste, ouvrez `PROMPT-SYSTEME-SNUM-V5.9.md` dans un éditeur de texte.
-7. Sélectionnez tout le texte du fichier, puis copiez-le.
+6. Dans ce README, repérez la section **Prompt système V5.12 complet à installer**.
+7. Sélectionnez tout le bloc de texte, de `Produis la revue SNUM` jusqu’à `N’affirme aucun contrôle non exécuté.`, puis copiez-le.
 8. Dans le formulaire du Projet, collez le texte dans **Instructions (expérimental)**.
 9. Descendez jusqu’à la fin du champ.
 10. Vérifiez que la dernière phrase est exactement `N’affirme aucun contrôle non exécuté.`.
 11. Si cette phrase manque, effacez le champ et recommencez le collage depuis le début.
-12. Ajoutez les huit fichiers Markdown obtenus à l’étape 1.
-13. Relisez les huit noms affichés dans le Projet.
+12. Ajoutez les neuf fichiers Markdown obtenus à l’étape 1.
+13. Relisez les neuf noms affichés dans le Projet.
 14. Créez ou enregistrez le Projet.
 15. Attendez la disparition du message d’indexation. Ne commencez pas une conversation pendant l’indexation.
 
 ### Résultat attendu après l’installation
 
-Le Projet s’appelle `Newsletter SNUM`. Le champ **Instructions (expérimental)** se termine par la phrase attendue. Les huit fichiers sont visibles et aucun message d’indexation ne reste affiché.
+Le Projet s’appelle `Newsletter SNUM`. Le champ **Instructions (expérimental)** se termine par la phrase attendue. Les neuf fichiers sont visibles et aucun message d’indexation ne reste affiché.
 
 Si un de ces trois contrôles échoue, corrigez le Projet avant de poursuivre.
 
@@ -80,9 +110,9 @@ Si un de ces trois contrôles échoue, corrigez le Projet avant de poursuivre.
 2. Cliquez sur **Start new conversation in Newsletter SNUM** ou sur le bouton équivalent affiché dans ce Projet.
 3. Vérifiez que la nouvelle conversation apparaît sous `Newsletter SNUM`.
 
-Si elle apparaît sous **Vos conversations**, fermez-la. Revenez dans `Newsletter SNUM` et créez une nouvelle conversation depuis le Projet. Une conversation générale ne peut pas lire les huit fichiers.
+Si elle apparaît sous **Vos conversations**, fermez-la. Revenez dans `Newsletter SNUM` et créez une nouvelle conversation depuis le Projet. Une conversation générale ne peut pas lire les neuf fichiers.
 
-Conservez cette même conversation jusqu’à la fin de `RENDU`. Ne cliquez pas sur **Nouvelle conversation** entre les quatre messages.
+Conservez cette même conversation jusqu’à la fin de `RENDU`. Ne cliquez pas sur **Nouvelle conversation** entre les cinq messages.
 
 ### Étape 4 : préparer les cinq valeurs avec un exemple réel
 
@@ -170,11 +200,15 @@ Exemples :
 - 2026-10-15 est postérieur à 2026-10-13 : EXCLURE.
 Rejette aussi DATE_INCONNUE, toute date accompagnée d’un texte,
 toute incohérence manifeste et tout doublon.
-Conserve une seule URL canonique par événement.
+Crée CLE_EVENEMENT = organisation | action | objet | date ou période.
+Deux candidats sur le même fait réel ont la même CLE_EVENEMENT.
+Pour chaque clé répétée, conserve la source la plus directe ;
+à défaut la plus récente ; à défaut la première candidate.
+Exclus les autres avec DOUBLON_DE | titre conservé.
 
 Réponds d’abord sous CONTROLE_DATES avec une ligne par candidat :
 titre | date brute | format exact | borne basse | borne haute |
-accès | décision.
+accès | CLE_EVENEMENT | décision.
 
 Réponds sous SOURCES_VALIDES avec, pour chaque source :
 - le titre ;
@@ -191,7 +225,7 @@ Ne pose aucune question.
 
 N’utilisez ces dates que pour cet exemple. Pour une autre édition, remplacez les cinq valeurs par les dates demandées.
 
-Les messages `CANON` et `RENDU` ne contiennent aucune valeur de date. Ils sont déjà complets et doivent être envoyés sans modification.
+Les messages `DONNEES`, `CANON` et `RENDU` ne contiennent aucune valeur de date. Ils sont déjà complets et doivent être envoyés sans modification.
 
 Pour chaque prompt, copiez le bloc entier. Conservez les retours à la ligne : ils facilitent la lecture et ne changent pas le sens du message.
 
@@ -282,11 +316,15 @@ Exemples de comparaison :
 - 2026-10-15 est postérieur à 2026-10-13 : EXCLURE.
 Rejette aussi DATE_INCONNUE, toute date accompagnée d’un texte,
 toute incohérence manifeste et tout doublon.
-Conserve une seule URL canonique par événement.
+Crée CLE_EVENEMENT = organisation | action | objet | date ou période.
+Deux candidats sur le même fait réel ont la même CLE_EVENEMENT.
+Pour chaque clé répétée, conserve la source la plus directe ;
+à défaut la plus récente ; à défaut la première candidate.
+Exclus les autres avec DOUBLON_DE | titre conservé.
 
 Réponds d’abord sous CONTROLE_DATES avec une ligne par candidat :
 titre | date brute | format exact | borne basse | borne haute |
-accès | décision.
+accès | CLE_EVENEMENT | décision.
 
 Réponds sous SOURCES_VALIDES avec, pour chaque source :
 - le titre ;
@@ -303,13 +341,47 @@ Ne pose aucune question.
 
 Remplacez les deux repères par vos dates ISO, supprimez toutes les accolades, relisez les deux dates, puis envoyez le message.
 
-**Résultat attendu :** la réponse contient `CONTROLE_DATES`, `SOURCES_VALIDES`, `SOURCES_EXCLUES` et `VALIDATION_TERMINEE`.
+**Résultat attendu :** la réponse contient `CONTROLE_DATES`, une `CLE_EVENEMENT` par candidat, `SOURCES_VALIDES`, `SOURCES_EXCLUES` et `VALIDATION_TERMINEE`. Deux articles sur le même fait possèdent la même clé ; un seul reste valide et les autres portent `DOUBLON_DE`.
 
-**Condition de passage :** vérifiez chaque ligne de `CONTROLE_DATES`. Une source valide doit avoir quatre `OUI`. Le nombre de sources valides plus le nombre de sources exclues doit égaler le nombre de candidats. Passez à `CANON` uniquement si ces contrôles réussissent, si `VALIDATION_TERMINEE` est présent et si `SOURCES_VALIDES` contient au moins une source conforme.
+**Condition de passage :** vérifiez chaque ligne de `CONTROLE_DATES`. Une source valide doit avoir quatre `OUI`. Le nombre de sources valides plus le nombre de sources exclues doit égaler le nombre de candidats. Passez à `DONNEES` uniquement si ces contrôles réussissent, si `VALIDATION_TERMINEE` est présent et si `SOURCES_VALIDES` contient au moins une source conforme.
 
-**Si échec :** n’envoyez pas `CANON`. Si une date ISO saisie est fausse, corrigez-la et recommencez `VALIDATION` une seule fois. Si les dates saisies sont exactes mais que l’Assistant conserve une source hors fenêtre, arrêtez et recommencez toute l’édition dans une nouvelle conversation du Projet. Si aucune source valide ne reste, arrêtez cette édition.
+**Si échec :** n’envoyez pas `DONNEES`. Si une date ISO saisie est fausse, corrigez-la et recommencez `VALIDATION` une seule fois. Si les dates saisies sont exactes mais que l’Assistant conserve une source hors fenêtre, arrêtez et recommencez toute l’édition dans une nouvelle conversation du Projet. Si aucune source valide ne reste, arrêtez cette édition.
 
-## Étape 7 : CANON sans le Web
+## Étape 7 : DONNEES sans le Web
+
+**But :** préparer toutes les valeurs éditoriales avant l’assemblage HTML.
+
+**Action :** vérifiez que le badge bleu `Web` est absent et restez dans la même conversation.
+
+**Message à copier :**
+
+```text
+PHASE DONNEES.
+N’utilise pas le Web.
+Utilise exclusivement SOURCES_VALIDES.
+Ne charge pas encore les fragments HTML.
+Produis DONNEES_RENDU avec :
+- les dates d’édition ;
+- l’ordre des rubriques produites ;
+- pour chaque source : identifiant et libellés de rubrique, titre,
+  URL, source, date longue en majuscules, fait, mots-clés,
+  À retenir et Intérêt pour le SNUM ;
+- ESSENTIEL=OUI pour exactement trois sources dès trois valides.
+Respecte : fait de 25 mots maximum ; 3 à 5 mots-clés joints
+par ` · ` ; À retenir et Intérêt de 15 mots maximum.
+Vérifie que chaque source valide possède tous ses champs.
+Termine par DONNEES_RENDU_PRETES si tout est complet ;
+sinon DONNEES_RENDU_INCOMPLETES avec les champs manquants.
+Ne rédige pas encore le HTML. Ne pose aucune question.
+```
+
+**Résultat attendu :** la réponse contient une fiche complète par source valide et se termine par `DONNEES_RENDU_PRETES`.
+
+**Condition de passage :** passez à `CANON` uniquement si chaque source valide possède tous ses champs et si `DONNEES_RENDU_PRETES` est présent.
+
+**Si échec :** si la réponse contient `DONNEES_RENDU_INCOMPLETES`, arrêtez. Ne demandez pas à l’Assistant d’inventer les champs manquants.
+
+## Étape 8 : CANON sans le Web
 
 **But :** charger les fragments HTML de référence juste avant de produire le rendu.
 
@@ -322,34 +394,39 @@ Vérifiez que le badge bleu `Web` est absent et restez dans la même conversatio
 ```text
 PHASE CANON.
 N’utilise pas le Web.
-Recherche SNUM_CANON_V59_INDEX_START et SNUM_CANON_V59_INDEX_END
+Recherche SNUM_CANON_V512_INDEX_START et SNUM_CANON_V512_INDEX_END
 dans les ressources du Projet.
 Suis READ_NEXT.
-Charge intégralement les fragments 06, 07, 08 et 09.
-Vérifie la paire d’index et les six paires de fragments START/END.
+Charge intégralement les fragments 06, 07, 08, 09 et 10.
+Vérifie la paire d’index et les onze paires de fragments START/END.
 Conserve littéralement les blocs html.
 Ne rends pas encore la newsletter.
 Réponds seulement :
-- CANON_HTML_PRET, puis la paire d’index et les six paires de fragments ;
+- CANON_HTML_PRET, puis la paire d’index et les onze paires de fragments ;
 - ou CANON_HTML_INCOMPLET, puis le jeton manquant.
 ```
 
 Envoyez ce message sans le modifier.
 
-**Résultat attendu :** la réponse commence par `CANON_HTML_PRET`, contient la paire `SNUM_CANON_V59_INDEX_START / SNUM_CANON_V59_INDEX_END`, puis les six paires suivantes :
+**Résultat attendu :** la réponse commence par `CANON_HTML_PRET`, contient la paire `SNUM_CANON_V512_INDEX_START / SNUM_CANON_V512_INDEX_END`, puis les onze paires suivantes :
 
 - `SNUM_SHELL_HEAD_START / SNUM_SHELL_HEAD_END` ;
-- `SNUM_SHELL_TAIL_START / SNUM_SHELL_TAIL_END` ;
-- `SNUM_ESSENTIAL_START / SNUM_ESSENTIAL_END` ;
-- `SNUM_RUBRIC_START / SNUM_RUBRIC_END` ;
+- `SNUM_FOOTER_START / SNUM_FOOTER_END` ;
+- `SNUM_ESSENTIALS_OPEN_START / SNUM_ESSENTIALS_OPEN_END` ;
+- `SNUM_ESSENTIAL_CARD_START / SNUM_ESSENTIAL_CARD_END` ;
+- `SNUM_ESSENTIALS_CLOSE_START / SNUM_ESSENTIALS_CLOSE_END` ;
+- `SNUM_RUBRIC_OPEN_START / SNUM_RUBRIC_OPEN_END` ;
+- `SNUM_RUBRIC_ARTICLE_START / SNUM_RUBRIC_ARTICLE_END` ;
+- `SNUM_RUBRIC_CLOSE_START / SNUM_RUBRIC_CLOSE_END` ;
 - `SNUM_WATCH_START / SNUM_WATCH_END` ;
 - `SNUM_EMPTY_START / SNUM_EMPTY_END`.
+- `SNUM_SHELL_CLOSE_START / SNUM_SHELL_CLOSE_END`.
 
-**Condition de passage :** envoyez `RENDU` uniquement si `CANON_HTML_PRET`, la paire d’index et les six paires de fragments sont présents. N’envoyez aucun autre message entre `CANON` et `RENDU`.
+**Condition de passage :** envoyez `RENDU` uniquement si `CANON_HTML_PRET`, la paire d’index et les onze paires de fragments sont présents. N’envoyez aucun autre message entre `CANON` et `RENDU`.
 
-**Si échec :** n’envoyez pas `RENDU`. Vérifiez que la conversation appartient au Projet et que les huit fichiers sont présents. Recommencez ensuite toute l’édition dans une nouvelle conversation du Projet.
+**Si échec :** n’envoyez pas `RENDU`. Vérifiez que la conversation appartient au Projet et que les neuf fichiers sont présents. Recommencez ensuite toute l’édition dans une nouvelle conversation du Projet.
 
-## Étape 8 : RENDU sans le Web
+## Étape 9 : RENDU sans le Web
 
 **But :** produire la revue et le document HTML à partir des seules sources validées et des fragments chargés.
 
@@ -362,16 +439,23 @@ Vérifiez que le badge bleu `Web` est absent, restez dans la même conversation 
 ```text
 PHASE RENDU.
 N’utilise pas le Web.
-Utilise exclusivement SOURCES_VALIDES et les fragments canoniques
+Utilise exclusivement DONNEES_RENDU et les fragments canoniques
 chargés au tour précédent.
 Ne recherche plus les ressources ni les jetons.
 Utilise les blocs affichés dans la réponse CANON précédente.
+Les marqueurs @@ des fragments sont des entrées normales,
+jamais un échec avant leur remplacement.
+Construis d’abord un brouillon HTML complet non affiché.
 Copie littéralement 06.
-Insère les blocs 08 et 09 nécessaires.
-Ajoute ensuite 07.
-Remplace seulement les marqueurs @@.
+Pour L’essentiel, concatène ESSENTIALS_OPEN,
+exactement trois ESSENTIAL_CARD, puis ESSENTIALS_CLOSE.
+Pour chaque rubrique, concatène RUBRIC_OPEN,
+un RUBRIC_ARTICLE par source de la rubrique, puis RUBRIC_CLOSE.
+Insère WATCH seulement si nécessaire.
+Ajoute ensuite 07, puis 10.
+Remplace tous les marqueurs @@ avec DONNEES_RENDU.
 Ne crée aucune balise ni classe absente des fragments.
-Pour chaque source de SOURCES_VALIDES :
+Pour chaque source de DONNEES_RENDU :
 - crée exactement un article dans sa rubrique ;
 - si elle est essentielle, ajoute aussi sa carte dans L’essentiel.
 Une carte essentielle ne remplace jamais l’article de rubrique.
@@ -382,6 +466,8 @@ essentielles.
 Pour chaque lien href="#id" du menu de rubriques,
 crée exactement une section id="id".
 Chaque rubrique produite possède exactement un lien dans ce menu.
+Corrige le brouillon, puis contrôle seulement ce brouillon final.
+Ne contrôle jamais les fragments bruts.
 Livre exactement, dans cet ordre :
 1. ## REVUE
 2. ## HTML COMPLET, avec un unique bloc html allant de
@@ -396,8 +482,10 @@ Avant affichage, vérifie :
 - fr-theme-modal ;
 - les scripts DSFR 1.15.2.
 Si un point n’est pas établi :
-- commence ta réponse par A_COMPLETER ;
-- n’affiche aucun code.
+- réponds A_COMPLETER ;
+- ajoute ## CONTROLES_EN_ECHEC ;
+- ajoute une ligne CODE | détail par écart ;
+- n’affiche aucun HTML.
 Ne pose aucune question.
 ```
 
@@ -407,9 +495,9 @@ Envoyez ce message sans le modifier.
 
 **Condition de passage :** si la réponse ne commence pas par `A_COMPLETER`, passez à la checklist de l’étape 9. La présence d’un bloc HTML ne suffit pas pour accepter le résultat.
 
-**Si échec :** si la réponse commence par `A_COMPLETER`, arrêtez immédiatement. Ne demandez pas à l’Assistant de continuer quand même. Recommencez à partir de `CANON` ou faites contrôler l’édition extérieurement.
+**Si échec :** si la réponse commence par `A_COMPLETER`, arrêtez immédiatement. Lisez `CONTROLES_EN_ECHEC` et relevez chaque ligne `CODE | détail`. Ne demandez pas à l’Assistant de continuer quand même. Corrigez l’installation si le code est `CANON_MANQUANT` ; pour les autres codes, conservez la conversation comme preuve de recette et signalez l’échec.
 
-## Étape 9 : contrôler puis copier le résultat
+## Étape 10 : contrôler puis copier le résultat
 
 Contrôlez chaque point ci-dessous dans la réponse. Un seul échec suffit pour refuser le HTML.
 
@@ -434,23 +522,29 @@ Si tous les points réussissent, copiez uniquement le bloc allant de `<!doctype 
 ## Dépannage
 
 - Message `the authentication session has expired` : reconnectez-vous à AgentConnect, puis recommencez dans une nouvelle conversation du Projet.
-- Réponse `CANON_HTML_INCOMPLET SNUM_CANON_V59_INDEX_START` : la conversation ne voit pas les ressources. Revenez dans `Newsletter SNUM`, vérifiez les huit fichiers et recommencez l’édition.
+- Réponse `CANON_HTML_INCOMPLET SNUM_CANON_V512_INDEX_START` : la conversation ne voit pas les ressources. Revenez dans `Newsletter SNUM`, vérifiez les neuf fichiers et recommencez l’édition.
 - Date hors période : revenez à `VALIDATION`, corrigez les deux dates ISO et ne continuez qu’après un résultat conforme.
 - HTML affiché malgré un contrôle en échec : refusez la sortie. La présence de code HTML ne prouve pas sa conformité.
 
-## Ce que la V5.9 ne garantit pas encore
+## Limite actuelle et origine de la V5.12
 
-La recette réelle V5.9 du 15 octobre 2026 a confirmé les progrès suivants : `COLLECTE` couvre les cinq rubriques avec dix requêtes et plus de cinq domaines ; `VALIDATION` exclut correctement les dates hors fenêtre ; `CANON` retrouve la paire d’index et les six paires de fragments.
+La recette réelle V5.9 du 15 octobre 2026 a réussi `COLLECTE`, `VALIDATION` et `CANON`, puis `RENDU` a répondu `A_COMPLETER` sans explication. Elle a aussi conservé deux articles portant sur le même événement RH.
 
-Le passage final reste non déterministe. Après le correctif de transmission du canon, `RENDU` n’a plus signalé un faux jeton manquant, mais a répondu `A_COMPLETER` sans produire de HTML. Le garde-fou fonctionne donc, mais la V5.9 ne garantit toujours pas une livraison autonome du HTML.
+La V5.10 a corrigé ces deux causes : les cartes et articles sont devenus des fragments atomiques répétables ; la validation utilise `CLE_EVENEMENT` et `DOUBLON_DE`. Sa recette réelle a toutefois échoué sur `SNUM_SHELL_TAIL_START`. Une recherche ciblée a retrouvé `07-COQUE-FIN.md`, mais l’Assistant a réécrit le footer au lieu de le copier. La V5.11 scinde donc ce document en `07-PIED-DE-PAGE.md` et `10-COQUE-FIN.md`. Chaque ressource canonique reste sous 3 000 octets.
+
+La recette V5.11 a ensuite chargé les onze fragments après une relance technique, puis `RENDU` a contrôlé les marqueurs bruts avant de les remplacer. La V5.12 ajoute donc `DONNEES_RENDU` et rend obligatoire l’ordre : préparer les valeurs, construire un brouillon HTML complet non affiché, corriger, puis contrôler seulement ce brouillon final.
+
+La recette réelle V5.12 a produit un HTML complet après un message manuel `continue` et un second envoi de `RENDU`. Elle a toutefois généré des jours de semaine faux à partir de dates ISO correctes. La V5.12 n'est donc pas validée pour une livraison métier autonome. Vérifiez explicitement la correspondance entre chaque date ISO et sa date longue ; arrêtez la recette au premier écart.
 
 Le protocole organise le travail, mais le contrôle final décide si le livrable est utilisable. La réponse `CANON_HTML_PRET` ne prouve pas à elle seule que le HTML final est identique au canon Bacoco.
 
 ## Sources et preuves
 
-- [notice opérationnelle complète](./NOTICE-V5.9.md) ;
-- [prompt système à installer](./PROMPT-SYSTEME-SNUM-V5.9.md) ;
-- [rapport de contrôle V5.9](./RAPPORT-V5.9.md) ;
-- [résultat de l’installation et des recettes V5.9](./_documentation/installation-v5.9-2026-10-15/RESULTAT-INSTALLATION-ET-RECETTE.md) ;
+- [notice opérationnelle complète](./NOTICE-V5.12.md) ;
+- [prompt système à installer](./PROMPT-SYSTEME-SNUM-V5.12.md) ;
+- [rapport de contrôle V5.12](./RAPPORT-V5.12.md) ;
+- [résultat de l'installation et de la recette V5.12](./_documentation/installation-v5.12-2026-10-15/RESULTAT-INSTALLATION-ET-RECETTE.md) ;
+- [conversation V5.12 : HTML produit après reprise, contrôle métier requis](https://assistant.numerique.gouv.fr/chat/f9064cda-77f1-4dfe-b4e6-2da38e09eb72/) ;
 - [première conversation V5.9 : collecte corrigée, arrêt sur la transmission du canon](https://assistant.numerique.gouv.fr/chat/ac926e61-2b8a-4d4e-bfc3-e5b8e0b5de82) ;
-- [conversation V5.9 finale : paire d’index transmise, arrêt contrôlé au rendu](https://assistant.numerique.gouv.fr/chat/68369f19-beff-4a6d-a3d6-80903fdacc60).
+- [conversation V5.9 finale : paire d’index transmise, arrêt contrôlé au rendu](https://assistant.numerique.gouv.fr/chat/68369f19-beff-4a6d-a3d6-80903fdacc60) ;
+- [conversation de reproduction V5.9 : dédoublonnage manqué puis arrêt opaque](https://assistant.numerique.gouv.fr/chat/07764649-dd72-489f-ad5f-bb33084c82ba/).

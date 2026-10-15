@@ -1,17 +1,18 @@
-# Index HTML canonique - V5.9 progressive
+# Index HTML canonique - V5.12 progressive
 
-SNUM_CANON_V59_INDEX_START
+SNUM_CANON_V512_INDEX_START
 
 ## READ_NEXT
 
 Lire intégralement, dans cet ordre et un fichier à la fois :
 
 1. `06-COQUE-DEBUT.md` : `SNUM_SHELL_HEAD_START` à `SNUM_SHELL_HEAD_END` ;
-2. `07-COQUE-FIN.md` : `SNUM_SHELL_TAIL_START` à `SNUM_SHELL_TAIL_END` ;
-3. `08-BLOC-ESSENTIEL.md` : `SNUM_ESSENTIAL_START` à `SNUM_ESSENTIAL_END` ;
-4. `09-BLOCS-RUBRIQUES.md` : les trois paires `SNUM_RUBRIC`, `SNUM_WATCH` et `SNUM_EMPTY`.
+2. `07-PIED-DE-PAGE.md` : `SNUM_FOOTER_START` à `SNUM_FOOTER_END` ;
+3. `08-BLOC-ESSENTIEL.md` : les trois paires `SNUM_ESSENTIALS_OPEN`, `SNUM_ESSENTIAL_CARD` et `SNUM_ESSENTIALS_CLOSE` ;
+4. `09-BLOCS-RUBRIQUES.md` : les cinq paires `SNUM_RUBRIC_OPEN`, `SNUM_RUBRIC_ARTICLE`, `SNUM_RUBRIC_CLOSE`, `SNUM_WATCH` et `SNUM_EMPTY`.
+5. `10-COQUE-FIN.md` : `SNUM_SHELL_CLOSE_START` à `SNUM_SHELL_CLOSE_END`.
 
-La coque complète est la concaténation exacte des blocs HTML `06`, puis `07`. Remplacer ensuite ses marqueurs. Dupliquer uniquement la carte de `08` et l’élément `article` du bloc `RUBRIQUE` de `09`.
+La page complète est la concaténation exacte de `06`, du contenu éditorial, de `07`, puis de `10`. Pour `L’essentiel`, concaténer `ESSENTIALS_OPEN`, exactement trois répétitions de `ESSENTIAL_CARD`, puis `ESSENTIALS_CLOSE`. Pour chaque rubrique, concaténer `RUBRIC_OPEN`, une répétition de `RUBRIC_ARTICLE` par source valide de la rubrique, puis `RUBRIC_CLOSE`. Remplacer ensuite les marqueurs.
 
 Rubriques exactes :
 
@@ -27,6 +28,6 @@ Chaque source valide figure une fois dans sa rubrique. Une carte essentielle est
 
 Pour chaque lien `href="#id"` du menu de rubriques, produire exactement une section `id="id"`. Chaque rubrique produite possède exactement un lien dans ce menu.
 
-Si un jeton de fin manque après une nouvelle recherche ciblée, arrêter avec `A_COMPLETER — HTML canonique non établi` sans produire de code HTML.
+Si un jeton manque après une recherche ciblée, répondre `CANON_HTML_INCOMPLET | jeton manquant`. Pendant `RENDU`, un échec doit répondre `A_COMPLETER`, puis `## CONTROLES_EN_ECHEC` et une ligne `CODE | détail`, sans HTML.
 
-SNUM_CANON_V59_INDEX_END
+SNUM_CANON_V512_INDEX_END
