@@ -78,7 +78,10 @@ class NewsletterHtmlCliTests(unittest.TestCase):
 
     def test_build_uses_the_canonical_bacoco_structure(self):
         html = self.build_html()
-        self.assertIn('<nav class="fr-container" role="navigation" aria-label="Accès rapide">', html)
+        self.assertIn(
+            '<nav class="fr-container" role="navigation" aria-label="Accès rapide">',
+            html,
+        )
         self.assertIn(
             '<section id="essentiel" class="fr-container section-block">', html
         )
@@ -97,9 +100,19 @@ class NewsletterHtmlCliTests(unittest.TestCase):
         self.assertIn("numérique · service public · transformation", html)
         self.assertIn("SOURCE &amp; PUBLIQUE", html)
         self.assertIn('id="fr-theme-modal"', html)
-        self.assertIn('src="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.15.2/dist/dsfr.module.min.js"', html)
-        self.assertIn('src="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.15.2/dist/dsfr.nomodule.min.js"', html)
-        self.assertIn('href="/revue-presse-snum/styles.css?v=20260917"', html)
+        self.assertIn(
+            'src="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.15.2/dist/dsfr.module.min.js"',
+            html,
+        )
+        self.assertIn(
+            'src="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.15.2/dist/dsfr.nomodule.min.js"',
+            html,
+        )
+        self.assertIn(
+            'href="https://bacoco.github.io/revue-presse-snum/styles.css?v=20260917"',
+            html,
+        )
+        self.assertNotIn('href="/revue-presse-snum/styles.css', html)
         self.assertNotIn("@@", html)
 
     def test_validate_rejects_the_observed_dinum_drift(self):
@@ -131,8 +144,8 @@ class NewsletterHtmlCliTests(unittest.TestCase):
                     1,
                 )
                 .replace('<dialog id="fr-theme-modal"', '<dialog id="theme-modal"', 1)
-                .replace('<script type="module"', '<script', 1)
-                .replace('<script nomodule', '<script', 1)
+                .replace('<script type="module"', "<script", 1)
+                .replace("<script nomodule", "<script", 1)
                 .replace('<p class="fr-tag">', '<span class="fr-tag">', 1)
             )
             invalid_path.write_text(invalid_html, encoding="utf-8")
@@ -180,7 +193,7 @@ class NewsletterHtmlCliTests(unittest.TestCase):
         valid_html = self.build_html()
         invalid_html = valid_html.replace(
             '<section id="numerique">',
-            '<section>',
+            "<section>",
             1,
         )
         with tempfile.TemporaryDirectory() as temporary_directory:

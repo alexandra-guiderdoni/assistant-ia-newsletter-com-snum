@@ -19,17 +19,14 @@ def html_blocks(path):
 
 
 class ProgressiveKitTests(unittest.TestCase):
-    def test_current_release_merges_canon_and_render_in_one_user_message(self):
+    def test_historical_v516_merges_canon_and_render_in_one_user_message(self):
         prompt_path = PROJECT / "PROMPT-SYSTEME-SNUM-V5.16.md"
         self.assertTrue(prompt_path.exists(), prompt_path.name)
         prompt = prompt_path.read_text(encoding="utf-8")
-        readme = (PROJECT / "README.md").read_text(encoding="utf-8")
         self.assertIn("`CANON_RENDU`", prompt)
-        self.assertIn("PHASE CANON_RENDU.", readme)
-        self.assertNotRegex(readme, r"```text\nPHASE CANON\.\n")
-        self.assertNotRegex(readme, r"```text\nPHASE RENDU\.\n")
+        self.assertNotIn("`CANON`, puis `RENDU`", prompt)
 
-    def test_current_release_is_v5_16(self):
+    def test_historical_release_v5_16_is_preserved(self):
         expected = (
             "PROMPT-SYSTEME-SNUM-V5.16.md",
             "NOTICE-V5.16.md",
@@ -48,20 +45,10 @@ class ProgressiveKitTests(unittest.TestCase):
         phases = ["`COLLECTE`", "`VALIDATION`", "`DONNEES`", "`CANON_RENDU`"]
         self.assertEqual(sorted(phases, key=prompt.index), phases)
 
-    def test_readme_contains_the_exact_system_prompt(self):
-        prompt = (
-            (PROJECT / "PROMPT-SYSTEME-SNUM-V5.16.md")
-            .read_text(encoding="utf-8")
-            .rstrip("\n")
-        )
-        readme = (PROJECT / "README.md").read_text(encoding="utf-8")
-        match = re.search(
-            r"## Prompt système V5\.16 complet à installer.*?```text\n(.*?)\n```",
-            readme,
-            re.DOTALL,
-        )
-        self.assertIsNotNone(match)
-        self.assertEqual(match.group(1), prompt)
+    def test_notice_v516_references_the_preserved_system_prompt(self):
+        notice = (PROJECT / "NOTICE-V5.16.md").read_text(encoding="utf-8")
+        self.assertIn("PROMPT-SYSTEME-SNUM-V5.16.md", notice)
+        self.assertIn("NO-GO", notice)
 
     def test_render_prepares_data_before_checking_the_final_html(self):
         contents = [
@@ -69,7 +56,6 @@ class ProgressiveKitTests(unittest.TestCase):
             for name in (
                 "00-PROMPT-PROJET.md",
                 "PROMPT-SYSTEME-SNUM-V5.16.md",
-                "README.md",
                 "NOTICE-V5.16.md",
             )
         ]
@@ -180,10 +166,9 @@ class ProgressiveKitTests(unittest.TestCase):
             encoding="utf-8"
         )
         index = (PROJECT / "05-INDEX-HTML.md").read_text(encoding="utf-8")
-        readme = (PROJECT / "README.md").read_text(encoding="utf-8")
-        for content in (project_prompt, system_prompt, readme):
+        for content in (project_prompt, system_prompt):
             self.assertIn("CONTROLE_DATES", content)
-        for content in (project_prompt, system_prompt, index, readme):
+        for content in (project_prompt, system_prompt, index):
             self.assertIn('href="#id"', content)
             self.assertIn('section `id="id"`', content)
 
@@ -194,7 +179,6 @@ class ProgressiveKitTests(unittest.TestCase):
                 "00-PROMPT-PROJET.md",
                 "02-METHODE-EDITORIALE.md",
                 "PROMPT-SYSTEME-SNUM-V5.16.md",
-                "README.md",
             )
         ]
         for content in contents:
@@ -206,17 +190,10 @@ class ProgressiveKitTests(unittest.TestCase):
             self.assertIn("au moins cinq candidats", content)
 
     def test_collection_preserves_absolute_https_urls(self):
-        readme = (PROJECT / "README.md").read_text(encoding="utf-8")
-        active_prompt = re.search(
-            r"PROMPT-SYSTEME-SNUM-V\d+\.\d+\.md",
-            readme,
-        )
-        self.assertIsNotNone(active_prompt)
         contents = [
             (PROJECT / "00-PROMPT-PROJET.md").read_text(encoding="utf-8"),
             (PROJECT / "02-METHODE-EDITORIALE.md").read_text(encoding="utf-8"),
-            (PROJECT / active_prompt.group(0)).read_text(encoding="utf-8"),
-            readme,
+            (PROJECT / "PROMPT-SYSTEME-SNUM-V5.16.md").read_text(encoding="utf-8"),
         ]
         requirement = "URL canonique absolue commençant par `https://`"
         for content in contents:
@@ -228,7 +205,6 @@ class ProgressiveKitTests(unittest.TestCase):
             for name in (
                 "00-PROMPT-PROJET.md",
                 "PROMPT-SYSTEME-SNUM-V5.16.md",
-                "README.md",
                 "NOTICE-V5.16.md",
             )
         ]
@@ -241,7 +217,6 @@ class ProgressiveKitTests(unittest.TestCase):
             for name in (
                 "00-PROMPT-PROJET.md",
                 "PROMPT-SYSTEME-SNUM-V5.16.md",
-                "README.md",
                 "NOTICE-V5.16.md",
             )
         ]
@@ -263,21 +238,12 @@ class ProgressiveKitTests(unittest.TestCase):
             "SNUM_WATCH_START / SNUM_WATCH_END",
             "SNUM_EMPTY_START / SNUM_EMPTY_END",
         )
-        readme = (PROJECT / "README.md").read_text(encoding="utf-8")
-        canon_prompt = re.search(
-            r"```text\nPHASE CANON_RENDU\.(.*?)\n```",
-            readme,
-            re.DOTALL,
-        )
-        self.assertIsNotNone(canon_prompt)
         index = (PROJECT / "05-INDEX-HTML.md").read_text(encoding="utf-8")
         for pair in pairs:
-            self.assertIn(pair, canon_prompt.group(1))
             self.assertIn(pair, index)
         for content in (
             (PROJECT / "00-PROMPT-PROJET.md").read_text(encoding="utf-8"),
             (PROJECT / "PROMPT-SYSTEME-SNUM-V5.16.md").read_text(encoding="utf-8"),
-            canon_prompt.group(1),
         ):
             self.assertIn("sans fusion ni auto-fermant", content)
 
@@ -287,7 +253,6 @@ class ProgressiveKitTests(unittest.TestCase):
             for name in (
                 "00-PROMPT-PROJET.md",
                 "PROMPT-SYSTEME-SNUM-V5.16.md",
-                "README.md",
                 "NOTICE-V5.16.md",
             )
         ]
@@ -300,19 +265,15 @@ class ProgressiveKitTests(unittest.TestCase):
             (PROJECT / name).read_text(encoding="utf-8")
             for name in (
                 "00-PROMPT-PROJET.md",
-                "README.md",
+                "PROMPT-SYSTEME-SNUM-V5.16.md",
             )
         ]
         for content in contents:
-            self.assertIn(
-                "Si moins de trois sources sont valides, attribue "
-                "ESSENTIEL=NON à chaque source.",
-                content,
-            )
-            self.assertIn(
-                "Instancie les blocs essentiels uniquement si au moins trois "
-                "sources sont valides.",
-                content,
+            self.assertIn("moins de trois sources", content)
+            self.assertIn("ESSENTIEL=NON", content)
+            self.assertTrue(
+                "Instancie les blocs essentiels uniquement si au moins trois" in content
+                or "Sous trois sources, remplace `@@ESSENTIELS@@` par vide" in content
             )
 
     def test_validation_contract_deduplicates_by_event(self):
@@ -322,7 +283,6 @@ class ProgressiveKitTests(unittest.TestCase):
                 "00-PROMPT-PROJET.md",
                 "02-METHODE-EDITORIALE.md",
                 "PROMPT-SYSTEME-SNUM-V5.16.md",
-                "README.md",
             )
         ]
         for content in contents:
@@ -336,7 +296,6 @@ class ProgressiveKitTests(unittest.TestCase):
                 "00-PROMPT-PROJET.md",
                 "02-METHODE-EDITORIALE.md",
                 "PROMPT-SYSTEME-SNUM-V5.16.md",
-                "README.md",
             )
         ]
         for content in contents:
@@ -350,7 +309,7 @@ class ProgressiveKitTests(unittest.TestCase):
             (PROJECT / name).read_text(encoding="utf-8")
             for name in (
                 "00-PROMPT-PROJET.md",
-                "README.md",
+                "PROMPT-SYSTEME-SNUM-V5.16.md",
             )
         ]
         for content in contents:

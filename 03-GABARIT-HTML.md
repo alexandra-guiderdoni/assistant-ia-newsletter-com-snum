@@ -30,7 +30,7 @@ Les rubriques vides et leurs liens de navigation sont omis. Les identifiants de 
   <meta name="description" content="Revue de presse du SNUM du @@DATE_EDITION_LONGUE@@.">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.15.2/dist/dsfr.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@gouvfr/dsfr@1.15.2/dist/utility/icons/icons.min.css">
-  <link rel="stylesheet" href="/revue-presse-snum/styles.css?v=20260917">
+  <link rel="stylesheet" href="https://bacoco.github.io/revue-presse-snum/styles.css?v=20260917">
 </head>
 <body>
   <div class="fr-skiplinks"><nav class="fr-container" role="navigation" aria-label="Accès rapide"><ul class="fr-skiplinks__list">

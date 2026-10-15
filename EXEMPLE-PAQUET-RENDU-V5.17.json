@@ -1,0 +1,69 @@
+{
+  "schema_version": "SNUM_PAQUET_RENDU_V517",
+  "edition_date": "14 octobre 2026",
+  "edition_date_long": "14 octobre 2026",
+  "window_start": "2026-10-03",
+  "window_end": "2026-10-13",
+  "articles": [
+    {
+      "id": "EX_NUM_2026_10_13",
+      "rubric": "numerique",
+      "title": "Un service numérique public simplifie les démarches",
+      "source": "numerique.gouv.fr",
+      "publication_date": "13 octobre 2026",
+      "publication_date_iso": "2026-10-13",
+      "url": "https://example.org/numerique/service-public",
+      "fact": "Un service public centralise plusieurs démarches numériques et réduit les ressaisies demandées aux usagers.",
+      "keywords": [
+        "service public",
+        "démarches",
+        "simplification"
+      ],
+      "takeaway": "Les démarches sont regroupées dans un parcours unique.",
+      "snum_interest": "Le SNUM peut réutiliser les principes d’intégration présentés.",
+      "essential": true
+    },
+    {
+      "id": "EX_IA_2026_10_12",
+      "rubric": "ia",
+      "title": "Une administration encadre l’usage de l’intelligence artificielle",
+      "source": "info.gouv.fr",
+      "publication_date": "12 octobre 2026",
+      "publication_date_iso": "2026-10-12",
+      "url": "https://example.org/ia/cadre-public",
+      "fact": "Un cadre public précise les responsabilités, contrôles et garanties applicables aux systèmes d’intelligence artificielle administratifs.",
+      "keywords": [
+        "intelligence artificielle",
+        "responsabilité",
+        "contrôle"
+      ],
+      "takeaway": "Le cadre précise les garanties attendues des administrations.",
+      "snum_interest": "Le SNUM peut aligner ses projets sur ces exigences.",
+      "essential": true
+    },
+    {
+      "id": "EX_COMMANDE_2026_10_10",
+      "rubric": "commande",
+      "title": "La commande publique facilite les achats numériques responsables",
+      "source": "economie.gouv.fr",
+      "publication_date": "10 octobre 2026",
+      "publication_date_iso": "2026-10-10",
+      "url": "https://example.org/commande/achats-responsables",
+      "fact": "Un guide actualisé aide les acheteurs publics à intégrer des exigences numériques responsables dans leurs marchés.",
+      "keywords": [
+        "commande publique",
+        "numérique responsable",
+        "achats"
+      ],
+      "takeaway": "Le guide fournit des clauses directement mobilisables.",
+      "snum_interest": "Le SNUM peut renforcer ses cahiers des charges numériques.",
+      "essential": true
+    }
+  ],
+  "watch": [
+    {
+      "title": "Publication d’un référentiel interministériel",
+      "summary": "La version définitive doit paraître avant la prochaine édition."
+    }
+  ]
+}
