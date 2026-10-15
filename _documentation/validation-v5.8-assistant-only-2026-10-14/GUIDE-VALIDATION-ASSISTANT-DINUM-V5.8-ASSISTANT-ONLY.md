@@ -1,5 +1,7 @@
 # Validation du kit Newsletter SNUM V5.8 Assistant-only
 
+> **Archive de la recette intermédiaire à six fichiers.** Ce document conserve les preuves du test, mais ne décrit plus le kit à installer. Utiliser la [notice V5.8 progressive](../../NOTICE-V5.8.md). L’ancien ZIP reste récupérable dans l’historique Git au commit `d30f667bb` ; il n’est plus livré dans l’arbre courant.
+
 ## Résultat
 
 Le parcours métier fonctionne entièrement dans l’Assistant DINUM, sans script sur le poste de travail. Le nouveau Projet contient le prompt système et les six fichiers du kit. La sortie finale attendue est désormais la réponse du chat ; la publication GitHub Pages et l’envoi d’e-mail ne font plus partie du critère de validation.
@@ -24,9 +26,9 @@ Un troisième passage, lancé après remplacement du prompt système et des six 
 
 Rendus locaux pendant la recette : <http://127.0.0.1:8767/> et <http://127.0.0.1:8767/second-pass/>.
 
-## Ce que le métier doit préparer
+## Ce que la recette historique utilisait
 
-- le ZIP `kit-dinum-snum-v5-8-assistant-only-6-fichiers.zip` ;
+- le ZIP historique `kit-dinum-snum-v5-8-assistant-only-6-fichiers.zip` ;
 - le texte de `PROMPT-SYSTEME-SNUM-V5.8.md` ;
 - la date d’édition et les deux bornes incluses de la fenêtre de collecte.
 

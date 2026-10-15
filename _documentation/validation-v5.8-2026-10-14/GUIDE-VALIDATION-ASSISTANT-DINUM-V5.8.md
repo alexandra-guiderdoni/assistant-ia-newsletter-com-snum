@@ -1,6 +1,6 @@
 # Validation du kit Newsletter SNUM V5.8 dans l’Assistant DINUM
 
-> **Archive du premier essai à cinq fichiers.** Ce document conserve les preuves de la recette rejetée ; il ne constitue plus la procédure métier. Utiliser le [guide V5.8 Assistant-only à six fichiers](../validation-v5.8-assistant-only-2026-10-14/GUIDE-VALIDATION-ASSISTANT-DINUM-V5.8-ASSISTANT-ONLY.md). Les commandes locales ci-dessous sont réservées à l’équipe de validation.
+> **Archive du premier essai à cinq fichiers.** Ce document conserve les preuves de la recette rejetée ; il ne constitue plus la procédure métier. Utiliser la [notice V5.8 progressive](../../NOTICE-V5.8.md). L’ancien ZIP n’est plus livré dans l’arbre courant. Les commandes locales ci-dessous sont réservées à l’équipe de validation.
 
 ## Résultat
 
