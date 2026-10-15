@@ -1,10 +1,10 @@
-# Newsletter SNUM avec l’Assistant DINUM — guide V5.8
+# Newsletter SNUM avec l’Assistant DINUM - guide V5.8
 
 Ce dépôt fournit un kit prêt à installer pour préparer une revue de presse SNUM dans l’Assistant DINUM, sans terminal ni script sur le poste métier. La newsletter et son HTML sont livrés dans le chat ; rien n’est publié ni envoyé automatiquement.
 
 > **Verdict actuel.** L’installation, la collecte et le filtrage ont été vérifiés. En revanche, l’Assistant peut encore altérer le HTML canonique sans déclencher son arrêt de sécurité. La V5.8 convient donc à une recette assistée, mais reste **NO-GO pour garantir de façon autonome un rendu identique à Bacoco**. Un résultat `A_COMPLETER` est un arrêt normal, pas une newsletter prête.
 
-## Pourquoi ce kit existe [IC]
+## Pourquoi ce kit existe
 
 La difficulté n’est pas d’écrire une newsletter : elle est de faire respecter simultanément une fenêtre de dates, des sources lisibles, une ligne éditoriale et un gabarit HTML exact dans un champ système limité à 4 000 caractères.
 
@@ -15,7 +15,7 @@ La V5.8 sépare donc les responsabilités :
 - les **quatre prompts utilisateur** font avancer une édition par étapes contrôlables ;
 - des **jetons de fin** empêchent de continuer silencieusement après une étape incomplète.
 
-## Le modèle mental — lecture « Karpathy » [IE]
+## Le modèle mental
 
 Imaginez l’Assistant comme un générateur probabiliste doté d’une mémoire de travail limitée, et non comme un compilateur qui copie toujours un fichier à l’octet près.
 
@@ -31,7 +31,7 @@ Contrôle humain      → décider si le HTML est utilisable
 
 Chaque séparation répond à un risque précis : le Web sert à découvrir, mais pas à décider ; la validation applique des règles simples ; le canon est chargé juste avant le rendu pour limiter sa dégradation dans le contexte ; le contrôle humain couvre ce que l’autoévaluation du modèle ne prouve pas.
 
-## Ce qu’il faut préparer [IC]
+## Ce qu’il faut préparer
 
 - un accès actif à <https://assistant.numerique.gouv.fr/> ;
 - [`kit-dinum-snum-v5-8-progressif-8-fichiers.zip`](./kit-dinum-snum-v5-8-progressif-8-fichiers.zip) ;
@@ -40,7 +40,7 @@ Chaque séparation répond à un risque précis : le Web sert à découvrir, mai
 
 Le kit contient exactement huit ressources. Ne les renommez pas et ne les modifiez pas séparément : elles sont dérivées d’une source canonique unique.
 
-## Installer le Projet une seule fois [IC]
+## Installer le Projet une seule fois
 
 1. Décompressez `kit-dinum-snum-v5-8-progressif-8-fichiers.zip` sur votre poste.
 2. Ouvrez l’Assistant DINUM, puis choisissez **Nouveau projet** dans le panneau de gauche.
@@ -61,7 +61,7 @@ Le kit contient exactement huit ressources. Ne les renommez pas et ne les modifi
 
 Le prompt système est installé une seule fois. Ne le collez jamais dans la conversation. Les quatre prompts ci-dessous sont, eux, envoyés pour chaque édition.
 
-## Préparer une édition [IC]
+## Préparer une édition
 
 Choisissez quatre valeurs avant de commencer :
 
@@ -71,9 +71,9 @@ Choisissez quatre valeurs avant de commencer :
 
 Envoyez les quatre messages dans **la même conversation**, dans l’ordre suivant. N’ouvrez une nouvelle conversation que pour recommencer toute l’édition.
 
-## Première phase — qualifier les sources [IC]
+## Première phase - qualifier les sources
 
-### 1. COLLECTE — Web activé
+### 1. COLLECTE - Web activé
 
 Pourquoi : cette étape cherche et ouvre les pages. Elle collecte des faits observables sans encore décider si les sources sont admissibles.
 
@@ -83,7 +83,7 @@ PHASE COLLECTE. Utilise le Web. Édition du {{DATE_EDITION}}, fenêtre du {{DEBU
 
 Attendez `COLLECTE_TERMINEE`. La réponse doit contenir `CANDIDATS`, sans `REVUE` ni HTML. Sinon, arrêtez-vous et relancez cette étape.
 
-### 2. VALIDATION — Web désactivé
+### 2. VALIDATION - Web désactivé
 
 Pourquoi : couper le Web réduit les nouvelles informations parasites. L’Assistant doit seulement appliquer la fenêtre, l’accès intégral et le dédoublonnage aux candidats déjà observés.
 
@@ -93,9 +93,9 @@ PHASE VALIDATION. N’utilise pas le Web et ne rédige ni REVUE ni HTML. Relis u
 
 Attendez `VALIDATION_TERMINEE`. Vérifiez que chaque source retenue est bien comprise entre les deux dates incluses. Seules les entrées de `SOURCES_VALIDES` pourront alimenter le rendu.
 
-## Seconde phase — produire la newsletter [IC]
+## Seconde phase - produire la newsletter
 
-### 3. CANON — Web désactivé
+### 3. CANON - Web désactivé
 
 Pourquoi : le gabarit est rechargé juste avant sa consommation. Ce « juste-à-temps » limite le risque que ses balises et ses classes soient perdues après une longue collecte.
 
@@ -112,15 +112,15 @@ Ne continuez que si la réponse contient `CANON_HTML_PRET` et ces six paires :
 - `SNUM_WATCH_START / SNUM_WATCH_END` ;
 - `SNUM_EMPTY_START / SNUM_EMPTY_END`.
 
-### 4. RENDU — Web désactivé
+### 4. RENDU - Web désactivé
 
 Pourquoi : cette étape assemble des éléments déjà validés. Elle ne doit ni rechercher une nouvelle source ni improviser une balise ou une classe.
 
 ```text
-PHASE RENDU. N’utilise pas le Web. Utilise exclusivement SOURCES_VALIDES et les fragments canoniques chargés au tour précédent. Copie littéralement 06, insère les blocs 08 et 09 nécessaires, puis 07 ; remplace seulement les marqueurs @@. Ne crée aucune balise ni classe absente des fragments. Livre exactement ## REVUE, ## HTML COMPLET avec un unique bloc html de <!doctype html> à </html>, puis ## DOSSIER PRIVÉ. Avant affichage, vérifie le title, /revue-presse-snum/styles.css?v=20260917, l’absence de marqueur @@, fr-theme-modal et les scripts DSFR 1.15.2. Si un point n’est pas établi, réponds A_COMPLETER — HTML canonique non établi sans afficher de code. Ne pose aucune question.
+PHASE RENDU. N’utilise pas le Web. Utilise exclusivement SOURCES_VALIDES et les fragments canoniques chargés au tour précédent. Copie littéralement 06, insère les blocs 08 et 09 nécessaires, puis 07 ; remplace seulement les marqueurs @@. Ne crée aucune balise ni classe absente des fragments. Livre exactement ## REVUE, ## HTML COMPLET avec un unique bloc html de <!doctype html> à </html>, puis ## DOSSIER PRIVÉ. Avant affichage, vérifie le title, /revue-presse-snum/styles.css?v=20260917, l’absence de marqueur @@, fr-theme-modal et les scripts DSFR 1.15.2. Si un point n’est pas établi, réponds A_COMPLETER - HTML canonique non établi sans afficher de code. Ne pose aucune question.
 ```
 
-## Contrôler avant d’utiliser le résultat [IC]
+## Contrôler avant d’utiliser le résultat
 
 N’utilisez pas le HTML si un seul contrôle échoue :
 
@@ -135,26 +135,24 @@ N’utilisez pas le HTML si un seul contrôle échoue :
 - la rubrique IA utilise `<section id="ia" class="section-muted">` ;
 - la rubrique RH utilise `<section id="rh" class="section-muted">`.
 
-Si l’Assistant répond `A_COMPLETER — HTML canonique non établi`, le garde-fou a fonctionné : ne demandez pas de « continuer quand même ». Reprenez à `CANON` ou faites contrôler le résultat extérieurement.
+Si l’Assistant répond `A_COMPLETER - HTML canonique non établi`, le garde-fou a fonctionné : ne demandez pas de « continuer quand même ». Reprenez à `CANON` ou faites contrôler le résultat extérieurement.
 
-## Ce que la V5.8 ne garantit pas encore [IC]
+## Ce que la V5.8 ne garantit pas encore
 
 La recette réelle du 15 octobre 2026 a réussi `COLLECTE`, `VALIDATION` et `CANON`, puis a produit un HTML complet. Pourtant, les classes `section-muted` des rubriques IA et RH ont disparu sans déclencher `A_COMPLETER`.
 
 La bonne posture est donc : **faire confiance au protocole pour structurer le travail, mais faire confiance aux preuves pour accepter le livrable**. L’affirmation `CANON_HTML_PRET` de l’Assistant n’est pas, à elle seule, une preuve d’identité avec le canon Bacoco.
 
-## Dépannage rapide [IC]
+## Dépannage rapide
 
 - `the authentication session has expired` : reconnectez-vous à AgentConnect, puis recommencez dans le Projet ; ce message ne prouve pas une panne du kit.
 - `CANON_HTML_INCOMPLET SNUM_CANON_V58_INDEX_START` : vérifiez que la conversation appartient bien à `Newsletter SNUM` et que les huit fichiers sont indexés.
 - source hors fenêtre : reprenez à `VALIDATION` avec les bornes ISO exactes.
 - HTML affiché malgré un écart : n’utilisez pas la sortie ; le contrôle humain prime.
 
-## Sources et preuves [IC]
+## Sources et preuves
 
 - [notice opérationnelle complète](./NOTICE-V5.8.md) ;
 - [prompt système à installer](./PROMPT-SYSTEME-SNUM-V5.8.md) ;
 - [rapport de contrôle V5.8](./RAPPORT-V5.8.md) ;
 - [résultat de l’installation et de la recette réelle](./_documentation/installation-v5.8-2026-10-15/RESULTAT-INSTALLATION-ET-RECETTE.md).
-
-`[IC]` signifie « information confirmée par les sources du dépôt ». `[IE]` signale une explication du mécanisme destinée à faciliter la compréhension.
