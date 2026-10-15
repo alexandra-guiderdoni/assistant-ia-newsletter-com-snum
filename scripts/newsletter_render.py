@@ -1,6 +1,7 @@
 """Rendu à partir des blocs HTML qui restent canoniques dans le Markdown V5.16."""
 
 import re
+from datetime import date
 from html import escape
 from urllib.parse import urlparse
 
@@ -12,6 +13,20 @@ RUBRICS = {
     "bercy": ("Vie de Bercy", "VIE DE BERCY", False),
 }
 MARKER = re.compile(r"@@[A-Z_]+@@")
+FRENCH_MONTHS = {
+    "janvier": 1,
+    "février": 2,
+    "mars": 3,
+    "avril": 4,
+    "mai": 5,
+    "juin": 6,
+    "juillet": 7,
+    "août": 8,
+    "septembre": 9,
+    "octobre": 10,
+    "novembre": 11,
+    "décembre": 12,
+}
 
 
 def canonical_blocks(markdown):
@@ -49,17 +64,47 @@ def checked_url(value):
     return text(value)
 
 
-def article_values(article, rubric_title):
+def publication_date(article, schema_version):
+    if schema_version != "SNUM_PAQUET_RENDU_V518":
+        return str(article["publication_date"])
+    iso_value = str(article["publication_date_iso"])
+    long_value = str(article["publication_date_long"])
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", iso_value):
+        raise ValueError("date de publication ISO invalide")
+    try:
+        iso_date = date.fromisoformat(iso_value)
+    except ValueError as error:
+        raise ValueError("date de publication ISO invalide") from error
+    long_match = re.fullmatch(
+        r"([1-9]|[12]\d|3[01]) (janvier|février|mars|avril|mai|juin|juillet|août|septembre|octobre|novembre|décembre) (\d{4})",
+        long_value,
+    )
+    if not long_match:
+        raise ValueError("date de publication longue invalide")
+    day, month_name, year = long_match.groups()
+    try:
+        long_date = date(int(year), FRENCH_MONTHS[month_name], int(day))
+    except ValueError as error:
+        raise ValueError("date de publication longue invalide") from error
+    if long_date != iso_date:
+        raise ValueError("dates de publication incohérentes")
+    return long_value
+
+
+def article_values(article, rubric_title, schema_version):
     required = {
         "title",
         "source",
-        "publication_date",
         "fact",
         "keywords",
         "takeaway",
         "snum_interest",
         "url",
     }
+    if schema_version == "SNUM_PAQUET_RENDU_V518":
+        required.update({"publication_date_iso", "publication_date_long"})
+    else:
+        required.add("publication_date")
     missing = sorted(required - article.keys())
     if missing:
         raise ValueError(f"champs article manquants : {', '.join(missing)}")
@@ -77,7 +122,7 @@ def article_values(article, rubric_title):
         "RUBRIQUE": rubric_title,
         "SOURCE_MAJUSCULES": text(str(article["source"]).upper()),
         "DATE_PUBLICATION_LONGUE_MAJUSCULES": text(
-            str(article["publication_date"]).upper()
+            publication_date(article, schema_version).upper()
         ),
         "TITRE": text(article["title"]),
         "FAIT": text(article["fact"]),
@@ -88,7 +133,7 @@ def article_values(article, rubric_title):
     }
 
 
-def render_essentials(template, articles):
+def render_essentials(template, articles, schema_version):
     card_pattern = re.compile(
         r'    <div class="fr-col-12 fr-col-md-4">.*?</article></div>', re.DOTALL
     )
@@ -98,11 +143,13 @@ def render_essentials(template, articles):
     rendered = []
     for article in articles:
         rubric_title = RUBRICS[article["rubric"]][1]
-        rendered.append(fill(card.group(0), article_values(article, rubric_title)))
+        rendered.append(
+            fill(card.group(0), article_values(article, rubric_title, schema_version))
+        )
     return card_pattern.sub("\n".join(rendered), template, count=1)
 
 
-def render_rubric(template, rubric_id, articles, number):
+def render_rubric(template, rubric_id, articles, number, schema_version):
     article_pattern = re.compile(
         r'    <article class="fr-col-12">.*?\n    </article>', re.DOTALL
     )
@@ -111,7 +158,7 @@ def render_rubric(template, rubric_id, articles, number):
         raise ValueError("article de rubrique canonique introuvable")
     title = RUBRICS[rubric_id][1]
     rendered_articles = [
-        fill(article_model.group(0), article_values(article, title))
+        fill(article_model.group(0), article_values(article, title, schema_version))
         for article in articles
     ]
     section = article_pattern.sub("\n".join(rendered_articles), template, count=1)
@@ -149,6 +196,7 @@ def render_watch(template, watch_items, number):
 
 
 def build(payload, blocks):
+    schema_version = payload.get("schema_version")
     articles = payload.get("articles", [])
     for article in articles:
         if article.get("rubric") not in RUBRICS:
@@ -163,7 +211,9 @@ def build(payload, blocks):
             "exactement trois articles essentiels sont requis à partir de trois articles"
         )
     essential_html = (
-        render_essentials(blocks["essential"], essentials) if len(articles) >= 3 else ""
+        render_essentials(blocks["essential"], essentials, schema_version)
+        if len(articles) >= 3
+        else ""
     )
     number = 2 if essential_html else 1
     rubric_sections = []
@@ -179,7 +229,13 @@ def build(payload, blocks):
             f'<a class="fr-link" href="#{rubric_id}">{RUBRICS[rubric_id][0]}</a>'
         )
         rubric_sections.append(
-            render_rubric(blocks["rubric"], rubric_id, rubric_articles, number)
+            render_rubric(
+                blocks["rubric"],
+                rubric_id,
+                rubric_articles,
+                number,
+                schema_version,
+            )
         )
         number += 1
 
@@ -193,7 +249,7 @@ def build(payload, blocks):
     page = fill(
         blocks["page"],
         {
-            "DATE_EDITION": text(payload["edition_date"]),
+            "DATE_EDITION": text(payload["edition_date_long"]),
             "DATE_EDITION_LONGUE": text(payload["edition_date_long"]),
             "DATE_EDITION_LONGUE_MAJUSCULES": text(
                 str(payload["edition_date_long"]).upper()

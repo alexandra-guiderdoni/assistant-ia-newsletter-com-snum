@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Construit le kit V5.17 des deux Projets Assistant DINUM."""
+"""Construit les deux paquets V5.18 des Projets Assistant DINUM."""
 
 import argparse
 import sys
@@ -11,22 +11,26 @@ from newsletter_render import canonical_blocks
 
 PROJECT = Path(__file__).resolve().parents[1]
 SOURCE = PROJECT / "05-BLOCS-HTML-CANONIQUES.md"
-ARCHIVE = PROJECT / "kit-dinum-snum-v5-17-deux-projets-6-fichiers.zip"
+COLLECTE_PROJECT = "Newsletter SNUM - Collecte"
+RENDU_PROJECT = "Newsletter SNUM - Rendu HTML"
+COLLECTE_ARCHIVE = PROJECT / f"{COLLECTE_PROJECT}.zip"
+RENDU_ARCHIVE = PROJECT / f"{RENDU_PROJECT}.zip"
+LEGACY_ARCHIVE = PROJECT / "kit-dinum-snum-v5-18-deux-projets-6-fichiers.zip"
 RESOURCE_SPECS = (
-    ("CANON-HTML-01-COQUE-A-V5.17.md", "SNUM_CANON_V517_COQUE_A"),
-    ("CANON-HTML-02-COQUE-B-V5.17.md", "SNUM_CANON_V517_COQUE_B"),
+    ("21-CANON-HTML-COQUE-A-V5.18.md", "SNUM_CANON_V518_COQUE_A"),
+    ("22-CANON-HTML-COQUE-B-V5.18.md", "SNUM_CANON_V518_COQUE_B"),
     (
-        "CANON-HTML-03-ESSENTIEL-RUBRIQUE-V5.17.md",
-        "SNUM_CANON_V517_ESSENTIEL_RUBRIQUE",
+        "23-CANON-HTML-ESSENTIEL-RUBRIQUE-V5.18.md",
+        "SNUM_CANON_V518_ESSENTIEL_RUBRIQUE",
     ),
     (
-        "CANON-HTML-04-SURVEILLER-VIDE-V5.17.md",
-        "SNUM_CANON_V517_SURVEILLER_VIDE",
+        "24-CANON-HTML-SURVEILLER-VIDE-V5.18.md",
+        "SNUM_CANON_V518_SURVEILLER_VIDE",
     ),
 )
-ARCHIVE_FILES = (
-    "PROMPT-SYSTEME-COLLECTE-SNUM-V5.17.md",
-    "PROMPT-SYSTEME-RENDU-HTML-SNUM-V5.17.md",
+COLLECTE_FILES = ("01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.18.md",)
+RENDU_FILES = (
+    "20-PROMPT-SYSTEME-RENDU-HTML-SNUM-V5.18.md",
     *(filename for filename, _ in RESOURCE_SPECS),
 )
 
@@ -51,14 +55,14 @@ def canonical_resources():
         RESOURCE_SPECS[1][0]: fenced_block(RESOURCE_SPECS[1][1], coque_b) + "\n",
         RESOURCE_SPECS[2][0]: (
             f"{RESOURCE_SPECS[2][1]}_START\n"
-            f"{fenced_block('SNUM_BLOC_V517_ESSENTIEL', essentiel)}\n"
-            f"{fenced_block('SNUM_BLOC_V517_RUBRIQUE', rubrique)}\n"
+            f"{fenced_block('SNUM_BLOC_V518_ESSENTIEL', essentiel)}\n"
+            f"{fenced_block('SNUM_BLOC_V518_RUBRIQUE', rubrique)}\n"
             f"{RESOURCE_SPECS[2][1]}_END\n"
         ),
         RESOURCE_SPECS[3][0]: (
             f"{RESOURCE_SPECS[3][1]}_START\n"
-            f"{fenced_block('SNUM_BLOC_V517_SURVEILLER', surveiller)}\n"
-            f"{fenced_block('SNUM_BLOC_V517_VIDE', vide)}\n"
+            f"{fenced_block('SNUM_BLOC_V518_SURVEILLER', surveiller)}\n"
+            f"{fenced_block('SNUM_BLOC_V518_VIDE', vide)}\n"
             f"{RESOURCE_SPECS[3][1]}_END\n"
         ),
     }
@@ -67,18 +71,20 @@ def canonical_resources():
     return contents
 
 
-def archive_bytes(resources):
-    contents = {
-        name: (PROJECT / name).read_text(encoding="utf-8") for name in ARCHIVE_FILES[:2]
-    }
-    contents.update(resources)
+def archive_bytes(project_name, filenames, resources):
     buffer = BytesIO()
     with ZipFile(buffer, "w", ZIP_DEFLATED) as archive:
-        for name in ARCHIVE_FILES:
-            info = ZipInfo(name, (2026, 10, 15, 0, 0, 0))
+        folder_info = ZipInfo(f"{project_name}/", (2026, 10, 15, 0, 0, 0))
+        folder_info.external_attr = (0o40755 << 16) | 0x10
+        archive.writestr(folder_info, b"")
+        for name in filenames:
+            content = resources.get(name)
+            if content is None:
+                content = (PROJECT / name).read_text(encoding="utf-8")
+            info = ZipInfo(f"{project_name}/{name}", (2026, 10, 15, 0, 0, 0))
             info.compress_type = ZIP_DEFLATED
             info.external_attr = 0o100644 << 16
-            archive.writestr(info, contents[name].encode("utf-8"))
+            archive.writestr(info, content.encode("utf-8"))
     return buffer.getvalue()
 
 
@@ -87,14 +93,20 @@ def main():
     parser.add_argument("--check", action="store_true")
     check = parser.parse_args().check
     resources = canonical_resources()
-    archive = archive_bytes(resources)
+    archives = {
+        COLLECTE_ARCHIVE: archive_bytes(COLLECTE_PROJECT, COLLECTE_FILES, resources),
+        RENDU_ARCHIVE: archive_bytes(RENDU_PROJECT, RENDU_FILES, resources),
+    }
     drift = []
     for name, content in resources.items():
         path = PROJECT / name
         if not path.exists() or path.read_text(encoding="utf-8") != content:
             drift.append(name)
-    if not ARCHIVE.exists() or ARCHIVE.read_bytes() != archive:
-        drift.append(ARCHIVE.name)
+    for path, content in archives.items():
+        if not path.exists() or path.read_bytes() != content:
+            drift.append(path.name)
+    if LEGACY_ARCHIVE.exists():
+        drift.append(LEGACY_ARCHIVE.name)
     if check:
         if drift:
             print("KIT_DECOUPLE_DRIFT: " + ", ".join(drift), file=sys.stderr)
@@ -103,8 +115,10 @@ def main():
         return 0
     for name, content in resources.items():
         (PROJECT / name).write_text(content, encoding="utf-8")
-    ARCHIVE.write_bytes(archive)
-    print("KIT_DECOUPLE_GENERE")
+    for path, content in archives.items():
+        path.write_bytes(content)
+    LEGACY_ARCHIVE.unlink(missing_ok=True)
+    print("KITS_DECOUPLES_GENERES")
     return 0
 
 

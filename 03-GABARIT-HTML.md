@@ -16,6 +16,8 @@ Les rubriques vides et leurs liens de navigation sont omis. Les identifiants de 
 
 `@@DATE_EDITION_LONGUE_MAJUSCULES@@` reprend le jour de semaine fourni dans la demande. S’il n’est pas fourni, ne jamais l’inventer : écrire seulement le jour, le mois et l’année. Séparer les mots-clés par ` · ` comme dans la source.
 
+`@@DATE_EDITION@@` et `@@DATE_EDITION_LONGUE@@` reçoivent la date longue avec le mois en lettres. La date ISO reste une donnée de contrôle et ne s’affiche pas.
+
 `@@ESSENTIELS@@` vaut une chaîne vide avec moins de trois événements. À partir de trois événements, il contient exactement trois cartes issues des rubriques. `@@A_SURVEILLER@@` vaut une chaîne vide si aucun suivi précis n’est utile.
 
 ## GABARIT-COMPLET

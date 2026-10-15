@@ -16,7 +16,8 @@ def article(title, rubric, *, essential=False):
         "rubric": rubric,
         "title": title,
         "source": "Source & publique",
-        "publication_date": "13 octobre 2026",
+        "publication_date_iso": "2026-10-13",
+        "publication_date_long": "13 octobre 2026",
         "fact": "Un fait court, vérifié et utile au Service du numérique.",
         "keywords": ["numérique", "service public", "transformation"],
         "takeaway": "Le changement est confirmé.",
@@ -39,7 +40,8 @@ class NewsletterHtmlCliTests(unittest.TestCase):
 
     def payload(self):
         return {
-            "edition_date": "14 octobre 2026",
+            "schema_version": "SNUM_PAQUET_RENDU_V518",
+            "edition_date": "2026-10-14",
             "edition_date_long": "mercredi 14 octobre 2026",
             "articles": [
                 article("Numérique un", "numerique", essential=True),
@@ -54,6 +56,54 @@ class NewsletterHtmlCliTests(unittest.TestCase):
                 }
             ],
         }
+
+    def test_v518_rejects_missing_or_incoherent_publication_dates(self):
+        cases = {
+            "date ISO manquante": (
+                "publication_date_iso",
+                None,
+                "champs article manquants : publication_date_iso",
+            ),
+            "date longue manquante": (
+                "publication_date_long",
+                None,
+                "champs article manquants : publication_date_long",
+            ),
+            "date longue au format numérique": (
+                "publication_date_long",
+                "13/10/2026",
+                "date de publication longue invalide",
+            ),
+            "dates incohérentes": (
+                "publication_date_long",
+                "12 octobre 2026",
+                "dates de publication incohérentes",
+            ),
+        }
+
+        for label, (field, value, expected_error) in cases.items():
+            with self.subTest(label=label), tempfile.TemporaryDirectory() as directory:
+                payload = self.payload()
+                if value is None:
+                    del payload["articles"][0][field]
+                else:
+                    payload["articles"][0][field] = value
+                input_path = Path(directory) / "newsletter.json"
+                output_path = Path(directory) / "index.html"
+                input_path.write_text(json.dumps(payload), encoding="utf-8")
+
+                result = self.run_cli(
+                    "build",
+                    "--input",
+                    str(input_path),
+                    "--output",
+                    str(output_path),
+                    "--template",
+                    str(COMPACT_TEMPLATE),
+                )
+
+                self.assertEqual(result.returncode, 2)
+                self.assertIn(expected_error, result.stderr)
 
     def build_html(self, template=TEMPLATE):
         payload = self.payload()
@@ -78,6 +128,11 @@ class NewsletterHtmlCliTests(unittest.TestCase):
 
     def test_build_uses_the_canonical_bacoco_structure(self):
         html = self.build_html()
+        self.assertIn(
+            "<title>Revue de presse du mercredi 14 octobre 2026 - SNUM</title>",
+            html,
+        )
+        self.assertNotIn("<title>Revue de presse du 2026-10-14", html)
         self.assertIn(
             '<nav class="fr-container" role="navigation" aria-label="Accès rapide">',
             html,
