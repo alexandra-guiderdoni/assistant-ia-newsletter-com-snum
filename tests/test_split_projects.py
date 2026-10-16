@@ -10,6 +10,28 @@ PROJECT = Path(__file__).resolve().parents[1]
 
 
 class SplitProjectKitTests(unittest.TestCase):
+    def test_collecte_uses_a_small_execute_then_render_orchestrator(self):
+        prompt = (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.20.md").read_text(
+            encoding="utf-8"
+        )
+        method = (PROJECT / "02-METHODE-COLLECTE-SNUM-V5.20.md").read_text(
+            encoding="utf-8"
+        )
+        prompt_normalized = " ".join(prompt.split())
+        self.assertLessEqual(len(prompt), 2500)
+        self.assertLessEqual(len(method), 3600)
+        self.assertIn("EXÉCUTION AVANT RENDU", prompt_normalized)
+        self.assertIn(
+            "Avant toute réponse, termine les appels Web exigés par la méthode",
+            prompt_normalized,
+        )
+        self.assertIn(
+            "Ensuite, rends une seule réponse complète commençant par `TRACE_RECHERCHE`",
+            prompt_normalized,
+        )
+        phases = ("## 1. EXÉCUTER", "## 2. CALCULER", "## 3. RENDRE")
+        self.assertEqual(sorted(phases, key=method.index), list(phases))
+
     def test_v520_collecte_runs_from_dates_then_short_commands(self):
         prompt_path = PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.20.md"
         method_path = PROJECT / "02-METHODE-COLLECTE-SNUM-V5.20.md"
@@ -25,18 +47,19 @@ class SplitProjectKitTests(unittest.TestCase):
         self.assertIn(method_path.name, prompt)
         self.assertIn(contract_path.name, prompt)
         self.assertIn("message initial", prompt_normalized)
-        self.assertIn("exactement `VALIDER`", prompt)
-        self.assertIn("exactement `GENERER_PAQUET`", prompt)
+        self.assertIn("Au tour du message `VALIDER`", prompt)
+        self.assertIn("Au tour du message `GENERER_PAQUET`", prompt)
         self.assertNotIn("`CONTINUE`", prompt)
         self.assertNotIn("marqueur attendu", prompt)
         self.assertIn(
             "Ne compare jamais la date d’édition aux bornes", prompt_normalized
         )
-        self.assertIn("`COLLECTE_TERMINEE`", prompt)
+        method = method_path.read_text(encoding="utf-8")
+        self.assertIn("`COLLECTE_TERMINEE`", method)
         self.assertIn("`VALIDATION_TERMINEE`", prompt)
         self.assertIn("`PAQUET_RENDU_PRET`", prompt)
         self.assertIn("Ne lance jamais deux étapes dans le même tour", prompt)
-        self.assertNotIn("PARAMETRES_INVALIDES", prompt.split("COLLECTE", 1)[-1])
+        self.assertIn("Entrée manquante, ambiguë ou inversée", prompt_normalized)
         self.assertNotIn("une seule réponse finale", prompt)
         self.assertNotIn("exécute uniquement la phase demandée", prompt.lower())
 
@@ -61,6 +84,205 @@ class SplitProjectKitTests(unittest.TestCase):
                     f"Newsletter SNUM - Collecte/{contract_path.name}",
                 ],
             )
+
+    def test_collecte_traces_both_search_passes_before_insufficiency(self):
+        prompt = (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.20.md").read_text(
+            encoding="utf-8"
+        )
+        method = (PROJECT / "02-METHODE-COLLECTE-SNUM-V5.20.md").read_text(
+            encoding="utf-8"
+        )
+        method_normalized = " ".join(method.split())
+
+        self.assertIn("`TRACE_RECHERCHE`", prompt)
+        self.assertIn("`TRACE_RECHERCHE`", method)
+        self.assertIn("`PASSE_1`", method)
+        self.assertIn("`PASSE_2`", method)
+        self.assertIn("exactement cinq requêtes ciblées", method_normalized)
+        self.assertIn("`REQUETE`", method)
+        self.assertIn("`STATUT_WEB=EXECUTEE`", method)
+        self.assertIn("`URL_EXAMINEES`", method)
+        self.assertIn("`NB_DANS_FENETRE`", method)
+        self.assertIn("10 requêtes `EXECUTEE`", method_normalized)
+        self.assertIn("5 en `PASSE_2`", method_normalized)
+        self.assertIn("Affiche intégralement `TRACE_RECHERCHE`", prompt)
+        self.assertIn("Avant toute réponse, termine les appels Web", prompt)
+        self.assertIn("OUTIL_WEB_INDISPONIBLE", prompt)
+        self.assertIn("OUTIL_WEB_INDISPONIBLE", method)
+        self.assertLessEqual(len(prompt), 4000)
+        self.assertLessEqual(len(method), 4500)
+
+    def test_collecte_prompt_forbids_false_success_and_invalid_query_shapes(self):
+        prompt = (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.20.md").read_text(
+            encoding="utf-8"
+        )
+        method = (PROJECT / "02-METHODE-COLLECTE-SNUM-V5.20.md").read_text(
+            encoding="utf-8"
+        )
+        method_normalized = " ".join(method.split())
+
+        self.assertIn("une requête sans `site:`", method_normalized)
+        self.assertIn("une avec `site:`", method_normalized)
+        self.assertIn("domaines absents de `PASSE_1`", method_normalized)
+        self.assertIn("moins de cinq candidats datés", method_normalized)
+        self.assertIn("Branche terminale unique", method_normalized)
+        self.assertIn("Sinon, après deux passes insuffisantes", method_normalized)
+        self.assertIn("COLLECTE_INSUFFISANTE", method_normalized)
+        self.assertIn("Avant toute réponse, termine les appels Web", prompt)
+
+    def test_collecte_distinguishes_empty_results_from_web_failure(self):
+        prompt = (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.20.md").read_text(
+            encoding="utf-8"
+        )
+        prompt_normalized = " ".join(prompt.split())
+
+        self.assertIn("Zéro résultat reste", prompt_normalized)
+        self.assertIn("n’est pas `OUTIL_WEB_INDISPONIBLE`", prompt_normalized)
+        self.assertIn("URL_EXAMINEES=AUCUNE", prompt_normalized)
+        self.assertIn("Poursuis toutes les requêtes", prompt_normalized)
+
+    def test_collecte_response_starts_directly_with_search_trace(self):
+        prompt = (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.20.md").read_text(
+            encoding="utf-8"
+        )
+        prompt_normalized = " ".join(prompt.split())
+
+        self.assertIn("Le tout premier caractère visible", prompt_normalized)
+        self.assertIn("Extrais silencieusement", prompt_normalized)
+        self.assertIn(
+            "Le tout premier caractère visible est le `T` de `TRACE_RECHERCHE`",
+            prompt_normalized,
+        )
+        self.assertIn(
+            "une seule réponse complète commençant par `TRACE_RECHERCHE`",
+            prompt_normalized,
+        )
+
+    def test_collecte_accepts_an_edition_date_after_the_collection_window(self):
+        prompt = (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.20.md").read_text(
+            encoding="utf-8"
+        )
+        prompt_normalized = " ".join(prompt.split())
+        valid_example = (
+            "`DATE_EDITION=2026-10-14` avec fenêtre `2026-10-03..2026-10-13` est valide"
+        )
+
+        self.assertIn(valid_example, prompt_normalized)
+        self.assertLess(
+            prompt_normalized.index(valid_example),
+            prompt_normalized.index("Entrée manquante, ambiguë ou inversée"),
+        )
+        self.assertIn("poursuis `COLLECTE`", prompt_normalized)
+        self.assertIn("`DATE_EDITION` sert uniquement au paquet", prompt_normalized)
+
+    def test_collecte_forbids_stopping_after_empty_contract_headings(self):
+        prompt = (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.20.md").read_text(
+            encoding="utf-8"
+        )
+        prompt_normalized = " ".join(prompt.split())
+
+        self.assertIn("Les trois titres seuls sont invalides", prompt_normalized)
+        self.assertIn(
+            "N’affiche aucun titre avant les appels Web",
+            prompt_normalized,
+        )
+
+    def test_collecte_reconciles_window_count_with_exact_candidate_dates(self):
+        method = (PROJECT / "02-METHODE-COLLECTE-SNUM-V5.20.md").read_text(
+            encoding="utf-8"
+        )
+        method_normalized = " ".join(method.split())
+
+        self.assertIn("`DATE_ISO_PROVISOIRE`", method_normalized)
+        self.assertIn("`DANS_FENETRE=OUI|NON`", method_normalized)
+        self.assertIn("date exacte de publication", method_normalized)
+        self.assertIn("jour, mois et année", method_normalized)
+        self.assertIn("URL canoniques uniques marquées `OUI`", method_normalized)
+        self.assertIn(
+            "`NB_DANS_FENETRE` égale les URL canoniques uniques marquées `OUI`",
+            method_normalized,
+        )
+        self.assertIn(
+            "`CANDIDATS` et, une seule fois, `NB_DANS_FENETRE`",
+            method_normalized,
+        )
+        self.assertNotIn(
+            "Pour chaque passe, donne `NB_DANS_FENETRE`", method_normalized
+        )
+        self.assertIn("`NB_DANS_FENETRE >= 5`", method_normalized)
+        self.assertIn("`ETAPE_SUIVANTE | Envoyez VALIDER`", method_normalized)
+        self.assertIn("`COLLECTE_INSUFFISANTE | NB_DANS_FENETRE=N`", method_normalized)
+
+    def test_collecte_never_counts_out_of_window_candidates(self):
+        prompt = (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.20.md").read_text(
+            encoding="utf-8"
+        )
+        prompt_normalized = " ".join(prompt.split())
+
+        self.assertIn("affiche `DANS_FENETRE=OUI|NON` par URL", prompt_normalized)
+        self.assertIn(
+            "`N` compte seulement les URL uniques `OUI`, jamais tous les candidats",
+            prompt_normalized,
+        )
+        self.assertIn(
+            "7 candidats dont 5 `OUI` donne `NB_DANS_FENETRE = 5`",
+            prompt_normalized,
+        )
+
+    def test_collecte_rejects_observed_october_first_and_month_only_regression(self):
+        prompt = (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.20.md").read_text(
+            encoding="utf-8"
+        )
+        prompt_normalized = " ".join(prompt.split())
+
+        self.assertIn(
+            "`2026-10-01` vaut `NON` pour `2026-10-03..2026-10-13`",
+            prompt_normalized,
+        )
+        self.assertIn("un mois seul reste `INCONNUE` et `NON`", prompt_normalized)
+        self.assertIn("si `OUI` != `N`, corrige et recompte", prompt_normalized)
+
+    def test_collecte_always_renders_the_terminal_branch_after_the_count(self):
+        prompt = (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.20.md").read_text(
+            encoding="utf-8"
+        )
+        prompt_normalized = " ".join(prompt.split())
+
+        self.assertIn(
+            "`N >= 5` termine par `COLLECTE_TERMINEE`; sinon termine par "
+            "`A_COMPLETER | COLLECTE_INSUFFISANTE | NB_DANS_FENETRE=N`",
+            prompt_normalized,
+        )
+
+    def test_collecte_rejects_dates_outside_the_inclusive_iso_bounds(self):
+        method = (PROJECT / "02-METHODE-COLLECTE-SNUM-V5.20.md").read_text(
+            encoding="utf-8"
+        )
+        method_normalized = " ".join(method.split())
+
+        predicate = "`DEBUT_ISO <= DATE_ISO_PROVISOIRE <= FIN_ISO`"
+        self.assertIn(predicate, method_normalized)
+        self.assertIn("date ISO `< DEBUT_ISO` ou `> FIN_ISO`", method_normalized)
+        self.assertIn("corrige puis recompte avant d’afficher", method_normalized)
+        self.assertLess(
+            method_normalized.index("## 2. CALCULER"),
+            method_normalized.index("## 3. RENDRE"),
+        )
+
+    def test_collecte_recomputes_final_window_statuses_from_scratch(self):
+        method = (PROJECT / "02-METHODE-COLLECTE-SNUM-V5.20.md").read_text(
+            encoding="utf-8"
+        )
+        method_normalized = " ".join(method.split())
+
+        self.assertIn("recalcule chaque `DANS_FENETRE` depuis zéro", method_normalized)
+        self.assertIn("`BORNE_BASSE_OK=OUI`", method_normalized)
+        self.assertIn("`BORNE_HAUTE_OK=OUI`", method_normalized)
+        self.assertIn(
+            "Si l’un vaut `NON`, impose `DANS_FENETRE=NON`", method_normalized
+        )
+        self.assertIn("aucune date hors bornes n’est marquée `OUI`", method_normalized)
+        self.assertIn("corrige puis recompte avant d’afficher", method_normalized)
 
     def test_technical_sources_are_kept_out_of_root(self):
         for name in ("03-GABARIT-HTML.md", "05-BLOCS-HTML-CANONIQUES.md"):
@@ -145,20 +367,20 @@ class SplitProjectKitTests(unittest.TestCase):
         legacy_collecte_block = legacy_collecte[
             collecte_start:validation_start
         ].rstrip()
-        legacy_validation = legacy_collecte[validation_start:paquet_start].rstrip()
         legacy_contract = legacy_collecte[paquet_start:].rstrip()
 
         self.assertNotIn(legacy_collecte_block, method)
-        self.assertIn(legacy_validation, method)
         self.assertIn(legacy_contract, contract)
         self.assertIn("Chaque requête cible explicitement la fenêtre", method)
-        self.assertIn("au moins cinq candidats datés provisoirement", method)
-        self.assertIn("Après deux passes insuffisantes", method)
+        self.assertIn("moins de cinq candidats datés provisoirement", method)
+        self.assertIn("après deux passes insuffisantes", method)
         self.assertIn("Ne filtre aucun candidat selon sa date", method)
         self.assertIn("seconde passe", method)
-        self.assertIn("au moins cinq candidats", " ".join(method.split()))
-        self.assertIn("date ISO >= DEBUT_ISO", method)
-        self.assertIn("date ISO <= FIN_ISO", method)
+        self.assertIn("`NB_DANS_FENETRE >= 5`", method)
+        self.assertIn("date ISO `>= DEBUT_ISO`", method)
+        self.assertIn("date ISO `<= FIN_ISO`", method)
+        self.assertIn("Déduplique d’abord par URL canonique", method)
+        self.assertIn("`valides + exclues = candidats`", method)
         self.assertIn("SNUM_PAQUET_RENDU_V519", contract)
         self.assertIn("`publication_date_iso`", contract)
         self.assertIn("`publication_date_long`", contract)
