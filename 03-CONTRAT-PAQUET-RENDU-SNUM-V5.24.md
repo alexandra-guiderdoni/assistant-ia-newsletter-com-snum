@@ -29,4 +29,31 @@ d’essentiels. Si le nombre d’URL uniques diffère du nombre d’articles, r�
 `PAQUET_INCOMPLET | <identifiant> | <champ>`, sans JSON. Sinon termine après le marqueur
 de fin par `PAQUET_RENDU_PRET`.
 
+## PASSERELLE_RENDU
+
+En réussite, le bloc copiable commence exactement par ces lignes, avant
+`SNUM_PAQUET_RENDU_V519_START` :
+
+```text
+PHASE RENDRE_EDITION.
+N’utilise pas le Web.
+Utilise le PAQUET_RENDU ci-dessous sans modifier ses données.
+Charge séparément les quatre ressources CANON-HTML V5.19.
+Respecte l’ordre immuable des rubriques et de la navigation :
+numerique, ia, commande, rh, bercy.
+Numérote les sections dans cet ordre après L’essentiel.
+Remplace chaque marqueur sans supprimer les espaces placés avant lui.
+Joins les sections avec un seul saut de ligne, sans ligne vide ajoutée.
+Échappe toute valeur injectée sans l’altérer : &→&amp;, <→&lt;, >→&gt;, "→&quot;, '→&#x27;.
+Termine le bloc par exactement un saut de ligne après </html>.
+Dans toutes les cartes et sections, utilise les titres et tags canoniques en capitales.
+Pour numerique, le titre et le tag valent exactement NUMERIQUE, sans accent.
+Livre le HTML canonique au premier passage.
+Ne pose aucune question.
+```
+
+Cette `PASSERELLE_RENDU` et le paquet forment un seul bloc de code `text`, afin que le
+métier copie et colle une seule fois. Pour `numerique`, titre et tag valent exactement
+`NUMERIQUE`, sans accent. Aucun texte ne précède ni ne suit ce bloc.
+
 SNUM_COLLECTE_V524_CONTRAT_END

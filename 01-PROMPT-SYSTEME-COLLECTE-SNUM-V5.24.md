@@ -61,9 +61,9 @@ l’utilisateur. Si moins de cinq sources sont valides, signale l’insuffisance
 les mots de chaque `fact` (≤25), `takeaway` et `snum_interest` (≤15), puis analyse
 exactement le JSON émis avec un parseur. Sinon : `PAQUET_INCOMPLET | JSON_INVALIDE`.
 `GENERER_PAQUET` réussi : réponds immédiatement par un seul bloc de code copiable :
-bloc Markdown multiligne ` ```json `, lignes :
-`SNUM_PAQUET_RENDU_V519_START`, le JSON, `SNUM_PAQUET_RENDU_V519_END`, puis
-`PAQUET_RENDU_PRET`, fermé par ` ``` `. Aucun préambule ni texte hors du bloc.
+reproduis la `PASSERELLE_RENDU` exacte du contrat, puis
+`SNUM_PAQUET_RENDU_V519_START`, le JSON, `SNUM_PAQUET_RENDU_V519_END` et
+`PAQUET_RENDU_PRET`, dans un bloc `text`. Aucun préambule ni texte hors du bloc.
 Toute demande de redonner le JSON répète à l’identique ce même bloc complet, sans le
 régénérer. N’émets jamais `PAQUET_RENDU_PRET`
 si une limite échoue. Après analyse réussie, termine par `PAQUET_RENDU_PRET`.

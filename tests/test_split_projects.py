@@ -776,14 +776,33 @@ class SplitProjectKitTests(unittest.TestCase):
             .read_text(encoding="utf-8")
             .split()
         )
+        contract = (PROJECT / "03-CONTRAT-PAQUET-RENDU-SNUM-V5.24.md").read_text(
+            encoding="utf-8"
+        )
+        contract_normalized = " ".join(contract.split())
+        passerelle = " ".join(contract.split("## PASSERELLE_RENDU", 1)[1].split())
 
         self.assertIn(
             "réponds immédiatement par un seul bloc de code copiable",
             prompt,
         )
-        self.assertIn("bloc Markdown multiligne ` ```json `", prompt)
-        self.assertIn("`SNUM_PAQUET_RENDU_V519_START`", prompt)
-        self.assertIn("`SNUM_PAQUET_RENDU_V519_END`", prompt)
+        self.assertIn("`PASSERELLE_RENDU`", prompt)
+        self.assertIn("PHASE RENDRE_EDITION.", passerelle)
+        self.assertIn(
+            "Charge séparément les quatre ressources CANON-HTML V5.19", passerelle
+        )
+        self.assertIn(
+            "Pour `numerique`, titre et tag valent exactement `NUMERIQUE`, sans accent",
+            passerelle,
+        )
+        self.assertIn(
+            "commence exactement par ces lignes, avant `SNUM_PAQUET_RENDU_V519_START`",
+            contract_normalized,
+        )
+        self.assertIn(
+            "termine après le marqueur de fin par `PAQUET_RENDU_PRET`",
+            contract_normalized,
+        )
         self.assertIn(
             "Aucun préambule ni texte hors du bloc",
             prompt,
@@ -986,9 +1005,12 @@ class SplitProjectKitTests(unittest.TestCase):
             "`@@TITRE_RUBRIQUE@@` reçoit le titre\ncanonique en capitales", rendu
         )
         self.assertIn("Sépare les mots-clés par\n` · `", rendu)
-        self.assertIn("Ne recompte pas les mots", rendu)
-        self.assertIn("Affiche seulement `publication_date_long`", rendu)
-        self.assertIn("les deux désignent le même jour", rendu)
+        rendu_normalized = " ".join(rendu.split())
+        self.assertIn(
+            "ne revalide ni URL, dates, espaces, champs, mots-clés, essentiels ni contenus",
+            rendu_normalized,
+        )
+        self.assertIn("Utilise chaque valeur littéralement", rendu_normalized)
 
     def test_renderer_uses_four_small_canonical_resources(self):
         expected = {
@@ -1031,6 +1053,30 @@ class SplitProjectKitTests(unittest.TestCase):
         self.assertIn("ni remplacer un caractère par un autre", prompt)
         self.assertIn("le premier caractère de la réponse est le `#`", prompt)
         self.assertIn("N’explique jamais l’assemblage", prompt)
+
+    def test_renderer_accepts_a_direct_packet_and_scopes_url_duplicates(self):
+        prompt = (PROJECT / "20-PROMPT-SYSTEME-RENDU-HTML-SNUM-V5.19.md").read_text(
+            encoding="utf-8"
+        )
+        prompt = " ".join(prompt.split())
+
+        self.assertIn("Traite directement tout bloc valide", prompt)
+        self.assertIn("`PAQUET_RENDU_PRET` atteste tous les contrôles Collecte", prompt)
+        self.assertIn("vérifie seulement que le JSON", prompt)
+        self.assertIn(
+            "ne revalide ni URL, dates, espaces, champs, mots-clés, essentiels ni contenus",
+            prompt,
+        )
+        self.assertIn("Utilise chaque valeur littéralement", prompt)
+        self.assertIn("`@@...@@` des canons sont des emplacements attendus", prompt)
+        self.assertIn("`CANON_MANQUANT` = ressource ou bloc", prompt)
+        self.assertIn("Charge séparément, une par une", prompt)
+        self.assertIn("`SNUM_CANON_V519_*_START` et `SNUM_CANON_V519_*_END`", prompt)
+        self.assertIn("lecture est fragmentaire", prompt)
+        self.assertIn("`@@ID_RUBRIQUE@@` reçoit la valeur brute de `rubric`", prompt)
+        self.assertIn("jamais un slug du titre", prompt)
+        self.assertIn("Le tag emploie toujours le titre/tag", prompt)
+        self.assertIn("`NUMERIQUE` reste sans accent", prompt)
 
     def test_split_shell_reassembles_byte_for_byte(self):
         def html_block(filename):
@@ -1171,7 +1217,9 @@ class SplitProjectKitTests(unittest.TestCase):
         self.assertNotIn("PHASE COLLECTE.", notice)
         self.assertNotIn("PHASE VALIDATION.", notice)
         self.assertNotIn("PHASE PAQUET.", notice)
-        self.assertEqual(notice.count("PHASE RENDRE_EDITION."), 1)
+        self.assertGreaterEqual(notice.count("PHASE RENDRE_EDITION."), 1)
+        self.assertIn("Collez directement tout le bloc copié par Collecte", notice)
+        self.assertIn("ne revalide ni les URL ni les dates", " ".join(notice.split()))
         self.assertIn("02-METHODE-COLLECTE-SNUM-V5.24.md", notice)
         self.assertIn("03-CONTRAT-PAQUET-RENDU-SNUM-V5.24.md", notice)
         self.assertIn("téléversez les quatre ressources `CANON-HTML-", notice)
@@ -1188,8 +1236,7 @@ class SplitProjectKitTests(unittest.TestCase):
             "envoyez `VALIDER`, puis `GENERER_PAQUET`", " ".join(notice.split())
         )
         self.assertIn(
-            "Échappe toute valeur injectée sans l’altérer : "
-            "&→&amp;, <→&lt;, >→&gt;, \"→&quot;, '→&#x27;.",
+            "`&`→`&amp;`, `<`→`&lt;`, `>`→`&gt;`, `\"`→`&quot;`, `'`→`&#x27;`",
             notice,
         )
 
@@ -1215,12 +1262,13 @@ class SplitProjectKitTests(unittest.TestCase):
         self.assertIn("## Démarrage express dans une nouvelle conversation", readme)
         self.assertIn("Web désactivé", readme)
         self.assertIn("Web activé uniquement pendant les cinq recherches", readme)
+        self.assertIn("Collez directement tout le bloc copié par Collecte", readme)
+        self.assertIn("ne revalide ni les URL ni les dates", " ".join(readme.split()))
         self.assertIn(
             "envoyez `VALIDER`, puis `GENERER_PAQUET`", " ".join(readme.split())
         )
         self.assertIn(
-            "Échappe toute valeur injectée sans l’altérer : "
-            "&→&amp;, <→&lt;, >→&gt;, \"→&quot;, '→&#x27;.",
+            "`&`→`&amp;`, `<`→`&lt;`, `>`→`&gt;`, `\"`→`&quot;`, `'`→`&#x27;`",
             readme,
         )
         self.assertNotIn("kit-dinum-snum-v5-19-deux-projets-6-fichiers.zip", readme)
