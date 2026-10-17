@@ -782,11 +782,10 @@ class SplitProjectKitTests(unittest.TestCase):
         contract_normalized = " ".join(contract.split())
         passerelle = " ".join(contract.split("## PASSERELLE_RENDU", 1)[1].split())
 
-        self.assertIn(
-            "réponds immédiatement par un seul bloc de code copiable",
-            prompt,
-        )
-        self.assertIn("`PASSERELLE_RENDU`", prompt)
+        self.assertIn("réponds par un seul bloc copiable", prompt)
+        self.assertIn("recopie le contenu sous `## PASSERELLE_RENDU`", prompt)
+        self.assertIn("sans ce titre", prompt)
+        self.assertNotIn("reproduis la `PASSERELLE_RENDU`", prompt)
         self.assertIn("PHASE RENDRE_EDITION.", passerelle)
         self.assertIn(
             "Charge séparément les quatre ressources CANON-HTML V5.19", passerelle
