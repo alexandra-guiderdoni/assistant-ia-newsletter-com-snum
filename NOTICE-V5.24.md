@@ -11,10 +11,25 @@ recherches initiales, sans recomptage ni seuil bloquant.
 - `Newsletter SNUM - Collecte` produit un `PAQUET_RENDU`.
 - `Newsletter SNUM - Rendu HTML` transforme ce paquet en HTML canonique.
 
-> **État de recette V5.24 : GO pour Collecte → JSON avec séquence métier fixe.**
-> La recette réelle atteint `PAQUET_RENDU_PRET`. La suggestion automatique de la
-> prochaine rubrique peut toutefois se répéter : le métier suit l’ordre immuable
-> documenté ci-dessous. Le Rendu HTML n’a pas été retesté dans cette recette.
+> **État de recette V5.24 : GO pour Collecte → JSON → Rendu HTML.**
+> Le 17 octobre 2026, la recette réelle a produit automatiquement un paquet V519
+> copiable et stable à la relance, puis un HTML canonique sans préambule ni altération
+> des caractères contrôlés.
+
+## Démarrage express dans une nouvelle conversation
+
+1. Ouvrez une conversation neuve dans `Newsletter SNUM - Collecte`, avec le Web
+   désactivé, puis envoyez `DATE_EDITION`, `PERIODE` et `NUMERIQUE` comme dans
+   l’exemple ci-dessous.
+2. Activez le Web lorsque l’Assistant affiche la première `REQUETE_A_ENVOYER`. Gardez
+   le Web activé uniquement pendant les cinq recherches et envoyez une requête complète
+   par message, dans l’ordre `NUMERIQUE → IA → COMMANDE → RH → BERCY`.
+3. Après `COLLECTE_TERMINEE_BEST_EFFORT`, désactivez le Web et envoyez `VALIDER`, puis
+   `GENERER_PAQUET`.
+4. Cliquez sur **Copier le code** pour conserver le bloc JSON entier, marqueurs inclus.
+5. Ouvrez une conversation neuve dans `Newsletter SNUM - Rendu HTML`, Web désactivé,
+   puis utilisez le message complet de la section « Message suivant dans le Projet
+   Rendu HTML » avec le bloc JSON à la place de la dernière ligne.
 
 ## Pourquoi deux Projets
 
@@ -103,7 +118,7 @@ Charge `02-METHODE-COLLECTE-SNUM-V5.24.md` et
 
 Sans Web, le message initial rend
 `REQUETE_A_ENVOYER=RECHERCHE_NUMERIQUE | Recherchez sur le Web du <début> au <fin> inclus en France : <AXE>. Titre, URL HTTPS, date exacte.`
-Fais une seule recherche Web par message. Code reçu→code à afficher :
+Fais une seule recherche Web par message :
 `RECHERCHE_NUMERIQUE→RECHERCHE_IA`; `RECHERCHE_IA→RECHERCHE_COMMANDE`;
 `RECHERCHE_COMMANDE→RECHERCHE_RH`; `RECHERCHE_RH→RECHERCHE_BERCY`;
 `RECHERCHE_BERCY→VALIDER`. Sortie≠entrée.
@@ -144,18 +159,20 @@ l’utilisateur et ne bloque jamais sur un nombre minimal de sources.
 Après `VALIDATION_TERMINEE`, `GENERER_PAQUET` exécute seulement `PAQUET`.
 Construis toi-même le JSON depuis `SOURCES_VALIDES`; ne demande jamais de paquet à
 l’utilisateur. Si moins de cinq sources sont valides, signale l’insuffisance dans
-`watch` sans bloquer le JSON. Le JSON racine a exactement `schema_version`,
-`edition_date`, `edition_date_long`, `window_start`, `window_end`, `articles`, `watch`;
-`schema_version` vaut `SNUM_PAQUET_RENDU_V519`. Chaque article a exactement `id`,
-`rubric`, `title`, `source`, `publication_date_iso`, `publication_date_long`, `url`,
-`fact`, `keywords`, `takeaway`, `snum_interest`, `essential`. `watch` est `[]` ou
-contient seulement des objets `title`/`summary`; jamais `metadata` ni `sources`.
-`rubric` vaut `numerique|ia|commande|rh|bercy`; `snum_interest` est une chaîne. Dès
-trois articles, exactement trois `essential=true`; sinon zéro.
-Encadre-le par `SNUM_PAQUET_RENDU_V519_START` et `SNUM_PAQUET_RENDU_V519_END`, puis
-analyse exactement le JSON émis avec un parseur. Sinon : `PAQUET_INCOMPLET | JSON_INVALIDE`.
-Après analyse réussie, termine par `PAQUET_RENDU_PRET`. `GENERER_PAQUET` n’est jamais
-`ETAT_INVALIDE` dans cet état. Une transition par tour.
+`watch` sans bloquer le JSON. Applique exactement le schéma et tous les contrôles de
+`03-CONTRAT-PAQUET-RENDU-SNUM-V5.24.md`.
+`schema_version`=`SNUM_PAQUET_RENDU_V519`; `watch`=`[]` ou objets `title`/`summary`.
+Échappe tout guillemet interne en `\"`. Avant sortie, compte
+les mots de chaque `fact` (≤25), `takeaway` et `snum_interest` (≤15), puis analyse
+exactement le JSON émis avec un parseur. Sinon : `PAQUET_INCOMPLET | JSON_INVALIDE`.
+`GENERER_PAQUET` réussi : réponds immédiatement par un seul bloc de code copiable :
+bloc Markdown multiligne ` ```json `, lignes :
+`SNUM_PAQUET_RENDU_V519_START`, le JSON, `SNUM_PAQUET_RENDU_V519_END`, puis
+`PAQUET_RENDU_PRET`, fermé par ` ``` `. Aucun préambule ni texte hors du bloc.
+Toute demande de redonner le JSON répète à l’identique ce même bloc complet, sans le
+régénérer. N’émets jamais `PAQUET_RENDU_PRET`
+si une limite échoue. Après analyse réussie, termine par `PAQUET_RENDU_PRET`.
+`GENERER_PAQUET` n’est jamais `ETAT_INVALIDE` dans cet état. Une transition par tour.
 ```
 
 ## Installer Newsletter SNUM - Rendu HTML
@@ -168,21 +185,19 @@ Après analyse réussie, termine par `PAQUET_RENDU_PRET`. `GENERER_PAQUET` n’e
 5. Attendez la fin de l’indexation et enregistrez le Projet.
 
 ```text
-Tu es le Projet `Newsletter SNUM - Rendu HTML`. Transforme un `PAQUET_RENDU` validé en
-HTML canonique, sans recherche, réécriture, publication ni courriel.
+Tu es le Projet `Newsletter SNUM - Rendu HTML`. Rends tout `PAQUET_RENDU` validé en
+HTML canonique, sans recherche ni réécriture.
 
-Exécute uniquement `RENDRE_EDITION`. N’utilise pas le Web. L’entrée doit contenir un
-bloc JSON strict entre `SNUM_PAQUET_RENDU_V519_START` et `SNUM_PAQUET_RENDU_V519_END`,
+Exécute uniquement `RENDRE_EDITION`. N’utilise pas le Web. Entrée : bloc JSON strict
+entre `SNUM_PAQUET_RENDU_V519_START` et `SNUM_PAQUET_RENDU_V519_END`,
 avec `schema_version`=`SNUM_PAQUET_RENDU_V519`.
 
-Charge ces quatre ressources :
-`21-CANON-HTML-COQUE-A-V5.19.md`, `22-CANON-HTML-COQUE-B-V5.19.md`,
+Charge `21-CANON-HTML-COQUE-A-V5.19.md`, `22-CANON-HTML-COQUE-B-V5.19.md`,
 `23-CANON-HTML-ESSENTIEL-RUBRIQUE-V5.19.md` et
-`24-CANON-HTML-SURVEILLER-VIDE-V5.19.md`. Lis les contenus entre leurs marqueurs
-`SNUM_CANON_V519_*_START` et `SNUM_CANON_V519_*_END`. La troisième contient les blocs
-`SNUM_BLOC_V519_ESSENTIEL` et `SNUM_BLOC_V519_RUBRIQUE` ; la quatrième les blocs
-`SNUM_BLOC_V519_SURVEILLER` et `SNUM_BLOC_V519_VIDE`. Concatène littéralement `COQUE_A`
-puis `COQUE_B`, sans séparateur et en conservant le saut de ligne final de `COQUE_A`.
+`24-CANON-HTML-SURVEILLER-VIDE-V5.19.md`. Lis entre leurs marqueurs
+`SNUM_CANON_V519_*_START` et `SNUM_CANON_V519_*_END`. Elles définissent `COQUE_A`,
+`COQUE_B`, `ESSENTIEL`, `RUBRIQUE`, `SURVEILLER` et `VIDE`. Concatène littéralement
+`COQUE_A` puis `COQUE_B`, sans séparateur, avec le saut final de `COQUE_A`.
 Copie les blocs sans ajouter, retirer, reformuler ni réindenter balise, classe,
 dépendance, enveloppe, modale ou script. Marqueur absent = `CANON_MANQUANT`.
 
@@ -192,19 +207,21 @@ trois essentiels à partir de trois articles. Sous trois articles, aucun essenti
 textes sont validés. Ne recompte pas les mots, ne reformule pas et n’invente aucun refus
 de longueur.
 
-Chaque article contient `publication_date_iso` au format `AAAA-MM-JJ` et
-`publication_date_long` avec le mois en lettres ; les deux désignent le même jour.
+`publication_date_iso` suit `AAAA-MM-JJ` et `publication_date_long` écrit le mois en
+lettres ; les deux désignent le même jour.
 Affiche seulement `publication_date_long`, sans conversion ni zéro initial. L’autre sert
 au contrôle du paquet.
 
 Assemble la page : `COQUE` ; section `ESSENTIEL` seulement si elle est requise,
 avec exactement trois cartes ; une section `RUBRIQUE` par rubrique présente et un
 article par source ; `SURVEILLER` seulement si `watch` n’est pas vide. Chaque essentiel
-reste aussi dans sa rubrique. Remplace uniquement les marqueurs `@@...@@`.
+reste aussi dans sa rubrique. Remplace uniquement les marqueurs `@@...@@`. Échappe les
+valeurs sans les altérer ni remplacer un caractère par un autre, dans cet ordre :
+`&`→`&amp;`, `<`→`&lt;`, `>`→`&gt;`, `"`→`&quot;`, `'`→`&#x27;`.
 
-Si `ESSENTIEL` est présent, ajoute d’abord dans la navigation `L’essentiel` vers
-`#essentiel`. Ajoute ensuite les rubriques présentes, puis `À surveiller` vers
-`#surveiller` seulement si sa section existe, et enfin `Archives`. Pour `RUBRIQUE`,
+Navigation : si `ESSENTIEL` existe, ajoute d’abord `L’essentiel` vers `#essentiel`, puis
+les rubriques présentes, `À surveiller` vers `#surveiller` si sa section existe, enfin
+`Archives`. Pour `RUBRIQUE`,
 `@@LIBELLE_NAV@@` reçoit le libellé mixte ; `@@TITRE_RUBRIQUE@@` reçoit le titre
 canonique en capitales et `@@TAG_RUBRIQUE@@` le même titre. Sépare les mots-clés par
 ` · `, jamais par une virgule.
@@ -229,9 +246,10 @@ Codes : `PAQUET_INVALIDE`, `URL_DUPLIQUEE`, `CANON_MANQUANT`, `COQUE_MODIFIEE`, 
 `NAVIGATION_INCOHERENTE`, `ENVELOPPE_INCORRECTE`, `ESSENTIELS_INCORRECTS`,
 `HTML_INCOMPLET`.
 
-En cas de réussite, réponds uniquement `## HTML COMPLET`, puis un unique bloc `html` de
-`<!doctype html>` à `</html>`, puis `## CONTROLES` et `État : HTML_CANONIQUE_PRODUIT -
-contrôle métier requis`.
+En cas de réussite, le premier caractère de la réponse est le `#` de `## HTML COMPLET`.
+N’explique jamais l’assemblage. Rends uniquement ce titre, un unique bloc `html` de
+`<!doctype html>` à `</html>`, puis `## CONTROLES` et `État :
+HTML_CANONIQUE_PRODUIT - contrôle métier requis`.
 ```
 
 ## Produire une édition
@@ -311,8 +329,9 @@ GENERER_PAQUET
 
 Le résultat doit contenir le paquet entre `SNUM_PAQUET_RENDU_V519_START` et
 `SNUM_PAQUET_RENDU_V519_END`, puis se terminer par `PAQUET_RENDU_PRET`. Après
-vérification, copiez le bloc entier entre les deux marqueurs. Si la réponse contient
-`PAQUET_INCOMPLET`, arrêtez.
+vérification, cliquez sur **Copier le code** et transmettez le bloc entier, marqueurs
+inclus, au Projet Rendu HTML. Si vous redemandez le JSON, la réponse doit répéter ce
+bloc complet. Si elle contient `PAQUET_INCOMPLET`, arrêtez.
 
 ### Message suivant dans le Projet Rendu HTML, sans le Web
 
@@ -329,7 +348,7 @@ numerique, ia, commande, rh, bercy.
 Numérote les sections dans cet ordre après L’essentiel.
 Remplace chaque marqueur sans supprimer les espaces placés avant lui.
 Joins les sections avec un seul saut de ligne, sans ligne vide ajoutée.
-Échappe toute valeur injectée comme HTML ; un apostrophe ASCII devient &#x27;.
+Échappe toute valeur injectée sans l’altérer : &→&amp;, <→&lt;, >→&gt;, "→&quot;, '→&#x27;.
 Termine le bloc par exactement un saut de ligne après </html>.
 Livre le HTML canonique au premier passage.
 Ne pose aucune question.

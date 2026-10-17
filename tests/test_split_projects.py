@@ -55,40 +55,48 @@ class SplitProjectKitTests(unittest.TestCase):
             .read_text(encoding="utf-8")
             .split()
         )
+        contract = " ".join(
+            (PROJECT / "03-CONTRAT-PAQUET-RENDU-SNUM-V5.24.md")
+            .read_text(encoding="utf-8")
+            .split()
+        )
 
         self.assertIn("`REQUETE_A_ENVOYER=GENERER_PAQUET`", prompt)
-        self.assertIn("`SNUM_PAQUET_RENDU_V519_START`", prompt)
-        self.assertIn("`SNUM_PAQUET_RENDU_V519_END`", prompt)
+        self.assertIn("`03-CONTRAT-PAQUET-RENDU-SNUM-V5.24.md`", prompt)
+        self.assertIn("`SNUM_PAQUET_RENDU_V519_START`", contract)
+        self.assertIn("`SNUM_PAQUET_RENDU_V519_END`", contract)
         self.assertIn(
-            "`schema_version`, `edition_date`, `edition_date_long`, "
+            "`schema_version`=`SNUM_PAQUET_RENDU_V519`, `edition_date`, "
+            "`edition_date_long`, "
             "`window_start`, `window_end`, `articles`, `watch`",
-            prompt,
+            contract,
         )
         self.assertIn(
-            "`schema_version` vaut `SNUM_PAQUET_RENDU_V519`",
-            prompt,
+            "`schema_version`=`SNUM_PAQUET_RENDU_V519`",
+            contract,
         )
         self.assertIn(
             "`id`, `rubric`, `title`, `source`, `publication_date_iso`, "
             "`publication_date_long`, `url`, `fact`, `keywords`, `takeaway`, "
             "`snum_interest`, `essential`",
-            prompt,
+            contract,
         )
         self.assertIn(
-            "`watch` est `[]` ou contient seulement des objets `title`/`summary`",
-            prompt,
+            "`watch` contient seulement des objets `title` et `summary`",
+            contract,
         )
         self.assertIn(
-            "`rubric` vaut `numerique|ia|commande|rh|bercy`",
-            prompt,
+            "`rubric` vaut seulement `numerique`, `ia`, `commande`, `rh` ou `bercy`",
+            contract,
         )
-        self.assertIn("`snum_interest` est une chaîne", prompt)
-        self.assertIn("exactement trois `essential=true`", prompt)
+        self.assertIn("`snum_interest` au plus 15 mots", contract)
+        self.assertIn("exactement trois portent `essential=true`", contract)
         self.assertIn(
             "Après analyse réussie, termine par `PAQUET_RENDU_PRET`",
             prompt,
         )
-        self.assertIn("jamais `metadata` ni `sources`", prompt)
+        self.assertNotIn("`metadata`", contract)
+        self.assertNotIn("`sources`", contract)
 
     def test_v524_each_web_search_handles_results_and_business_validation(
         self,
@@ -762,6 +770,64 @@ class SplitProjectKitTests(unittest.TestCase):
             prompt,
         )
 
+    def test_packet_success_is_one_immediately_copyable_marked_block(self):
+        prompt = " ".join(
+            (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.24.md")
+            .read_text(encoding="utf-8")
+            .split()
+        )
+
+        self.assertIn(
+            "réponds immédiatement par un seul bloc de code copiable",
+            prompt,
+        )
+        self.assertIn("bloc Markdown multiligne ` ```json `", prompt)
+        self.assertIn("`SNUM_PAQUET_RENDU_V519_START`", prompt)
+        self.assertIn("`SNUM_PAQUET_RENDU_V519_END`", prompt)
+        self.assertIn(
+            "Aucun préambule ni texte hors du bloc",
+            prompt,
+        )
+
+    def test_packet_repeat_preserves_the_complete_marked_packet(self):
+        prompt = " ".join(
+            (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.24.md")
+            .read_text(encoding="utf-8")
+            .split()
+        )
+
+        self.assertIn(
+            "Toute demande de redonner le JSON répète à l’identique ce même bloc complet",
+            prompt,
+        )
+
+    def test_packet_prompt_keeps_v519_schema_and_escapes_internal_quotes(self):
+        prompt = " ".join(
+            (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.24.md")
+            .read_text(encoding="utf-8")
+            .split()
+        )
+
+        self.assertIn("`schema_version`=`SNUM_PAQUET_RENDU_V519`", prompt)
+        self.assertIn('Échappe tout guillemet interne en `\\"`', prompt)
+
+    def test_packet_ready_requires_all_word_limits_to_be_rechecked(self):
+        prompt = " ".join(
+            (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.24.md")
+            .read_text(encoding="utf-8")
+            .split()
+        )
+
+        self.assertIn(
+            "compte les mots de chaque `fact` (≤25), `takeaway` et "
+            "`snum_interest` (≤15)",
+            prompt,
+        )
+        self.assertIn(
+            "N’émets jamais `PAQUET_RENDU_PRET` si une limite échoue",
+            prompt,
+        )
+
     def test_packet_command_builds_its_own_json_without_user_input(self):
         prompt = " ".join(
             (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.24.md")
@@ -915,7 +981,7 @@ class SplitProjectKitTests(unittest.TestCase):
         ):
             self.assertIn(resource, rendu)
         self.assertNotIn("`COLLECTE`", rendu)
-        self.assertIn("navigation `L’essentiel` vers\n`#essentiel`", rendu)
+        self.assertIn("`L’essentiel` vers `#essentiel`", rendu)
         self.assertIn(
             "`@@TITRE_RUBRIQUE@@` reçoit le titre\ncanonique en capitales", rendu
         )
@@ -952,6 +1018,19 @@ class SplitProjectKitTests(unittest.TestCase):
         self.assertNotIn("<footer", coque_a)
         self.assertIn("<footer", coque_b)
         self.assertIn("</html>", coque_b)
+
+    def test_renderer_preserves_values_and_emits_only_the_deliverable(self):
+        prompt = (PROJECT / "20-PROMPT-SYSTEME-RENDU-HTML-SNUM-V5.19.md").read_text(
+            encoding="utf-8"
+        )
+
+        self.assertIn(
+            "`&`→`&amp;`, `<`→`&lt;`, `>`→`&gt;`, `\"`→`&quot;`, `'`→`&#x27;`",
+            prompt,
+        )
+        self.assertIn("ni remplacer un caractère par un autre", prompt)
+        self.assertIn("le premier caractère de la réponse est le `#`", prompt)
+        self.assertIn("N’explique jamais l’assemblage", prompt)
 
     def test_split_shell_reassembles_byte_for_byte(self):
         def html_block(filename):
@@ -1096,10 +1175,23 @@ class SplitProjectKitTests(unittest.TestCase):
         self.assertIn("02-METHODE-COLLECTE-SNUM-V5.24.md", notice)
         self.assertIn("03-CONTRAT-PAQUET-RENDU-SNUM-V5.24.md", notice)
         self.assertIn("téléversez les quatre ressources `CANON-HTML-", notice)
-        self.assertIn("copiez le bloc entier", notice)
+        self.assertIn("cliquez sur **Copier le code**", notice)
+        self.assertIn("marqueurs inclus", " ".join(notice.split()))
         self.assertIn("A_COMPLETER", notice)
         self.assertIn("Newsletter SNUM - Collecte.zip", notice)
         self.assertIn("Newsletter SNUM - Rendu HTML.zip", notice)
+        self.assertIn("GO pour Collecte → JSON → Rendu HTML", notice)
+        self.assertIn("## Démarrage express dans une nouvelle conversation", notice)
+        self.assertIn("Web désactivé", notice)
+        self.assertIn("Web activé uniquement pendant les cinq recherches", notice)
+        self.assertIn(
+            "envoyez `VALIDER`, puis `GENERER_PAQUET`", " ".join(notice.split())
+        )
+        self.assertIn(
+            "Échappe toute valeur injectée sans l’altérer : "
+            "&→&amp;, <→&lt;, >→&gt;, \"→&quot;, '→&#x27;.",
+            notice,
+        )
 
     def test_readme_is_the_pedagogical_active_entry_point(self):
         readme = (PROJECT / "README.md").read_text(encoding="utf-8")
@@ -1119,6 +1211,18 @@ class SplitProjectKitTests(unittest.TestCase):
         self.assertIn(f"```text\n{rendu}\n```", readme)
         self.assertIn("Newsletter SNUM - Collecte.zip", readme)
         self.assertIn("Newsletter SNUM - Rendu HTML.zip", readme)
+        self.assertIn("GO pour Collecte → JSON → Rendu HTML", readme)
+        self.assertIn("## Démarrage express dans une nouvelle conversation", readme)
+        self.assertIn("Web désactivé", readme)
+        self.assertIn("Web activé uniquement pendant les cinq recherches", readme)
+        self.assertIn(
+            "envoyez `VALIDER`, puis `GENERER_PAQUET`", " ".join(readme.split())
+        )
+        self.assertIn(
+            "Échappe toute valeur injectée sans l’altérer : "
+            "&→&amp;, <→&lt;, >→&gt;, \"→&quot;, '→&#x27;.",
+            readme,
+        )
         self.assertNotIn("kit-dinum-snum-v5-19-deux-projets-6-fichiers.zip", readme)
         self.assertNotIn("guide V5.17", readme)
 

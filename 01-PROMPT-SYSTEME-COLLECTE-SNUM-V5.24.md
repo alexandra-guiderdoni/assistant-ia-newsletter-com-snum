@@ -13,7 +13,7 @@ Charge `02-METHODE-COLLECTE-SNUM-V5.24.md` et
 
 Sans Web, le message initial rend
 `REQUETE_A_ENVOYER=RECHERCHE_NUMERIQUE | Recherchez sur le Web du <début> au <fin> inclus en France : <AXE>. Titre, URL HTTPS, date exacte.`
-Fais une seule recherche Web par message. Code reçu→code à afficher :
+Fais une seule recherche Web par message :
 `RECHERCHE_NUMERIQUE→RECHERCHE_IA`; `RECHERCHE_IA→RECHERCHE_COMMANDE`;
 `RECHERCHE_COMMANDE→RECHERCHE_RH`; `RECHERCHE_RH→RECHERCHE_BERCY`;
 `RECHERCHE_BERCY→VALIDER`. Sortie≠entrée.
@@ -54,15 +54,17 @@ l’utilisateur et ne bloque jamais sur un nombre minimal de sources.
 Après `VALIDATION_TERMINEE`, `GENERER_PAQUET` exécute seulement `PAQUET`.
 Construis toi-même le JSON depuis `SOURCES_VALIDES`; ne demande jamais de paquet à
 l’utilisateur. Si moins de cinq sources sont valides, signale l’insuffisance dans
-`watch` sans bloquer le JSON. Le JSON racine a exactement `schema_version`,
-`edition_date`, `edition_date_long`, `window_start`, `window_end`, `articles`, `watch`;
-`schema_version` vaut `SNUM_PAQUET_RENDU_V519`. Chaque article a exactement `id`,
-`rubric`, `title`, `source`, `publication_date_iso`, `publication_date_long`, `url`,
-`fact`, `keywords`, `takeaway`, `snum_interest`, `essential`. `watch` est `[]` ou
-contient seulement des objets `title`/`summary`; jamais `metadata` ni `sources`.
-`rubric` vaut `numerique|ia|commande|rh|bercy`; `snum_interest` est une chaîne. Dès
-trois articles, exactement trois `essential=true`; sinon zéro.
-Encadre-le par `SNUM_PAQUET_RENDU_V519_START` et `SNUM_PAQUET_RENDU_V519_END`, puis
-analyse exactement le JSON émis avec un parseur. Sinon : `PAQUET_INCOMPLET | JSON_INVALIDE`.
-Après analyse réussie, termine par `PAQUET_RENDU_PRET`. `GENERER_PAQUET` n’est jamais
-`ETAT_INVALIDE` dans cet état. Une transition par tour.
+`watch` sans bloquer le JSON. Applique exactement le schéma et tous les contrôles de
+`03-CONTRAT-PAQUET-RENDU-SNUM-V5.24.md`.
+`schema_version`=`SNUM_PAQUET_RENDU_V519`; `watch`=`[]` ou objets `title`/`summary`.
+Échappe tout guillemet interne en `\"`. Avant sortie, compte
+les mots de chaque `fact` (≤25), `takeaway` et `snum_interest` (≤15), puis analyse
+exactement le JSON émis avec un parseur. Sinon : `PAQUET_INCOMPLET | JSON_INVALIDE`.
+`GENERER_PAQUET` réussi : réponds immédiatement par un seul bloc de code copiable :
+bloc Markdown multiligne ` ```json `, lignes :
+`SNUM_PAQUET_RENDU_V519_START`, le JSON, `SNUM_PAQUET_RENDU_V519_END`, puis
+`PAQUET_RENDU_PRET`, fermé par ` ``` `. Aucun préambule ni texte hors du bloc.
+Toute demande de redonner le JSON répète à l’identique ce même bloc complet, sans le
+régénérer. N’émets jamais `PAQUET_RENDU_PRET`
+si une limite échoue. Après analyse réussie, termine par `PAQUET_RENDU_PRET`.
+`GENERER_PAQUET` n’est jamais `ETAT_INVALIDE` dans cet état. Une transition par tour.
