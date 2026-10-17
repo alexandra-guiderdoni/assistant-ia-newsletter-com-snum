@@ -14,9 +14,9 @@ une commande `CORRIGER_PAQUET` a été nécessaire. Un renforcement local de la 
 de transitions, testé dans le Projet, n’a pas supprimé la répétition et n’a pas été
 conservé.
 
-Le rendu HTML de ce nouveau paquet n’a pas été exécuté. Une recette antérieure avait
-produit `HTML COMPLET` avec cinq articles. Le cas minimal sans essentiel reste refusé
-à tort par le Projet Rendu et n’est pas validé.
+Le même paquet a ensuite produit un rendu complet avec `HTML COMPLET`, un bloc de
+`<!doctype html>` à `</html>` et le marqueur exact `HTML_CANONIQUE_PRODUIT`. Le cas
+minimal sans essentiel reste refusé à tort par le Projet Rendu et n’est pas validé.
 
 ## Configuration du test mensuel
 
@@ -25,7 +25,8 @@ produit `HTML COMPLET` avec cinq articles. Le cas minimal sans essentiel reste r
 - Collecte : `01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.24.md` et ses deux ressources ;
 - preuve la plus récente :
   `https://assistant.numerique.gouv.fr/chat/6adae394-eea1-43a4-8d67-25ff01fed340/` ;
-- Rendu HTML : non testé avec ce paquet.
+- preuve Rendu HTML :
+  `https://assistant.numerique.gouv.fr/chat/35104da3-8254-4bce-be7f-ea80f6ff8dfb/`.
 
 ## Résultat de la recette la plus récente
 
@@ -46,6 +47,17 @@ V519 conforme aux contrôles suivants :
 - trois dates dans la fenêtre inclusive ;
 - exactement trois `essential=true` ;
 - `watch` non vide et marqueurs complets jusqu’à `PAQUET_RENDU_PRET`.
+
+Le premier passage dans le Projet Rendu a mis en évidence deux coquilles dans sa
+configuration active : `22-CANOON…` et `HTML_CANNIQUE_PRODUIT`. Le prompt versionné
+contenait déjà les valeurs correctes. Après synchronisation du Projet, une conversation
+neuve a produit directement le résultat attendu. Le contrôle du HTML copié confirme :
+
+- un document de `<!doctype html>` à `</html>` sans marqueur `@@` ;
+- un seul `h1`, trois cartes essentielles et les cinq sections attendues ;
+- les trois accès rapides, les CSS et scripts DSFR 1.15.2 ;
+- chacune des trois URL présente dans sa carte essentielle et sa rubrique ;
+- un unique `## HTML COMPLET`, un unique `## CONTROLES` et le marqueur final exact.
 
 ## Résultat observé
 
@@ -91,7 +103,8 @@ Web, d’envoyer chaque requête et de vérifier les sources visibles.
 - prompt Collecte à 3 975 caractères, méthode à 3 590 et contrat à 3 499 ;
 - `README.md` et `NOTICE-V5.24.md` identiques ;
 - recette réelle postérieure à la correction : exécutée, avec un passage forcé et
-  une commande `CORRIGER_PAQUET`.
+  une commande `CORRIGER_PAQUET` ;
+- recette Rendu HTML postérieure à la synchronisation : réussie dès le premier message.
 
 Les contrôles locaux vérifient la cohérence du kit, pas l’obéissance du modèle dans
 l’Assistant. La recette réelle confirme que les règles seules ne rendent pas cette

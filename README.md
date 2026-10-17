@@ -11,9 +11,9 @@ recherches initiales, sans recomptage ni seuil bloquant.
 - `Newsletter SNUM - Collecte` produit un `PAQUET_RENDU`.
 - `Newsletter SNUM - Rendu HTML` transforme ce paquet en HTML canonique.
 
-> **État de recette V5.24 : GO pour Collecte → JSON en mode assisté borné ;
+> **État de recette V5.24 : GO pour Collecte → JSON → HTML en mode assisté borné ;
 > NO-GO pour la chaîne complète automatique.** La recette réelle du 17 octobre 2026 a produit
-> un paquet V519 valide de trois articles, avec trois essentiels. Après un lot sans
+> un paquet V519 valide de trois articles, puis un HTML canonique. Après un lot sans
 > source, le métier a dû imposer le lot suivant ; le premier paquet était invalide et
 > une commande `CORRIGER_PAQUET` a été nécessaire. Voir `RAPPORT-V5.24.md`.
 
@@ -360,6 +360,11 @@ commande supplémentaire n’est nécessaire.
 Le résultat doit contenir `## HTML COMPLET`, un unique bloc de
 `<!doctype html>` à `</html>`, puis `## CONTROLES` et
 `État : HTML_CANONIQUE_PRODUIT - contrôle métier requis`.
+
+La recette réelle du 17 octobre 2026 a confirmé cette sortie avec le paquet de trois
+articles. La configuration active du Projet Rendu a d’abord révélé deux coquilles,
+`22-CANOON…` et `HTML_CANNIQUE_PRODUIT` ; elles ont été synchronisées avec les valeurs
+déjà correctes du dépôt avant la recette concluante.
 
 Limite observée le 17 octobre 2026 : après un lot sans source, l’Assistant peut
 reproposer la même rubrique ; envoyez alors la ligne suivante de la séquence fixe.
