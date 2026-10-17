@@ -109,7 +109,7 @@ class SplitProjectKitTests(unittest.TestCase):
         prompt = " ".join(prompt_path.read_text(encoding="utf-8").split())
         method = " ".join(method_path.read_text(encoding="utf-8").split())
 
-        self.assertIn("une seule recherche Web par message", prompt)
+        self.assertIn("une seule recherche web par message", prompt.lower())
         self.assertIn("`VALIDATION_METIER_REQUISE`", prompt)
         self.assertIn("Source visible ou non ⇒ avance toujours", prompt)
         for transition in (
@@ -217,7 +217,10 @@ class SplitProjectKitTests(unittest.TestCase):
             .split()
         )
 
-        self.assertIn("`REQUETE_A_ENVOYER` suivante", prompt)
+        self.assertIn(
+            "affiche exactement la requête suivante de l’ordre immuable",
+            prompt,
+        )
         self.assertIn("`REQUETE_A_ENVOYER=RECHERCHE_NUMERIQUE", prompt)
         for transition in (
             "`RECHERCHE_NUMERIQUE→RECHERCHE_IA`",
@@ -354,7 +357,7 @@ class SplitProjectKitTests(unittest.TestCase):
         prompt_normalized = " ".join(prompt.split())
         self.assertLessEqual(len(prompt), 4000)
         self.assertLessEqual(len(method), 3600)
-        self.assertIn("une seule recherche Web par message", prompt_normalized)
+        self.assertIn("une seule recherche web par message", prompt_normalized.lower())
         phases = (
             "## 1. Préparer les requêtes",
             "## 2. Contrôler chaque recherche",
@@ -588,7 +591,8 @@ class SplitProjectKitTests(unittest.TestCase):
 
         self.assertIn("DANS_FENETRE=OUI|NON", method_normalized)
         self.assertIn(
-            "Une source est valide si `DANS_FENETRE` et accès valent `OUI`",
+            "Une source est valide si le `DANS_FENETRE` recalculé et l’accès "
+            "valent `OUI`",
             method_normalized,
         )
 
@@ -805,8 +809,8 @@ class SplitProjectKitTests(unittest.TestCase):
         )
 
         self.assertIn(
-            "analyse exactement le JSON émis avec un parseur",
-            prompt,
+            "analyse exactement le json émis avec un parseur",
+            prompt.lower(),
         )
         self.assertIn("`PAQUET_INCOMPLET | JSON_INVALIDE`", prompt)
         self.assertIn(
@@ -908,10 +912,10 @@ class SplitProjectKitTests(unittest.TestCase):
             prompt,
         )
         self.assertIn("sans le demander à l’utilisateur", prompt)
-        self.assertIn("analyse exactement le JSON émis", prompt)
+        self.assertIn("analyse exactement le json émis", prompt.lower())
         self.assertLess(
             prompt.index("Construis le JSON"),
-            prompt.index("analyse exactement le JSON émis"),
+            prompt.lower().index("analyse exactement le json émis"),
         )
 
     def test_collecte_rejects_dates_outside_the_inclusive_iso_bounds(self):
@@ -928,7 +932,7 @@ class SplitProjectKitTests(unittest.TestCase):
             method_normalized.index("## 3. Terminer la collecte en best effort"),
         )
 
-    def test_collecte_does_not_recompute_window_statuses_at_the_end(self):
+    def test_collecte_recomputes_window_statuses_at_validation(self):
         method = (PROJECT / "02-METHODE-COLLECTE-SNUM-V5.24.md").read_text(
             encoding="utf-8"
         )
@@ -936,7 +940,12 @@ class SplitProjectKitTests(unittest.TestCase):
 
         self.assertIn("DANS_FENETRE=OUI|NON", method_normalized)
         self.assertIn(
-            "le métier valide les sources et leurs décisions", method_normalized
+            "recalcule `DANS_FENETRE` depuis la date ISO et les bornes",
+            method_normalized,
+        )
+        self.assertIn(
+            "ignore `OUI`/`NON` mémorisé",
+            method_normalized,
         )
         self.assertNotIn("`CANDIDATS`", method_normalized)
         self.assertNotIn("`BORNE_BASSE_OK`", method_normalized)
