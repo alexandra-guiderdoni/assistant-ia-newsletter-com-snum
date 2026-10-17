@@ -12,11 +12,10 @@ recherches initiales, sans recomptage ni seuil bloquant.
 - `Newsletter SNUM - Rendu HTML` transforme ce paquet en HTML canonique.
 
 > **État de recette V5.24 : GO pour Collecte → JSON en mode assisté borné ;
-> NO-GO pour la chaîne complète automatique.** Le 17 octobre 2026, une fenêtre d’un mois a
-> produit un paquet V519 final de cinq articles, un par rubrique et trois essentiels.
-> Deux recherches ciblées et deux `CORRIGER_PAQUET` ont toutefois été nécessaires.
-> Les consignes ci-dessous intègrent désormais la normalisation du paquet ; leur
-> recette réelle après modification reste à exécuter. Voir `RAPPORT-V5.24.md`.
+> NO-GO pour la chaîne complète automatique.** La recette réelle du 17 octobre 2026 a produit
+> un paquet V519 valide de trois articles, avec trois essentiels. Après un lot sans
+> source, le métier a dû imposer le lot suivant ; le premier paquet était invalide et
+> une commande `CORRIGER_PAQUET` a été nécessaire. Voir `RAPPORT-V5.24.md`.
 
 ## Démarrage express dans une nouvelle conversation
 
@@ -342,6 +341,15 @@ Si elle contient `PAQUET_INCOMPLET`, arrêtez. Le paquet doit contenir au plus u
 par rubrique, des identifiants contigus `U01…UN` et, dès trois articles, exactement
 trois essentiels.
 
+Si le bloc annonce `PAQUET_RENDU_PRET` mais ne respecte pas ces contrôles, ne le
+transmettez pas au Projet Rendu. Envoyez une seule fois :
+
+```text
+CORRIGER_PAQUET | Reprends REGISTRE_CUMULATIF et applique strictement 03-CONTRAT-PAQUET-RENDU-SNUM-V5.24.md. Garde une source par rubrique, la date ISO la plus récente puis le plus petit Uxx. Racine exacte : schema_version, edition_date, edition_date_long, window_start, window_end, articles, watch. Renumérote U01…UN ; dès trois articles, exactement trois essential=true ; sous cinq, watch non vide. Réponds par le seul bloc complet, sans préambule, terminé par PAQUET_RENDU_PRET.
+```
+
+Si ce paquet corrigé échoue encore, arrêtez la chaîne.
+
 ### Message suivant dans le Projet Rendu HTML, sans le Web
 
 Créez une conversation neuve dans `Newsletter SNUM - Rendu HTML`, avec le Web
@@ -353,12 +361,12 @@ Le résultat doit contenir `## HTML COMPLET`, un unique bloc de
 `<!doctype html>` à `</html>`, puis `## CONTROLES` et
 `État : HTML_CANONIQUE_PRODUIT - contrôle métier requis`.
 
-Limite observée le 17 octobre 2026 : le test mensuel a nécessité deux recherches
-ciblées manuelles pour compléter les rubriques Numérique et Bercy. Le chaînage Web
-entièrement automatique n’est donc pas garanti. Pour une démonstration, utilisez une
-collecte d’au moins trois rubriques et vérifiez les trois essentiels. La normalisation
-ajoutée après cette recette vise à supprimer les commandes `CORRIGER_PAQUET`, mais
-n’est pas encore prouvée par une nouvelle recette réelle.
+Limite observée le 17 octobre 2026 : après un lot sans source, l’Assistant peut
+reproposer la même rubrique ; envoyez alors la ligne suivante de la séquence fixe.
+Le premier paquet peut aussi contredire le contrat malgré `PAQUET_RENDU_PRET` : la
+recette la plus récente a nécessité la correction unique ci-dessus. Pour une
+démonstration, utilisez une collecte d’au moins trois rubriques et vérifiez les trois
+essentiels avant le passage au Rendu.
 
 Le marqueur `PAQUET_RENDU_PRET` atteste les contrôles de Collecte. Le Projet Rendu ne
 revalide ni les URL ni les dates et ne recompte pas les mots ; il assemble les valeurs
