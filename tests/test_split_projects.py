@@ -10,32 +10,358 @@ PROJECT = Path(__file__).resolve().parents[1]
 
 
 class SplitProjectKitTests(unittest.TestCase):
+    def test_v523_best_effort_reaches_json_without_recount_gate(self):
+        prompt_path = PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md"
+        method_path = PROJECT / "02-METHODE-COLLECTE-SNUM-V5.23.md"
+
+        prompt = " ".join(prompt_path.read_text(encoding="utf-8").split())
+        method = " ".join(method_path.read_text(encoding="utf-8").split())
+
+        fixed_route = (
+            "`RECHERCHE_NUMERIQUE`→`RECHERCHE_IA`→`RECHERCHE_COMMANDE`→"
+            "`RECHERCHE_RH`→`RECHERCHE_BERCY`→`COLLECTE_TERMINEE_BEST_EFFORT`"
+        )
+        self.assertIn(fixed_route, prompt)
+        self.assertIn(fixed_route, method)
+        self.assertIn("`REQUETE_A_ENVOYER=VALIDER`", prompt)
+        self.assertIn("l’insuffisance dans `watch` sans bloquer le JSON", prompt)
+        for text in (prompt, method):
+            self.assertNotIn("`RECOMPTER`", text)
+            self.assertNotIn("COLLECTE_INSUFFISANTE", text)
+
+    def test_v523_visible_out_of_window_result_still_advances(self):
+        prompt = " ".join(
+            (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md")
+            .read_text(encoding="utf-8")
+            .split()
+        )
+
+        self.assertIn(
+            "Pour tout `RESULTATS_RECHERCHE` non vide, affiche exactement le "
+            "prochain code de la chaîne, même `DANS_FENETRE=NON`",
+            prompt,
+        )
+        self.assertIn(
+            "`RECHERCHE_RH`→`RECHERCHE_BERCY`→`COLLECTE_TERMINEE_BEST_EFFORT`",
+            prompt,
+        )
+
+    def test_v523_packet_is_directly_compatible_with_the_html_project(self):
+        prompt = " ".join(
+            (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md")
+            .read_text(encoding="utf-8")
+            .split()
+        )
+
+        self.assertIn("`REQUETE_A_ENVOYER=GENERER_PAQUET`", prompt)
+        self.assertIn("`SNUM_PAQUET_RENDU_V519_START`", prompt)
+        self.assertIn("`SNUM_PAQUET_RENDU_V519_END`", prompt)
+        self.assertIn(
+            "`schema_version`, `edition_date`, `edition_date_long`, "
+            "`window_start`, `window_end`, `articles`, `watch`",
+            prompt,
+        )
+        self.assertIn(
+            "`schema_version` vaut `SNUM_PAQUET_RENDU_V519`",
+            prompt,
+        )
+        self.assertIn(
+            "`id`, `rubric`, `title`, `source`, `publication_date_iso`, "
+            "`publication_date_long`, `url`, `fact`, `keywords`, `takeaway`, "
+            "`snum_interest`, `essential`",
+            prompt,
+        )
+        self.assertIn(
+            "`watch` est `[]` ou contient seulement des objets `title`/`summary`",
+            prompt,
+        )
+        self.assertIn(
+            "`rubric` vaut `numerique|ia|commande|rh|bercy`",
+            prompt,
+        )
+        self.assertIn("`snum_interest` est une chaîne", prompt)
+        self.assertIn("exactement trois `essential=true`", prompt)
+        self.assertIn(
+            "Après analyse réussie, termine par `PAQUET_RENDU_PRET`",
+            prompt,
+        )
+        self.assertIn("jamais `metadata` ni `sources`", prompt)
+
+    def test_v523_each_web_search_requires_visible_sources_and_business_validation(
+        self,
+    ):
+        prompt_path = PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md"
+        method_path = PROJECT / "02-METHODE-COLLECTE-SNUM-V5.23.md"
+
+        self.assertTrue(prompt_path.is_file(), prompt_path.name)
+        self.assertTrue(method_path.is_file(), method_path.name)
+        prompt = " ".join(prompt_path.read_text(encoding="utf-8").split())
+        method = " ".join(method_path.read_text(encoding="utf-8").split())
+
+        self.assertIn("une seule recherche Web par message", prompt)
+        self.assertIn("`VALIDATION_METIER_REQUISE`", prompt)
+        self.assertIn("source visible", prompt)
+        self.assertIn("source visible, même hors fenêtre ⇒ suivant", prompt)
+        for rubric in ("NUMERIQUE", "IA", "COMMANDE", "RH", "BERCY"):
+            self.assertIn(f"`RECHERCHE_{rubric}`", prompt)
+        self.assertNotIn("`PROCHAINE_COMMANDE=IA`", prompt)
+        self.assertIn("aucune source visible", method)
+
+    def test_v523_validated_searches_chain_to_the_json_packet(self):
+        prompt_path = PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md"
+        contract_path = PROJECT / "03-CONTRAT-PAQUET-RENDU-SNUM-V5.23.md"
+
+        self.assertTrue(prompt_path.is_file(), prompt_path.name)
+        self.assertTrue(contract_path.is_file(), contract_path.name)
+        prompt = " ".join(prompt_path.read_text(encoding="utf-8").split())
+        contract = " ".join(contract_path.read_text(encoding="utf-8").split())
+
+        steps = (
+            "`RECHERCHE_BERCY`→`COLLECTE_TERMINEE_BEST_EFFORT`",
+            "Après `COLLECTE_TERMINEE_BEST_EFFORT`, `VALIDER`",
+            "Rends `VALIDATION_TERMINEE`",
+            "Après `VALIDATION_TERMINEE`, `GENERER_PAQUET`",
+            "`PAQUET_RENDU_PRET`",
+        )
+        self.assertEqual(sorted(steps, key=prompt.index), list(steps))
+        self.assertIn("`SNUM_PAQUET_RENDU_V519_START`", contract)
+        self.assertIn("`SNUM_PAQUET_RENDU_V519_END`", contract)
+        self.assertIn("vérifie que le bloc est analysable comme JSON", contract)
+
+    def test_v523_search_turns_store_the_window_decision_in_the_registry(self):
+        prompt_path = PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md"
+        method_path = PROJECT / "02-METHODE-COLLECTE-SNUM-V5.23.md"
+
+        self.assertTrue(prompt_path.is_file(), prompt_path.name)
+        self.assertTrue(method_path.is_file(), method_path.name)
+        prompt = " ".join(prompt_path.read_text(encoding="utf-8").split())
+        method = " ".join(method_path.read_text(encoding="utf-8").split())
+
+        self.assertIn(
+            "Après chaque recherche, si une source est visible, rends "
+            "`RESULTATS_RECHERCHE` non vide",
+            prompt,
+        )
+        record = (
+            "`Uxx|rubrique|URL|date brute|date ISO|"
+            "DANS_FENETRE=OUI|NON|titre|source|fait`"
+        )
+        self.assertIn(record, prompt)
+        self.assertIn(record, method)
+        self.assertIn("valide la source et cette décision", prompt)
+
+    def test_v523_collecte_advances_one_rubric_per_turn(self):
+        prompt_path = PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md"
+        method_path = PROJECT / "02-METHODE-COLLECTE-SNUM-V5.23.md"
+
+        self.assertTrue(prompt_path.is_file(), prompt_path.name)
+        self.assertTrue(method_path.is_file(), method_path.name)
+
+        prompt = " ".join(prompt_path.read_text(encoding="utf-8").split())
+        method = " ".join(method_path.read_text(encoding="utf-8").split())
+        commands = (
+            "RECHERCHE_NUMERIQUE",
+            "RECHERCHE_IA",
+            "RECHERCHE_COMMANDE",
+            "RECHERCHE_RH",
+            "RECHERCHE_BERCY",
+        )
+
+        self.assertIn("message initial", prompt)
+        self.assertIn("NUMERIQUE", prompt)
+        for command in commands:
+            self.assertIn(f"`{command}`", prompt)
+        self.assertEqual(
+            sorted(commands, key=lambda command: prompt.index(f"`{command}`")),
+            list(commands),
+        )
+        self.assertIn("Une seule recherche est demandée par message", method)
+        transition = (
+            "`RECHERCHE_NUMERIQUE`→`RECHERCHE_IA`→`RECHERCHE_COMMANDE`→"
+            "`RECHERCHE_RH`→`RECHERCHE_BERCY`→"
+            "`COLLECTE_TERMINEE_BEST_EFFORT`; suivant≠reçu"
+        )
+        self.assertIn(transition, prompt)
+        self.assertIn(transition, method)
+        self.assertIn("Ne répète aucun lot", prompt)
+        self.assertIn("`VALIDATION_METIER_REQUISE`", prompt)
+
+    def test_v523_collecte_exposes_the_exact_next_command(self):
+        prompt = " ".join(
+            (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md")
+            .read_text(encoding="utf-8")
+            .split()
+        )
+
+        self.assertIn("affiche la `REQUETE_A_ENVOYER` suivante", prompt)
+        for next_command in (
+            "RECHERCHE_NUMERIQUE",
+            "RECHERCHE_IA",
+            "RECHERCHE_COMMANDE",
+            "RECHERCHE_RH",
+            "RECHERCHE_BERCY",
+        ):
+            self.assertIn(f"`{next_command}`", prompt)
+        self.assertIn("`REQUETE_A_ENVOYER=VALIDER`", prompt)
+        self.assertNotIn("`PROCHAINE_COMMANDE=", prompt)
+        self.assertNotIn("`RECOMPTER`", prompt)
+
+    def test_v523_each_search_requires_web_evidence_before_transition(self):
+        prompt = " ".join(
+            (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md")
+            .read_text(encoding="utf-8")
+            .split()
+        )
+
+        self.assertIn("demande explicitement le Web", prompt)
+        self.assertIn("l’ouverture et les citations", prompt)
+        self.assertIn("`VALIDATION_METIER_REQUISE`", prompt)
+        self.assertIn("`A_COMPLETER | RECHERCHE_NON_PROUVEE | <rubrique>`", prompt)
+
+    def test_initial_message_requires_dates_and_numerique(self):
+        prompt = " ".join(
+            (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md")
+            .read_text(encoding="utf-8")
+            .split()
+        )
+
+        self.assertIn(
+            "`DATE_EDITION = <date en français>` "
+            "`PERIODE = du <date en français> au <date en français> inclus` "
+            "`NUMERIQUE`",
+            prompt,
+        )
+        self.assertIn(
+            "Le message initial est valide seulement avec ces trois lignes", prompt
+        )
+        self.assertIn("`A_COMPLETER | PARAMETRES_INVALIDES | <détail>`", prompt)
+
+    def test_initial_numerique_prepares_the_first_explicit_web_query(self):
+        prompt = " ".join(
+            (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md")
+            .read_text(encoding="utf-8")
+            .split()
+        )
+
+        self.assertIn("Le message initial ne lance pas le Web", prompt)
+        self.assertIn("`REQUETE_A_ENVOYER`", prompt)
+        self.assertIn("`RECHERCHE_NUMERIQUE`", prompt)
+        self.assertIn(
+            "`REQUETE_A_ENVOYER=RECHERCHE_NUMERIQUE | Recherchez sur le Web",
+            prompt,
+        )
+        self.assertIn(
+            "`REQUETE_A_ENVOYER=RECHERCHE_NUMERIQUE | Recherchez sur le Web du "
+            "<début> au <fin> inclus en France : <AXE>. Titre, URL HTTPS, date exacte.`",
+            prompt,
+        )
+        for search_axis in (
+            "services publics numériques, dématérialisation, inclusion et données",
+            "intelligence artificielle, modèles, régulation et usages publics",
+            "commande publique, achats, marchés et fournisseurs numériques",
+            "ressources humaines publiques, compétences, recrutement et formation",
+            "ministères économiques et financiers, directions et transformations",
+        ):
+            self.assertIn(search_axis, prompt)
+        self.assertNotIn("`PROCHAINE_COMMANDE=IA`", prompt)
+
+    def test_v523_registry_requires_one_auditable_decision_per_unique_url(self):
+        prompt = " ".join(
+            (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md")
+            .read_text(encoding="utf-8")
+            .split()
+        )
+
+        self.assertIn(
+            "`Uxx|rubrique|URL|date brute|date ISO|"
+            "DANS_FENETRE=OUI|NON|titre|source|fait`",
+            prompt,
+        )
+        self.assertIn("`DEBUT_ISO <= date ISO <= FIN_ISO`", prompt)
+        self.assertIn("chaque nouvelle URL canonique unique", prompt)
+        self.assertIn("`VALIDATION_METIER_REQUISE`", prompt)
+
+    def test_v523_is_the_only_active_collecte_release(self):
+        active = (
+            "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md",
+            "02-METHODE-COLLECTE-SNUM-V5.23.md",
+            "03-CONTRAT-PAQUET-RENDU-SNUM-V5.23.md",
+        )
+        for name in active:
+            self.assertTrue((PROJECT / name).is_file(), name)
+
+        with ZipFile(PROJECT / "Newsletter SNUM - Collecte.zip") as archive:
+            self.assertEqual(
+                archive.namelist(),
+                [
+                    "Newsletter SNUM - Collecte/",
+                    *(f"Newsletter SNUM - Collecte/{name}" for name in active),
+                ],
+            )
+
+        for version in ("5.20", "5.21", "5.22"):
+            for stem in (
+                "01-PROMPT-SYSTEME-COLLECTE-SNUM",
+                "02-METHODE-COLLECTE-SNUM",
+                "03-CONTRAT-PAQUET-RENDU-SNUM",
+                "NOTICE",
+                "RAPPORT",
+            ):
+                name = f"{stem}-V{version}.md"
+                self.assertFalse((PROJECT / name).exists(), name)
+                self.assertTrue(
+                    (
+                        PROJECT
+                        / "_documentation"
+                        / "archives"
+                        / "releases"
+                        / f"v{version}"
+                        / name
+                    ).is_file(),
+                    name,
+                )
+        self.assertTrue((PROJECT / "NOTICE-V5.23.md").is_file())
+
     def test_collecte_uses_a_small_execute_then_render_orchestrator(self):
-        prompt = (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.20.md").read_text(
+        prompt = (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md").read_text(
             encoding="utf-8"
         )
-        method = (PROJECT / "02-METHODE-COLLECTE-SNUM-V5.20.md").read_text(
+        method = (PROJECT / "02-METHODE-COLLECTE-SNUM-V5.23.md").read_text(
             encoding="utf-8"
         )
         prompt_normalized = " ".join(prompt.split())
-        self.assertLessEqual(len(prompt), 2500)
+        self.assertLessEqual(len(prompt), 4000)
         self.assertLessEqual(len(method), 3600)
-        self.assertIn("EXÉCUTION AVANT RENDU", prompt_normalized)
-        self.assertIn(
-            "Avant toute réponse, termine les appels Web exigés par la méthode",
-            prompt_normalized,
+        self.assertIn("## Recherches validées par le métier", prompt_normalized)
+        self.assertIn("une seule recherche Web par message", prompt_normalized)
+        phases = (
+            "## 1. Préparer les requêtes",
+            "## 2. Contrôler chaque recherche",
+            "## 3. Terminer la collecte en best effort",
+            "## 4. Valider",
         )
-        self.assertIn(
-            "Ensuite, rends une seule réponse complète commençant par `TRACE_RECHERCHE`",
-            prompt_normalized,
-        )
-        phases = ("## 1. EXÉCUTER", "## 2. CALCULER", "## 3. RENDRE")
         self.assertEqual(sorted(phases, key=method.index), list(phases))
 
-    def test_v520_collecte_runs_from_dates_then_short_commands(self):
-        prompt_path = PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.20.md"
-        method_path = PROJECT / "02-METHODE-COLLECTE-SNUM-V5.20.md"
-        contract_path = PROJECT / "03-CONTRAT-PAQUET-RENDU-SNUM-V5.20.md"
+    def test_collecte_explicitly_loads_its_method_before_execution(self):
+        prompt = (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md").read_text(
+            encoding="utf-8"
+        )
+        normalized = " ".join(prompt.split())
+        load = (
+            "Charge `02-METHODE-COLLECTE-SNUM-V5.23.md` et "
+            "`03-CONTRAT-PAQUET-RENDU-SNUM-V5.23.md`"
+        )
+
+        self.assertIn(load, normalized)
+        self.assertLess(
+            normalized.index(load),
+            normalized.index("## Recherches validées par le métier"),
+        )
+
+    def test_v523_collecte_runs_from_dates_then_validated_queries(self):
+        prompt_path = PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md"
+        method_path = PROJECT / "02-METHODE-COLLECTE-SNUM-V5.23.md"
+        contract_path = PROJECT / "03-CONTRAT-PAQUET-RENDU-SNUM-V5.23.md"
 
         for path in (prompt_path, method_path, contract_path):
             self.assertTrue(path.is_file(), path.name)
@@ -47,32 +373,45 @@ class SplitProjectKitTests(unittest.TestCase):
         self.assertIn(method_path.name, prompt)
         self.assertIn(contract_path.name, prompt)
         self.assertIn("message initial", prompt_normalized)
-        self.assertIn("Au tour du message `VALIDER`", prompt)
-        self.assertIn("Au tour du message `GENERER_PAQUET`", prompt)
+        self.assertIn("Après `COLLECTE_TERMINEE_BEST_EFFORT`, `VALIDER`", prompt)
+        self.assertIn("Après `VALIDATION_TERMINEE`, `GENERER_PAQUET`", prompt)
         self.assertNotIn("`CONTINUE`", prompt)
-        self.assertNotIn("marqueur attendu", prompt)
         self.assertIn(
-            "Ne compare jamais la date d’édition aux bornes", prompt_normalized
+            "ne compare jamais la date d’édition aux bornes", prompt_normalized
         )
         method = method_path.read_text(encoding="utf-8")
-        self.assertIn("`COLLECTE_TERMINEE`", method)
+        self.assertIn("`COLLECTE_TERMINEE_BEST_EFFORT`", method)
         self.assertIn("`VALIDATION_TERMINEE`", prompt)
         self.assertIn("`PAQUET_RENDU_PRET`", prompt)
-        self.assertIn("Ne lance jamais deux étapes dans le même tour", prompt)
-        self.assertIn("Entrée manquante, ambiguë ou inversée", prompt_normalized)
+        self.assertIn("Une transition par tour", prompt)
+        self.assertIn(
+            "Entrée manquante, ambiguë ou fenêtre inversée", prompt_normalized
+        )
         self.assertNotIn("une seule réponse finale", prompt)
         self.assertNotIn("exécute uniquement la phase demandée", prompt.lower())
 
         readme = (PROJECT / "README.md").read_text(encoding="utf-8")
         self.assertIn("### Message initial dans le Projet Collecte", readme)
-        self.assertIn("DATE_EDITION = 14 octobre 2026", readme)
-        self.assertIn("PERIODE = du 3 octobre 2026 au 13 octobre 2026 inclus", readme)
+        self.assertIn(
+            "```text\n"
+            "DATE_EDITION = 14 octobre 2026\n"
+            "PERIODE = du 3 octobre 2026 au 13 octobre 2026 inclus\n"
+            "NUMERIQUE\n"
+            "```",
+            readme,
+        )
         self.assertEqual(readme.count("```text\nVALIDER\n```"), 1)
         self.assertEqual(readme.count("```text\nGENERER_PAQUET\n```"), 1)
         self.assertNotIn("```text\nCONTINUE\n```", readme)
-        self.assertNotIn("### Message 1 avec le Web", readme)
-        self.assertNotIn("### Message 2 sans le Web", readme)
-        self.assertNotIn("### Message 3 sans le Web", readme)
+        for command in (
+            "`RECHERCHE_NUMERIQUE`",
+            "`RECHERCHE_IA`",
+            "`RECHERCHE_COMMANDE`",
+            "`RECHERCHE_RH`",
+            "`RECHERCHE_BERCY`",
+        ):
+            self.assertIn(command, readme)
+        self.assertIn("`COLLECTE_TERMINEE_BEST_EFFORT`", readme)
 
         with ZipFile(PROJECT / "Newsletter SNUM - Collecte.zip") as archive:
             self.assertEqual(
@@ -85,81 +424,71 @@ class SplitProjectKitTests(unittest.TestCase):
                 ],
             )
 
-    def test_collecte_traces_both_search_passes_before_insufficiency(self):
-        prompt = (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.20.md").read_text(
+    def test_collecte_uses_five_search_lots_then_validation(self):
+        prompt = (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md").read_text(
             encoding="utf-8"
         )
-        method = (PROJECT / "02-METHODE-COLLECTE-SNUM-V5.20.md").read_text(
+        method = (PROJECT / "02-METHODE-COLLECTE-SNUM-V5.23.md").read_text(
             encoding="utf-8"
         )
         method_normalized = " ".join(method.split())
 
-        self.assertIn("`TRACE_RECHERCHE`", prompt)
-        self.assertIn("`TRACE_RECHERCHE`", method)
-        self.assertIn("`PASSE_1`", method)
-        self.assertIn("`PASSE_2`", method)
-        self.assertIn("exactement cinq requêtes ciblées", method_normalized)
-        self.assertIn("`REQUETE`", method)
-        self.assertIn("`STATUT_WEB=EXECUTEE`", method)
-        self.assertIn("`URL_EXAMINEES`", method)
-        self.assertIn("`NB_DANS_FENETRE`", method)
-        self.assertIn("10 requêtes `EXECUTEE`", method_normalized)
-        self.assertIn("5 en `PASSE_2`", method_normalized)
-        self.assertIn("Affiche intégralement `TRACE_RECHERCHE`", prompt)
-        self.assertIn("Avant toute réponse, termine les appels Web", prompt)
-        self.assertIn("OUTIL_WEB_INDISPONIBLE", prompt)
-        self.assertIn("OUTIL_WEB_INDISPONIBLE", method)
+        self.assertIn(
+            "Ordre immuable : `RECHERCHE_NUMERIQUE`→`RECHERCHE_IA`→"
+            "`RECHERCHE_COMMANDE`→`RECHERCHE_RH`→`RECHERCHE_BERCY`→"
+            "`COLLECTE_TERMINEE_BEST_EFFORT`; suivant≠reçu",
+            method_normalized,
+        )
+        self.assertIn("Une seule recherche est demandée par message", method_normalized)
+        self.assertIn("`REQUETE_A_ENVOYER=VALIDER`", method)
+        self.assertNotIn("`RECOMPTER`", method)
+        self.assertNotIn("`PASSE_2`", method)
+        self.assertNotIn("`TRACE_RECHERCHE`", prompt)
+        self.assertIn("RECHERCHE_NON_PROUVEE", method)
         self.assertLessEqual(len(prompt), 4000)
         self.assertLessEqual(len(method), 4500)
 
     def test_collecte_prompt_forbids_false_success_and_invalid_query_shapes(self):
-        prompt = (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.20.md").read_text(
+        prompt = (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md").read_text(
             encoding="utf-8"
         )
-        method = (PROJECT / "02-METHODE-COLLECTE-SNUM-V5.20.md").read_text(
+        method = (PROJECT / "02-METHODE-COLLECTE-SNUM-V5.23.md").read_text(
             encoding="utf-8"
         )
         method_normalized = " ".join(method.split())
 
-        self.assertIn("une requête sans `site:`", method_normalized)
-        self.assertIn("une avec `site:`", method_normalized)
-        self.assertIn("domaines absents de `PASSE_1`", method_normalized)
-        self.assertIn("moins de cinq candidats datés", method_normalized)
-        self.assertIn("Branche terminale unique", method_normalized)
-        self.assertIn("Sinon, après deux passes insuffisantes", method_normalized)
-        self.assertIn("COLLECTE_INSUFFISANTE", method_normalized)
-        self.assertIn("Avant toute réponse, termine les appels Web", prompt)
+        self.assertIn(
+            "demande explicitement une recherche sur le Web", method_normalized
+        )
+        self.assertIn(
+            "sources gouvernementales ou institutionnelles", method_normalized
+        )
+        self.assertIn("Aucun compteur ni seuil ne bloque", method_normalized)
+        self.assertNotIn("COLLECTE_INSUFFISANTE", method_normalized)
+        self.assertIn("n’avance jamais", prompt)
 
     def test_collecte_distinguishes_empty_results_from_web_failure(self):
-        prompt = (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.20.md").read_text(
+        method = (PROJECT / "02-METHODE-COLLECTE-SNUM-V5.23.md").read_text(
+            encoding="utf-8"
+        )
+        method_normalized = " ".join(method.split())
+
+        self.assertIn("Si aucune source visible n’apparaît", method_normalized)
+        self.assertIn("relance exactement la même requête", method_normalized)
+        self.assertIn("Résultat sans citation ou échec technique", method_normalized)
+
+    def test_collecte_search_turns_do_not_render_intermediate_state(self):
+        prompt = (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md").read_text(
             encoding="utf-8"
         )
         prompt_normalized = " ".join(prompt.split())
 
-        self.assertIn("Zéro résultat reste", prompt_normalized)
-        self.assertIn("n’est pas `OUTIL_WEB_INDISPONIBLE`", prompt_normalized)
-        self.assertIn("URL_EXAMINEES=AUCUNE", prompt_normalized)
-        self.assertIn("Poursuis toutes les requêtes", prompt_normalized)
-
-    def test_collecte_response_starts_directly_with_search_trace(self):
-        prompt = (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.20.md").read_text(
-            encoding="utf-8"
-        )
-        prompt_normalized = " ".join(prompt.split())
-
-        self.assertIn("Le tout premier caractère visible", prompt_normalized)
-        self.assertIn("Extrais silencieusement", prompt_normalized)
-        self.assertIn(
-            "Le tout premier caractère visible est le `T` de `TRACE_RECHERCHE`",
-            prompt_normalized,
-        )
-        self.assertIn(
-            "une seule réponse complète commençant par `TRACE_RECHERCHE`",
-            prompt_normalized,
-        )
+        self.assertIn("rends `RESULTATS_RECHERCHE` non vide", prompt_normalized)
+        self.assertIn("Ne répète aucun lot", prompt_normalized)
+        self.assertNotIn("`ETAT_COLLECTE`", prompt_normalized)
 
     def test_collecte_accepts_an_edition_date_after_the_collection_window(self):
-        prompt = (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.20.md").read_text(
+        prompt = (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md").read_text(
             encoding="utf-8"
         )
         prompt_normalized = " ".join(prompt.split())
@@ -170,119 +499,293 @@ class SplitProjectKitTests(unittest.TestCase):
         self.assertIn(valid_example, prompt_normalized)
         self.assertLess(
             prompt_normalized.index(valid_example),
-            prompt_normalized.index("Entrée manquante, ambiguë ou inversée"),
+            prompt_normalized.index("Entrée manquante, ambiguë ou fenêtre inversée"),
         )
-        self.assertIn("poursuis `COLLECTE`", prompt_normalized)
-        self.assertIn("`DATE_EDITION` sert uniquement au paquet", prompt_normalized)
+        self.assertIn(
+            "ne compare jamais la date d’édition aux bornes", prompt_normalized
+        )
+        self.assertIn("La date d’édition sert uniquement au paquet", prompt_normalized)
 
-    def test_collecte_forbids_stopping_after_empty_contract_headings(self):
-        prompt = (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.20.md").read_text(
+    def test_collecte_classifies_each_source_during_its_search_turn(self):
+        prompt = (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md").read_text(
             encoding="utf-8"
         )
         prompt_normalized = " ".join(prompt.split())
 
-        self.assertIn("Les trois titres seuls sont invalides", prompt_normalized)
+        self.assertIn("DANS_FENETRE=OUI|NON", prompt_normalized)
+        self.assertIn("`DEBUT_ISO <= date ISO <= FIN_ISO`", prompt_normalized)
         self.assertIn(
-            "N’affiche aucun titre avant les appels Web",
-            prompt_normalized,
+            "Après chaque recherche, si une source est visible", prompt_normalized
         )
 
-    def test_collecte_reconciles_window_count_with_exact_candidate_dates(self):
-        method = (PROJECT / "02-METHODE-COLLECTE-SNUM-V5.20.md").read_text(
+    def test_collecte_validates_exact_dates_without_a_count_gate(self):
+        method = (PROJECT / "02-METHODE-COLLECTE-SNUM-V5.23.md").read_text(
             encoding="utf-8"
         )
         method_normalized = " ".join(method.split())
 
-        self.assertIn("`DATE_ISO_PROVISOIRE`", method_normalized)
-        self.assertIn("`DANS_FENETRE=OUI|NON`", method_normalized)
-        self.assertIn("date exacte de publication", method_normalized)
-        self.assertIn("jour, mois et année", method_normalized)
-        self.assertIn("URL canoniques uniques marquées `OUI`", method_normalized)
-        self.assertIn(
-            "`NB_DANS_FENETRE` égale les URL canoniques uniques marquées `OUI`",
-            method_normalized,
-        )
-        self.assertIn(
-            "`CANDIDATS` et, une seule fois, `NB_DANS_FENETRE`",
-            method_normalized,
-        )
-        self.assertNotIn(
-            "Pour chaque passe, donne `NB_DANS_FENETRE`", method_normalized
-        )
-        self.assertIn("`NB_DANS_FENETRE >= 5`", method_normalized)
-        self.assertIn("`ETAPE_SUIVANTE | Envoyez VALIDER`", method_normalized)
-        self.assertIn("`COLLECTE_INSUFFISANTE | NB_DANS_FENETRE=N`", method_normalized)
+        self.assertIn("DANS_FENETRE=OUI|NON", method_normalized)
+        self.assertIn("Une date exacte contient jour, mois et année", method_normalized)
+        self.assertIn("Aucun compteur ni seuil ne bloque", method_normalized)
+        self.assertNotIn("`NB_DANS_FENETRE`", method_normalized)
 
-    def test_collecte_never_counts_out_of_window_candidates(self):
-        prompt = (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.20.md").read_text(
+    def test_validation_reuses_the_cumulative_registry_one_to_one(self):
+        prompt = " ".join(
+            (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md")
+            .read_text(encoding="utf-8")
+            .split()
+        )
+        method = " ".join(
+            (PROJECT / "02-METHODE-COLLECTE-SNUM-V5.23.md")
+            .read_text(encoding="utf-8")
+            .split()
+        )
+
+        self.assertIn("Après chaque recherche", prompt)
+        for text in (prompt, method):
+            self.assertIn("`REGISTRE_CUMULATIF`", text)
+            self.assertIn("`U01`", text)
+            self.assertIn("recopie sans changement", text)
+            self.assertIn("ajoute chaque nouvelle URL", text)
+            self.assertIn(
+                "`U01` puis `max(Uxx)+1`; aucun réemploi",
+                text,
+            )
+            self.assertIn("DANS_FENETRE=OUI|NON", text)
+        self.assertIn("depuis `REGISTRE_CUMULATIF`", method)
+        self.assertIn(
+            "`2026-10-04` et `2026-10-11` valent `OUI`",
+            method,
+        )
+
+    def test_collecte_never_validates_out_of_window_sources(self):
+        method = (PROJECT / "02-METHODE-COLLECTE-SNUM-V5.23.md").read_text(
             encoding="utf-8"
         )
-        prompt_normalized = " ".join(prompt.split())
+        method_normalized = " ".join(method.split())
 
-        self.assertIn("affiche `DANS_FENETRE=OUI|NON` par URL", prompt_normalized)
+        self.assertIn("DANS_FENETRE=OUI|NON", method_normalized)
         self.assertIn(
-            "`N` compte seulement les URL uniques `OUI`, jamais tous les candidats",
-            prompt_normalized,
-        )
-        self.assertIn(
-            "7 candidats dont 5 `OUI` donne `NB_DANS_FENETRE = 5`",
-            prompt_normalized,
+            "Une source est valide si `DANS_FENETRE` et accès valent `OUI`",
+            method_normalized,
         )
 
     def test_collecte_rejects_observed_october_first_and_month_only_regression(self):
-        prompt = (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.20.md").read_text(
+        method = (PROJECT / "02-METHODE-COLLECTE-SNUM-V5.23.md").read_text(
+            encoding="utf-8"
+        )
+        method_normalized = " ".join(method.split())
+
+        self.assertIn(
+            "Pour `2026-10-03..2026-10-13`, le `2026-10-01` vaut `NON`",
+            method_normalized,
+        )
+        self.assertIn("avec `INCONNUE` si la date n’est pas exacte", method_normalized)
+
+    def test_collecte_skips_targeted_searches_in_minimal_best_effort(self):
+        prompt = (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md").read_text(
+            encoding="utf-8"
+        )
+        method = (PROJECT / "02-METHODE-COLLECTE-SNUM-V5.23.md").read_text(
+            encoding="utf-8"
+        )
+        targeted_commands = tuple(
+            f"RECHERCHE_CIBLEE_{rubric}"
+            for rubric in ("NUMERIQUE", "IA", "COMMANDE", "RH", "BERCY")
+        )
+
+        for command in targeted_commands:
+            self.assertNotIn(command, prompt)
+            self.assertNotIn(command, method)
+        self.assertIn("`COLLECTE_TERMINEE_BEST_EFFORT`", prompt)
+
+    def test_collecte_always_renders_the_best_effort_terminal_branch(self):
+        prompt = (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md").read_text(
+            encoding="utf-8"
+        )
+        prompt_normalized = " ".join(prompt.split())
+
+        self.assertIn("`COLLECTE_TERMINEE_BEST_EFFORT`", prompt_normalized)
+        self.assertIn("`REQUETE_A_ENVOYER=VALIDER`", prompt_normalized)
+        self.assertIn("ne bloque jamais sur un nombre minimal", prompt_normalized)
+
+    def test_validation_persists_its_full_outputs_for_the_packet_turn(self):
+        prompt = (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md").read_text(
             encoding="utf-8"
         )
         prompt_normalized = " ".join(prompt.split())
 
         self.assertIn(
-            "`2026-10-01` vaut `NON` pour `2026-10-03..2026-10-13`",
+            "Affiche intégralement `CONTROLE_DATES`, `SOURCES_VALIDES` et "
+            "`SOURCES_EXCLUES`",
             prompt_normalized,
         )
-        self.assertIn("un mois seul reste `INCONNUE` et `NON`", prompt_normalized)
-        self.assertIn("si `OUI` != `N`, corrige et recompte", prompt_normalized)
+        self.assertIn("Conserve ces structures", prompt_normalized)
 
-    def test_collecte_always_renders_the_terminal_branch_after_the_count(self):
-        prompt = (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.20.md").read_text(
+    def test_validation_cannot_reopen_the_search_completeness_guard(self):
+        prompt = " ".join(
+            (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md")
+            .read_text(encoding="utf-8")
+            .split()
+        )
+
+        self.assertIn(
+            "À `VALIDER`, produis toi-même depuis `REGISTRE_CUMULATIF`; "
+            "ne demande rien à l’utilisateur",
+            prompt,
+        )
+        self.assertIn("ne bloque jamais sur un nombre minimal", prompt)
+
+    def test_validation_builds_controls_without_requesting_more_user_data(self):
+        prompt = " ".join(
+            (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md")
+            .read_text(encoding="utf-8")
+            .split()
+        )
+        method = " ".join(
+            (PROJECT / "02-METHODE-COLLECTE-SNUM-V5.23.md")
+            .read_text(encoding="utf-8")
+            .split()
+        )
+
+        guard = (
+            "À `VALIDER`, produis toi-même depuis `REGISTRE_CUMULATIF`; "
+            "ne demande rien à l’utilisateur"
+        )
+        self.assertIn(guard, prompt)
+        self.assertIn(guard, method)
+
+    def test_visible_web_sources_cannot_render_an_empty_result_block(self):
+        prompt = " ".join(
+            (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md")
+            .read_text(encoding="utf-8")
+            .split()
+        )
+        method = " ".join(
+            (PROJECT / "02-METHODE-COLLECTE-SNUM-V5.23.md")
+            .read_text(encoding="utf-8")
+            .split()
+        )
+
+        guard = "si une source est visible, rends `RESULTATS_RECHERCHE` non vide"
+        self.assertIn(guard, prompt)
+        self.assertIn(guard, method)
+        self.assertIn(
+            "source visible, même hors fenêtre ⇒ suivant, jamais `A_COMPLETER`",
+            prompt,
+        )
+
+    def test_best_effort_marks_validation_as_the_next_command(self):
+        prompt = " ".join(
+            (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md")
+            .read_text(encoding="utf-8")
+            .split()
+        )
+        method = " ".join(
+            (PROJECT / "02-METHODE-COLLECTE-SNUM-V5.23.md")
+            .read_text(encoding="utf-8")
+            .split()
+        )
+
+        for text in (prompt, method):
+            self.assertIn("`REQUETE_A_ENVOYER=VALIDER`", text)
+            self.assertNotIn("`RECOMPTER`", text)
+
+    def test_validation_success_requires_a_complete_control_line_per_candidate(self):
+        prompt = " ".join(
+            (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md")
+            .read_text(encoding="utf-8")
+            .split()
+        )
+        method = " ".join(
+            (PROJECT / "02-METHODE-COLLECTE-SNUM-V5.23.md")
+            .read_text(encoding="utf-8")
+            .split()
+        )
+
+        self.assertIn(
+            "Pour chaque entrée du registre, produis `CONTROLE_DATES` : titre, "
+            "dates brute/ISO, bornes, accès, `CLE_EVENEMENT` et décision",
+            method,
+        )
+        self.assertIn("`valides + exclues = registre`", prompt)
+        self.assertIn("Rends `VALIDATION_TERMINEE`", prompt)
+
+    def test_exact_packet_command_cannot_fall_through_to_invalid_state(self):
+        prompt = (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md").read_text(
             encoding="utf-8"
         )
         prompt_normalized = " ".join(prompt.split())
 
+        route = (
+            "Après `VALIDATION_TERMINEE`, `GENERER_PAQUET` exécute seulement `PAQUET`"
+        )
+        guard = "`GENERER_PAQUET` n’est jamais `ETAT_INVALIDE` dans cet état"
+        self.assertIn(route, prompt_normalized)
+        self.assertIn(guard, prompt_normalized)
         self.assertIn(
-            "`N >= 5` termine par `COLLECTE_TERMINEE`; sinon termine par "
-            "`A_COMPLETER | COLLECTE_INSUFFISANTE | NB_DANS_FENETRE=N`",
+            "À `VALIDER`, produis toi-même depuis `REGISTRE_CUMULATIF`",
             prompt_normalized,
+        )
+
+    def test_packet_success_requires_parsing_the_exact_emitted_json(self):
+        prompt = " ".join(
+            (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md")
+            .read_text(encoding="utf-8")
+            .split()
+        )
+
+        self.assertIn(
+            "analyse exactement le JSON émis avec un parseur",
+            prompt,
+        )
+        self.assertIn("`PAQUET_INCOMPLET | JSON_INVALIDE`", prompt)
+        self.assertIn(
+            "Après analyse réussie, termine par `PAQUET_RENDU_PRET`",
+            prompt,
+        )
+
+    def test_packet_command_builds_its_own_json_without_user_input(self):
+        prompt = " ".join(
+            (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md")
+            .read_text(encoding="utf-8")
+            .split()
+        )
+
+        self.assertIn("Construis toi-même le JSON depuis `SOURCES_VALIDES`", prompt)
+        self.assertIn("ne demande jamais de paquet à l’utilisateur", prompt)
+        self.assertIn("analyse exactement le JSON émis", prompt)
+        self.assertLess(
+            prompt.index("Construis toi-même le JSON"),
+            prompt.index("analyse exactement le JSON émis"),
         )
 
     def test_collecte_rejects_dates_outside_the_inclusive_iso_bounds(self):
-        method = (PROJECT / "02-METHODE-COLLECTE-SNUM-V5.20.md").read_text(
+        method = (PROJECT / "02-METHODE-COLLECTE-SNUM-V5.23.md").read_text(
             encoding="utf-8"
         )
         method_normalized = " ".join(method.split())
 
-        predicate = "`DEBUT_ISO <= DATE_ISO_PROVISOIRE <= FIN_ISO`"
+        predicate = "`DEBUT_ISO <= date ISO <= FIN_ISO`"
         self.assertIn(predicate, method_normalized)
-        self.assertIn("date ISO `< DEBUT_ISO` ou `> FIN_ISO`", method_normalized)
-        self.assertIn("corrige puis recompte avant d’afficher", method_normalized)
+        self.assertIn("sinon utilise `NON`", method_normalized)
         self.assertLess(
-            method_normalized.index("## 2. CALCULER"),
-            method_normalized.index("## 3. RENDRE"),
+            method_normalized.index("## 1. Préparer les requêtes"),
+            method_normalized.index("## 3. Terminer la collecte en best effort"),
         )
 
-    def test_collecte_recomputes_final_window_statuses_from_scratch(self):
-        method = (PROJECT / "02-METHODE-COLLECTE-SNUM-V5.20.md").read_text(
+    def test_collecte_does_not_recompute_window_statuses_at_the_end(self):
+        method = (PROJECT / "02-METHODE-COLLECTE-SNUM-V5.23.md").read_text(
             encoding="utf-8"
         )
         method_normalized = " ".join(method.split())
 
-        self.assertIn("recalcule chaque `DANS_FENETRE` depuis zéro", method_normalized)
-        self.assertIn("`BORNE_BASSE_OK=OUI`", method_normalized)
-        self.assertIn("`BORNE_HAUTE_OK=OUI`", method_normalized)
+        self.assertIn("DANS_FENETRE=OUI|NON", method_normalized)
         self.assertIn(
-            "Si l’un vaut `NON`, impose `DANS_FENETRE=NON`", method_normalized
+            "le métier valide les sources et leurs décisions", method_normalized
         )
-        self.assertIn("aucune date hors bornes n’est marquée `OUI`", method_normalized)
-        self.assertIn("corrige puis recompte avant d’afficher", method_normalized)
+        self.assertNotIn("`CANDIDATS`", method_normalized)
+        self.assertNotIn("`BORNE_BASSE_OK`", method_normalized)
 
     def test_technical_sources_are_kept_out_of_root(self):
         for name in ("03-GABARIT-HTML.md", "05-BLOCS-HTML-CANONIQUES.md"):
@@ -291,9 +794,9 @@ class SplitProjectKitTests(unittest.TestCase):
 
     def test_active_installation_files_are_available_at_root(self):
         expected = (
-            "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.20.md",
-            "02-METHODE-COLLECTE-SNUM-V5.20.md",
-            "03-CONTRAT-PAQUET-RENDU-SNUM-V5.20.md",
+            "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md",
+            "02-METHODE-COLLECTE-SNUM-V5.23.md",
+            "03-CONTRAT-PAQUET-RENDU-SNUM-V5.23.md",
             "20-PROMPT-SYSTEME-RENDU-HTML-SNUM-V5.19.md",
             "21-CANON-HTML-COQUE-A-V5.19.md",
             "22-CANON-HTML-COQUE-B-V5.19.md",
@@ -326,7 +829,7 @@ class SplitProjectKitTests(unittest.TestCase):
         self.assertEqual(inactive, [])
 
     def test_projects_have_isolated_responsibilities(self):
-        collecte = (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.20.md").read_text(
+        collecte = (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md").read_text(
             encoding="utf-8"
         )
         rendu = (PROJECT / "20-PROMPT-SYSTEME-RENDU-HTML-SNUM-V5.19.md").read_text(
@@ -339,18 +842,20 @@ class SplitProjectKitTests(unittest.TestCase):
         self.assertIn("DATE_EDITION", collecte)
         self.assertIn("PERIODE", collecte)
         operational_steps = (
-            "Au tour du message initial, exécute seulement `COLLECTE`",
-            "Au tour du message `VALIDER`, exécute seulement `VALIDATION`",
-            "Au tour du message `GENERER_PAQUET`, exécute seulement `PAQUET`",
+            "Le message initial ne lance pas le Web",
+            "`RECHERCHE_NUMERIQUE`→`RECHERCHE_IA`→`RECHERCHE_COMMANDE`",
+            "## Valider en best effort",
+            "Après `COLLECTE_TERMINEE_BEST_EFFORT`, `VALIDER` exécute seulement `VALIDATION`",
+            "Après `VALIDATION_TERMINEE`, `GENERER_PAQUET` exécute seulement `PAQUET`",
         )
         self.assertEqual(
             sorted(operational_steps, key=collecte.index), list(operational_steps)
         )
 
-        method = (PROJECT / "02-METHODE-COLLECTE-SNUM-V5.20.md").read_text(
+        method = (PROJECT / "02-METHODE-COLLECTE-SNUM-V5.23.md").read_text(
             encoding="utf-8"
         )
-        contract = (PROJECT / "03-CONTRAT-PAQUET-RENDU-SNUM-V5.20.md").read_text(
+        contract = (PROJECT / "03-CONTRAT-PAQUET-RENDU-SNUM-V5.23.md").read_text(
             encoding="utf-8"
         )
         legacy_collecte = (
@@ -371,16 +876,12 @@ class SplitProjectKitTests(unittest.TestCase):
 
         self.assertNotIn(legacy_collecte_block, method)
         self.assertIn(legacy_contract, contract)
-        self.assertIn("Chaque requête cible explicitement la fenêtre", method)
-        self.assertIn("moins de cinq candidats datés provisoirement", method)
-        self.assertIn("après deux passes insuffisantes", method)
-        self.assertIn("Ne filtre aucun candidat selon sa date", method)
-        self.assertIn("seconde passe", method)
-        self.assertIn("`NB_DANS_FENETRE >= 5`", method)
-        self.assertIn("date ISO `>= DEBUT_ISO`", method)
-        self.assertIn("date ISO `<= FIN_ISO`", method)
-        self.assertIn("Déduplique d’abord par URL canonique", method)
-        self.assertIn("`valides + exclues = candidats`", method)
+        self.assertIn("Vise la période inclusive en France", method)
+        self.assertNotIn("`PASSE_2`", method)
+        self.assertNotIn("`RECOMPTER`", collecte)
+        self.assertIn("`DEBUT_ISO <= date ISO <= FIN_ISO`", method)
+        self.assertIn("ajoute chaque nouvelle URL canonique unique", method)
+        self.assertIn("`valides + exclues = registre`", method)
         self.assertIn("SNUM_PAQUET_RENDU_V519", contract)
         self.assertIn("`publication_date_iso`", contract)
         self.assertIn("`publication_date_long`", contract)
@@ -520,9 +1021,9 @@ class SplitProjectKitTests(unittest.TestCase):
                 archive.namelist(),
                 [
                     f"{collecte_folder}/",
-                    f"{collecte_folder}/01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.20.md",
-                    f"{collecte_folder}/02-METHODE-COLLECTE-SNUM-V5.20.md",
-                    f"{collecte_folder}/03-CONTRAT-PAQUET-RENDU-SNUM-V5.20.md",
+                    f"{collecte_folder}/01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md",
+                    f"{collecte_folder}/02-METHODE-COLLECTE-SNUM-V5.23.md",
+                    f"{collecte_folder}/03-CONTRAT-PAQUET-RENDU-SNUM-V5.23.md",
                 ],
             )
 
@@ -557,9 +1058,9 @@ class SplitProjectKitTests(unittest.TestCase):
         self.assertIn("KIT_DECOUPLE_OK", result.stdout)
 
     def test_notice_documents_the_complete_two_project_sequence(self):
-        notice = (PROJECT / "NOTICE-V5.20.md").read_text(encoding="utf-8")
+        notice = (PROJECT / "NOTICE-V5.23.md").read_text(encoding="utf-8")
         collecte = (
-            (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.20.md")
+            (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md")
             .read_text(encoding="utf-8")
             .rstrip("\n")
         )
@@ -575,8 +1076,8 @@ class SplitProjectKitTests(unittest.TestCase):
         self.assertNotIn("PHASE VALIDATION.", notice)
         self.assertNotIn("PHASE PAQUET.", notice)
         self.assertEqual(notice.count("PHASE RENDRE_EDITION."), 1)
-        self.assertIn("02-METHODE-COLLECTE-SNUM-V5.20.md", notice)
-        self.assertIn("03-CONTRAT-PAQUET-RENDU-SNUM-V5.20.md", notice)
+        self.assertIn("02-METHODE-COLLECTE-SNUM-V5.23.md", notice)
+        self.assertIn("03-CONTRAT-PAQUET-RENDU-SNUM-V5.23.md", notice)
         self.assertIn("téléversez les quatre ressources `CANON-HTML-", notice)
         self.assertIn("copiez le bloc entier", notice)
         self.assertIn("A_COMPLETER", notice)
@@ -586,7 +1087,7 @@ class SplitProjectKitTests(unittest.TestCase):
     def test_readme_is_the_pedagogical_active_entry_point(self):
         readme = (PROJECT / "README.md").read_text(encoding="utf-8")
         collecte = (
-            (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.20.md")
+            (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md")
             .read_text(encoding="utf-8")
             .rstrip("\n")
         )
