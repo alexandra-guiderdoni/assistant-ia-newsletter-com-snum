@@ -17,6 +17,9 @@ recherches initiales, sans recomptage ni seuil bloquant.
 > source, le métier a dû imposer le lot suivant ; le premier paquet était invalide et
 > une commande `CORRIGER_PAQUET` a été nécessaire. Voir `RAPPORT-V5.24.md`.
 
+**Version livrée : `v5.24`.** Ce tag fige le couple Collecte V5.24 et Rendu HTML
+V5.19 après la recette réelle du paquet et du HTML.
+
 ## Démarrage express dans une nouvelle conversation
 
 1. Ouvrez une conversation neuve dans `Newsletter SNUM - Collecte`, avec le Web

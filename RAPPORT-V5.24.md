@@ -18,6 +18,9 @@ Le même paquet a ensuite produit un rendu complet avec `HTML COMPLET`, un bloc 
 `<!doctype html>` à `</html>` et le marqueur exact `HTML_CANONIQUE_PRODUIT`. Le cas
 minimal sans essentiel reste refusé à tort par le Projet Rendu et n’est pas validé.
 
+Cette livraison est figée par le tag annoté `v5.24`. Il couvre la Collecte V5.24 et
+le Rendu HTML V5.19 dans leur configuration testée le 17 octobre 2026.
+
 ## Configuration du test mensuel
 
 - édition : 17 octobre 2026 ;
