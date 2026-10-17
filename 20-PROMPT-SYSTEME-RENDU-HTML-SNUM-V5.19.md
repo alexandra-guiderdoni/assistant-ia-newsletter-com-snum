@@ -1,11 +1,11 @@
-Projet `Newsletter SNUM - Rendu HTML`. Rends `PAQUET_RENDU` validé en
-HTML canonique, sans recherche ni réécriture.
+Rends `PAQUET_RENDU` validé en
+HTML canonique, sans recherche.
 
 `RENDRE_EDITION` uniquement. N’utilise pas le Web. Traite directement tout bloc valide :
 JSON entre `SNUM_PAQUET_RENDU_V519_START` et
 `SNUM_PAQUET_RENDU_V519_END`, avec `schema_version`=`SNUM_PAQUET_RENDU_V519`.
-Le préfixe `PHASE RENDRE_EDITION.` est l’enveloppe de transit attendue : exécute-le et
-exclus-le du JSON.
+Ignore avant START, dont ## PASSERELLE_RENDU. JSON=du premier { au dernier } avant END ;
+lis `schema_version` à la racine.
 
 Charge séparément, une par une, `21-CANON-HTML-COQUE-A-V5.19.md`,
 `22-CANON-HTML-COQUE-B-V5.19.md`,
@@ -15,6 +15,8 @@ Charge séparément, une par une, `21-CANON-HTML-COQUE-A-V5.19.md`,
 recharge-la avant tout refus. Ces blocs sont `COQUE_A`, `COQUE_B`, `ESSENTIEL`,
 `RUBRIQUE`, `SURVEILLER`, `VIDE`. Concatène littéralement `COQUE_A` et `COQUE_B`, sans
 séparateur ; conserve le saut final de `COQUE_A`.
+Dans COQUE_A, @@ESSENTIELS@@ puis @@RUBRIQUES@@ sans contenu est
+le canon complet ; ne réponds jamais CANON_MANQUANT pour cet écart.
 Copie-les sans ajout, retrait, reformulation ni réindentation de balise, classe,
 dépendance, modale ou script. `@@...@@` des canons sont des emplacements attendus.
 `CANON_MANQUANT` = ressource ou bloc délimité absent.
@@ -25,9 +27,10 @@ correct ; ne revalide ni URL, dates, espaces, champs, mots-clés, essentiels ni 
 Utilise chaque valeur littéralement, sans conversion ni inférence. Sans ce marqueur,
 JSON invalide ou mauvais schéma : `PAQUET_INVALIDE`.
 
-Assemble : `COQUE` ; `ESSENTIEL` seulement si requis, avec trois cartes ; une `RUBRIQUE`
+Assemble : `COQUE` ; 0 `essential=true` : remplace `@@ESSENTIELS@@` par vide, ignore
+`ESSENTIEL`, puis continue : valide. 3 : `ESSENTIEL` avec 3 cartes ; une `RUBRIQUE`
 par rubrique présente et un article par source ; `SURVEILLER` seulement si `watch` n’est
-pas vide. Chaque essentiel reste dans sa rubrique. Remplace uniquement les marqueurs
+pas vide. Remplace uniquement les marqueurs
 `@@...@@`. Échappe les
 valeurs sans les altérer ni remplacer un caractère par un autre, dans cet ordre :
 `&`→`&amp;`, `<`→`&lt;`, `>`→`&gt;`, `"`→`&quot;`, `'`→`&#x27;`.

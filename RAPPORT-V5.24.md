@@ -1,105 +1,89 @@
-# Rapport de recette Collecte V5.24
+# Rapport de recette V5.24 — Collecte et Rendu HTML
 
 ## Verdict
 
-`GO` pour la chaîne best effort du Projet `Newsletter SNUM - Collecte`, depuis le
-message initial jusqu’au JSON compatible avec `Newsletter SNUM - Rendu HTML`, à la
-condition que le métier suive la séquence fixe des cinq recherches.
+`GO` pour `Newsletter SNUM - Collecte` en mode best effort minimal. Après les cinq
+recherches, `VALIDER` puis `GENERER_PAQUET` ont produit automatiquement un JSON V519
+copiable à partir d’une seule source valide, sans demander au métier de fabriquer ou
+de corriger le JSON.
 
-La recette réelle du 17 octobre 2026 a atteint `PAQUET_RENDU_PRET` dans une seule
-conversation de l’Assistant. Le paquet final est un JSON analysable conforme au schéma
-`SNUM_PAQUET_RENDU_V519`, avec trois articles datés dans la fenêtre et trois
-essentiels. Le métier n’a besoin que de l’Assistant.
+`NO-GO` pour la chaîne complète avec ce paquet minimal dans l’Assistant. Dans une
+conversation neuve de `Newsletter SNUM - Rendu HTML`, le paquet à un article et zéro
+`essential=true` a été refusé à tort par `PAQUET_INVALIDE`, alors que le contrat de
+rendu autorise explicitement zéro essentiel. Une tentative finale a rendu la règle
+procédurale et prioritaire ; le même refus a persisté. Continuer à reformuler le prompt
+ne constitue donc plus une correction prouvée.
 
-La prochaine requête proposée par le modèle n’est pas une source de vérité : elle a
-répété `RECHERCHE_IA` une fois pendant la recette. Le métier doit suivre l’ordre fixe
-`NUMERIQUE → IA → COMMANDE → RH → BERCY`, puis envoyer `VALIDER` et
-`GENERER_PAQUET`.
-
-Ce verdict ne couvre pas la transformation du paquet en HTML, qui n’a pas été
-retestée dans cette recette.
+La chaîne complète avait auparavant produit `HTML COMPLET` avec un paquet de cinq
+articles. La régression restante est limitée au paquet minimal sans essentiel, mais
+elle bloque un parcours métier garanti de bout en bout puisque le métier ne dispose
+que de l’Assistant.
 
 ## Configuration testée
 
-- prompt système : `01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.24.md` ;
-- ressources : `02-METHODE-COLLECTE-SNUM-V5.24.md` et
-  `03-CONTRAT-PAQUET-RENDU-SNUM-V5.24.md` ;
-- paramètres : édition du 14 octobre 2026, fenêtre du 3 au 13 octobre 2026 inclus ;
-- conversation de preuve :
-  `https://assistant.numerique.gouv.fr/chat/ad6fc357-c8c3-4acb-b45f-62f37febc321`.
+- édition : 14 octobre 2026 ;
+- fenêtre inclusive : du 3 au 13 octobre 2026 ;
+- Collecte : `01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.24.md` et ses deux ressources ;
+- Rendu : `20-PROMPT-SYSTEME-RENDU-HTML-SNUM-V5.19.md` et ses quatre ressources ;
+- preuve Collecte :
+  `https://assistant.numerique.gouv.fr/chat/eee88268-0c06-4709-b59d-a2c3424c2931/` ;
+- preuve du refus Rendu minimal :
+  `https://assistant.numerique.gouv.fr/chat/0856a641-568f-43f2-863b-2078529e3330` ;
+- preuve antérieure du Rendu à cinq articles :
+  `https://assistant.numerique.gouv.fr/chat/b24a2832-15ea-4746-8189-931d5fead672/`.
 
-## Séquence exécutée
+## Résultat Collecte observé
 
-1. message initial avec `DATE_EDITION`, `PERIODE` et `NUMERIQUE`, Web désactivé ;
-2. Web activé, puis cinq recherches dans l’ordre fixe ;
-3. après la suggestion erronée de rejouer `RECHERCHE_IA`, envoi de
-   `RECHERCHE_COMMANDE` conformément à la séquence métier ;
-4. après `RECHERCHE_BERCY`, Web désactivé puis envoi de `VALIDER` ;
-5. envoi de `GENERER_PAQUET`.
+La collecte a conservé une source Bercy datée du 3 octobre 2026, exclu une source
+hors fenêtre et poursuivi les rubriques sans source prouvée. Après `VALIDER`, la
+commande `GENERER_PAQUET` a émis un bloc unique contenant :
 
-## Résultats observés
+- les marqueurs `SNUM_PAQUET_RENDU_V519_START` et
+  `SNUM_PAQUET_RENDU_V519_END` ;
+- `schema_version=SNUM_PAQUET_RENDU_V519` ;
+- les sept clés racine prévues, sans métadonnée parasite ;
+- un seul article, avec `rubric=bercy`, une date dans la fenêtre et une URL unique ;
+- `essential=false`, conformément au mode best effort pour une à deux sources ;
+- la fin `PAQUET_RENDU_PRET`.
 
-### Collecte
+Le JSON est donc sorti automatiquement de la phase Collecte. Le métier n’a eu à
+produire aucun champ manuellement.
 
-- les cinq recherches ont été exécutées dans l’ordre métier ;
-- le registre cumulatif va de `U01` à `U07` ;
-- trois sources sont dans la fenêtre : `U01` et `U06` au 13 octobre, puis `U07` au
-  3 octobre 2026 ;
-- quatre sources sont hors fenêtre : `U02`, `U03`, `U04` et `U05` ;
-- la fin de collecte contient `COLLECTE_TERMINEE_BEST_EFFORT` et
-  `REQUETE_A_ENVOYER=VALIDER`.
+## Résultat Rendu observé
 
-### Validation
+Le bloc Collecte a été collé sans modification dans une conversation Rendu neuve,
+Web désactivé. L’Assistant a terminé par :
 
-- `SOURCES_VALIDES` contient exactement `U01`, `U06` et `U07` ;
-- `SOURCES_EXCLUES` contient exactement `U02`, `U03`, `U04` et `U05` ;
-- aucune source hors fenêtre n’est passée dans le paquet ;
-- la fin contient `VALIDATION_TERMINEE` et
-  `REQUETE_A_ENVOYER=GENERER_PAQUET`.
+```text
+A_COMPLETER
+CONTROLES_EN_ECHEC
+PAQUET_INVALIDE | Le JSON ne contient aucun article avec essential=true.
+```
 
-### Paquet JSON
-
-Le dernier bloc émis a été extrait de la page et analysé indépendamment de
-l’affirmation de l’Assistant :
-
-- `JSON.parse` réussi ;
-- sept clés racine exactes et schéma `SNUM_PAQUET_RENDU_V519` ;
-- trois articles `U01`, `U06` et `U07` ;
-- trois dates comprises dans la fenêtre inclusive ;
-- trois URL HTTPS uniques ;
-- exactement trois `essential=true` ;
-- un objet dans `watch` pour signaler les rubriques sans source valide ;
-- fin explicite : `PAQUET_RENDU_PRET`.
+Ce contrôle n’existe pas dans le contrat local. Le prompt Rendu contient désormais
+la branche explicite : zéro `essential=true` remplace `@@ESSENTIELS@@` par vide et
+continue le rendu. Le comportement réel n’a toutefois pas suivi cette instruction.
 
 ## Contrôles locaux
 
-- 68 tests `unittest` réussis ;
-- Ruff réussi ;
+- 80 tests `unittest` exécutés avec succès ;
+- Ruff exécuté avec succès ;
 - `python3 scripts/build_split_kit.py --check` retourne `KIT_DECOUPLE_OK` ;
-- `git diff --check` réussi ;
-- prompt système : 3 958 caractères, sous la limite de 4 000 ;
-- méthode : 3 410 caractères et contrat : 1 938 caractères, sous 4 500 ;
+- `git diff --check` exécuté avec succès ;
+- prompt Collecte : 4 000 caractères ;
+- prompt Rendu : 3 998 caractères ;
 - `README.md` et `NOTICE-V5.24.md` identiques ;
-- ZIP Collecte régénéré avec exactement les trois fichiers V5.24.
+- les deux ZIP ont été régénérés depuis les sources actives.
 
-## Limites connues
+Ces contrôles prouvent la cohérence du kit local. Ils ne prouvent pas à eux seuls le
+respect des instructions par le modèle de l’Assistant ; la recette réelle ci-dessus
+reste la preuve de cette limite.
 
-- la génération de la prochaine rubrique par le modèle reste non déterministe ; la
-  séquence fixe documentée évite qu’une répétition bloque le métier ;
-- la branche `AUCUNE_SOURCE_PROUVEE` est couverte par les tests locaux, mais aucune
-  des cinq recherches de cette recette Web n’a rendu un lot vide ;
-- `U04` a répété l’URL et le fait de `U02` dans le registre alors qu’une autre source
-  était affichée ; les deux entrées étaient hors fenêtre et ont été exclues, mais cet
-  écart confirme que le registre doit rester contrôlé par le métier ;
-- la recette vérifie l’orchestration, les dates et le contrat JSON, pas la qualité
-  éditoriale indépendante de chaque source Web ;
-- le Projet `Newsletter SNUM - Rendu HTML` n’a été ni modifié ni exécuté dans ce
-  delta.
+## Consigne pour la présentation
 
-## Conclusion pour la présentation
-
-La Collecte V5.24 est présentable pour un parcours métier entièrement réalisé dans
-l’Assistant : le métier suit les cinq requêtes dans l’ordre documenté, contrôle le
-registre visible, désactive le Web, puis obtient le JSON avec `VALIDER` et
-`GENERER_PAQUET`. Le chaînage automatique de la rubrique suivante ne doit pas être
-présenté comme déterministe.
+La Collecte et la génération automatique du JSON sont présentables. Pour une
+démonstration de la chaîne complète lundi, utiliser une période qui fournit au moins
+trois sources valides et vérifier que le paquet contient exactement trois
+`essential=true` avant de le transmettre au Rendu. Ne pas présenter le cas minimal à
+zéro essentiel comme validé tant qu’une nouvelle recette réelle n’aboutit pas à
+`HTML COMPLET`.

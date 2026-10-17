@@ -32,7 +32,7 @@ class SplitProjectKitTests(unittest.TestCase):
             self.assertIn(transition, prompt)
         self.assertIn("rends `COLLECTE_TERMINEE_BEST_EFFORT`", prompt)
         self.assertIn("`REQUETE_A_ENVOYER=VALIDER`", prompt)
-        self.assertIn("l’insuffisance dans `watch` sans bloquer le JSON", prompt)
+        self.assertIn("Sous cinq : `watch`", prompt)
         for text in (prompt, method):
             self.assertNotIn("`RECOMPTER`", text)
             self.assertNotIn("COLLECTE_INSUFFISANTE", text)
@@ -155,8 +155,7 @@ class SplitProjectKitTests(unittest.TestCase):
         method = " ".join(method_path.read_text(encoding="utf-8").split())
 
         self.assertIn(
-            "Après chaque recherche, si une source est visible, rends "
-            "`RESULTATS_RECHERCHE` non vide",
+            "si une source est visible, rends `RESULTATS_RECHERCHE` non vide",
             prompt,
         )
         record = (
@@ -165,7 +164,7 @@ class SplitProjectKitTests(unittest.TestCase):
         )
         self.assertIn(record, prompt)
         self.assertIn(record, method)
-        self.assertIn("valide les sources et décisions visibles", prompt)
+        self.assertIn("`VALIDATION_METIER_REQUISE`", prompt)
 
     def test_v524_collecte_advances_one_rubric_per_turn(self):
         prompt_path = PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.24.md"
@@ -218,7 +217,7 @@ class SplitProjectKitTests(unittest.TestCase):
             .split()
         )
 
-        self.assertIn("la `REQUETE_A_ENVOYER` suivante", prompt)
+        self.assertIn("`REQUETE_A_ENVOYER` suivante", prompt)
         self.assertIn("`REQUETE_A_ENVOYER=RECHERCHE_NUMERIQUE", prompt)
         for transition in (
             "`RECHERCHE_NUMERIQUE→RECHERCHE_IA`",
@@ -301,7 +300,7 @@ class SplitProjectKitTests(unittest.TestCase):
             prompt,
         )
         self.assertIn("`DEBUT_ISO <= date ISO <= FIN_ISO`", prompt)
-        self.assertIn("chaque nouvelle URL canonique unique", prompt)
+        self.assertIn("chaque URL canonique unique", prompt)
         self.assertIn("`VALIDATION_METIER_REQUISE`", prompt)
 
     def test_v524_is_the_only_active_collecte_release(self):
@@ -355,7 +354,6 @@ class SplitProjectKitTests(unittest.TestCase):
         prompt_normalized = " ".join(prompt.split())
         self.assertLessEqual(len(prompt), 4000)
         self.assertLessEqual(len(method), 3600)
-        self.assertIn("## Recherches validées par le métier", prompt_normalized)
         self.assertIn("une seule recherche Web par message", prompt_normalized)
         phases = (
             "## 1. Préparer les requêtes",
@@ -370,16 +368,13 @@ class SplitProjectKitTests(unittest.TestCase):
             encoding="utf-8"
         )
         normalized = " ".join(prompt.split())
-        load = (
-            "Charge `02-METHODE-COLLECTE-SNUM-V5.24.md` et "
+        resources = (
+            "`02-METHODE-COLLECTE-SNUM-V5.24.md`; "
             "`03-CONTRAT-PAQUET-RENDU-SNUM-V5.24.md`"
         )
 
-        self.assertIn(load, normalized)
-        self.assertLess(
-            normalized.index(load),
-            normalized.index("## Recherches validées par le métier"),
-        )
+        self.assertIn(resources, normalized)
+        self.assertLess(normalized.index(resources), normalized.index("Sans Web"))
 
     def test_v524_collecte_runs_from_dates_then_validated_queries(self):
         prompt_path = PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.24.md"
@@ -543,9 +538,7 @@ class SplitProjectKitTests(unittest.TestCase):
 
         self.assertIn("DANS_FENETRE=OUI|NON", prompt_normalized)
         self.assertIn("`DEBUT_ISO <= date ISO <= FIN_ISO`", prompt_normalized)
-        self.assertIn(
-            "Après chaque recherche, si une source est visible", prompt_normalized
-        )
+        self.assertIn("si une source est visible", prompt_normalized)
 
     def test_collecte_validates_exact_dates_without_a_count_gate(self):
         method = (PROJECT / "02-METHODE-COLLECTE-SNUM-V5.24.md").read_text(
@@ -570,12 +563,12 @@ class SplitProjectKitTests(unittest.TestCase):
             .split()
         )
 
-        self.assertIn("Après chaque recherche", prompt)
+        self.assertIn("si une source est visible", prompt)
         for text in (prompt, method):
             self.assertIn("`REGISTRE_CUMULATIF`", text)
             self.assertIn("`U01`", text)
             self.assertIn("recopie sans changement", text)
-            self.assertIn("ajoute chaque nouvelle URL", text)
+            self.assertRegex(text, r"ajoute chaque (?:nouvelle )?URL")
             self.assertIn(
                 "`U01` puis `max(Uxx)+1`; aucun réemploi",
                 text,
@@ -753,6 +746,54 @@ class SplitProjectKitTests(unittest.TestCase):
             prompt_normalized,
         )
 
+    def test_best_effort_packet_never_blocks_on_too_few_valid_sources(self):
+        prompt = " ".join(
+            (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.24.md")
+            .read_text(encoding="utf-8")
+            .split()
+        )
+
+        self.assertIn(
+            "Zéro à deux sources valides ne produisent jamais `PAQUET_INCOMPLET`",
+            prompt,
+        )
+        self.assertIn(
+            "`articles=[]` si zéro ; sinon tous les articles ont `essential=false`",
+            prompt,
+        )
+
+    def test_packet_prompt_names_the_exact_json_shape(self):
+        prompt = " ".join(
+            (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.24.md")
+            .read_text(encoding="utf-8")
+            .split()
+        )
+
+        self.assertIn(
+            "Racine=schema_version|edition_date|edition_date_long|window_start|"
+            "window_end| articles|watch; sans metadata",
+            prompt,
+        )
+        self.assertIn(
+            "Article=id|rubric|title|source| publication_date_iso|"
+            "publication_date_long|url|fact|keywords|takeaway|snum_interest| "
+            "essential",
+            prompt,
+        )
+
+    def test_packet_prompt_maps_search_lots_to_canonical_rubrics(self):
+        prompt = " ".join(
+            (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.24.md")
+            .read_text(encoding="utf-8")
+            .split()
+        )
+
+        self.assertIn(
+            "lot NUMERIQUE/IA/COMMANDE/RH/BERCY ⇒ rubric "
+            "numerique/ia/commande/rh/bercy",
+            prompt,
+        )
+
     def test_packet_success_requires_parsing_the_exact_emitted_json(self):
         prompt = " ".join(
             (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.24.md")
@@ -782,7 +823,7 @@ class SplitProjectKitTests(unittest.TestCase):
         contract_normalized = " ".join(contract.split())
         passerelle = " ".join(contract.split("## PASSERELLE_RENDU", 1)[1].split())
 
-        self.assertIn("réponds par un seul bloc copiable", prompt)
+        self.assertIn("Réponds par un seul bloc copiable", prompt)
         self.assertIn("recopie le contenu sous `## PASSERELLE_RENDU`", prompt)
         self.assertIn("sans ce titre", prompt)
         self.assertNotIn("reproduis la `PASSERELLE_RENDU`", prompt)
@@ -853,11 +894,15 @@ class SplitProjectKitTests(unittest.TestCase):
             .split()
         )
 
-        self.assertIn("Construis toi-même le JSON depuis `SOURCES_VALIDES`", prompt)
-        self.assertIn("ne demande jamais de paquet à l’utilisateur", prompt)
+        self.assertIn(
+            "Construis le JSON depuis `SOURCES_VALIDES` sans le demander à "
+            "l’utilisateur",
+            prompt,
+        )
+        self.assertIn("sans le demander à l’utilisateur", prompt)
         self.assertIn("analyse exactement le JSON émis", prompt)
         self.assertLess(
-            prompt.index("Construis toi-même le JSON"),
+            prompt.index("Construis le JSON"),
             prompt.index("analyse exactement le JSON émis"),
         )
 
@@ -945,7 +990,6 @@ class SplitProjectKitTests(unittest.TestCase):
         operational_steps = (
             "Sans Web, le message initial rend",
             "`RECHERCHE_NUMERIQUE→RECHERCHE_IA`",
-            "## Valider en best effort",
             "Après `COLLECTE_TERMINEE_BEST_EFFORT`, `VALIDER` exécute seulement `VALIDATION`",
             "Après `VALIDATION_TERMINEE`, `GENERER_PAQUET` exécute seulement `PAQUET`",
         )
@@ -1072,6 +1116,46 @@ class SplitProjectKitTests(unittest.TestCase):
         self.assertIn("Charge séparément, une par une", prompt)
         self.assertIn("`SNUM_CANON_V519_*_START` et `SNUM_CANON_V519_*_END`", prompt)
         self.assertIn("lecture est fragmentaire", prompt)
+
+    def test_renderer_accepts_the_intentional_empty_canon_slots(self):
+        prompt = " ".join(
+            (PROJECT / "20-PROMPT-SYSTEME-RENDU-HTML-SNUM-V5.19.md")
+            .read_text(encoding="utf-8")
+            .split()
+        )
+
+        self.assertIn(
+            "Dans COQUE_A, @@ESSENTIELS@@ puis @@RUBRIQUES@@ sans contenu est le "
+            "canon complet ; ne réponds jamais CANON_MANQUANT pour "
+            "cet écart",
+            prompt,
+        )
+
+    def test_renderer_extracts_json_despite_the_collecte_heading(self):
+        prompt = " ".join(
+            (PROJECT / "20-PROMPT-SYSTEME-RENDU-HTML-SNUM-V5.19.md")
+            .read_text(encoding="utf-8")
+            .split()
+        )
+
+        self.assertIn(
+            "Ignore avant START, dont ## PASSERELLE_RENDU. JSON=du premier { au "
+            "dernier } avant END",
+            prompt,
+        )
+
+    def test_renderer_accepts_a_packet_without_essential_articles(self):
+        prompt = " ".join(
+            (PROJECT / "20-PROMPT-SYSTEME-RENDU-HTML-SNUM-V5.19.md")
+            .read_text(encoding="utf-8")
+            .split()
+        )
+
+        self.assertIn(
+            "0 `essential=true` : remplace `@@ESSENTIELS@@` par vide, ignore "
+            "`ESSENTIEL`, puis continue : valide. 3 : `ESSENTIEL` avec 3 cartes",
+            prompt,
+        )
         self.assertIn("`@@ID_RUBRIQUE@@` reçoit la valeur brute de `rubric`", prompt)
         self.assertIn("jamais un slug du titre", prompt)
         self.assertIn("Le tag emploie toujours le titre/tag", prompt)
@@ -1227,7 +1311,8 @@ class SplitProjectKitTests(unittest.TestCase):
         self.assertIn("A_COMPLETER", notice)
         self.assertIn("Newsletter SNUM - Collecte.zip", notice)
         self.assertIn("Newsletter SNUM - Rendu HTML.zip", notice)
-        self.assertIn("GO pour Collecte → JSON → Rendu HTML", notice)
+        self.assertIn("GO pour Collecte → JSON", notice)
+        self.assertIn("NO-GO pour la chaîne complète", notice)
         self.assertIn("## Démarrage express dans une nouvelle conversation", notice)
         self.assertIn("Web désactivé", notice)
         self.assertIn("Web activé uniquement pendant les cinq recherches", notice)
@@ -1257,7 +1342,8 @@ class SplitProjectKitTests(unittest.TestCase):
         self.assertIn(f"```text\n{rendu}\n```", readme)
         self.assertIn("Newsletter SNUM - Collecte.zip", readme)
         self.assertIn("Newsletter SNUM - Rendu HTML.zip", readme)
-        self.assertIn("GO pour Collecte → JSON → Rendu HTML", readme)
+        self.assertIn("GO pour Collecte → JSON", readme)
+        self.assertIn("NO-GO pour la chaîne complète", readme)
         self.assertIn("## Démarrage express dans une nouvelle conversation", readme)
         self.assertIn("Web désactivé", readme)
         self.assertIn("Web activé uniquement pendant les cinq recherches", readme)
