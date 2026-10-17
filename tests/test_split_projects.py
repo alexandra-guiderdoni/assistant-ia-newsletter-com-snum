@@ -758,27 +758,30 @@ class SplitProjectKitTests(unittest.TestCase):
             prompt,
         )
         self.assertIn(
-            "`articles=[]` si zéro ; sinon tous les articles ont `essential=false`",
+            "`articles=[]` si zéro. Trie `numerique→ia→commande→rh→bercy`",
             prompt,
         )
+        self.assertIn("Sous trois, tous ont `essential=false`", prompt)
+        self.assertIn("exactement trois ont `essential=true`", prompt)
 
     def test_packet_prompt_names_the_exact_json_shape(self):
-        prompt = " ".join(
-            (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.24.md")
+        contract = " ".join(
+            (PROJECT / "03-CONTRAT-PAQUET-RENDU-SNUM-V5.24.md")
             .read_text(encoding="utf-8")
             .split()
         )
 
         self.assertIn(
-            "Racine=schema_version|edition_date|edition_date_long|window_start|"
-            "window_end| articles|watch; sans metadata",
-            prompt,
+            "Le JSON contient exactement : `schema_version`=`SNUM_PAQUET_RENDU_V519`, "
+            "`edition_date`, `edition_date_long`, `window_start`, `window_end`, "
+            "`articles`, `watch`",
+            contract,
         )
         self.assertIn(
-            "Article=id|rubric|title|source| publication_date_iso|"
-            "publication_date_long|url|fact|keywords|takeaway|snum_interest| "
-            "essential",
-            prompt,
+            "Chaque article contient : `id`, `rubric`, `title`, `source`, "
+            "`publication_date_iso`, `publication_date_long`, `url`, `fact`, "
+            "`keywords`, `takeaway`, `snum_interest`, `essential`",
+            contract,
         )
 
     def test_packet_prompt_maps_search_lots_to_canonical_rubrics(self):
@@ -861,14 +864,14 @@ class SplitProjectKitTests(unittest.TestCase):
         )
 
     def test_packet_prompt_keeps_v519_schema_and_escapes_internal_quotes(self):
-        prompt = " ".join(
-            (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.24.md")
+        contract = " ".join(
+            (PROJECT / "03-CONTRAT-PAQUET-RENDU-SNUM-V5.24.md")
             .read_text(encoding="utf-8")
             .split()
         )
 
-        self.assertIn("`schema_version`=`SNUM_PAQUET_RENDU_V519`", prompt)
-        self.assertIn('Échappe tout guillemet interne en `\\"`', prompt)
+        self.assertIn("`schema_version`=`SNUM_PAQUET_RENDU_V519`", contract)
+        self.assertIn('`\\"` et `\\\\` doivent être échappés', contract)
 
     def test_packet_ready_requires_all_word_limits_to_be_rechecked(self):
         prompt = " ".join(
@@ -876,11 +879,16 @@ class SplitProjectKitTests(unittest.TestCase):
             .read_text(encoding="utf-8")
             .split()
         )
+        contract = " ".join(
+            (PROJECT / "03-CONTRAT-PAQUET-RENDU-SNUM-V5.24.md")
+            .read_text(encoding="utf-8")
+            .split()
+        )
 
         self.assertIn(
-            "compte les mots de chaque `fact` (≤25), `takeaway` et "
-            "`snum_interest` (≤15)",
-            prompt,
+            "`fact` contient au plus 25 mots ; `takeaway` et "
+            "`snum_interest` au plus 15 mots",
+            contract,
         )
         self.assertIn(
             "N’émets jamais `PAQUET_RENDU_PRET` si une limite échoue",

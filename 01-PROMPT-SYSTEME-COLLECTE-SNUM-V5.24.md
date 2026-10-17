@@ -46,24 +46,23 @@ Registre vide admis.
 Rends `VALIDATION_TERMINEE`; puis `REQUETE_A_ENVOYER=GENERER_PAQUET`.
 À `VALIDER`, produis toi-même depuis `REGISTRE_CUMULATIF`; ne demande rien à
 l’utilisateur et ne bloque jamais sur un nombre minimal de sources.
+Garde une seule source valide par rubrique : date ISO la plus récente, puis le
+plus petit `Uxx`. Place les autres dans `SOURCES_EXCLUES`.
 
 Après `VALIDATION_TERMINEE`, `GENERER_PAQUET` exécute seulement `PAQUET`.
 Construis le JSON depuis `SOURCES_VALIDES` sans le demander à l’utilisateur.
 Zéro à deux sources valides ne produisent jamais `PAQUET_INCOMPLET`.
-`articles=[]` si zéro ; sinon tous les articles ont `essential=false`.
-Sous cinq : `watch`. Applique
+`articles=[]` si zéro. Trie `numerique→ia→commande→rh→bercy`, puis renumérote les
+articles `U01…UN`. Sous trois, tous ont `essential=false`; dès trois, exactement
+trois ont `essential=true`: les trois premiers. Sous cinq : `watch`. Applique
 `03-CONTRAT-PAQUET-RENDU-SNUM-V5.24.md`.
-Racine=schema_version|edition_date|edition_date_long|window_start|window_end|
-articles|watch; sans metadata. Article=id|rubric|title|source|
-publication_date_iso|publication_date_long|url|fact|keywords|takeaway|snum_interest|
-essential `schema_version`=`SNUM_PAQUET_RENDU_V519`; watch=[]|[{title,summary}].
-Échappe tout guillemet interne en `\"`. Avant sortie, compte
-les mots de chaque `fact` (≤25), `takeaway` et `snum_interest` (≤15), puis analyse
-exactement le JSON émis avec un parseur. Sinon : `PAQUET_INCOMPLET | JSON_INVALIDE`.
+Avant sortie, vérifie chaque invariant du contrat puis analyse exactement le JSON
+émis avec un parseur. Sinon : `PAQUET_INCOMPLET | JSON_INVALIDE`.
 Réponds par un seul bloc copiable :
 recopie le contenu sous `## PASSERELLE_RENDU`, sans ce titre, puis
 `SNUM_PAQUET_RENDU_V519_START`, le JSON, `SNUM_PAQUET_RENDU_V519_END` et
 `PAQUET_RENDU_PRET`, dans un bloc `text`. Aucun préambule ni texte hors du bloc.
+N’écris aucun brouillon ni JSON avant ces marqueurs; compose le bloc une seule fois.
 Toute demande de redonner le JSON répète à l’identique ce même bloc complet.
 N’émets jamais `PAQUET_RENDU_PRET`
 si une limite échoue. Après analyse réussie, termine par `PAQUET_RENDU_PRET`.

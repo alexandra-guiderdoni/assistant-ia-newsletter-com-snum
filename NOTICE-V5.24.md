@@ -11,12 +11,12 @@ recherches initiales, sans recomptage ni seuil bloquant.
 - `Newsletter SNUM - Collecte` produit un `PAQUET_RENDU`.
 - `Newsletter SNUM - Rendu HTML` transforme ce paquet en HTML canonique.
 
-> **État de recette V5.24 : GO pour Collecte → JSON ; NO-GO pour la chaîne complète
-> avec un paquet minimal.** Le 17 octobre 2026, la Collecte a produit automatiquement
-> un paquet V519 à un article. Dans une conversation Rendu neuve, l’Assistant l’a
-> refusé à tort faute de `essential=true`, malgré la règle qui autorise zéro essentiel.
-> Un paquet de cinq articles avait auparavant produit le HTML attendu. Voir
-> `RAPPORT-V5.24.md` pour les preuves et les limites.
+> **État de recette V5.24 : GO pour Collecte → JSON en mode assisté borné ;
+> NO-GO pour la chaîne complète automatique.** Le 17 octobre 2026, une fenêtre d’un mois a
+> produit un paquet V519 final de cinq articles, un par rubrique et trois essentiels.
+> Deux recherches ciblées et deux `CORRIGER_PAQUET` ont toutefois été nécessaires.
+> Les consignes ci-dessous intègrent désormais la normalisation du paquet ; leur
+> recette réelle après modification reste à exécuter. Voir `RAPPORT-V5.24.md`.
 
 ## Démarrage express dans une nouvelle conversation
 
@@ -153,24 +153,23 @@ Registre vide admis.
 Rends `VALIDATION_TERMINEE`; puis `REQUETE_A_ENVOYER=GENERER_PAQUET`.
 À `VALIDER`, produis toi-même depuis `REGISTRE_CUMULATIF`; ne demande rien à
 l’utilisateur et ne bloque jamais sur un nombre minimal de sources.
+Garde une seule source valide par rubrique : date ISO la plus récente, puis le
+plus petit `Uxx`. Place les autres dans `SOURCES_EXCLUES`.
 
 Après `VALIDATION_TERMINEE`, `GENERER_PAQUET` exécute seulement `PAQUET`.
 Construis le JSON depuis `SOURCES_VALIDES` sans le demander à l’utilisateur.
 Zéro à deux sources valides ne produisent jamais `PAQUET_INCOMPLET`.
-`articles=[]` si zéro ; sinon tous les articles ont `essential=false`.
-Sous cinq : `watch`. Applique
+`articles=[]` si zéro. Trie `numerique→ia→commande→rh→bercy`, puis renumérote les
+articles `U01…UN`. Sous trois, tous ont `essential=false`; dès trois, exactement
+trois ont `essential=true`: les trois premiers. Sous cinq : `watch`. Applique
 `03-CONTRAT-PAQUET-RENDU-SNUM-V5.24.md`.
-Racine=schema_version|edition_date|edition_date_long|window_start|window_end|
-articles|watch; sans metadata. Article=id|rubric|title|source|
-publication_date_iso|publication_date_long|url|fact|keywords|takeaway|snum_interest|
-essential `schema_version`=`SNUM_PAQUET_RENDU_V519`; watch=[]|[{title,summary}].
-Échappe tout guillemet interne en `\"`. Avant sortie, compte
-les mots de chaque `fact` (≤25), `takeaway` et `snum_interest` (≤15), puis analyse
-exactement le JSON émis avec un parseur. Sinon : `PAQUET_INCOMPLET | JSON_INVALIDE`.
+Avant sortie, vérifie chaque invariant du contrat puis analyse exactement le JSON
+émis avec un parseur. Sinon : `PAQUET_INCOMPLET | JSON_INVALIDE`.
 Réponds par un seul bloc copiable :
 recopie le contenu sous `## PASSERELLE_RENDU`, sans ce titre, puis
 `SNUM_PAQUET_RENDU_V519_START`, le JSON, `SNUM_PAQUET_RENDU_V519_END` et
 `PAQUET_RENDU_PRET`, dans un bloc `text`. Aucun préambule ni texte hors du bloc.
+N’écris aucun brouillon ni JSON avant ces marqueurs; compose le bloc une seule fois.
 Toute demande de redonner le JSON répète à l’identique ce même bloc complet.
 N’émets jamais `PAQUET_RENDU_PRET`
 si une limite échoue. Après analyse réussie, termine par `PAQUET_RENDU_PRET`.
@@ -322,7 +321,9 @@ VALIDER
 Le résultat doit contenir `CONTROLE_DATES`, `SOURCES_VALIDES`, `SOURCES_EXCLUES`,
 `VALIDATION_TERMINEE`, puis `GENERER_PAQUET`. Si la réponse
 commence par `A_COMPLETER`, arrêtez. Moins de cinq sources valides reste acceptable :
-l’insuffisance est signalée dans `watch` et ne bloque pas le paquet JSON.
+l’insuffisance est signalée dans `watch` et ne bloque pas le paquet JSON. S’il existe
+plusieurs sources valides pour une rubrique, seule la plus récente est conservée ; en
+cas d’égalité, l’identifiant `Uxx` le plus petit gagne.
 
 ### Génération du paquet dans le Projet Collecte
 
@@ -337,7 +338,9 @@ le paquet entre `SNUM_PAQUET_RENDU_V519_START` et
 `SNUM_PAQUET_RENDU_V519_END`, puis se terminer par `PAQUET_RENDU_PRET`. Après
 vérification, cliquez sur **Copier le code** et transmettez ce bloc passerelle entier au
 Projet Rendu HTML. Si vous redemandez le JSON, la réponse doit répéter ce bloc complet.
-Si elle contient `PAQUET_INCOMPLET`, arrêtez.
+Si elle contient `PAQUET_INCOMPLET`, arrêtez. Le paquet doit contenir au plus un article
+par rubrique, des identifiants contigus `U01…UN` et, dès trois articles, exactement
+trois essentiels.
 
 ### Message suivant dans le Projet Rendu HTML, sans le Web
 
@@ -350,11 +353,12 @@ Le résultat doit contenir `## HTML COMPLET`, un unique bloc de
 `<!doctype html>` à `</html>`, puis `## CONTROLES` et
 `État : HTML_CANONIQUE_PRODUIT - contrôle métier requis`.
 
-Limite observée le 17 octobre 2026 : avec zéro à deux articles et donc aucun
-`essential=true`, le Projet Rendu peut encore répondre `A_COMPLETER` à tort. Cette
-branche n’est pas validée pour une démonstration métier. Pour une démonstration
-fiable dans l’Assistant, utilisez une collecte comportant au moins trois sources
-valides et vérifiez que le paquet contient exactement trois essentiels.
+Limite observée le 17 octobre 2026 : le test mensuel a nécessité deux recherches
+ciblées manuelles pour compléter les rubriques Numérique et Bercy. Le chaînage Web
+entièrement automatique n’est donc pas garanti. Pour une démonstration, utilisez une
+collecte d’au moins trois rubriques et vérifiez les trois essentiels. La normalisation
+ajoutée après cette recette vise à supprimer les commandes `CORRIGER_PAQUET`, mais
+n’est pas encore prouvée par une nouvelle recette réelle.
 
 Le marqueur `PAQUET_RENDU_PRET` atteste les contrôles de Collecte. Le Projet Rendu ne
 revalide ni les URL ni les dates et ne recompte pas les mots ; il assemble les valeurs
@@ -371,7 +375,7 @@ Vérifiez :
 - les mêmes dates, titres et URL que dans le paquet ;
 - le `<title>` affiche `edition_date_long`, jamais la date ISO ;
 - chaque date affichée vient de `publication_date_long` ;
-- chaque article dans sa rubrique ;
+- au plus un article par rubrique et des identifiants `U01…UN` sans trou ;
 - zéro ou exactement trois cartes essentielles, conformément au paquet ;
 - la modale après le footer ;
 - CSS et scripts DSFR 1.15.2 ;

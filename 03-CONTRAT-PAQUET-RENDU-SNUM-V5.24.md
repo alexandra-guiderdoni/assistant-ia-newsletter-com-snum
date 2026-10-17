@@ -29,6 +29,13 @@ d’essentiels. Si le nombre d’URL uniques diffère du nombre d’articles, r�
 `PAQUET_INCOMPLET | <identifiant> | <champ>`, sans JSON. Sinon termine après le marqueur
 de fin par `PAQUET_RENDU_PRET`.
 
+## Normalisation V5.24
+
+Une rubrique apparaît au plus une fois. Trie les articles dans l’ordre `numerique`,
+`ia`, `commande`, `rh`, `bercy`, puis attribue les identifiants contigus `U01…UN`.
+À partir de trois articles, les trois premiers sont les seuls `essential=true`.
+N’émets ni brouillon, ni copie du JSON, ni second bloc.
+
 ## PASSERELLE_RENDU
 
 En réussite, le bloc copiable commence exactement par ces lignes, avant
