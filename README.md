@@ -3,7 +3,7 @@
 
 # Configurer les deux Projets Newsletter SNUM
 
-Le dispositif actif associe la Collecte V5.23 au Rendu HTML V5.19. La Collecte V5.23
+Le dispositif actif associe la Collecte V5.24 au Rendu HTML V5.19. La Collecte V5.24
 fait valider chaque recherche Web par le métier, propage un `REGISTRE_CUMULATIF`
 numéroté `U01…UN`, puis produit un paquet JSON en mode best effort après les cinq
 recherches initiales, sans recomptage ni seuil bloquant.
@@ -11,9 +11,10 @@ recherches initiales, sans recomptage ni seuil bloquant.
 - `Newsletter SNUM - Collecte` produit un `PAQUET_RENDU`.
 - `Newsletter SNUM - Rendu HTML` transforme ce paquet en HTML canonique.
 
-> **État de recette V5.23 : GO pour Collecte → JSON.** La chaîne best effort a été
-> validée dans l’Assistant ; voir `RAPPORT-V5.23.md`. Le Rendu HTML n’a pas été
-> retesté dans cette recette.
+> **État de recette V5.24 : GO pour Collecte → JSON avec séquence métier fixe.**
+> La recette réelle atteint `PAQUET_RENDU_PRET`. La suggestion automatique de la
+> prochaine rubrique peut toutefois se répéter : le métier suit l’ordre immuable
+> documenté ci-dessous. Le Rendu HTML n’a pas été retesté dans cette recette.
 
 ## Pourquoi deux Projets
 
@@ -29,10 +30,10 @@ Les deux ressources Collecte suivent la même limite.
 
 Pour `Newsletter SNUM - Collecte`, utilisez les fichiers dans cet ordre :
 
-1. `01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md` : copiez tout son contenu dans
+1. `01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.24.md` : copiez tout son contenu dans
    **Instructions (expérimental)** ;
-2. `02-METHODE-COLLECTE-SNUM-V5.23.md` : téléversez cette ressource ;
-3. `03-CONTRAT-PAQUET-RENDU-SNUM-V5.23.md` : téléversez cette ressource.
+2. `02-METHODE-COLLECTE-SNUM-V5.24.md` : téléversez cette ressource ;
+3. `03-CONTRAT-PAQUET-RENDU-SNUM-V5.24.md` : téléversez cette ressource.
 
 Pour `Newsletter SNUM - Rendu HTML`, utilisez les fichiers dans cet ordre :
 
@@ -59,9 +60,9 @@ Téléchargez puis décompressez les deux archives présentes à la racine :
 
 Le dossier `Newsletter SNUM - Collecte` doit contenir exactement :
 
-1. `01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md` ;
-2. `02-METHODE-COLLECTE-SNUM-V5.23.md` ;
-3. `03-CONTRAT-PAQUET-RENDU-SNUM-V5.23.md`.
+1. `01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.24.md` ;
+2. `02-METHODE-COLLECTE-SNUM-V5.24.md` ;
+3. `03-CONTRAT-PAQUET-RENDU-SNUM-V5.24.md`.
 
 Le dossier `Newsletter SNUM - Rendu HTML` doit contenir exactement :
 
@@ -81,8 +82,8 @@ un HTML copié depuis le chat perd les styles Bacoco quand il est ouvert hors du
 
 1. Créez le Projet `Newsletter SNUM - Collecte`.
 2. Copiez tout le bloc suivant dans **Instructions (expérimental)**.
-3. Téléversez `02-METHODE-COLLECTE-SNUM-V5.23.md` et
-   `03-CONTRAT-PAQUET-RENDU-SNUM-V5.23.md` dans les ressources.
+3. Téléversez `02-METHODE-COLLECTE-SNUM-V5.24.md` et
+   `03-CONTRAT-PAQUET-RENDU-SNUM-V5.24.md` dans les ressources.
 4. Vérifiez que les deux ressources sont visibles et que leur indexation est terminée.
 5. Enregistrez le Projet.
 
@@ -90,21 +91,22 @@ un HTML copié depuis le chat perd les styles Bacoco quand il est ouvert hors du
 `DATE_EDITION = <date en français>`
 `PERIODE = du <date en français> au <date en français> inclus`
 `NUMERIQUE`
-Le message initial est valide seulement avec ces trois lignes
-La date d’édition sert uniquement au paquet.
+Exige ces lignes. La date d’édition sert seulement au paquet.
 `DATE_EDITION=2026-10-14` avec fenêtre `2026-10-03..2026-10-13` est valide : ne
 compare jamais la date d’édition aux bornes.
 Entrée manquante, ambiguë ou fenêtre inversée :
 `A_COMPLETER | PARAMETRES_INVALIDES | <détail>`.
-Charge `02-METHODE-COLLECTE-SNUM-V5.23.md` et
-`03-CONTRAT-PAQUET-RENDU-SNUM-V5.23.md`.
+Charge `02-METHODE-COLLECTE-SNUM-V5.24.md` et
+`03-CONTRAT-PAQUET-RENDU-SNUM-V5.24.md`.
 
 ## Recherches validées par le métier
 
-Le message initial ne lance pas le Web ; il rend
+Sans Web, le message initial rend
 `REQUETE_A_ENVOYER=RECHERCHE_NUMERIQUE | Recherchez sur le Web du <début> au <fin> inclus en France : <AXE>. Titre, URL HTTPS, date exacte.`
-Fais une seule recherche Web par message :
-`RECHERCHE_NUMERIQUE`→`RECHERCHE_IA`→`RECHERCHE_COMMANDE`→`RECHERCHE_RH`→`RECHERCHE_BERCY`→`COLLECTE_TERMINEE_BEST_EFFORT`; suivant≠reçu.
+Fais une seule recherche Web par message. Code reçu→code à afficher :
+`RECHERCHE_NUMERIQUE→RECHERCHE_IA`; `RECHERCHE_IA→RECHERCHE_COMMANDE`;
+`RECHERCHE_COMMANDE→RECHERCHE_RH`; `RECHERCHE_RH→RECHERCHE_BERCY`;
+`RECHERCHE_BERCY→VALIDER`. Sortie≠entrée.
 
 services publics numériques, dématérialisation, inclusion et données ;
 intelligence artificielle, modèles, régulation et usages publics ; commande publique,
@@ -112,31 +114,28 @@ achats, marchés et fournisseurs numériques ; ressources humaines publiques,
 compétences, recrutement et formation ; ministères économiques et financiers,
 directions et transformations.
 
-Il demande explicitement le Web, l’ouverture et les citations.
-
 Après chaque recherche, si une source est visible, rends `RESULTATS_RECHERCHE` non
 vide, puis `REGISTRE_CUMULATIF`: recopie sans changement, ajoute chaque nouvelle URL
 canonique unique : `U01` puis `max(Uxx)+1`; aucun réemploi :
 `Uxx|rubrique|URL|date brute|date ISO|DANS_FENETRE=OUI|NON|titre|source|fait`.
 `OUI` exige `DEBUT_ISO <= date ISO <= FIN_ISO`; sinon `NON`.
-Affiche `VALIDATION_METIER_REQUISE` : le
-métier valide la source et cette décision en envoyant la requête suivante.
-Ne répète aucun lot. Pour tout `RESULTATS_RECHERCHE` non vide, affiche exactement
-le prochain code de la chaîne, même `DANS_FENETRE=NON`.
-
-Après chacune des quatre premières recherches, affiche la
-`REQUETE_A_ENVOYER` suivante. Après `RECHERCHE_BERCY`,
+Affiche `VALIDATION_METIER_REQUISE`, puis obligatoirement la
+`REQUETE_A_ENVOYER` suivante : aucune réponse de recherche ne se termine avant elle.
+Son envoi valide les sources et décisions visibles. Ne répète aucun lot.
+Même si `DANS_FENETRE=NON`, avance. Après `RECHERCHE_BERCY`,
 rends `COLLECTE_TERMINEE_BEST_EFFORT`, désactive le Web et affiche
 `REQUETE_A_ENVOYER=VALIDER`.
 
-Une source visible, même hors fenêtre ⇒ suivant, jamais `A_COMPLETER`; sinon n’avance jamais :
-`A_COMPLETER | RECHERCHE_NON_PROUVEE | <rubrique>`.
+Source visible ou non ⇒ avance toujours. Sans source :
+`RESULTATS_RECHERCHE=AUCUNE_SOURCE_PROUVEE`; registre inchangé ;
+`RECHERCHE_SANS_SOURCE_PROUVEE | <rubrique>` ; `VALIDATION_METIER_REQUISE` ;
+affiche exactement la requête suivante de l’ordre immuable, jamais `A_COMPLETER`.
 
 ## Valider en best effort
 
 Après `COLLECTE_TERMINEE_BEST_EFFORT`, `VALIDER` exécute seulement `VALIDATION`.
-Affiche intégralement `CONTROLE_DATES`, `SOURCES_VALIDES` et `SOURCES_EXCLUES`.
-Conserve ces structures.
+Affiche `CONTROLE_DATES`, `SOURCES_VALIDES` et `SOURCES_EXCLUES`.
+Registre vide admis.
 `valides + exclues = registre`.
 Rends `VALIDATION_TERMINEE`; puis `REQUETE_A_ENVOYER=GENERER_PAQUET`.
 À `VALIDER`, produis toi-même depuis `REGISTRE_CUMULATIF`; ne demande rien à
@@ -258,18 +257,31 @@ Rendu.
 
 ### Recherches suivantes pendant la Collecte
 
-Restez dans la même conversation et activez le Web. Copiez la ligne complète
-`REQUETE_A_ENVOYER` fournie par l’Assistant. Après chaque réponse :
+Restez dans la même conversation. Ouvrez `+`, activez **Rechercher sur le web**, puis
+envoyez exactement une requête par tour dans cet ordre :
 
-1. vérifiez qu’au moins une source est visible dans l’interface ;
-2. vérifiez `RESULTATS_RECHERCHE`, `REGISTRE_CUMULATIF`, la date ISO,
-   `DANS_FENETRE` et `VALIDATION_METIER_REQUISE` ;
-3. copiez seulement alors la nouvelle ligne `REQUETE_A_ENVOYER`.
+```text
+REQUETE_A_ENVOYER=RECHERCHE_NUMERIQUE | Recherchez sur le Web du <début> au <fin> inclus en France : services publics numériques, dématérialisation, inclusion et données. Titre, URL HTTPS, date exacte.
+REQUETE_A_ENVOYER=RECHERCHE_IA | Recherchez sur le Web du <début> au <fin> inclus en France : intelligence artificielle, modèles, régulation et usages publics. Titre, URL HTTPS, date exacte.
+REQUETE_A_ENVOYER=RECHERCHE_COMMANDE | Recherchez sur le Web du <début> au <fin> inclus en France : commande publique, achats, marchés et fournisseurs numériques. Titre, URL HTTPS, date exacte.
+REQUETE_A_ENVOYER=RECHERCHE_RH | Recherchez sur le Web du <début> au <fin> inclus en France : ressources humaines publiques, compétences, recrutement et formation. Titre, URL HTTPS, date exacte.
+REQUETE_A_ENVOYER=RECHERCHE_BERCY | Recherchez sur le Web du <début> au <fin> inclus en France : ministères économiques et financiers, directions et transformations. Titre, URL HTTPS, date exacte.
+```
 
-La chaîne couvre successivement `RECHERCHE_NUMERIQUE`, `RECHERCHE_IA`,
-`RECHERCHE_COMMANDE`, `RECHERCHE_RH` et `RECHERCHE_BERCY`. Si aucune source n’est
-visible ou si la réponse commence par `A_COMPLETER`, relancez la même requête et ne
-passez pas à la suivante.
+Remplacez `<début>` et `<fin>` par les dates du message initial. La séquence ci-dessus
+est la source de vérité. Après chaque réponse :
+
+1. si une source est visible, vérifiez `RESULTATS_RECHERCHE`,
+   `REGISTRE_CUMULATIF`, la date ISO et `DANS_FENETRE` ;
+2. sinon, vérifiez `RESULTATS_RECHERCHE=AUCUNE_SOURCE_PROUVEE` et
+   `RECHERCHE_SANS_SOURCE_PROUVEE` ;
+3. vérifiez `VALIDATION_METIER_REQUISE` ;
+4. envoyez la ligne suivante de la séquence fixe, même si la
+   `REQUETE_A_ENVOYER` proposée par l’Assistant répète une rubrique.
+
+Une recherche sans source ne bloque plus : le registre reste inchangé. N’envoyez
+jamais deux fois la même rubrique. Si les résultats ou le registre ne sont pas
+contrôlables, arrêtez la collecte au lieu de valider le paquet.
 
 Après validation de `RECHERCHE_BERCY`, la réponse doit contenir
 `COLLECTE_TERMINEE_BEST_EFFORT` et `REQUETE_A_ENVOYER=VALIDER`. Il n’y a ni
@@ -352,17 +364,17 @@ Vérifiez :
 ## Sources de vérité
 
 - `EXEMPLE-PAQUET-RENDU-V5.19.json` : contrat d’exemple ;
-- `01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md` : machine d’état séquentielle ;
-- `02-METHODE-COLLECTE-SNUM-V5.23.md` : collecte et validation ;
-- `03-CONTRAT-PAQUET-RENDU-SNUM-V5.23.md` : paquet compatible V519 ;
+- `01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.24.md` : machine d’état séquentielle ;
+- `02-METHODE-COLLECTE-SNUM-V5.24.md` : collecte et validation ;
+- `03-CONTRAT-PAQUET-RENDU-SNUM-V5.24.md` : paquet compatible V519 ;
 - `_source/05-BLOCS-HTML-CANONIQUES.md` : source HTML ;
 - `scripts/build_split_kit.py` : générateur du gabarit et du ZIP ;
 - `tests/test_split_projects.py` : contrôles du découpage ;
 - `RAPPORT-V5.19.md` : preuve de la recette réelle ;
-- `RAPPORT-V5.23.md` : preuve de la recette séquentielle après son exécution ;
+- `RAPPORT-V5.24.md` : preuve de la recette séquentielle après son exécution ;
 - `_documentation/archives/` : versions antérieures, conservées hors de la racine.
 
-La racine contient uniquement la Collecte V5.23, le Rendu V5.19 et les sources
+La racine contient uniquement la Collecte V5.24, le Rendu V5.19 et les sources
 permanentes nécessaires à leur génération. Les 8 fichiers d’installation listés plus
 haut doivent y rester.
 N’installez aucun fichier depuis `_documentation/archives/`.
