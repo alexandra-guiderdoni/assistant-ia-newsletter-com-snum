@@ -66,16 +66,17 @@ class SplitProjectKitTests(unittest.TestCase):
         collecte = (PROJECT / COLLECTE_FILES[0]).read_text(encoding="utf-8")
         rendu = (PROJECT / RENDU_FILES[0]).read_text(encoding="utf-8")
 
-        self.assertIn("RECHERCHE_COMPOSITE", collecte)
-        self.assertIn("N’utilise jamais le Web dans ce Projet", collecte)
+        self.assertIn("recherche Web composite", collecte)
+        self.assertIn("produis le paquet dans cette\nmême réponse", collecte)
         self.assertIn("PAQUET_RENDU", collecte)
         self.assertNotIn("HTML COMPLET", collecte)
-        self.assertNotIn("RECHERCHE_NUMERIQUE", collecte)
+        self.assertNotIn("REQUETE_COMPOSITE_A_COPIER", collecte)
+        self.assertNotIn("NORMALISER_V519", collecte)
         self.assertNotIn("`VALIDER`", collecte)
         self.assertNotIn("`GENERER_PAQUET`", collecte)
 
         self.assertIn("`RENDRE_EDITION`", rendu)
-        self.assertIn("sans\nWeb ni réécriture", rendu)
+        self.assertIn("sans Web ni\nréécriture", rendu)
         self.assertIn("`## HTML COMPLET`", rendu)
         self.assertNotIn("`COLLECTE`", rendu)
         for resource in RENDU_FILES[1:]:
@@ -195,22 +196,22 @@ class SplitProjectKitTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertIn("KIT_DECOUPLE_OK", result.stdout)
 
-    def test_documentation_describes_the_two_chat_collection(self):
+    def test_documentation_describes_the_two_project_workflow(self):
         for name in ("README.md", "NOTICE-V5.23.md"):
             content = (PROJECT / name).read_text(encoding="utf-8")
 
             for required_file in (*COLLECTE_FILES, *RENDU_FILES):
                 self.assertIn(required_file, content)
-            self.assertIn("RECHERCHE_COMPOSITE", content)
-            self.assertIn("nouveau chat Assistant ordinaire", content)
-            self.assertIn("copiez toute la réponse", content.lower())
-            self.assertIn("RESULTATS_COMPOSITES_ENREGISTRES", content)
-            self.assertIn("NORMALISER_V519", content)
+            self.assertRegex(content, r"recherch\w* (?:sur le )?Web")
+            self.assertIn("deux conversations", content)
             self.assertIn("PAQUET_RENDU_PRET", content)
             self.assertIn("## HTML COMPLET", content)
+            self.assertNotIn("nouveau chat Assistant ordinaire", content)
+            self.assertNotIn("REQUETE_COMPOSITE_A_COPIER", content)
+            self.assertNotIn("RESULTATS_COMPOSITES_ENREGISTRES", content)
+            self.assertNotIn("NORMALISER_V519", content)
             self.assertNotIn("```text\nVALIDER\n```", content)
             self.assertNotIn("```text\nGENERER_PAQUET\n```", content)
-            self.assertNotIn("Obtenir directement le paquet JSON", content)
 
     def test_readme_is_the_active_entry_point(self):
         readme = (PROJECT / "README.md").read_text(encoding="utf-8")

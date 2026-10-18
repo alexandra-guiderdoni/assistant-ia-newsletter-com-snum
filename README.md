@@ -4,20 +4,19 @@
 # Configurer les deux Projets Newsletter SNUM
 
 Le kit transforme une recherche d’actualité en newsletter HTML dans l’Assistant
-DINUM. Le métier utilise deux Projets enregistrés et un chat Web ordinaire :
+DINUM. Le métier utilise deux Projets enregistrés et deux conversations :
 
-1. `Newsletter SNUM - Collecte` prépare la recherche puis normalise ses résultats ;
-2. un nouveau chat Assistant ordinaire exécute une recherche Web composite ;
-3. `Newsletter SNUM - Rendu HTML` transforme le paquet JSON en HTML canonique.
+1. `Newsletter SNUM - Collecte` recherche sur le Web et produit le paquet JSON ;
+2. `Newsletter SNUM - Rendu HTML` transforme ce paquet en HTML canonique.
 
-Le chat Web n’est pas un troisième Projet. Cette séparation évite qu’une longue
-conversation de recherche perturbe le calcul des dates ou le format JSON.
+Il n’existe aucun chat Web intermédiaire. Dans Collecte, le métier saisit seulement
+les deux dates et reçoit directement le paquet à transmettre à Rendu HTML.
 
-> **État de recette du 18 octobre 2026 : GO.** La chaîne réelle a produit une
-> requête composite, enregistré six sources après une relance du chat Web, généré
-> un paquet V519 valide avec `NORMALISER_V519`, puis obtenu le HTML canonique au
-> premier passage dans Rendu. Les rubriques IA et Ressources humaines, sans résultat
-> daté, sont signalées dans `watch` sans bloquer le parcours.
+> **État du candidat : chaîne best effort validée le 18 octobre 2026.** Une
+> conversation Collecte avec le Web a produit directement le JSON, puis une
+> conversation Rendu a produit `## HTML COMPLET`. La recherche n’a retenu aucun
+> article daté parmi 51 sources consultées : le paquet et le HTML signalent donc
+> explicitement une collecte à compléter.
 
 ## Fichiers actifs
 
@@ -50,8 +49,7 @@ Décompressez-les avant l’installation. Ne téléversez jamais un ZIP dans l�
 4. Téléversez les fichiers `02` et `03` listés ci-dessus.
 5. Attendez que les deux ressources soient visibles et indexées, puis enregistrez.
 
-Le Web peut rester désactivé dans ce Projet : il ne doit jamais y effectuer la
-recherche.
+Le Web doit être activé dans ce Projet : Collecte effectue elle-même la recherche.
 
 ### Newsletter SNUM - Rendu HTML
 
@@ -69,77 +67,29 @@ Le Web doit rester désactivé dans ce Projet.
 L’exemple ci-dessous produit l’édition du 14 octobre 2026 avec les publications du
 3 au 13 octobre 2026 inclus.
 
-### 1. Demander la requête au Projet Collecte
+### 1. Produire le paquet dans Collecte
 
-Ouvrez une nouvelle conversation dans `Newsletter SNUM - Collecte` et envoyez :
+Ouvrez une nouvelle conversation dans `Newsletter SNUM - Collecte`, activez le Web
+et envoyez seulement :
 
 ```text
 DATE_EDITION = 14 octobre 2026
 PERIODE = du 3 octobre 2026 au 13 octobre 2026 inclus
-RECHERCHE_COMPOSITE
 ```
 
-La réponse attendue commence par `REQUETE_COMPOSITE_A_COPIER_START` et finit par
-`REQUETE_COMPOSITE_A_COPIER_END`. Elle couvre dans une seule requête les rubriques
-Numérique, Intelligence artificielle, Commande publique, Ressources humaines et Vie
-de Bercy.
-
-### 2. Lancer la recherche dans un chat Web ordinaire
-
-Ouvrez un nouveau chat Assistant ordinaire, hors des deux Projets, puis activez le
-Web. Copiez le texte situé entre les deux marqueurs de la réponse précédente et
-envoyez-le.
-
-La recherche doit fournir des lignes de cette forme :
-
-```text
-RESULTAT|rubrique|URL_HTTPS|date_iso|titre|source|fait_factuel
-```
-
-Une rubrique réellement vide peut produire :
-
-```text
-RESULTAT|rubrique|AUCUN_RESULTAT_DATE_DANS_FENETRE
-```
-
-Attendez la fin de la réponse. Une introduction, des citations ou même une ligne
-`AUCUN_RESULTAT_DATE_DANS_FENETRE` contradictoire ne bloquent pas l’étape suivante.
-
-### 3. Enregistrer les résultats dans Collecte
-
-Copiez toute la réponse du chat Web, puis collez-la telle quelle dans la conversation
-Collecte d’origine.
-
-La réponse attendue ne contient pas encore de JSON. Elle confirme l’enregistrement :
-
-```text
-RESULTATS_COMPOSITES_ENREGISTRES | VALIDES=<n> | RUBRIQUES_SANS_RESULTAT=<codes ou AUCUNE>
-REQUETE_A_ENVOYER=NORMALISER_V519
-```
-
-Cette étape normalise la fenêtre et déduplique les URL. Elle conserve les résultats
-dans le chat Collecte d’origine.
-
-### 4. Produire le paquet JSON
-
-Dans cette même conversation Collecte, envoyez exactement :
-
-```text
-NORMALISER_V519
-```
-
-La réponse doit commencer immédiatement par
-`SNUM_PAQUET_RENDU_V519_START`. Elle contient un seul objet JSON, puis :
+Collecte lance la recherche, ouvre les sources, contrôle leurs dates, déduplique les
+URL et produit le JSON sans autre intervention. La réponse doit commencer
+immédiatement par `SNUM_PAQUET_RENDU_V519_START`. Elle contient un seul objet JSON,
+puis :
 
 ```text
 SNUM_PAQUET_RENDU_V519_END
 PAQUET_RENDU_PRET
 ```
 
-Il n’existe pas de commandes `VALIDER`, `RECOMPTER` ou `GENERER_PAQUET`.
-`NORMALISER_V519` est l’unique commande entre la recherche et le paquet.
+Il n’existe aucune requête à recopier ni commande intermédiaire.
 
-### 5. Produire le HTML
+### 2. Produire le HTML
 
 Ouvrez une nouvelle conversation dans `Newsletter SNUM - Rendu HTML`, sans le Web.
 Copiez depuis `SNUM_PAQUET_RENDU_V519_START` jusqu’à
@@ -156,33 +106,32 @@ La première ligne attendue est `## HTML COMPLET`. Elle est suivie d’un unique
 La présence d’un plan, d’un préambule ou de texte avant `## HTML COMPLET` est un
 échec de conformité.
 
+Si `articles=[]`, Rendu ne bloque pas : il produit la section
+`Collecte à compléter`, puis `À surveiller` à partir des alertes `watch`.
+
 ## Mode best effort
 
 - Une rubrique sans source valide devient une alerte dans `watch`.
 - Moins de cinq articles devient une alerte dans `watch`.
 - Ces insuffisances ne bloquent pas le JSON.
+- Une recherche exécutée sans source valide produit `articles=[]` et des alertes.
 - Une URL ne peut apparaître qu’une fois.
 - Une ligne hors fenêtre, sans date exacte ou sans URL HTTPS ne devient pas un
   article.
-- Si une rubrique possède une ligne valide, toute ligne
-  `AUCUN_RESULTAT_DATE_DANS_FENETRE` de cette rubrique est ignorée.
-- Sans aucune ligne valide, Collecte répond une seule fois
-  `A_COMPLETER | RESULTATS_COMPOSITES_INEXPLOITABLES | aucune ligne valide`.
+- Seule une indisponibilité technique réelle du Web produit `A_COMPLETER`.
 
 ## En cas d’échec
 
-- Pas de marqueurs `REQUETE_COMPOSITE_A_COPIER_*` : vérifiez les instructions et
-  les deux ressources du Projet Collecte.
-- Pas de ligne `RESULTAT|` après la recherche : ouvrez un nouveau chat Web et
-  relancez une seule fois la même requête composite.
-- Pas de `RESULTATS_COMPOSITES_ENREGISTRES` après le collage : ne lancez pas
-  `NORMALISER_V519` ; ouvrez une conversation Collecte neuve et recommencez.
-- `PAQUET_INCOMPLET` ou `A_COMPLETER` dans Collecte : ne transmettez rien au
-  Projet Rendu.
+- Pas de `SNUM_PAQUET_RENDU_V519_START` : vérifiez que le Web est actif, les
+  instructions et les deux ressources du Projet Collecte.
+- `OUTIL_WEB_INDISPONIBLE` : ouvrez une conversation Collecte neuve et relancez une
+  seule fois avec les mêmes dates.
+- `PAQUET_INCOMPLET` ou tout autre `A_COMPLETER` dans Collecte : ne transmettez rien
+  au Projet Rendu.
 - `CANON_MANQUANT` dans Rendu : remplacez les quatre ressources `21` à `24`
   par celles du kit courant et attendez leur indexation.
-- `A_COMPLETER` dans Rendu : corrigez la cause indiquée ; ne demandez pas une
-  réécriture libre du HTML.
+- `A_COMPLETER` dans Rendu : corrigez la cause indiquée. Un paquet vide avec des
+  alertes `watch` n’est pas une cause d’échec.
 
 Après trois échecs identiques, arrêtez la recette et conservez l’URL de la
 conversation pour le diagnostic.
@@ -194,7 +143,7 @@ Vérifiez :
 - les dates, titres et URL du paquet ;
 - les cinq rubriques présentes ou signalées dans `watch` ;
 - des identifiants `U01…UN` continus et des URL uniques ;
-- exactement trois articles essentiels à partir de trois articles ;
+- exactement trois articles essentiels à partir de trois articles, sinon aucun ;
 - aucun marqueur `@@` dans le HTML ;
 - un seul `h1`, trois accès rapides et une navigation cohérente ;
 - le titre d’édition en toutes lettres ;

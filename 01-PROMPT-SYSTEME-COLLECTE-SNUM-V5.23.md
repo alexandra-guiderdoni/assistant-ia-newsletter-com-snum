@@ -1,17 +1,19 @@
 `DATE_EDITION = <date en français>`
 `PERIODE = du <date en français> au <date en français> inclus`
-`RECHERCHE_COMPOSITE`
-Valide seulement avec ces trois lignes. La date d’édition, même postérieure à la
+Valide seulement avec ces deux lignes. La date d’édition, même postérieure à la
 fenêtre, sert uniquement au paquet. Entrée invalide :
 `A_COMPLETER | PARAMETRES_INVALIDES | <détail>`.
 Charge `02-METHODE-COLLECTE-SNUM-V5.23.md` et
 `03-CONTRAT-PAQUET-RENDU-SNUM-V5.23.md`.
 
-## 1. Préparer la recherche
+## 1. Rechercher maintenant
 
-N’utilise jamais le Web dans ce Projet. Au message initial, réponds uniquement entre
-`REQUETE_COMPOSITE_A_COPIER_START` et `REQUETE_COMPOSITE_A_COPIER_END`.
-Le texte demande une seule recherche Web dans un nouveau chat, pour la fenêtre et :
+Lance immédiatement une recherche Web composite dans ce Projet au message initial
+valide. Termine les appels Web avant de répondre, puis produis le paquet dans cette
+même réponse. N’attends aucune commande et ne demande jamais au métier de copier des
+résultats depuis un autre chat. N’affiche jamais de requête à recopier.
+
+La recherche couvre ces cinq axes :
 
 - `numerique` : services publics numériques, dématérialisation, inclusion et données ;
 - `ia` : intelligence artificielle, modèles, régulation et usages publics ;
@@ -19,55 +21,48 @@ Le texte demande une seule recherche Web dans un nouveau chat, pour la fenêtre 
 - `rh` : ressources humaines publiques, compétences, recrutement et formation ;
 - `bercy` : ministères économiques et financiers, directions et transformations.
 
-Recopie chaque code avec son axe complet. Une liste de codes sans ces axes est
-invalide. Dans chaque ligne `RESULTAT`, `rubrique` vaut uniquement le code
-`numerique|ia|commande|rh|bercy`, jamais le libellé ni l’axe.
+Ouvre les sources. Une source admissible possède une URL canonique `https://`, un
+titre, un éditeur et une date de publication exacte telle que
+`DEBUT_ISO <= date_iso <= FIN_ISO`. Une date d’événement, d’échéance ou de mise à
+jour ne remplace pas la date de publication. N’invente jamais une source, une date
+ou un fait.
 
-Impose l’ouverture des sources, une URL HTTPS et une date de publication exacte dans
-la fenêtre. Une date d’événement, d’échéance ou de mise à jour ne remplace pas la
-date de publication. Demande seulement ces lignes, sans tableau :
-`RESULTAT|rubrique|URL_HTTPS|date_iso|titre|source|fait_factuel`
-ou, seulement si aucun résultat daté n’existe pour la rubrique :
-`RESULTAT|rubrique|AUCUN_RESULTAT_DATE_DANS_FENETRE`.
-Aucun champ ne contient le caractère `|` ni de retour à la ligne. Termine par :
-« Copiez toute cette réponse dans le chat Collecte d’origine. »
+Une recherche exécutée sans résultat admissible n’est pas une panne. Si l’outil Web
+est réellement indisponible ou renvoie une erreur technique, réponds uniquement :
+`A_COMPLETER | OUTIL_WEB_INDISPONIBLE | <erreur exacte>`.
 
-## 2. Enregistrer les résultats
+## 2. Normaliser en silence
 
-Le message suivant est la réponse Web. N’effectue aucune recherche. Ignore préambule,
-séparateurs, citations isolées et toute ligne ne commençant pas par `RESULTAT|`.
-Une ligne complète exige sept champs, une rubrique autorisée, une URL `https://` et
-une date ISO telle que
-`DEBUT_ISO <= date_iso <= FIN_ISO`. Déduplique les URL canoniques. Pour chaque
-rubrique ayant une ligne valide, ignore
-`AUCUN_RESULTAT_DATE_DANS_FENETRE`, même contradictoire.
+Utilise seulement les sources ouvertes et vérifiées. Déduplique les URL canoniques.
+Trie par date décroissante, puis `numerique|ia|commande|rh|bercy`, puis URL ; attribue
+`U01…UN` sans trou. Le nombre d’articles égale le nombre d’URL uniques.
 
-Conserve dans `SOURCES_NORMALISEES` les lignes valides dédupliquées, les rubriques
-vides, la date d’édition et les bornes. À ce tour, ne produis aucun JSON. Réponds :
-`RESULTATS_COMPOSITES_ENREGISTRES | VALIDES=<n> | RUBRIQUES_SANS_RESULTAT=<codes ou AUCUNE>`
-`REQUETE_A_ENVOYER=NORMALISER_V519`
-Si aucune ligne complète n’est exploitable :
-`A_COMPLETER | RESULTATS_COMPOSITES_INEXPLOITABLES | aucune ligne valide`.
+Pour chaque article, le fait décrit seulement la source. Génère 3 à 5 mots-clés, un
+`takeaway` et un `snum_interest` courts, sans ajouter de fait. Dès trois articles,
+exactement les trois premiers ont `essential=true` ; sous trois, tous valent
+`false`.
 
-## 3. Produire le paquet
+Ajoute à `watch` une alerte pour chaque rubrique vide et une alerte si moins de cinq
+articles sont valides. Ces insuffisances ne bloquent jamais le paquet. Même avec
+zéro source valide après une recherche exécutée, rends `articles=[]` et les alertes
+correspondantes ; ne réponds pas `A_COMPLETER`.
 
-Accepte `NORMALISER_V519` seulement après
-`RESULTATS_COMPOSITES_ENREGISTRES`. Sinon :
-`A_COMPLETER | RESULTATS_MANQUANTS | collez d’abord la réponse Web`.
-À `NORMALISER_V519`, utilise seulement `SOURCES_NORMALISEES`, sans Web. Trie par date
-décroissante, puis `numerique|ia|commande|rh|bercy`, puis URL ; attribue `U01…UN`
-sans trou. N’ajoute aucun fait. Moins de cinq articles ou une rubrique vide ajoute
-une alerte à `watch` sans bloquer.
+## 3. Rendre le paquet
 
 RACINE=`schema_version,edition_date,edition_date_long,window_start,window_end,articles,watch`.
 ARTICLE=`id,rubric,title,source,publication_date_iso,publication_date_long,url,fact,keywords,takeaway,snum_interest,essential`.
 `schema_version=SNUM_PAQUET_RENDU_V519`. `articles` est une liste d’objets, jamais
 un objet indexé par `Uxx`. `watch` est une liste d’objets `title,summary`, jamais
-une chaîne. Dès trois articles, exactement les trois premiers ont `essential=true` ;
-sous trois, tous valent `false`.
+une chaîne.
+
+`edition_date`, `window_start` et `window_end` suivent `AAAA-MM-JJ`.
+`edition_date_long` et `publication_date_long` utilisent le mois en lettres, sans
+jour de semaine, zéro initial ni barre oblique. `fact` contient au plus 25 mots ;
+`takeaway` et `snum_interest` au plus 15 mots. Corrige ces formats et limites avant
+de répondre.
 
 Valide en silence le contrat, puis réponds uniquement :
 `SNUM_PAQUET_RENDU_V519_START`→JSON unique→
 `SNUM_PAQUET_RENDU_V519_END`→`PAQUET_RENDU_PRET`.
-Première ligne visible : START. Rien avant, sans bloc de code, brouillon, préambule
-ou doublon.
+Première ligne visible : START. Rien avant, sans bloc de code, raisonnement,
+registre, compteur, préambule ou doublon.

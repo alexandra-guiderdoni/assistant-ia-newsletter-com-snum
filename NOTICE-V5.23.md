@@ -1,12 +1,12 @@
 # Notice opérationnelle Newsletter SNUM V5.23
 
-Cette version utilise deux Projets Assistant enregistrés et un chat Web ordinaire.
-Le métier n’utilise aucun terminal.
+Cette version utilise deux Projets Assistant enregistrés et deux conversations. Le
+métier n’utilise aucun terminal ni chat Web intermédiaire.
 
-> **GO au 18 octobre 2026.** La recette réelle a validé la recherche composite,
-> l’enregistrement best effort, le paquet V519 produit par `NORMALISER_V519` et le
-> HTML canonique. Le chat Web a nécessité une relance et deux rubriques sont restées
-> sans résultat daté ; ces limites sont signalées dans `watch`.
+> **Recette Assistant validée le 18 octobre 2026.** Collecte a lancé le Web et
+> produit directement le JSON, puis Rendu a produit `## HTML COMPLET`. Le cas testé
+> ne contenait aucun article validé et a été rendu en mode best effort avec les
+> alertes `watch`.
 
 ## Installation
 
@@ -16,6 +16,7 @@ Le métier n’utilise aucun terminal.
 2. Téléversez `02-METHODE-COLLECTE-SNUM-V5.23.md`.
 3. Téléversez `03-CONTRAT-PAQUET-RENDU-SNUM-V5.23.md`.
 4. Attendez l’indexation des deux ressources et enregistrez.
+5. Activez le Web dans ce Projet.
 
 ### Projet Newsletter SNUM - Rendu HTML
 
@@ -34,62 +35,26 @@ ne téléversez jamais les ZIP eux-mêmes.
 
 ### 1. Projet Collecte
 
-Dans une nouvelle conversation, Web désactivé, envoyez :
+Dans une nouvelle conversation, Web activé, envoyez seulement :
 
 ```text
 DATE_EDITION = 14 octobre 2026
 PERIODE = du 3 octobre 2026 au 13 octobre 2026 inclus
-RECHERCHE_COMPOSITE
 ```
 
-La réponse doit être encadrée par
-`REQUETE_COMPOSITE_A_COPIER_START` et
-`REQUETE_COMPOSITE_A_COPIER_END`.
-
-### 2. Nouveau chat Assistant ordinaire
-
-Ouvrez un nouveau chat Assistant ordinaire, activez le Web, copiez la requête située
-entre les marqueurs et envoyez-la. Elle recherche en un seul passage les cinq
-rubriques et demande des lignes :
-
-```text
-RESULTAT|rubrique|URL_HTTPS|date_iso|titre|source|fait_factuel
-```
-
-Attendez la fin de la recherche, puis copiez toute la réponse.
-
-### 3. Retour dans le Projet Collecte
-
-Collez toute la réponse Web dans le chat Collecte d’origine. N’envoyez ni
-`VALIDER`, ni `RECOMPTER`, ni `GENERER_PAQUET`.
-
-La réponse attendue est :
-
-```text
-RESULTATS_COMPOSITES_ENREGISTRES | VALIDES=<n> | RUBRIQUES_SANS_RESULTAT=<codes ou AUCUNE>
-REQUETE_A_ENVOYER=NORMALISER_V519
-```
-
-Envoyez ensuite exactement :
-
-```text
-NORMALISER_V519
-```
-
-Cette commande unique produit un paquet qui commence par
-`SNUM_PAQUET_RENDU_V519_START` et se termine par :
+Collecte lance la recherche Web, ouvre et filtre les sources, puis produit directement
+un paquet qui commence par `SNUM_PAQUET_RENDU_V519_START` et se termine par :
 
 ```text
 SNUM_PAQUET_RENDU_V519_END
 PAQUET_RENDU_PRET
 ```
 
-Une rubrique vide ou moins de cinq articles crée une alerte `watch`, sans bloquer
-le JSON. Les URL en double, dates hors fenêtre et lignes invalides sont exclues.
-Lorsqu’une rubrique possède un résultat valide, Collecte ignore toute ligne
-`AUCUN_RESULTAT_DATE_DANS_FENETRE` contradictoire.
+Il n’existe aucune requête à recopier ni commande intermédiaire. Une rubrique vide,
+moins de cinq articles ou même zéro source valide crée des alertes `watch`, sans
+bloquer le JSON. Les URL en double et dates hors fenêtre sont exclues.
 
-### 4. Projet Rendu HTML
+### 2. Projet Rendu HTML
 
 Dans une nouvelle conversation, Web désactivé, copiez le paquet depuis
 `SNUM_PAQUET_RENDU_V519_START` jusqu’à
@@ -105,16 +70,20 @@ unique bloc HTML puis :
 
 Tout texte avant `## HTML COMPLET` constitue un échec de conformité.
 
+Un paquet `articles=[]` reste valide : le HTML contient `Collecte à compléter`,
+puis `À surveiller` si des alertes `watch` sont présentes.
+
 ## Arrêt en cas d’erreur
 
-- Si Collecte ne fournit pas la requête composite, vérifiez ses instructions et ses
-  deux ressources.
-- Si le chat Web ne renvoie aucune ligne `RESULTAT|`, recommencez une seule fois
-  dans un nouveau chat ordinaire.
+- Si Collecte ne fournit pas le paquet, vérifiez que le Web est actif, ses
+  instructions et ses deux ressources.
+- Si Collecte répond `OUTIL_WEB_INDISPONIBLE`, recommencez une seule fois dans une
+  conversation Collecte neuve avec les mêmes dates.
 - Si Collecte répond `A_COMPLETER` ou `PAQUET_INCOMPLET`, ne transmettez pas le
   résultat au Projet Rendu.
 - Si Rendu répond `CANON_MANQUANT`, remplacez ses quatre ressources par celles du
   kit courant et attendez leur indexation.
+- Rendu ne doit pas répondre `A_COMPLETER` au seul motif que `articles=[]`.
 - Après trois échecs identiques, arrêtez et conservez l’URL de la conversation.
 
 ## Contrôle final

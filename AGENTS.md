@@ -30,23 +30,21 @@ version active.
 
 ## Architecture et invariants
 
-- Conserver deux Projets Assistant séparés et la séquence
-  `COLLECTE → CHAT WEB ORDINAIRE → JSON → RENDU`.
-- Dans le Projet Collecte, l’utilisateur fournit `DATE_EDITION`, `PERIODE` et
-  `RECHERCHE_COMPOSITE` dans le même premier message. Le Projet rend une seule
-  requête couvrant les cinq rubriques, sans appeler le Web.
-- Le métier exécute cette requête dans un nouveau chat Assistant ordinaire avec le
-  Web, puis copie toute la réponse dans le chat Collecte d’origine.
-- Le Projet Collecte filtre la fenêtre, déduplique les URL et ignore une absence
-  contradictoire si la rubrique possède un résultat valide. Au collage, il mémorise
-  `SOURCES_NORMALISEES` puis demande l’unique commande `NORMALISER_V519`, qui produit
-  le paquet V519 sans nouvelle recherche.
-- Aucun des deux Projets enregistrés n’utilise le Web. Seul le chat ordinaire de
-  recherche l’utilise.
+- Conserver deux Projets Assistant séparés et deux conversations :
+  `COLLECTE → JSON → RENDU`.
+- Dans Collecte, l’utilisateur fournit uniquement `DATE_EDITION` et `PERIODE`.
+  Le Projet lance lui-même une recherche Web composite couvrant les cinq rubriques,
+  filtre la fenêtre, déduplique les URL et produit le paquet V519 dans sa première
+  réponse.
+- Le Web est activé dans Collecte et désactivé dans Rendu. Aucun chat Web ordinaire,
+  requête à recopier, commande intermédiaire ou relance automatique n’appartient au
+  parcours métier.
 - Une rubrique vide et une collecte de moins de cinq sources sont signalées dans
   `watch` sans empêcher le JSON.
 - Le Projet Rendu n’utilise jamais le Web ; toute modification du contenu
   éditorial est interdite.
+- `articles=[]` est un paquet best effort valide. Rendu produit alors le bloc
+  `VIDE`, suivi de `SURVEILLER` si `watch` contient des alertes.
 - Conserver exactement quatre ressources HTML, numérotées de `21` à `24`,
   chacune limitée à 4 500 caractères.
 - Limiter chaque prompt système à 4 000 caractères.
@@ -140,11 +138,12 @@ Une version est livrable seulement si :
 - la suite `unittest`, Ruff et `build_split_kit.py --check` est verte ;
 - les prompts respectent 4 000 caractères et les quatre ressources 4 500 ;
 - les ZIP contiennent exactement les fichiers attendus dans l’ordre documenté ;
-- la recette réelle produit une requête composite à partir de `DATE_EDITION`,
-  `PERIODE` et `RECHERCHE_COMPOSITE`, enregistre la réponse Web sans JSON, puis
-  produit un paquet V519 après `NORMALISER_V519`, sans URL dupliquée ;
+- la recette réelle lance la recherche Web depuis Collecte à partir de
+  `DATE_EDITION` et `PERIODE`, puis produit directement un paquet V519 sans URL
+  dupliquée ni action intermédiaire ;
 - le Projet Rendu produit au premier passage un HTML dont la première ligne est
-  `## HTML COMPLET`, sans `A_COMPLETER` ni préambule ;
+  `## HTML COMPLET`, y compris pour un paquet best effort vide, sans `A_COMPLETER`
+  ni préambule ;
 - le rendu est comparé au gabarit canonique selon le contrat annoncé ;
 - `README.md`, la notice et le rapport décrivent les preuves et les limites ;
 - le commit local et la branche distante publiée désignent le même SHA après le push.

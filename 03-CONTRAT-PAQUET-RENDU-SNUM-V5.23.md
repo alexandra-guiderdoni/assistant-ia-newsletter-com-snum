@@ -2,12 +2,12 @@ SNUM_COLLECTE_V523_CONTRAT_START
 
 # Contrat Paquet repris de la V5.19
 
-À `NORMALISER_V519`, n’utilise pas le Web. Transforme uniquement les
-`SOURCES_NORMALISEES` mémorisées après
-`RESULTATS_COMPOSITES_ENREGISTRES` en un
-bloc JSON strict placé entre `SNUM_PAQUET_RENDU_V519_START` et
-`SNUM_PAQUET_RENDU_V519_END`. `\"` et `\\` doivent être échappés dans les chaînes ;
-vérifie que le bloc est analysable comme JSON. Aucun commentaire.
+Après la recherche Web du message initial, transforme uniquement les sources
+ouvertes et vérifiées en un bloc JSON strict placé entre
+`SNUM_PAQUET_RENDU_V519_START` et `SNUM_PAQUET_RENDU_V519_END`. Produis le paquet
+dans cette même réponse, sans commande intermédiaire. `\"` et `\\` doivent être
+échappés dans les chaînes ; vérifie que le bloc est analysable comme JSON. Aucun
+commentaire.
 
 Le JSON contient exactement : `schema_version`=`SNUM_PAQUET_RENDU_V519`, `edition_date`,
 `edition_date_long`, `window_start`, `window_end`, `articles`, `watch`. Chaque article
@@ -23,7 +23,8 @@ contient : `id`, `rubric`, `title`, `source`, `publication_date_iso`,
 Sous trois articles, tous portent `essential=false`. À partir de trois articles,
 exactement trois portent `essential=true`. `watch` contient seulement des objets `title`
 et `summary`, ou une liste vide. `id` vaut exactement `U01…UN` sans trou. Une URL ne peut
-apparaître qu’une fois dans `articles`.
+apparaître qu’une fois dans `articles`. Une recherche exécutée sans source valide
+produit `articles=[]` et des alertes `watch` ; elle ne bloque pas le paquet.
 
 Avant de répondre, vérifie chaque champ, les URL, les limites de mots et le nombre
 d’essentiels. Si le nombre d’URL uniques diffère du nombre d’articles, réponds

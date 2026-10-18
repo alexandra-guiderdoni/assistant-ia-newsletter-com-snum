@@ -473,7 +473,7 @@ class NewsletterHtmlCliTests(unittest.TestCase):
                 self.assertEqual(result.returncode, 1, result.stderr)
                 self.assertIn(expected_code, result.stderr)
 
-    def test_build_blocks_an_internally_invalid_page(self):
+    def test_build_accepts_an_empty_best_effort_packet(self):
         payload = self.payload()
         payload["articles"] = []
         with tempfile.TemporaryDirectory() as temporary_directory:
@@ -489,9 +489,14 @@ class NewsletterHtmlCliTests(unittest.TestCase):
                 "--template",
                 str(TEMPLATE),
             )
-            self.assertEqual(result.returncode, 2, result.stderr)
-            self.assertIn("SECTION_NUMBERS", result.stderr)
-            self.assertFalse(output_path.exists())
+            self.assertEqual(result.returncode, 0, result.stderr)
+            html = output_path.read_text(encoding="utf-8")
+            self.assertIn("<h2>Collecte à compléter</h2>", html)
+            self.assertIn('<p class="section-number">01</p>', html)
+            self.assertIn('<p class="section-number">02</p>', html)
+            self.assertIn('href="#surveiller">À surveiller</a>', html)
+            self.assertNotIn('href="#essentiel"', html)
+            self.assertNotIn("@@", html)
 
     def test_build_rejects_a_fact_over_25_words(self):
         payload = self.payload()

@@ -1,67 +1,49 @@
 `SNUM_COLLECTE_V523_METHODE_START`
 
-# Méthode Collecte en deux chats
+# Méthode Collecte autonome
 
-## 1. Produire la requête composite
+## 1. Exécuter le cycle Web
 
-Le Projet Collecte ne navigue pas sur le Web. À partir de `DATE_EDITION`, de
-`PERIODE` et de `RECHERCHE_COMPOSITE`, il prépare une requête unique à copier
-dans un nouveau chat Assistant ordinaire avec le Web activé.
+Lance immédiatement une recherche Web composite dans le Projet Collecte à partir de
+`DATE_EDITION` et de `PERIODE`. Termine la recherche et produis le paquet dans cette
+même réponse. N’affiche jamais de requête à recopier, de plan, de trace ou de commande
+intermédiaire.
 
-La requête couvre `numerique`, `ia`, `commande`, `rh` et `bercy`. Elle recopie
-chaque code avec l’axe complet défini dans le prompt. Une liste de codes sans ces
-axes est invalide. Les axes servent à chercher. Dans chaque ligne `RESULTAT`,
-`rubrique` vaut uniquement le code, jamais le libellé ni l’axe.
+La recherche couvre ensemble `numerique`, `ia`, `commande`, `rh` et `bercy`, avec
+les cinq axes complets du prompt. Ouvre les résultats avant de les retenir. Le Web
+reste actif pendant tout ce cycle ; le métier ne copie aucune réponse entre deux
+chats et n’envoie aucune commande de continuation ou de normalisation.
 
-Elle exige l’ouverture des sources, leur URL HTTPS et la date de publication exacte.
-Elle exclut les contenus publiés hors fenêtre, même si leur événement ou leur mise à
-jour est dans la fenêtre. Grammaire demandée :
-`RESULTAT|rubrique|URL_HTTPS|date_iso|titre|source|fait_factuel`
-ou `RESULTAT|rubrique|AUCUN_RESULTAT_DATE_DANS_FENETRE`.
-Aucun champ ne contient le caractère `|` ni de retour à la ligne.
+## 2. Vérifier et normaliser les sources
 
-## 2. Enregistrer la réponse Web
+Une source valide possède une URL canonique HTTPS, un titre, un éditeur et une date
+de publication exacte. Pour `2026-10-11..2026-10-17`, les deux bornes sont incluses ;
+`2026-10-10` et `2026-10-18` sont exclues. Une date d’événement, d’échéance, de mise
+à jour ou un mois sans jour ne prouve pas la date de publication.
 
-Le métier copie toute la réponse du chat Web dans le chat Collecte d’origine. Cette
-validation humaine unique confirme que la recherche a été lancée. Le Projet Collecte
-n’appelle aucun outil Web et ne relance aucune recherche.
+Déduplique par URL canonique. Trie les sources valides par date décroissante, puis
+selon l’ordre `numerique|ia|commande|rh|bercy`, puis par URL. Attribue ensuite
+`U01…UN` sans trou. Le nombre d’articles égale le nombre d’URL uniques.
 
-Analyse seulement les lignes `RESULTAT|`. Une ligne complète possède exactement
-sept champs. Rejette une rubrique inconnue, une URL non HTTPS, une date non exacte ou
-hors fenêtre. Pour `2026-10-03..2026-10-13`, `2026-10-03`, `2026-10-04`,
-`2026-10-11` et `2026-10-13` sont incluses ; `2026-10-02` et `2026-10-14`
-sont exclues.
+Utilise uniquement les faits lus dans les sources. Génère de 3 à 5 mots-clés par
+article, un `takeaway` et un `snum_interest` courts, sans inventer de fait. À partir
+de trois articles, exactement les trois premiers portent `essential=true`. Sous
+trois articles, aucun n’est essentiel.
 
-Déduplique par URL canonique. Si une rubrique comporte au moins une ligne valide,
-ignore `AUCUN_RESULTAT_DATE_DANS_FENETRE` pour cette rubrique. Sinon, conserve
-l’absence comme future alerte. Les lignes invalides ne deviennent jamais des
-articles.
+## 3. Appliquer le best effort et rendre le paquet
 
-Mémorise le résultat sous `SOURCES_NORMALISEES`, avec la date d’édition et les
-bornes. Ce tour ne produis aucun JSON. Il répond seulement avec
-`RESULTATS_COMPOSITES_ENREGISTRES`, le nombre de lignes valides, les rubriques sans
-résultat, puis `REQUETE_A_ENVOYER=NORMALISER_V519`.
+Une rubrique vide ajoute une alerte `watch`. Moins de cinq articles ajoute aussi une
+alerte. Ces insuffisances ne bloquent jamais le JSON. Si la recherche Web s’est
+exécutée mais ne fournit aucune source valide, produis tout de même le paquet avec
+`articles=[]`, aucun essentiel et les alertes nécessaires.
 
-## 3. Produire le paquet sur commande
+Seule une indisponibilité technique réelle du Web arrête le parcours avec
+`A_COMPLETER | OUTIL_WEB_INDISPONIBLE | <erreur exacte>`. Une recherche vide n’est
+pas une indisponibilité et ne déclenche jamais `A_COMPLETER`.
 
-`NORMALISER_V519` est accepté seulement après
-`RESULTATS_COMPOSITES_ENREGISTRES`. Il transforme uniquement les
-`SOURCES_NORMALISEES` mémorisées ; il ne recherche rien et ne demande aucun autre
-contenu au métier.
-
-Trie par date décroissante, puis selon l’ordre
-`numerique|ia|commande|rh|bercy`, puis par URL. Après déduplication et tri,
-attribue `U01…UN` sans trou. Le nombre d’articles égale le nombre d’URL uniques.
-
-Utilise uniquement les faits reçus. Génère de 3 à 5 mots-clés par article, un
-`takeaway` et un `snum_interest` courts, sans inventer de fait. À partir de trois
-articles, exactement les trois premiers portent `essential=true`. Sous trois,
-aucun n’est essentiel. Moins de cinq articles ou une rubrique vide ajoute une alerte
-à `watch`, mais ne bloque jamais le JSON.
-
-Applique exactement le schéma du contrat V519. La sortie réussie commence au premier
+Applique exactement le schéma du contrat V519. La réponse réussie commence au premier
 caractère par `SNUM_PAQUET_RENDU_V519_START`, contient un seul JSON sans bloc de
 code, puis `SNUM_PAQUET_RENDU_V519_END` et `PAQUET_RENDU_PRET`. N’affiche aucun
-raisonnement, registre, compteur, contrôle intermédiaire ni préambule.
+raisonnement, registre, compteur, contrôle intermédiaire, résultat brut ni préambule.
 
 `SNUM_COLLECTE_V523_METHODE_END`

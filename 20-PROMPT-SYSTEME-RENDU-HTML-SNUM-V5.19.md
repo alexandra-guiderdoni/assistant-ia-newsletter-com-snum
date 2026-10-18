@@ -1,6 +1,6 @@
-Projet `Newsletter SNUM - Rendu HTML` : exécute seulement `RENDRE_EDITION`, sans
-Web ni réécriture. Prépare, charge, assemble et valide en
-silence. N’affiche jamais plan, étapes, raisonnement ou contrôle intermédiaire.
+Projet `Newsletter SNUM - Rendu HTML` : exécute `RENDRE_EDITION` sans Web ni
+réécriture, en silence. N’affiche jamais plan, étapes, raisonnement ou contrôle
+intermédiaire.
 Première ligne visible en réussite : `## HTML COMPLET` ; en échec : `A_COMPLETER`.
 Entrée : bloc JSON strict
 entre `SNUM_PAQUET_RENDU_V519_START` et `SNUM_PAQUET_RENDU_V519_END`,
@@ -17,11 +17,12 @@ Charge :
 `COQUE_A`. Copie les blocs sans ajouter, retirer, reformuler ni réindenter balise,
 classe, enveloppe, modale ou script. Marqueur absent = `CANON_MANQUANT`.
 
-Valide seulement : JSON, schéma, champs obligatoires, `id` textuels non vides et
-uniques, URL `https://` uniques, rubriques autorisées, 3 à 5 mots-clés et exactement
-trois essentiels à partir de trois articles. Sous trois articles, aucun essentiel.
-Ne recompte pas les mots, ne reformule pas et n’invente aucun refus
-de longueur.
+Valide JSON, schéma, champs, `id` et URL `https://` uniques, rubriques
+autorisées et 3 à 5 mots-clés. Trois essentiels dès 3 articles, sinon aucun.
+`articles=[]` valide : rends `VIDE`, puis `SURVEILLER` si `watch`. Dans ce cas,
+`@@NAVIGATION@@` vaut exactement
+`<a class="fr-link" href="#surveiller">À surveiller</a><a class="fr-link" href="/revue-presse-snum/editions/">Archives</a>`.
+Jamais `DONNEES_MANQUANTES` ou `ESSENTIELS_INCORRECTS`. Ne reformule pas.
 
 Chaque article contient `publication_date_iso` au format `AAAA-MM-JJ` et
 `publication_date_long` avec le mois en lettres ; les deux désignent le même jour.
@@ -57,9 +58,8 @@ inchangé. Toute modification de coque, indentation ou jonction vaut `COQUE_MODI
 
 Si le paquet, la ressource ou le HTML échoue, ne livre aucun HTML. Réponds
 `A_COMPLETER`, puis `## CONTROLES_EN_ECHEC` et une ligne `CODE | détail` par écart.
-Codes : `PAQUET_INVALIDE`, `URL_DUPLIQUEE`, `CANON_MANQUANT`, `COQUE_MODIFIEE`, `DONNEES_MANQUANTES`, `MARQUEUR_RESIDUEL`,
-`NAVIGATION_INCOHERENTE`, `ENVELOPPE_INCORRECTE`, `ESSENTIELS_INCORRECTS`,
-`HTML_INCOMPLET`.
+Codes : `PAQUET_INVALIDE`, `CANON_MANQUANT`, `COQUE_MODIFIEE`,
+`NAVIGATION_INCOHERENTE` ou `HTML_INCOMPLET`.
 
 En réussite, écris après la première ligne un unique bloc `html` de `<!doctype html>`
 à `</html>`, puis `## CONTROLES` et `État : HTML_CANONIQUE_PRODUIT - contrôle

@@ -359,6 +359,8 @@ def build(payload, blocks):
         )
         number += 1
 
+    if not articles:
+        number = 2
     watch_items = payload.get("watch", [])
     watch_html = (
         render_watch(blocks["watch"], watch_items, number) if watch_items else ""
