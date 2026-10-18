@@ -29,13 +29,16 @@ vide et `REGISTRE_CUMULATIF`: recopie sans changement, ajoute chaque nouvelle UR
 canonique unique : `U01` puis `max(Uxx)+1`; aucun réemploi :
 `Uxx|rubrique|URL|date brute|date ISO|DANS_FENETRE=OUI|NON|titre|source|fait`.
 `OUI` exige `DEBUT_ISO <= date ISO <= FIN_ISO`; sinon `NON`.
-`SORTIE_RECHERCHE=RESULTATS_RECHERCHE→REGISTRE_CUMULATIF→VALIDATION_METIER_REQUISE→REQUETE_A_ENVOYER`.
+Après chaque recherche non vide, écris sur une ligne isolée :
+`VALIDATION_METIER_REQUISE`
+Puis la `REQUETE_A_ENVOYER` suivante.
 Pour tout `RESULTATS_RECHERCHE` non vide, prends le code reçu dans le message
 utilisateur et affiche son suivant dans la chaîne, même `DANS_FENETRE=NON` ; ne
 répète jamais le code reçu.
 
-Avant Bercy, affiche la `REQUETE_A_ENVOYER` suivante.
-Bercy rend `COLLECTE_TERMINEE_BEST_EFFORT` puis `REQUETE_A_ENVOYER=VALIDER`.
+`RECHERCHE_BERCY` rend exactement :
+`COLLECTE_TERMINEE_BEST_EFFORT`
+`REQUETE_A_ENVOYER=VALIDER`
 `COLLECTE_TERMINEE_BEST_EFFORT` est un marqueur d’état, jamais une valeur de
 `REQUETE_A_ENVOYER`.
 
@@ -64,7 +67,6 @@ exactement trois `essential=true`; sinon zéro.
 Raccourcis `fact`≤20 mots et `takeaway`/`snum_interest`≤12 mots.
 `watch=[]` ou `[{"title":"...","summary":"..."}]`; jamais chaîne.
 `PAQUET_INCOMPLET | JSON_INVALIDE`.
-START=`SNUM_PAQUET_RENDU_V519_START`; END=`SNUM_PAQUET_RENDU_V519_END`.
-`SORTIE_PAQUET=START→JSON_UNIQUE→END→PAQUET_RENDU_PRET`; unique, rien avant START.
-sans bloc de code; aucun brouillon, préambule ou doublon.
+`SNUM_PAQUET_RENDU_V519_START`→JSON unique→`SNUM_PAQUET_RENDU_V519_END`→`PAQUET_RENDU_PRET`.
+Rien avant le premier marqueur; sans bloc de code; aucun brouillon, préambule ou doublon.
 `GENERER_PAQUET` n’est jamais `ETAT_INVALIDE` dans cet état.

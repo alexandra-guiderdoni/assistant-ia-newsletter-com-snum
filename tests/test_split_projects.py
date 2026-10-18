@@ -111,7 +111,7 @@ class SplitProjectKitTests(unittest.TestCase):
             "Après `COLLECTE_TERMINEE_BEST_EFFORT`, `VALIDER`",
             "`SORTIE_VALIDATION=CONTROLE_DATES",
             "Après `VALIDATION_TERMINEE`, `GENERER_PAQUET`",
-            "`SORTIE_PAQUET=START→JSON_UNIQUE→END→PAQUET_RENDU_PRET`",
+            "`SNUM_PAQUET_RENDU_V519_START`→JSON unique→",
         )
         self.assertEqual(sorted(steps, key=prompt.index), list(steps))
         self.assertIn("`SNUM_PAQUET_RENDU_V519_START`", contract)
@@ -138,11 +138,8 @@ class SplitProjectKitTests(unittest.TestCase):
         )
         self.assertIn(record, prompt)
         self.assertIn(record, method)
-        self.assertIn(
-            "SORTIE_RECHERCHE=RESULTATS_RECHERCHE→REGISTRE_CUMULATIF→"
-            "VALIDATION_METIER_REQUISE→REQUETE_A_ENVOYER",
-            prompt,
-        )
+        self.assertIn("Après chaque recherche non vide", prompt)
+        self.assertIn("`VALIDATION_METIER_REQUISE`", prompt)
 
     def test_v523_collecte_advances_one_rubric_per_turn(self):
         prompt_path = PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md"
@@ -187,7 +184,7 @@ class SplitProjectKitTests(unittest.TestCase):
             .split()
         )
 
-        self.assertIn("affiche la `REQUETE_A_ENVOYER` suivante", prompt)
+        self.assertIn("Puis la `REQUETE_A_ENVOYER` suivante", prompt)
         for next_command in (
             "RECHERCHE_NUMERIQUE",
             "RECHERCHE_IA",

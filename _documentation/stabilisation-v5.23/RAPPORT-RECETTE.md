@@ -4,16 +4,19 @@ Date : 18 octobre 2026
 
 ## Verdict courant
 
-`RECETTE_ASSISTANT_V5234_ECHEC_B01_B02_P04`
+`CANDIDAT_V5235_LOCAL_VERT_RECETTE_BLOQUEE_RECHERCHE`
 
-Le candidat n’est pas livrable. Les tests locaux sont verts, mais la recette réelle
-v5.23.4 échoue. Les cinq recherches ont avancé avec des sources visibles et `VALIDER`
-a produit une ligne de contrôle par entrée. Le contenu JSON respecte désormais B03 :
-identifiants continus, quatre URL uniques, dates dans la fenêtre, trois essentiels,
-textes courts et `watch` composé d’objets. En revanche, P04 et B01 omettent les
-marqueurs demandés. B02 régresse : un premier JSON en bloc de code précède un second
-JSON, et les marqueurs deviennent `START=SNUM_...` et `END=SNUM_...`. La chaîne a donc
-été arrêtée avant le Rendu HTML, sans correction manuelle du paquet.
+Le candidat n’est pas livrable. La bifurcation v5.23.5 remplace les trois grammaires
+aliasées par des lignes littérales tout en conservant la normalisation B03, avec 74
+tests locaux verts. Sa recette réelle n’a toutefois pas pu évaluer B01 à B04 : au
+premier lot `RECHERCHE_NUMERIQUE`, l’Assistant a répondu deux fois
+`A_COMPLETER | RECHERCHE_NON_PROUVEE` alors que son panneau affichait dix sources. Le
+second envoi était le retry exact prévu par le parcours. La chaîne a été arrêtée sans
+modifier la requête, injecter une source ni transmettre un paquet au Rendu HTML.
+
+La recette v5.23.4 reste la dernière preuve complète : B03 était vert sur le contenu
+JSON, mais P04 et B01 omettaient les marqueurs demandés et B02 dupliquait le JSON avec
+des marqueurs `START=SNUM_...` et `END=SNUM_...`.
 
 Un commit de checkpoint et le push de la branche de stabilisation sont autorisés pour
 préserver le travail. Aucun tag de livraison, fusion dans `main` ni déclaration de
@@ -23,7 +26,7 @@ conformité ne doit précéder une nouvelle recette exacte hors service dégrad�
 
 - Baseline : commit `db532b21630df17d31e56f06e2fc73e82312c6e0`, tag local
   `v5.23-baseline`.
-- Candidat courant : prompt Collecte de 3 993 caractères.
+- Candidat courant : prompt Collecte de 3 953 caractères.
 - `python3 -m unittest discover -s tests -v` : 74 tests réussis sur 74 après
   synchronisation des dérivés.
 - Ruff, contrôle des kits et `git diff --check` : réussis.
@@ -63,6 +66,7 @@ B03 sans correction manuelle.
 | 6 | Protocole exact et chaîne atteinte ; paquet dupliqué, `watch` chaîne et fait trop long. | <https://assistant.numerique.gouv.fr/chat/0220d074-dbcc-4b98-9f74-e80758b5659f> |
 | 7 | Service normal ; B01 et B02 verts, P04 et B03 rouges selon l’audit détaillé ci-dessus. | <https://assistant.numerique.gouv.fr/chat/e23e5670-3167-4a9b-8c71-947ff27cd3c7> |
 | 8 | V5.23.4, service normal ; B03 vert, mais P04, B01 et B02 rouges. | <https://assistant.numerique.gouv.fr/chat/b9213270-ec0a-4621-82d5-f15e9250d6f6> |
+| 9 | V5.23.5 ; dix sources visibles, mais deux réponses `RECHERCHE_NON_PROUVEE` au premier lot. | <https://assistant.numerique.gouv.fr/chat/18bf6904-b4bc-43c1-a25a-f99140b25b60> |
 
 ## État des critères
 
@@ -76,19 +80,18 @@ B03 sans correction manuelle.
   paquet réel du candidat.
 - P04 : rouge sur les cinq recherches de l’essai 8 ;
   `VALIDATION_METIER_REQUISE` est toujours omis.
+- V5.23.5 : B01 à B04 et P04 non évaluables, car l’essai 9 s’est arrêté au premier lot
+  de recherche conformément au protocole.
 - Les autres comportements P01 à P08 : couverts localement, à confirmer par la recette
   exacte.
 
 ## Prochaine action autorisée
 
-1. Arrêter les micro-variantes du même prompt : trois recettes successives ont déplacé
-   les échecs sans produire un parcours entièrement vert.
-2. Reprendre mot pour mot la grammaire B02 qui avait réussi dans l’essai 7, conserver
-   la normalisation B03 de l’essai 8 et rendre P04/B01 par des lignes littérales, sans
-   alias `START` ou `END`.
-3. Produire un unique candidat de bifurcation, le tester localement, puis rejouer une
-   seule recette Collecte complète.
-4. Ne tester le Rendu HTML que si B01, B02, B03 et P04 sont simultanément verts.
+1. Ne pas modifier le candidat sur l’échec de recherche de l’essai 9 : le panneau de
+   sources contredit la réponse du modèle.
+2. Rejouer v5.23.5 dans une conversation vierge lorsque le lot Web produit réellement
+   `RESULTATS_RECHERCHE` et `REGISTRE_CUMULATIF`.
+3. Ne tester le Rendu HTML que si B01, B02, B03 et P04 sont simultanément verts.
 
 ## Limites
 

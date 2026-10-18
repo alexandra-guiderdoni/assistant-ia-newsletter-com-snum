@@ -10,7 +10,9 @@ def normalized(name):
 
 class StabilisationV523PreflightTests(unittest.TestCase):
     def test_b01_bercy_exposes_validation_as_the_next_input(self):
-        prompt = normalized("01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md")
+        prompt_path = PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md"
+        prompt_raw = prompt_path.read_text(encoding="utf-8")
+        prompt = " ".join(prompt_raw.split())
         method = normalized("02-METHODE-COLLECTE-SNUM-V5.23.md")
         direct_route = (
             "`RECHERCHE_NUMERIQUE`→`RECHERCHE_IA`→`RECHERCHE_COMMANDE`→"
@@ -29,6 +31,12 @@ class StabilisationV523PreflightTests(unittest.TestCase):
                 "`REQUETE_A_ENVOYER=COLLECTE_TERMINEE_BEST_EFFORT`",
                 text,
             )
+        self.assertIn(
+            "`RECHERCHE_BERCY` rend exactement :\n"
+            "`COLLECTE_TERMINEE_BEST_EFFORT`\n"
+            "`REQUETE_A_ENVOYER=VALIDER`",
+            prompt_raw,
+        )
 
     def test_window_boundaries_are_explicit_on_both_sides(self):
         method = normalized("02-METHODE-COLLECTE-SNUM-V5.23.md")
@@ -50,11 +58,13 @@ class StabilisationV523PreflightTests(unittest.TestCase):
             self.assertIn("ne répète jamais le code reçu", text)
 
     def test_search_output_grammar_keeps_business_validation_visible(self):
-        prompt = normalized("01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md")
+        prompt = (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md").read_text(
+            encoding="utf-8"
+        )
 
         self.assertIn(
-            "`SORTIE_RECHERCHE=RESULTATS_RECHERCHE→REGISTRE_CUMULATIF→"
-            "VALIDATION_METIER_REQUISE→REQUETE_A_ENVOYER`",
+            "Après chaque recherche non vide, écris sur une ligne isolée :\n"
+            "`VALIDATION_METIER_REQUISE`",
             prompt,
         )
 
@@ -79,13 +89,18 @@ class StabilisationV523PreflightTests(unittest.TestCase):
     def test_b02_packet_has_one_unambiguous_output_grammar(self):
         prompt = normalized("01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md")
         contract = normalized("03-CONTRAT-PAQUET-RENDU-SNUM-V5.23.md")
-        grammar = (
-            "`SORTIE_PAQUET=START→JSON_UNIQUE→END→PAQUET_RENDU_PRET`; "
-            "unique, rien avant START."
+        literal_grammar = (
+            "`SNUM_PAQUET_RENDU_V519_START`→JSON unique→"
+            "`SNUM_PAQUET_RENDU_V519_END`→`PAQUET_RENDU_PRET`."
         )
 
-        self.assertIn(grammar, prompt)
-        self.assertIn(grammar, contract)
+        self.assertIn(literal_grammar, prompt)
+        self.assertNotIn("START=`SNUM_PAQUET_RENDU_V519_START`", prompt)
+        self.assertNotIn("END=`SNUM_PAQUET_RENDU_V519_END`", prompt)
+        self.assertIn(
+            "`SORTIE_PAQUET=START→JSON_UNIQUE→END→PAQUET_RENDU_PRET`",
+            contract,
+        )
         for text in (prompt, contract):
             self.assertIn("aucun brouillon, préambule ou doublon", text)
             self.assertIn("sans bloc de code", text)
