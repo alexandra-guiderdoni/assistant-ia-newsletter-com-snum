@@ -1,0 +1,140 @@
+{
+  "schema": "newsletter-snum/stabilisation/v1",
+  "status": "confirmed",
+  "mission": "Stabiliser la chaîne Assistant Collecte vers JSON vers HTML à partir de la V5.23, sans modifier le parcours métier ni élargir le périmètre aux problèmes éditoriaux.",
+  "baseline": {
+    "commit": "db532b21630df17d31e56f06e2fc73e82312c6e0",
+    "tag": "v5.23-baseline",
+    "collecte": "V5.23",
+    "rendu_html": "V5.19",
+    "schema_paquet": "SNUM_PAQUET_RENDU_V519"
+  },
+  "sources": [
+    "AGENTS.md",
+    "_documentation/archives/releases/v5.23/RAPPORT-V5.23.md",
+    "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md",
+    "02-METHODE-COLLECTE-SNUM-V5.23.md",
+    "03-CONTRAT-PAQUET-RENDU-SNUM-V5.23.md",
+    "20-PROMPT-SYSTEME-RENDU-HTML-SNUM-V5.19.md",
+    "_source/05-BLOCS-HTML-CANONIQUES.md",
+    "tests/"
+  ],
+  "preserve": [
+    {
+      "id": "P01",
+      "behavior": "Deux Projets Assistant séparés : Collecte et Rendu HTML."
+    },
+    {
+      "id": "P02",
+      "behavior": "Le premier message contient DATE_EDITION, PERIODE et NUMERIQUE."
+    },
+    {
+      "id": "P03",
+      "behavior": "Une recherche Web par tour dans l'ordre NUMERIQUE, IA, COMMANDE, RH, BERCY."
+    },
+    {
+      "id": "P04",
+      "behavior": "Le métier valide les sources et les dates visibles en envoyant la requête suivante."
+    },
+    {
+      "id": "P05",
+      "behavior": "Le mode best effort ne bloque pas le paquet lorsque moins de cinq sources sont valides."
+    },
+    {
+      "id": "P06",
+      "behavior": "Le Web est interdit pendant VALIDATION, PAQUET et RENDU."
+    },
+    {
+      "id": "P07",
+      "behavior": "Le paquet conserve exactement le schéma SNUM_PAQUET_RENDU_V519 consommé par le Rendu V5.19."
+    },
+    {
+      "id": "P08",
+      "behavior": "Le métier utilise uniquement l'Assistant ; les scripts restent des outils de maintenance et de preuve."
+    }
+  ],
+  "change": [
+    {
+      "id": "B01",
+      "defect": "Après RECHERCHE_BERCY, une commande COLLECTE_TERMINEE_BEST_EFFORT intermédiaire peut être proposée.",
+      "required_behavior": "La même réponse termine la collecte et affiche directement REQUETE_A_ENVOYER=VALIDER.",
+      "proof": "Une conversation vierge atteint VALIDER sans tour Continuer ni commande intermédiaire."
+    },
+    {
+      "id": "B02",
+      "defect": "Le JSON peut être dupliqué avant son bloc marqué.",
+      "required_behavior": "La réponse à GENERER_PAQUET contient exactement un objet JSON, entre un seul couple de marqueurs, sans préambule ni brouillon.",
+      "proof": "Le reçu réel contient une occurrence de chaque marqueur et un seul objet JSON analysable."
+    },
+    {
+      "id": "B03",
+      "defect": "Les identifiants, le nombre de mots-clés ou les limites de mots peuvent être non conformes.",
+      "required_behavior": "Après filtrage, les articles sont triés, renumérotés U01 à UN sans trou et respectent toutes les limites du contrat.",
+      "proof": "Le paquet réel passe le validateur sans correction manuelle ni commande CORRIGER_PAQUET."
+    },
+    {
+      "id": "B04",
+      "defect": "Le titre HTML peut utiliser une date numérique courte.",
+      "required_behavior": "Le marqueur de titre reçoit exactement edition_date_long.",
+      "proof": "Le HTML réel contient la date française longue dans title et aucune date d'édition avec barre oblique."
+    }
+  ],
+  "mutable_scope": [
+    "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md",
+    "02-METHODE-COLLECTE-SNUM-V5.23.md",
+    "03-CONTRAT-PAQUET-RENDU-SNUM-V5.23.md",
+    "20-PROMPT-SYSTEME-RENDU-HTML-SNUM-V5.19.md",
+    "tests/",
+    "scripts/",
+    "README.md",
+    "AGENTS.md",
+    "NOTICE-*.md",
+    "RAPPORT-*.md",
+    "Newsletter SNUM - Collecte.zip",
+    "Newsletter SNUM - Rendu HTML.zip",
+    "_documentation/stabilisation-v5.23/"
+  ],
+  "forbidden": [
+    "Modifier un fichier sous _documentation/archives/releases/v5.23.",
+    "Ajouter une étape au parcours métier ou une sixième recherche.",
+    "Assouplir un validateur pour accepter une sortie non conforme.",
+    "Créer un second moteur, générateur ou validateur concurrent.",
+    "Automatiser la décision éditoriale actuellement réservée au métier.",
+    "Déclarer la chaîne validée à partir des seuls tests locaux.",
+    "Empiler une quatrième tentative après trois échecs de même cause sans diagnostic et décision de bifurcation."
+  ],
+  "gates": {
+    "local": [
+      "python3 -m unittest discover -s tests -v",
+      "ruff check --no-cache scripts tests",
+      "python3 scripts/build_split_kit.py --check",
+      "git diff --check"
+    ],
+    "assistant": [
+      "Parcours nominal dans des conversations vierges.",
+      "Parcours best effort avec moins de cinq sources valides.",
+      "Parcours contenant une source hors fenêtre ou un doublon.",
+      "Passage du paquet réel au Projet Rendu HTML sans correction manuelle."
+    ],
+    "release": [
+      "Les quatre défauts B01 à B04 disposent chacun d'une preuve réelle verte.",
+      "Les comportements P01 à P08 sont préservés.",
+      "README, notice et rapport distinguent tests locaux, recette réelle et limites non vérifiées.",
+      "Le commit local et origin/main désignent le même SHA après publication autorisée."
+    ]
+  },
+  "checkpoint": [
+    "Un commit et un push de la branche de stabilisation sont autorisés avec le verdict RECETTE_LOCALE_VERTE_ASSISTANT_A_REJOUER.",
+    "Le checkpoint ne doit créer aucun tag de livraison, modifier main ni être présenté comme une version conforme."
+  ],
+  "rollback": {
+    "reference": "v5.23-baseline",
+    "rule": "Toute régression d'un comportement préservé bloque la livraison et ramène le candidat à la baseline avant une nouvelle hypothèse."
+  },
+  "candidate_version": "v5.23.1",
+  "not_verified": [
+    "La qualité éditoriale indépendante des sources Web.",
+    "La stabilité des résultats Web entre deux conversations.",
+    "Le comportement de la future version avant sa recette réelle dans l'Assistant."
+  ]
+}

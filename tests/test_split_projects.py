@@ -19,7 +19,7 @@ class SplitProjectKitTests(unittest.TestCase):
 
         fixed_route = (
             "`RECHERCHE_NUMERIQUE`→`RECHERCHE_IA`→`RECHERCHE_COMMANDE`→"
-            "`RECHERCHE_RH`→`RECHERCHE_BERCY`→`COLLECTE_TERMINEE_BEST_EFFORT`"
+            "`RECHERCHE_RH`→`RECHERCHE_BERCY`→`VALIDER`"
         )
         self.assertIn(fixed_route, prompt)
         self.assertIn(fixed_route, method)
@@ -37,12 +37,13 @@ class SplitProjectKitTests(unittest.TestCase):
         )
 
         self.assertIn(
-            "Pour tout `RESULTATS_RECHERCHE` non vide, affiche exactement le "
-            "prochain code de la chaîne, même `DANS_FENETRE=NON`",
+            "Pour tout `RESULTATS_RECHERCHE` non vide, prends le code reçu dans le "
+            "message utilisateur et affiche son suivant dans la chaîne, même "
+            "`DANS_FENETRE=NON`",
             prompt,
         )
         self.assertIn(
-            "`RECHERCHE_RH`→`RECHERCHE_BERCY`→`COLLECTE_TERMINEE_BEST_EFFORT`",
+            "`RECHERCHE_RH`→`RECHERCHE_BERCY`→`VALIDER`",
             prompt,
         )
 
@@ -57,34 +58,23 @@ class SplitProjectKitTests(unittest.TestCase):
         self.assertIn("`SNUM_PAQUET_RENDU_V519_START`", prompt)
         self.assertIn("`SNUM_PAQUET_RENDU_V519_END`", prompt)
         self.assertIn(
-            "`schema_version`, `edition_date`, `edition_date_long`, "
-            "`window_start`, `window_end`, `articles`, `watch`",
+            "RACINE=`schema_version,edition_date,edition_date_long,window_start,"
+            "window_end,articles,watch`",
             prompt,
         )
         self.assertIn(
-            "`schema_version` vaut `SNUM_PAQUET_RENDU_V519`",
+            "`schema_version=SNUM_PAQUET_RENDU_V519`",
             prompt,
         )
         self.assertIn(
-            "`id`, `rubric`, `title`, `source`, `publication_date_iso`, "
-            "`publication_date_long`, `url`, `fact`, `keywords`, `takeaway`, "
-            "`snum_interest`, `essential`",
+            "ARTICLE=`id,rubric,title,source,publication_date_iso,"
+            "publication_date_long,url,fact,keywords,takeaway,snum_interest,essential`",
             prompt,
         )
-        self.assertIn(
-            "`watch` est `[]` ou contient seulement des objets `title`/`summary`",
-            prompt,
-        )
-        self.assertIn(
-            "`rubric` vaut `numerique|ia|commande|rh|bercy`",
-            prompt,
-        )
-        self.assertIn("`snum_interest` est une chaîne", prompt)
+        self.assertIn("`rubric=numerique|ia|commande|rh|bercy`", prompt)
+        self.assertIn("`snum_interest`=texte", prompt)
         self.assertIn("exactement trois `essential=true`", prompt)
-        self.assertIn(
-            "Après analyse réussie, termine par `PAQUET_RENDU_PRET`",
-            prompt,
-        )
+        self.assertIn("`PAQUET_RENDU_PRET`", prompt)
         self.assertIn("jamais `metadata` ni `sources`", prompt)
 
     def test_v523_each_web_search_requires_visible_sources_and_business_validation(
@@ -117,7 +107,7 @@ class SplitProjectKitTests(unittest.TestCase):
         contract = " ".join(contract_path.read_text(encoding="utf-8").split())
 
         steps = (
-            "`RECHERCHE_BERCY`→`COLLECTE_TERMINEE_BEST_EFFORT`",
+            "`RECHERCHE_BERCY`→`VALIDER`",
             "Après `COLLECTE_TERMINEE_BEST_EFFORT`, `VALIDER`",
             "Rends `VALIDATION_TERMINEE`",
             "Après `VALIDATION_TERMINEE`, `GENERER_PAQUET`",
@@ -179,11 +169,11 @@ class SplitProjectKitTests(unittest.TestCase):
         transition = (
             "`RECHERCHE_NUMERIQUE`→`RECHERCHE_IA`→`RECHERCHE_COMMANDE`→"
             "`RECHERCHE_RH`→`RECHERCHE_BERCY`→"
-            "`COLLECTE_TERMINEE_BEST_EFFORT`; suivant≠reçu"
+            "`VALIDER`"
         )
         self.assertIn(transition, prompt)
         self.assertIn(transition, method)
-        self.assertIn("Ne répète aucun lot", prompt)
+        self.assertIn("ne répète jamais le code reçu", prompt)
         self.assertIn("`VALIDATION_METIER_REQUISE`", prompt)
 
     def test_v523_collecte_exposes_the_exact_next_command(self):
@@ -383,7 +373,7 @@ class SplitProjectKitTests(unittest.TestCase):
         self.assertIn("`COLLECTE_TERMINEE_BEST_EFFORT`", method)
         self.assertIn("`VALIDATION_TERMINEE`", prompt)
         self.assertIn("`PAQUET_RENDU_PRET`", prompt)
-        self.assertIn("Une transition par tour", prompt)
+        self.assertNotIn("Une transition par tour", prompt)
         self.assertIn(
             "Entrée manquante, ambiguë ou fenêtre inversée", prompt_normalized
         )
@@ -436,7 +426,7 @@ class SplitProjectKitTests(unittest.TestCase):
         self.assertIn(
             "Ordre immuable : `RECHERCHE_NUMERIQUE`→`RECHERCHE_IA`→"
             "`RECHERCHE_COMMANDE`→`RECHERCHE_RH`→`RECHERCHE_BERCY`→"
-            "`COLLECTE_TERMINEE_BEST_EFFORT`; suivant≠reçu",
+            "`VALIDER`",
             method_normalized,
         )
         self.assertIn("Une seule recherche est demandée par message", method_normalized)
@@ -484,7 +474,7 @@ class SplitProjectKitTests(unittest.TestCase):
         prompt_normalized = " ".join(prompt.split())
 
         self.assertIn("rends `RESULTATS_RECHERCHE` non vide", prompt_normalized)
-        self.assertIn("Ne répète aucun lot", prompt_normalized)
+        self.assertIn("ne répète jamais le code reçu", prompt_normalized)
         self.assertNotIn("`ETAT_COLLECTE`", prompt_normalized)
 
     def test_collecte_accepts_an_edition_date_after_the_collection_window(self):
@@ -728,7 +718,7 @@ class SplitProjectKitTests(unittest.TestCase):
             prompt_normalized,
         )
 
-    def test_packet_success_requires_parsing_the_exact_emitted_json(self):
+    def test_packet_success_requires_silent_validation_before_output(self):
         prompt = " ".join(
             (PROJECT / "01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md")
             .read_text(encoding="utf-8")
@@ -736,14 +726,11 @@ class SplitProjectKitTests(unittest.TestCase):
         )
 
         self.assertIn(
-            "analyse exactement le JSON émis avec un parseur",
+            "Avant de répondre, valide en silence",
             prompt,
         )
         self.assertIn("`PAQUET_INCOMPLET | JSON_INVALIDE`", prompt)
-        self.assertIn(
-            "Après analyse réussie, termine par `PAQUET_RENDU_PRET`",
-            prompt,
-        )
+        self.assertIn("aucun brouillon, préambule ou doublon", prompt)
 
     def test_packet_command_builds_its_own_json_without_user_input(self):
         prompt = " ".join(
@@ -754,10 +741,10 @@ class SplitProjectKitTests(unittest.TestCase):
 
         self.assertIn("Construis toi-même le JSON depuis `SOURCES_VALIDES`", prompt)
         self.assertIn("ne demande jamais de paquet à l’utilisateur", prompt)
-        self.assertIn("analyse exactement le JSON émis", prompt)
+        self.assertIn("Avant de répondre, valide en silence", prompt)
         self.assertLess(
             prompt.index("Construis toi-même le JSON"),
-            prompt.index("analyse exactement le JSON émis"),
+            prompt.index("Avant de répondre, valide en silence"),
         )
 
     def test_collecte_rejects_dates_outside_the_inclusive_iso_bounds(self):
@@ -875,7 +862,14 @@ class SplitProjectKitTests(unittest.TestCase):
         legacy_contract = legacy_collecte[paquet_start:].rstrip()
 
         self.assertNotIn(legacy_collecte_block, method)
-        self.assertIn(legacy_contract, contract)
+        expected_contract = legacy_contract.replace(
+            "`id` est une chaîne non vide et unique",
+            "`id` vaut exactement `U01…UN` sans trou",
+        )
+        self.assertIn(
+            " ".join(expected_contract.split()),
+            " ".join(contract.split()),
+        )
         self.assertIn("Vise la période inclusive en France", method)
         self.assertNotIn("`PASSE_2`", method)
         self.assertNotIn("`RECOMPTER`", collecte)

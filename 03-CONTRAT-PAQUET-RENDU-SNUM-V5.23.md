@@ -20,7 +20,7 @@ contient : `id`, `rubric`, `title`, `source`, `publication_date_iso`,
 `6 octobre 2026`, sans jour de semaine, zéro initial ni barre oblique.
 Sous trois articles, tous portent `essential=false`. À partir de trois articles,
 exactement trois portent `essential=true`. `watch` contient seulement des objets `title`
-et `summary`, ou une liste vide. `id` est une chaîne non vide et unique. Une URL ne peut
+et `summary`, ou une liste vide. `id` vaut exactement `U01…UN` sans trou. Une URL ne peut
 apparaître qu’une fois dans `articles`.
 
 Avant de répondre, vérifie chaque champ, les URL, les limites de mots et le nombre
@@ -28,5 +28,11 @@ d’essentiels. Si le nombre d’URL uniques diffère du nombre d’articles, r�
 `PAQUET_INCOMPLET | URL_DUPLIQUEE | <URL>`, sans JSON. Pour tout autre échec, réponds
 `PAQUET_INCOMPLET | <identifiant> | <champ>`, sans JSON. Sinon termine après le marqueur
 de fin par `PAQUET_RENDU_PRET`.
+
+Stabilisation : si nécessaire, raccourcis les trois textes avant la validation, sans
+ajouter de fait. Écris `watch=[]` s’il n’y a aucune alerte, jamais une chaîne. Avant de
+répondre, valide en silence. `SORTIE_PAQUET=START→JSON_UNIQUE→END→PAQUET_RENDU_PRET`;
+unique, rien avant START. Première ligne visible : START; sans bloc de code, aucun
+brouillon, préambule ou doublon.
 
 SNUM_COLLECTE_V523_CONTRAT_END
