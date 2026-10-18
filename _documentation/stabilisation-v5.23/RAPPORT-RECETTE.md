@@ -4,15 +4,16 @@ Date : 18 octobre 2026
 
 ## Verdict courant
 
-`RECETTE_LOCALE_VERTE_ASSISTANT_A_REJOUER`
+`RECETTE_ASSISTANT_V5234_ECHEC_B01_B02_P04`
 
-Le candidat n’est pas livrable. Les tests locaux sont verts. Le parcours v5.23.3 a
-correctement enchaîné les cinq recherches, Bercy, `VALIDER` et `GENERER_PAQUET`. B02
-est devenu vert : un seul JSON analysable entre un seul couple de marqueurs, sans
-brouillon. P04 et B03 restent rouges : `VALIDATION_METIER_REQUISE` a été omis, le
-contrôle des dates est resté agrégé, deux faits comptaient 35 et 31 mots, un
-`takeaway` 16 mots et `watch` était une liste de chaînes. Le prompt local a été
-resserré après cette observation et doit encore être rejoué dans l’Assistant.
+Le candidat n’est pas livrable. Les tests locaux sont verts, mais la recette réelle
+v5.23.4 échoue. Les cinq recherches ont avancé avec des sources visibles et `VALIDER`
+a produit une ligne de contrôle par entrée. Le contenu JSON respecte désormais B03 :
+identifiants continus, quatre URL uniques, dates dans la fenêtre, trois essentiels,
+textes courts et `watch` composé d’objets. En revanche, P04 et B01 omettent les
+marqueurs demandés. B02 régresse : un premier JSON en bloc de code précède un second
+JSON, et les marqueurs deviennent `START=SNUM_...` et `END=SNUM_...`. La chaîne a donc
+été arrêtée avant le Rendu HTML, sans correction manuelle du paquet.
 
 Un commit de checkpoint et le push de la branche de stabilisation sont autorisés pour
 préserver le travail. Aucun tag de livraison, fusion dans `main` ni déclaration de
@@ -61,29 +62,33 @@ B03 sans correction manuelle.
 | 5 | Protocole exact, mais réponse initiale pendant `Trafic élevé - service dégradé`. | <https://assistant.numerique.gouv.fr/chat/21697f13-21c2-4afa-9da2-ad07dbf414ff> |
 | 6 | Protocole exact et chaîne atteinte ; paquet dupliqué, `watch` chaîne et fait trop long. | <https://assistant.numerique.gouv.fr/chat/0220d074-dbcc-4b98-9f74-e80758b5659f> |
 | 7 | Service normal ; B01 et B02 verts, P04 et B03 rouges selon l’audit détaillé ci-dessus. | <https://assistant.numerique.gouv.fr/chat/e23e5670-3167-4a9b-8c71-947ff27cd3c7> |
+| 8 | V5.23.4, service normal ; B03 vert, mais P04, B01 et B02 rouges. | <https://assistant.numerique.gouv.fr/chat/b9213270-ec0a-4621-82d5-f15e9250d6f6> |
 
 ## État des critères
 
-- B01, transition Bercy vers validation : démontrée lors des essais 6 et 7, à confirmer
-  sur le candidat courant.
-- B02, JSON unique marqué : démontrée lors de l’essai 7, à confirmer sur le candidat
-  courant.
-- B03, paquet normalisé sans correction : contredite lors de l’essai 7, corrigée
-  localement, à rejouer.
+- B01, transition Bercy vers validation : rouge sur le candidat v5.23.4 ; la commande
+  `VALIDER` est présente, mais `COLLECTE_TERMINEE_BEST_EFFORT` manque.
+- B02, JSON unique marqué : rouge sur le candidat v5.23.4 ; deux JSON, un bloc de code
+  et deux marqueurs altérés.
+- B03, paquet normalisé sans correction : vert sur le contenu JSON de l’essai 8, mais
+  ce contenu reste inutilisable tant que B02 est rouge.
 - B04, date longue dans le HTML : vert seulement en préflight local, non exercé avec un
   paquet réel du candidat.
-- P04 : contredit lors de l’essai 7, corrigé localement, à rejouer.
+- P04 : rouge sur les cinq recherches de l’essai 8 ;
+  `VALIDATION_METIER_REQUISE` est toujours omis.
 - Les autres comportements P01 à P08 : couverts localement, à confirmer par la recette
   exacte.
 
 ## Prochaine action autorisée
 
-1. Attendre la disparition de la bannière de service dégradé.
-2. Créer une conversation vierge dans le projet de stabilisation.
-3. Envoyer les cinq lignes complètes `REQUETE_A_ENVOYER=...` avec le Web.
-4. Désactiver le Web, puis envoyer `VALIDER` et une seule fois `GENERER_PAQUET`.
-5. Contrôler indépendamment le JSON, puis le transmettre au projet Rendu HTML de
-   stabilisation sans correction.
+1. Arrêter les micro-variantes du même prompt : trois recettes successives ont déplacé
+   les échecs sans produire un parcours entièrement vert.
+2. Reprendre mot pour mot la grammaire B02 qui avait réussi dans l’essai 7, conserver
+   la normalisation B03 de l’essai 8 et rendre P04/B01 par des lignes littérales, sans
+   alias `START` ou `END`.
+3. Produire un unique candidat de bifurcation, le tester localement, puis rejouer une
+   seule recette Collecte complète.
+4. Ne tester le Rendu HTML que si B01, B02, B03 et P04 sont simultanément verts.
 
 ## Limites
 

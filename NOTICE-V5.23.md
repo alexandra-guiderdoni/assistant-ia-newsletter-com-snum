@@ -11,10 +11,11 @@ recherches initiales, sans recomptage ni seuil bloquant.
 - `Newsletter SNUM - Collecte` produit un `PAQUET_RENDU`.
 - `Newsletter SNUM - Rendu HTML` transforme ce paquet en HTML canonique.
 
-> **État du candidat de stabilisation : recette Assistant à rejouer.** Les contrôles
-> locaux sont verts. Le dernier paquet réel était unique, mais omettait la validation
-> métier visible, agrégeait le contrôle des dates et dépassait encore certaines limites
-> de mots ; `watch` avait aussi le mauvais sous-type. Aucun tag ni changement de `main`.
+> **État du candidat de stabilisation : non livrable.** Les contrôles locaux sont
+> verts et le contenu JSON est normalisé. La recette V5.23.4 omet toutefois les
+> marqueurs métier, duplique le JSON dans un bloc de code et altère les marqueurs de
+> paquet. La chaîne a été arrêtée avant le Rendu HTML. Aucun tag ni changement de
+> `main`.
 
 ## Pourquoi deux Projets
 
