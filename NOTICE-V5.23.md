@@ -13,7 +13,7 @@ recherches initiales, sans recomptage ni seuil bloquant.
 
 > **État du candidat de stabilisation : non livrable.** La bifurcation V5.23.5 est
 > verte localement. Une recette a validé NUMERIQUE et IA, puis s’est arrêtée sur
-> COMMANDE après deux réponses `RECHERCHE_NON_PROUVEE`, malgré dix sources visibles.
+> COMMANDE après trois réponses `RECHERCHE_NON_PROUVEE`, malgré dix sources visibles.
 > B01 à B04 restent donc à évaluer sur ce candidat. Aucun tag ni changement de `main`.
 
 ## Pourquoi deux Projets
