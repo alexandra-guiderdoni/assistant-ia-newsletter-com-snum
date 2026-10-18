@@ -12,9 +12,9 @@ recherches initiales, sans recomptage ni seuil bloquant.
 - `Newsletter SNUM - Rendu HTML` transforme ce paquet en HTML canonique.
 
 > **État du candidat de stabilisation : non livrable.** La bifurcation V5.23.5 est
-> verte localement. Sa recette s’est arrêtée au premier lot Web après deux réponses
-> `RECHERCHE_NON_PROUVEE`, malgré dix sources visibles dans l’interface. B01 à B04
-> restent donc à évaluer sur ce candidat. Aucun tag ni changement de `main`.
+> verte localement. Une recette a validé NUMERIQUE et IA, puis s’est arrêtée sur
+> COMMANDE après deux réponses `RECHERCHE_NON_PROUVEE`, malgré dix sources visibles.
+> B01 à B04 restent donc à évaluer sur ce candidat. Aucun tag ni changement de `main`.
 
 ## Pourquoi deux Projets
 
