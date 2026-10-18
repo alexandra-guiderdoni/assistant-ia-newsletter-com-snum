@@ -2,7 +2,9 @@ SNUM_COLLECTE_V523_CONTRAT_START
 
 # Contrat Paquet repris de la V5.19
 
-Pendant `PAQUET`, n’utilise pas le Web. Transforme uniquement `SOURCES_VALIDES` en un
+À `NORMALISER_V519`, n’utilise pas le Web. Transforme uniquement les
+`SOURCES_NORMALISEES` mémorisées après
+`RESULTATS_COMPOSITES_ENREGISTRES` en un
 bloc JSON strict placé entre `SNUM_PAQUET_RENDU_V519_START` et
 `SNUM_PAQUET_RENDU_V519_END`. `\"` et `\\` doivent être échappés dans les chaînes ;
 vérifie que le bloc est analysable comme JSON. Aucun commentaire.

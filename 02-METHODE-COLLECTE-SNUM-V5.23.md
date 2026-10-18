@@ -1,68 +1,67 @@
 `SNUM_COLLECTE_V523_METHODE_START`
 
-# Méthode Collecte avec validation métier
+# Méthode Collecte en deux chats
 
-## 1. Préparer les requêtes
+## 1. Produire la requête composite
 
-Une seule recherche est demandée par message. Produis `REQUETE_A_ENVOYER=<texte>`
-avec dates et code exact, puis demande explicitement
-une recherche sur le Web, l’ouverture des résultats et la citation des sources.
+Le Projet Collecte ne navigue pas sur le Web. À partir de `DATE_EDITION`, de
+`PERIODE` et de `RECHERCHE_COMPOSITE`, il prépare une requête unique à copier
+dans un nouveau chat Assistant ordinaire avec le Web activé.
 
-Ordre immuable : `RECHERCHE_NUMERIQUE`→`RECHERCHE_IA`→`RECHERCHE_COMMANDE`→`RECHERCHE_RH`→`RECHERCHE_BERCY`→`VALIDER`.
+La requête couvre `numerique`, `ia`, `commande`, `rh` et `bercy`. Elle recopie
+chaque code avec l’axe complet défini dans le prompt. Une liste de codes sans ces
+axes est invalide. Les axes servent à chercher. Dans chaque ligne `RESULTAT`,
+`rubrique` vaut uniquement le code, jamais le libellé ni l’axe.
 
-Vise la période inclusive en France et des sources gouvernementales ou
-institutionnelles directes.
+Elle exige l’ouverture des sources, leur URL HTTPS et la date de publication exacte.
+Elle exclut les contenus publiés hors fenêtre, même si leur événement ou leur mise à
+jour est dans la fenêtre. Grammaire demandée :
+`RESULTAT|rubrique|URL_HTTPS|date_iso|titre|source|fait_factuel`
+ou `RESULTAT|rubrique|AUCUN_RESULTAT_DATE_DANS_FENETRE`.
+Aucun champ ne contient le caractère `|` ni de retour à la ligne.
 
-## 2. Contrôler chaque recherche
+## 2. Enregistrer la réponse Web
 
-Après l’appel Web, ouvre les résultats et rends `RESULTATS_RECHERCHE` pour cette
-rubrique : titre, source, URL HTTPS et date brute ; si une source est visible, rends
-`RESULTATS_RECHERCHE` non vide, puis `REGISTRE_CUMULATIF` : recopie
-sans changement, ajoute chaque nouvelle URL canonique unique : `U01` puis
-`max(Uxx)+1`; aucun réemploi :
-`Uxx|rubrique|URL|date brute|date ISO|DANS_FENETRE=OUI|NON|titre|source|fait`.
-Une date exacte contient jour, mois et année. `OUI` exige exactement
-`DEBUT_ISO <= date ISO <= FIN_ISO`; sinon utilise `NON`, avec `INCONNUE` si la
-date n’est pas exacte. Pour `2026-10-03..2026-10-13`, le `2026-10-01` vaut `NON` ;
-`2026-10-02` vaut `NON` ; `2026-10-03` et `2026-10-13` valent `OUI` ;
-`2026-10-04` et `2026-10-11` valent `OUI` ; `2026-10-16` vaut `NON`. Termine par
-`VALIDATION_METIER_REQUISE`. En envoyant la
-requête suivante, le métier valide les sources et leurs décisions visibles. Tout
-`RESULTATS_RECHERCHE` non vide : prends le code reçu dans le message utilisateur et
-affiche son suivant dans la chaîne, même `DANS_FENETRE=NON` ; ne répète jamais le
-code reçu.
+Le métier copie toute la réponse du chat Web dans le chat Collecte d’origine. Cette
+validation humaine unique confirme que la recherche a été lancée. Le Projet Collecte
+n’appelle aucun outil Web et ne relance aucune recherche.
 
-Si aucune source visible n’apparaît, il relance exactement la même requête. Résultat
-sans citation ou échec technique :
-`A_COMPLETER | RECHERCHE_NON_PROUVEE | <rubrique>`.
+Analyse seulement les lignes `RESULTAT|`. Une ligne complète possède exactement
+sept champs. Rejette une rubrique inconnue, une URL non HTTPS, une date non exacte ou
+hors fenêtre. Pour `2026-10-03..2026-10-13`, `2026-10-03`, `2026-10-04`,
+`2026-10-11` et `2026-10-13` sont incluses ; `2026-10-02` et `2026-10-14`
+sont exclues.
 
-## 3. Terminer la collecte en best effort
+Déduplique par URL canonique. Si une rubrique comporte au moins une ligne valide,
+ignore `AUCUN_RESULTAT_DATE_DANS_FENETRE` pour cette rubrique. Sinon, conserve
+l’absence comme future alerte. Les lignes invalides ne deviennent jamais des
+articles.
 
-Après chacune des quatre premières recherches, affiche la requête suivante de
-l’ordre immuable. Après `RECHERCHE_BERCY`, rends dans la même réponse, sans étape :
-`COLLECTE_TERMINEE_BEST_EFFORT`
-`REQUETE_A_ENVOYER=VALIDER`
-`COLLECTE_TERMINEE_BEST_EFFORT` est un marqueur d’état, jamais une valeur de
-`REQUETE_A_ENVOYER`. Aucun compteur ni seuil ne bloque `RECHERCHE_BERCY`→`VALIDER`.
+Mémorise le résultat sous `SOURCES_NORMALISEES`, avec la date d’édition et les
+bornes. Ce tour ne produis aucun JSON. Il répond seulement avec
+`RESULTATS_COMPOSITES_ENREGISTRES`, le nombre de lignes valides, les rubriques sans
+résultat, puis `REQUETE_A_ENVOYER=NORMALISER_V519`.
 
-## 4. Valider
+## 3. Produire le paquet sur commande
 
-Pendant `VALIDATION`, n’utilise pas le Web. Pour chaque entrée du registre, produis
-`CONTROLE_DATES` : titre, dates brute/ISO, bornes, accès, `CLE_EVENEMENT` et décision.
-`CONTROLE_DATES` contient exactement une ligne `Uxx` par entrée du registre, jamais
-seulement les bornes agrégées.
-Une source est valide si `DANS_FENETRE` et accès valent `OUI`.
-À `VALIDER`, produis toi-même depuis `REGISTRE_CUMULATIF`; ne demande rien à
-l’utilisateur et ne bloque jamais sur un nombre minimal de sources.
-Même fait = même clé ; conserve la source la plus directe, sinon la plus récente,
-sinon la première. Place les autres dans `SOURCES_EXCLUES` avec `DOUBLON_DE`.
-Vérifie `valides + exclues = registre` avant `VALIDATION_TERMINEE`. Si moins de
-cinq sources sont valides, signale l’insuffisance dans `watch` sans bloquer le JSON.
+`NORMALISER_V519` est accepté seulement après
+`RESULTATS_COMPOSITES_ENREGISTRES`. Il transforme uniquement les
+`SOURCES_NORMALISEES` mémorisées ; il ne recherche rien et ne demande aucun autre
+contenu au métier.
 
-Après `VALIDATION_TERMINEE`, affiche `REQUETE_A_ENVOYER=GENERER_PAQUET`. Le paquet
-reprend exactement le schéma et les marqueurs `SNUM_PAQUET_RENDU_V519` du contrat :
-clés racines `schema_version`, `edition_date`, `edition_date_long`, `window_start`,
-`window_end`, `articles`, `watch`; jamais `metadata` ni `sources`.
-Sélection finale : trie puis renumérote les articles `U01…UN` sans trou.
+Trie par date décroissante, puis selon l’ordre
+`numerique|ia|commande|rh|bercy`, puis par URL. Après déduplication et tri,
+attribue `U01…UN` sans trou. Le nombre d’articles égale le nombre d’URL uniques.
+
+Utilise uniquement les faits reçus. Génère de 3 à 5 mots-clés par article, un
+`takeaway` et un `snum_interest` courts, sans inventer de fait. À partir de trois
+articles, exactement les trois premiers portent `essential=true`. Sous trois,
+aucun n’est essentiel. Moins de cinq articles ou une rubrique vide ajoute une alerte
+à `watch`, mais ne bloque jamais le JSON.
+
+Applique exactement le schéma du contrat V519. La sortie réussie commence au premier
+caractère par `SNUM_PAQUET_RENDU_V519_START`, contient un seul JSON sans bloc de
+code, puis `SNUM_PAQUET_RENDU_V519_END` et `PAQUET_RENDU_PRET`. N’affiche aucun
+raisonnement, registre, compteur, contrôle intermédiaire ni préambule.
 
 `SNUM_COLLECTE_V523_METHODE_END`
