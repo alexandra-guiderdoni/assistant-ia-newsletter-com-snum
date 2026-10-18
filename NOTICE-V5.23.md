@@ -12,9 +12,9 @@ recherches initiales, sans recomptage ni seuil bloquant.
 - `Newsletter SNUM - Rendu HTML` transforme ce paquet en HTML canonique.
 
 > **État du candidat de stabilisation : recette Assistant à rejouer.** Les contrôles
-> locaux sont verts, mais le dernier paquet réel contenait un brouillon dupliqué et
-> un champ `watch` du mauvais type. Le checkpoint est conservé sur une branche dédiée,
-> sans tag de livraison ni modification de `main`.
+> locaux sont verts. Le dernier paquet réel était unique, mais omettait la validation
+> métier visible, agrégeait le contrôle des dates et dépassait encore certaines limites
+> de mots ; `watch` avait aussi le mauvais sous-type. Aucun tag ni changement de `main`.
 
 ## Pourquoi deux Projets
 
@@ -91,7 +91,7 @@ un HTML copié depuis le chat perd les styles Bacoco quand il est ouvert hors du
 `DATE_EDITION = <date en français>`
 `PERIODE = du <date en français> au <date en français> inclus`
 `NUMERIQUE`
-Le message initial est valide seulement avec ces trois lignes.
+Valide seulement avec ces trois lignes.
 La date d’édition sert uniquement au paquet.
 `DATE_EDITION=2026-10-14` avec fenêtre `2026-10-03..2026-10-13` est valide : ne
 compare jamais la date d’édition aux bornes.
@@ -119,16 +119,13 @@ vide et `REGISTRE_CUMULATIF`: recopie sans changement, ajoute chaque nouvelle UR
 canonique unique : `U01` puis `max(Uxx)+1`; aucun réemploi :
 `Uxx|rubrique|URL|date brute|date ISO|DANS_FENETRE=OUI|NON|titre|source|fait`.
 `OUI` exige `DEBUT_ISO <= date ISO <= FIN_ISO`; sinon `NON`.
-Rends `VALIDATION_METIER_REQUISE` : le
-métier valide la source et cette décision en envoyant la requête suivante.
+`SORTIE_RECHERCHE=RESULTATS_RECHERCHE→REGISTRE_CUMULATIF→VALIDATION_METIER_REQUISE→REQUETE_A_ENVOYER`.
 Pour tout `RESULTATS_RECHERCHE` non vide, prends le code reçu dans le message
 utilisateur et affiche son suivant dans la chaîne, même `DANS_FENETRE=NON` ; ne
 répète jamais le code reçu.
 
-Avant Bercy : affiche la `REQUETE_A_ENVOYER` suivante.
-`RECHERCHE_BERCY` rend :
-`COLLECTE_TERMINEE_BEST_EFFORT`
-`REQUETE_A_ENVOYER=VALIDER`
+Avant Bercy, affiche la `REQUETE_A_ENVOYER` suivante.
+Bercy rend `COLLECTE_TERMINEE_BEST_EFFORT` puis `REQUETE_A_ENVOYER=VALIDER`.
 `COLLECTE_TERMINEE_BEST_EFFORT` est un marqueur d’état, jamais une valeur de
 `REQUETE_A_ENVOYER`.
 
@@ -138,26 +135,26 @@ Une source visible, même hors fenêtre ⇒ suivant, jamais `A_COMPLETER`; sinon
 ## Valider en best effort
 
 Après `COLLECTE_TERMINEE_BEST_EFFORT`, `VALIDER` exécute seulement `VALIDATION`.
-Affiche intégralement `CONTROLE_DATES`, `SOURCES_VALIDES` et `SOURCES_EXCLUES`.
-Conserve ces structures.
+`SORTIE_VALIDATION=CONTROLE_DATES(Uxx par entrée)→SOURCES_VALIDES→SOURCES_EXCLUES→VALIDATION_TERMINEE→REQUETE_A_ENVOYER=GENERER_PAQUET`.
+`CONTROLE_DATES` : une ligne `Uxx` par entrée; aucun contrôle agrégé seul.
 `valides + exclues = registre`.
-Rends `VALIDATION_TERMINEE`; puis `REQUETE_A_ENVOYER=GENERER_PAQUET`.
 À `VALIDER`, produis toi-même depuis `REGISTRE_CUMULATIF`; ne demande rien à
 l’utilisateur et ne bloque jamais sur un nombre minimal de sources.
 
 Après `VALIDATION_TERMINEE`, `GENERER_PAQUET` exécute seulement `PAQUET`.
-Construis toi-même le JSON depuis `SOURCES_VALIDES`; ne demande jamais de paquet à
-l’utilisateur. Si moins de cinq sources sont valides, signale l’insuffisance dans
-`watch` sans bloquer le JSON. Sélection finale : trie puis renumérote les articles
+Construis toi-même le JSON depuis `SOURCES_VALIDES`; aucun paquet utilisateur.
+Moins de cinq : signale l’insuffisance dans `watch` sans bloquer le JSON.
+Sélection finale : trie puis renumérote les articles
 `U01…UN` sans trou.
 RACINE=`schema_version,edition_date,edition_date_long,window_start,window_end,articles,watch`.
 ARTICLE=`id,rubric,title,source,publication_date_iso,publication_date_long,url,fact,keywords,takeaway,snum_interest,essential`.
 `schema_version=SNUM_PAQUET_RENDU_V519`; jamais `metadata` ni `sources`.
 `rubric=numerique|ia|commande|rh|bercy`; `snum_interest`=texte. Dès trois articles,
 exactement trois `essential=true`; sinon zéro.
-Avant de répondre, valide en silence JSON, mots et `watch` liste.
+Raccourcis `fact`≤20 mots et `takeaway`/`snum_interest`≤12 mots.
+`watch=[]` ou `[{"title":"...","summary":"..."}]`; jamais chaîne.
 `PAQUET_INCOMPLET | JSON_INVALIDE`.
-`SNUM_PAQUET_RENDU_V519_START`→JSON unique→`SNUM_PAQUET_RENDU_V519_END`→`PAQUET_RENDU_PRET`.
+START=`SNUM_PAQUET_RENDU_V519_START`; END=`SNUM_PAQUET_RENDU_V519_END`.
 `SORTIE_PAQUET=START→JSON_UNIQUE→END→PAQUET_RENDU_PRET`; unique, rien avant START.
 sans bloc de code; aucun brouillon, préambule ou doublon.
 `GENERER_PAQUET` n’est jamais `ETAT_INVALIDE` dans cet état.

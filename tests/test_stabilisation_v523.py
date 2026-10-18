@@ -49,7 +49,17 @@ class StabilisationV523PreflightTests(unittest.TestCase):
             )
             self.assertIn("ne répète jamais le code reçu", text)
 
+    def test_search_output_grammar_keeps_business_validation_visible(self):
+        prompt = normalized("01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md")
+
+        self.assertIn(
+            "`SORTIE_RECHERCHE=RESULTATS_RECHERCHE→REGISTRE_CUMULATIF→"
+            "VALIDATION_METIER_REQUISE→REQUETE_A_ENVOYER`",
+            prompt,
+        )
+
     def test_validation_emits_one_control_line_per_registry_entry(self):
+        prompt = normalized("01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md")
         method = normalized("02-METHODE-COLLECTE-SNUM-V5.23.md")
 
         self.assertIn(
@@ -58,6 +68,13 @@ class StabilisationV523PreflightTests(unittest.TestCase):
             method,
         )
         self.assertIn("jamais seulement les bornes agrégées", method)
+        self.assertIn(
+            "`SORTIE_VALIDATION=CONTROLE_DATES(Uxx par entrée)→SOURCES_VALIDES→"
+            "SOURCES_EXCLUES→VALIDATION_TERMINEE→"
+            "REQUETE_A_ENVOYER=GENERER_PAQUET`",
+            prompt,
+        )
+        self.assertIn("aucun contrôle agrégé seul", prompt)
 
     def test_b02_packet_has_one_unambiguous_output_grammar(self):
         prompt = normalized("01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md")
@@ -70,16 +87,26 @@ class StabilisationV523PreflightTests(unittest.TestCase):
         self.assertIn(grammar, prompt)
         self.assertIn(grammar, contract)
         for text in (prompt, contract):
-            self.assertIn("Avant de répondre, valide en silence", text)
             self.assertIn("aucun brouillon, préambule ou doublon", text)
             self.assertIn("sans bloc de code", text)
+        self.assertIn("Raccourcis `fact`≤20 mots", prompt)
+        self.assertIn("Avant de répondre, valide en silence", contract)
 
     def test_packet_normalizes_lengths_and_watch_before_output(self):
+        prompt = normalized("01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md")
         contract = normalized("03-CONTRAT-PAQUET-RENDU-SNUM-V5.23.md")
 
         self.assertIn("raccourcis les trois textes avant la validation", contract)
         self.assertIn("`watch=[]` s’il n’y a aucune alerte", contract)
         self.assertIn("jamais une chaîne", contract)
+        self.assertIn(
+            "Raccourcis `fact`≤20 mots et `takeaway`/`snum_interest`≤12 mots",
+            prompt,
+        )
+        self.assertIn(
+            '`watch=[]` ou `[{"title":"...","summary":"..."}]`; jamais chaîne',
+            prompt,
+        )
 
     def test_b03_packet_is_normalized_after_final_selection(self):
         prompt = normalized("01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md")
