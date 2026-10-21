@@ -1,10 +1,10 @@
 # Contexte de session - Newsletter SNUM et rendu DSFR
-> Sauvegarde du 21 octobre 2026. Lire l’état Git avant toute reprise.
+> Clôture du 21 octobre 2026. Livraison publiée ; lire l’état Git avant toute reprise.
 
 ## INVARIANTS
 
 - working directory : `/Users/alex/Claude/git-hors-workflow/assistant-ia-newsletter-com-snum` ; branch : `main`.
-- Dernier jalon antérieur à la livraison documentée : `ff2bbdaa0b2b7fb27181b63f4e686f159cd018f4`, publié ; divergence `0/0` vérifiée avant les écritures. Identifier le commit de la livraison présente avec `git log -1` et comparer son SHA au distant.
+- last commit produit : `45a9edd434cbad74c759316e9cac958bd17ee1a1`, publié et identique au SHA distant de `origin/main` à la clôture ; arbre propre et divergence `0/0` vérifiés avant cette sauvegarde du contexte.
 - Documentation et wiki : dépôt parent `/Users/alex/Claude`, commit `6cabc7486d10d92528333fa53f154bb307618208` publié sur sa branche `main` ; SHA distant relu.
 - Préserver les onze artefacts historiques Collecte V5.23 et Rendu HTML V5.19 : empreintes inchangées.
 - Le titre demandé est `Newsletter SNUM - rendu DSFR`, avec un tiret simple.
@@ -24,6 +24,7 @@
 - [x] completed : trois notices `INSTALLATION-*.md` et `MODE-OPERATOIRE.md` inclus dans les trois ZIP du dossier `livraison/`, avec exemple JSON ; le ZIP DSFR contient aussi l’outil et le candidat expérimental.
 - [x] completed : prompt DSFR corrigé sur `watch`, ZIP technique DSFR régénéré et consigne enregistrée dans le Projet DSFR installé ; relecture après réouverture identique au texte préparé, neuf ressources présentes. Aucune nouvelle génération par le modèle.
 - [x] completed : génération et contrôles des ZIP finaux ; relecture indépendante sans P0/P1/P2, GO limité au packaging. Pour la preuve de publication, comparer le commit contenant ce contexte au SHA de `origin/main`.
+- [~] in progress : aucun travail produit ; seul le présent contexte de clôture est sauvegardé.
 - [ ] pending : installation sur le poste de la collègue, téléchargement natif, réouverture et essai Outlook restent non vérifiés ; protocole inclus dans `MODE-OPERATOIRE.md`.
 
 ## DECISIONS
