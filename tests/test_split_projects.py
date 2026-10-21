@@ -215,7 +215,9 @@ class SplitProjectKitTests(unittest.TestCase):
 
     def test_readme_is_the_active_entry_point(self):
         readme = (PROJECT / "README.md").read_text(encoding="utf-8")
-        self.assertIn("# Configurer les deux Projets Newsletter SNUM", readme)
+        self.assertIn("# Installer et utiliser Newsletter SNUM", readme)
+        self.assertIn("MODE-OPERATOIRE.md", readme)
+        self.assertIn("livraison/", readme)
         self.assertIn("Newsletter SNUM - Collecte.zip", readme)
         self.assertIn("Newsletter SNUM - Rendu HTML.zip", readme)
         self.assertNotIn("kit-dinum-snum-v5-19-deux-projets-6-fichiers.zip", readme)

@@ -11,7 +11,7 @@ ARTICLE contient aussi ESSENTIAL ; WATCH contient WATCH_ITEM et EMPTY, chacun av
 PAGE : EDITION_LONG=edition_date_long ; INTRO=« Veille du [window_start en lettres] au [window_end en lettres] · N articles sélectionnés, dont E essentiels. » Accorde au singulier ; N=0 : « Aucun article sélectionné. »
 RUBRICS : une RUBRIC par rubrique présente, dans l’ordre de sa première apparition. Garde l’ordre des articles dans chaque rubrique. NUMBER=01,02… ; LABEL : numerique=Numérique ; ia=Intelligence artificielle (IA) ; commande=Commande publique ; rh=Ressources humaines ; bercy=Bercy. ARTICLES=les ARTICLE de cette rubrique. N’affiche aucune rubrique vide.
 ARTICLE : ID=id ; URL=url ; TITLE=title ; SOURCE=source ; DATE_ISO=publication_date_iso ; DATE_LONG=publication_date_long ; FACT=fact ; TAKEAWAY=takeaway ; INTEREST=snum_interest ; KEYWORDS=keywords séparés par « · ». ESSENTIAL=bloc ESSENTIAL si essential=true, sinon vide. Aucun doublon des essentiels.
-WATCH : vide si watch=[] ; sinon bloc WATCH avec WATCH_ITEMS=répétition de WATCH_ITEM, WATCH_TITLE=title et WATCH_SUMMARY=summary. articles=[] : RUBRICS=EMPTY, même si watch=[].
+WATCH : toujours vide, même si watch est rempli. N’insère aucune alerte dans le mail, même en commentaire HTML. articles=[] : RUBRICS=EMPTY. Signale les title et summary de watch uniquement après CONTROLES, sous « Commentaire sur la collecte (hors mail) ».
 
 Contrôle en silence : document fermé, un h1, aucun @@, N liens d’articles et les mêmes valeurs, flèches aria-hidden=true, logo complet en base64, aucun script ni actif externe. N’annonce aucune recette Outlook.
 

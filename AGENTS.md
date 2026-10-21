@@ -31,6 +31,8 @@ tests ; aucun terminal n’est ajouté au parcours métier.
 - `scripts/newsletter_mail.py` et `scripts/build_mail_kit.py` : rendu et génération du kit mail ;
 - `_source/mail-tool-*.js`, `_source/mail-tool-shell.html` et `scripts/build_mail_tool.py` : outil autonome de rendu DSFR ;
 - `tests/` : invariants exécutables.
+- `INSTALLATION-*.md` et `MODE-OPERATOIRE.md` : notices incluses dans les livraisons ;
+- `scripts/build_delivery.py` : assemblage des trois ZIP documentés sous `livraison/`.
 
 Les anciennes versions vivent uniquement sous
 `_documentation/archives/releases/`. Ne jamais les modifier pour corriger la
@@ -61,6 +63,10 @@ version active.
   les sources permanentes. Archiver la version précédente avant une livraison.
 - Les deux ZIP portent exactement les noms des Projets Assistant. Ne jamais
   demander au métier de téléverser le ZIP lui-même.
+- Les ZIP historiques de la racine gardent leur contenu technique ; les trois
+  ZIP à transmettre sont sous `livraison/`, avec leur notice et le mode opératoire.
+  Régénérer avec `python3 scripts/build_delivery.py` après toute modification
+  d’un fichier livré, puis vérifier avec `--check`.
 
 BON : corriger `_source/05-BLOCS-HTML-CANONIQUES.md`, puis régénérer les quatre
 ressources avec le script.

@@ -1,7 +1,21 @@
-<!-- PDG-LARGE-FILE-JUSTIFICATION: guide autonome d’installation et d’usage métier des deux Projets Assistant. -->
+<!-- PDG-LARGE-FILE-JUSTIFICATION: guide d’installation, de livraison et de maintenance des parcours Newsletter SNUM. -->
 <!-- PDG-BINARY-ASSET-JUSTIFICATION: les ZIP générés regroupent les fichiers à installer dans chaque Projet. -->
 
-# Configurer les deux Projets Newsletter SNUM
+# Installer et utiliser Newsletter SNUM
+
+Les **trois ZIP complets à transmettre** sont dans [livraison/](livraison/) :
+
+| Paquet | Installation incluse | Usage |
+| --- | --- | --- |
+| [Collecte](livraison/Newsletter%20SNUM%20-%20Collecte.zip) | [Notice Collecte](INSTALLATION-COLLECTE.md) | Recherche Web et paquet JSON |
+| [Rendu HTML](livraison/Newsletter%20SNUM%20-%20Rendu%20HTML.zip) | [Notice Rendu HTML](INSTALLATION-RENDU-HTML.md) | Gabarit Web habituel |
+| [rendu DSFR](livraison/Newsletter%20SNUM%20-%20rendu%20DSFR.zip) | [Notice rendu DSFR](INSTALLATION-RENDU-DSFR.md) | Outil mail autonome et candidat Assistant expérimental |
+
+Chaque ZIP contient sa notice, le [mode opératoire commun](MODE-OPERATOIRE.md),
+un exemple JSON et tous ses fichiers d’installation. Le paquet DSFR contient
+aussi `outil-rendu-dsfr.html` et le rapport de recette. Il suffit de transmettre
+ces ZIP, sans le dépôt ni ses outils de maintenance. Les empreintes sont dans
+[SHA256SUMS.txt](livraison/SHA256SUMS.txt).
 
 Pour produire un courriel DSFR, ouvrir [outil-rendu-dsfr.html](outil-rendu-dsfr.html), coller le même paquet de Collecte, puis prévisualiser et télécharger le mail. Le fichier fonctionne hors connexion et conserve le logo base64 original. Voir la [notice du rendu DSFR](NOTICE-RENDU-DSFR-V1.0.md) pour les preuves et limites. Les deux Projets historiques décrits ci-dessous sont conservés.
 
@@ -40,9 +54,12 @@ les deux dates et reçoit directement le paquet à transmettre à Rendu HTML.
 - `23-CANON-HTML-ESSENTIEL-RUBRIQUE-V5.19.md` ;
 - `24-CANON-HTML-SURVEILLER-VIDE-V5.19.md`.
 
-Les deux archives de la racine contiennent exactement ces fichiers :
+Les deux archives techniques historiques de la racine contiennent seulement ces fichiers :
 `Newsletter SNUM - Collecte.zip` et `Newsletter SNUM - Rendu HTML.zip`.
-Décompressez-les avant l’installation. Ne téléversez jamais un ZIP dans l’Assistant.
+Elles restent inchangées pour préserver les kits historiques. Pour une nouvelle
+installation, transmettre les ZIP documentés de `livraison/`. L’archive DSFR de
+la racine contient seulement le candidat Assistant expérimental. Décompresser
+les ZIP avant installation ; ne jamais téléverser un ZIP dans l’Assistant.
 
 ## Installer les Projets
 
@@ -164,9 +181,14 @@ ressources et les ZIP puis à vérifier le kit :
 
 ```bash
 python3 scripts/build_split_kit.py
+python3 scripts/build_mail_kit.py
+python3 scripts/build_mail_tool.py --check
+python3 scripts/build_delivery.py
 python3 -m unittest discover -s tests -v
 ruff check --no-cache scripts tests
 python3 scripts/build_split_kit.py --check
+python3 scripts/build_mail_kit.py --check
+python3 scripts/build_delivery.py --check
 git diff --check
 ```
 

@@ -8,7 +8,11 @@ Date : 21 octobre 2026.
 
 L’utilisateur a accepté ce parcours après trois essais non fidèles dans l’Assistant. Les instructions, ressources et archives des deux Projets historiques sont préservées.
 
-**NO-GO pour le Projet Assistant expérimental.** `Newsletter SNUM - rendu DSFR` reste installé avec les neuf ressources, mais les trois essais réels ont altéré le logo. Aucun nouvel ajustement du prompt n’a été lancé.
+**NO-GO pour déclarer le Projet Assistant expérimental fidèle au gabarit.**
+`Newsletter SNUM - rendu DSFR` reste installé avec les neuf ressources, mais les
+trois essais réels ont altéré le logo. Depuis ces essais, seule la consigne de
+traitement des alertes `watch` a été corrigée. Aucune nouvelle génération par le
+modèle n’a été lancée ; le défaut de reproduction du logo reste non résolu.
 
 Le choix métier reste un courriel autonome avec le logo original incorporé en base64. Le parcours accepté est désormais Collecte → fichier autonome → téléchargement du mail, sans terminal ni conversation de rendu supplémentaire.
 
@@ -106,7 +110,10 @@ La réponse du deuxième essai cite les neuf ressources, mais cela ne prouve pas
 - Le comparateur rejette une modification de couleur, de logo, de masquage des flèches, la suppression du type de document, la perte d’une espace significative et un suffixe HTML incomplet.
 - Ruff, `build_split_kit.py --check`, `build_mail_kit.py --check`, `build_mail_tool.py --check` et `git diff --check` réussissent.
 - Les empreintes des onze artefacts historiques protégés correspondent à celles relevées avant les modifications.
-- Les instructions installées correspondent au prompt local, après normalisation du saut de ligne final. Le prompt local contient 3 754 caractères ; chacune des neuf ressources reste sous 4 500 caractères.
+- À la recette initiale, les instructions installées correspondaient au prompt
+  local de 3 754 caractères après normalisation du saut de ligne final. Depuis
+  la correction de `watch`, le prompt local compte 3 833 caractères, dont deux
+  retours finaux ; chacune des neuf ressources reste sous 4 500 caractères.
 
 Les espaces des fragments HTML, les captures et les instantanés de référence sont conservés sans nettoyage pour préserver leur identité. Les exceptions de contrôle des espaces sont limitées à ces fichiers de données dans `.gitattributes` ; les scripts ne bénéficient d’aucune exception.
 
@@ -128,6 +135,41 @@ Après confirmation de la suppression définitive, dix anciennes versions SNUM o
 
 Les deux autres projets sans lien avec la newsletter ont été préservés. Aucun nouveau message ni changement d’instructions n’a été effectué pendant ce ménage. Pour la démonstration DSFR, le parcours éprouvé reste Collecte → outil autonome.
 
+## Complément de livraison du 21 octobre 2026
+
+L’audit des kits a montré que les ZIP techniques ne contenaient aucune notice
+et que l’archive DSFR ne livrait pas l’outil autonome. Les trois paquets complets
+sont désormais assemblés sous `livraison/`, sans modifier les deux ZIP
+historiques de la racine. Chaque paquet contient sa notice `INSTALLATION-*.md`,
+`MODE-OPERATOIRE.md`, un exemple JSON et ses fichiers d’installation. Le paquet
+DSFR contient aussi l’outil autonome, le présent rapport et les dix fichiers du
+candidat Assistant, explicitement expérimental.
+
+Le prompt DSFR réserve désormais `watch` au commentaire après `CONTROLES`, hors
+du bloc HTML ; le marqueur WATCH reste vide. Cette consigne a été enregistrée
+dans le seul Projet DSFR. La réouverture des paramètres a confirmé un texte
+identique à la correction préparée, 3 831 caractères sans les retours finaux,
+avec les neuf ressources toujours présentes. Aucun nouveau message de
+génération, ajout de ressource ou changement des deux autres Projets n’a été fait.
+
+Les **56 tests passent**, dont trois nouveaux contrôles de livraison : intégrité
+et identité des fichiers extraits, liens documentaires locaux présents, refus
+en lecture seule d’un ZIP auquel la notice a été retirée. Le HTML extrait du
+paquet DSFR, renommé et seul dans un dossier temporaire, passe également les dix
+variantes et le parcours DOM simulé depuis ce dossier. Les sorties restent
+identiques au moteur Python. Aucun essai navigateur natif ne découle de ces tests.
+
+`build_delivery.py --check` compare les trois archives documentées et
+`SHA256SUMS.txt` à leurs sources courantes. Après toute modification d’un fichier
+inclus, régénérer la livraison avec `python3 scripts/build_delivery.py`.
+La recette réelle du poste cible et d’Outlook est décrite dans le mode opératoire
+et reste non exécutée.
+
+La relecture indépendante n’a relevé aucun P0/P1/P2 dans le packaging. Elle a
+vérifié les CRC et empreintes, l’identité de chaque membre, les 23 liens locaux
+et la préservation des onze fichiers historiques. Son GO porte sur la livraison
+documentaire, sans qualification du poste cible, d’Outlook ou du candidat LLM.
+
 ## Décision et contrôles restants
 
 - Les trois variantes essayées sont insuffisantes ; ne pas relancer de réglage du prompt sans nouvelle hypothèse étayée.
@@ -143,4 +185,8 @@ Les tests déterministes ne prouvent pas le comportement de l’Assistant. La co
 
 La tentative antérieure d’ouverture d’un aperçu HTML local a été rejetée automatiquement par la politique du navigateur : seuls les protocoles HTTP et HTTPS sont autorisés. Aucun contournement n’a été tenté et aucune nouvelle tentative automatique d’ouverture locale n’a été faite pour l’outil. L’affichage a été confirmé par l’utilisateur. L’application réelle de la CSP, les interactions au clavier et le téléchargement natif restent non vérifiés par l’automatisation.
 
-Aucun envoi de courriel ni changement des instructions des projets conservés n’a été effectué pendant cette recette. L’historique Git et le contexte de reprise du dépôt permettent de contrôler la publication des fichiers ; le nettoyage des projets hébergés est tracé ci-dessus.
+Aucun envoi de courriel n’a été effectué. Le complément de livraison a seulement
+modifié la consigne `watch` du Projet DSFR ; les instructions des deux Projets
+historiques sont préservées. L’historique Git et le contexte de reprise du dépôt
+permettent de contrôler la publication des fichiers ; le nettoyage des Projets
+hébergés est tracé ci-dessus.

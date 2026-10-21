@@ -1,0 +1,3 @@
+b692720380ae2ecbbe09d1ed2880b01272d684af10a58cd4a98c65341f4e7852  Newsletter SNUM - Collecte.zip
+87e9bacbcc0f068d3e6da23c417d2ca7240f5be9500824fc6cb7d9dca47672d3  Newsletter SNUM - Rendu HTML.zip
+c703230e0803c5466905b56e0df4e12a7516b37096e08601a5b6b42411986327  Newsletter SNUM - rendu DSFR.zip

@@ -4,6 +4,12 @@ Cette troisième option transforme le paquet de Collecte V519 en **courriel HTML
 
 Le rendu DSFR utilise désormais [outil-rendu-dsfr.html](outil-rendu-dsfr.html), un fichier autonome qui génère le mail sans réécriture par un modèle. Ce changement a été accepté après trois essais non fidèles dans l’Assistant. Le Projet Assistant expérimental reste non validé ; le [rapport de recette](_documentation/recette-mail-dsfr/RAPPORT.md) conserve les preuves.
 
+Pour transmettre l’ensemble, utiliser le ZIP documenté du dossier `livraison/`.
+Sa [notice d’installation](INSTALLATION-RENDU-DSFR.md) couvre le fichier autonome
+et la réinstallation facultative du Projet expérimental. Le
+[mode opératoire](MODE-OPERATOIRE.md) décrit le choix du gabarit et la recette
+sur le poste cible. Ces documents sont inclus dans le ZIP documenté.
+
 La Collecte V5.23 et le Projet `Newsletter SNUM - Rendu HTML` conservent leurs instructions et ressources. Après la Collecte, le métier choisit le Rendu HTML habituel ou cet outil de rendu de mail DSFR.
 
 ## Utilisation
@@ -28,7 +34,10 @@ Seul `outil-rendu-dsfr.html` est nécessaire au métier. Il peut être déplacé
 
 Le paquet reste en mémoire dans la page : aucun envoi, stockage persistant ou appel réseau n’est effectué. Le fichier HTML téléchargé est également autonome.
 
-L’archive `Newsletter SNUM - rendu DSFR.zip` contient le candidat Assistant qui a échoué en recette. Elle ne constitue pas le livrable à utiliser pour ce parcours.
+L’archive `Newsletter SNUM - rendu DSFR.zip` à la racine du dépôt contient
+seulement le candidat Assistant qui a échoué en recette. Le ZIP du même nom dans
+`livraison/` contient l’outil autonome, sa documentation et les fichiers du
+candidat, dont le statut expérimental reste explicite.
 
 ## Maintenance
 
@@ -40,6 +49,8 @@ Python et Node.js sont utilisés uniquement pour la maintenance et les tests ; i
 python3 scripts/build_mail_tool.py
 python3 scripts/build_mail_tool.py --check
 python3 scripts/build_mail_kit.py --check
+python3 scripts/build_delivery.py
+python3 scripts/build_delivery.py --check
 python3 -m unittest discover -s tests -v
 ruff check --no-cache scripts tests
 python3 scripts/build_split_kit.py --check
