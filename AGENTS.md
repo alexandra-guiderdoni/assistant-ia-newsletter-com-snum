@@ -5,10 +5,15 @@
 Ce dépôt fournit un kit métier autonome pour produire la revue de presse du SNUM
 dans l’Assistant DINUM. Le dispositif comporte deux Projets distincts :
 `Newsletter SNUM - Collecte` produit un paquet JSON validé et
-`Newsletter SNUM - Rendu HTML` le transforme selon le gabarit Bacoco.
+`Newsletter SNUM - Rendu HTML` le transforme selon le gabarit Bacoco. Une troisième
+option, le fichier `outil-rendu-dsfr.html`, produit un courriel HTML autonome à
+partir du même paquet ; elle ne remplace aucun des deux Projets historiques. Le
+Projet Assistant DSFR essayé auparavant reste un candidat non validé.
 
-Le poste métier utilise uniquement l’Assistant. Les scripts Python servent à la
-maintenance, à la génération des kits et à la vérification avant livraison.
+Le poste métier utilise l’Assistant pour Collecte et Rendu HTML. Le rendu de mail
+DSFR utilise un fichier HTML local, selon le choix accepté après les échecs de
+reproduction du logo. Python et Node.js servent uniquement à la maintenance et aux
+tests ; aucun terminal n’est ajouté au parcours métier.
 
 ## Sources de vérité
 
@@ -22,6 +27,9 @@ maintenance, à la génération des kits et à la vérification avant livraison.
 - `20-PROMPT-SYSTEME-RENDU-HTML-SNUM-V5.19.md` : contrat de rendu ;
 - `_source/05-BLOCS-HTML-CANONIQUES.md` : source unique des blocs HTML ;
 - `scripts/build_split_kit.py` : génération des ressources et des deux ZIP ;
+- `NOTICE-RENDU-DSFR-V1.0.md` et `_source/30-BLOCS-MAIL-DSFR.md` : canal mail complémentaire ;
+- `scripts/newsletter_mail.py` et `scripts/build_mail_kit.py` : rendu et génération du kit mail ;
+- `_source/mail-tool-*.js`, `_source/mail-tool-shell.html` et `scripts/build_mail_tool.py` : outil autonome de rendu DSFR ;
 - `tests/` : invariants exécutables.
 
 Les anciennes versions vivent uniquement sous
@@ -111,6 +119,11 @@ Ne jamais commiter de secret, d’adresse de diffusion, de donnée restreinte ou
 `.DS_Store`. Ne jamais publier sur GitHub Pages ni envoyer un courriel pendant une
 recette sans demande explicite.
 
+Exception autorisée explicitement le 21 octobre 2026 : les trois adresses métier
+déjà présentes dans le pied de page du gabarit mail DSFR livré ce jour peuvent
+être versionnées avec ce gabarit et ses dérivés dans ce dépôt GitHub. Cette
+exception ne couvre aucune autre adresse ni donnée personnelle.
+
 ## Git
 
 Le dépôt de référence est `alexandra-guiderdoni/assistant-ia-newsletter-com-snum`
@@ -147,3 +160,20 @@ Une version est livrable seulement si :
 - le rendu est comparé au gabarit canonique selon le contrat annoncé ;
 - `README.md`, la notice et le rapport décrivent les preuves et les limites ;
 - le commit local et la branche distante publiée désignent le même SHA après le push.
+
+## Extension de courriel DSFR
+
+- Préserver les instructions, ressources et ZIP des deux Projets historiques.
+- Le parcours historique reste inchangé ; le mail DSFR passe de Collecte au fichier autonome, sans conversation de rendu supplémentaire.
+- Modifier la source `_source/30-BLOCS-MAIL-DSFR.md`, puis régénérer avec `python3 scripts/build_mail_kit.py`. Ne pas éditer les dérivés `31` à `34` ni le ZIP à la main.
+- Préserver l’autonomie, le logo base64, la signature et les flèches décoratives.
+- Les dates hors fenêtre restent présentées normalement dans le mail, sans changer Collecte. Le paramètre `allow_outside_window` du validateur partagé reste `False` par défaut pour le rendu historique.
+- Le prompt mail reste sous 4 000 caractères et chacune de ses neuf ressources sous 4 500.
+- Vérifier aussi `python3 scripts/build_mail_kit.py --check` et comparer chaque sortie réelle au canon avec `python3 scripts/newsletter_mail.py verify --input paquet.json --html sortie.html`.
+- La recette réelle du nouveau Projet n’exige pas de relancer ou reconfigurer Collecte. Les tests locaux seuls ne prouvent pas la copie fidèle du logo par l’Assistant.
+- Les preuves et le statut courant sont dans `_documentation/recette-mail-dsfr/RAPPORT.md`. Ne pas conclure à une conformité Outlook depuis un aperçu navigateur.
+- Pour le livrable métier, exécuter `python3 scripts/build_mail_tool.py`, puis `python3 scripts/build_mail_tool.py --check`. Ne pas éditer `outil-rendu-dsfr.html` directement.
+- Le moteur JavaScript doit produire le même HTML que le moteur Python pour les mêmes paquets. Les tests exercent les scripts inclus dans le fichier distribué, et non seulement leurs sources.
+- Les alertes `watch` de Collecte restent réservées à l’expéditeur, dans un encadré hors de l’aperçu. Ne jamais les intégrer au mail DSFR, même sous forme de commentaires HTML. Les rubriques sans article sont omises ; Collecte et le Rendu HTML historique restent inchangés.
+- Préserver le fonctionnement hors connexion : aucun script distant, appel réseau ou stockage du paquet. L’aperçu est isolé dans une iframe sans permission de script ; une modification de l’entrée retire le téléchargement précédent.
+- La préparation du téléchargement est vérifiée en simulation du DOM. Ne pas la présenter comme un téléchargement réel ni comme une recette visuelle dans un navigateur.

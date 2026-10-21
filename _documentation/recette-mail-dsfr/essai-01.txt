@@ -1,0 +1,157 @@
+## HTML COMPLET
+<!doctype html>
+<!-- Courriel DSFR SNUM autonome ; logo incorporé et flèches décoratives.
+Le rendu navigateur ne constitue pas une recette Outlook. -->
+<html lang="fr" xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="supported-color-schemes" content="light dark">
+  <title>Revue de presse du SNUM — 14 octobre 2026</title>
+  <!--[if mso]><xml><o:OfficeDocumentSettings><o:AllowPNG/><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml><![endif]-->
+  <style>
+    :root { color-scheme: light dark; supported-color-schemes: light dark; }
+    body { margin: 0; padding: 0; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+    table { border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+    td { mso-line-height-rule: at-least; }
+    img { border: 0; display: block; }
+    a { text-decoration: underline; text-underline-offset: 3px; }
+    a:focus-visible { outline: 2px solid #000091; outline-offset: 3px; }
+    @media only screen and (max-width: 600px) {
+      .outer-pad { padding: 0 !important; }
+      .content-pad { padding-left: 20px !important; padding-right: 20px !important; }
+      .mail-title { font-size: 28px !important; line-height: 36px !important; }
+      .signature-image, .signature-text { display: block !important; width: 100% !important; }
+      .signature-image { padding-bottom: 20px !important; }
+      .signature-text { padding-left: 0 !important; }
+    }
+    @media only screen and (max-width: 360px) {
+      .content-pad { padding-left: 16px !important; padding-right: 16px !important; }
+    }
+    @media (prefers-color-scheme: dark) {
+      body, .outer-bg { background-color: #161616 !important; }
+      .surface { background-color: #1e1e1e !important; }
+    .title-bg, .section-bg, .footer-bg { background-color: #1b1b35 !important; }
+      .text-main, .mail-title { color: #ffffff !important; }
+      .text-muted { color: #cecece !important; }
+      .text-brand, a.mail-link { color: #8585f6 !important; }
+      .mail-border { border-color: #353535 !important; }
+      .brand-rule { border-color: #8585f6 !important; }
+      a:focus-visible { outline-color: #8585f6; }
+    }
+    [data-ogsc] .outer-bg { background-color: #161616 !important; }
+    [data-ogsc] .surface { background-color: #1e1e1e !important; }
+    [data-ogsc] .title-bg, [data-ogsc] .section-bg, [data-ogsc] .footer-bg { background-color: #1b1b35 !important; }
+    [data-ogsc] .text-main, [data-ogsc] .mail-title { color: #ffffff !important; }
+    [data-ogsc] .text-muted { color: #cecece !important; }
+    [data-ogsc] .text-brand, [data-ogsc] a.mail-link { color: #8585f6 !important; }
+    [data-ogsc] .mail-border { border-color: #353535 !important; }
+    [data-ogsc] .brand-rule { border-color: #8585f6 !important; }
+    @media (forced-colors: active) { a { text-decoration: underline !important; } }
+  </style>
+</head>
+<body class="outer-bg" style="margin:0; padding:0; background-color:#f6f6f6; color:#161616; font-family:'Marianne',Arial,Helvetica,sans-serif;">
+  <div role="article" aria-roledescription="courriel" lang="fr" style="font-family:'Marianne',Arial,Helvetica,sans-serif;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" bgcolor="#f6f6f6" class="outer-bg" style="width:100%; background-color:#f6f6f6;">
+      <tr><td align="center" class="outer-pad" style="font-family:'Marianne',Arial,Helvetica,sans-serif; padding:32px 16px;">
+        <!--[if mso]><table role="presentation" width="600" align="center" cellspacing="0" cellpadding="0" border="0"><tr><td style="font-family:'Marianne',Arial,Helvetica,sans-serif;"><![endif]-->
+th:100%; max-width:600px; margin:0 auto; background-color:#ffffff;>
+          <tr><td class="surface content-pad brand-rule" bgcolor="#ffffff" style="font-family:'Marianne',Arial,Helvetica,sans-serif; padding:24px 40px; border-top:3px solid #000091; background-color:#ffffff;">
+            <p class="text-main" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0; color:#161616; font-size:14px; line-height:22px; font-weight:700;">SERVICE DU NUMÉRIQUE (SNUM)</p>
+          </td></tr>
+          <tr><td class="title-bg content-pad" bgcolor="#ececfe" style="font-family:'Marianne',Arial,Helvetica,sans-serif; padding:28px 40px 30px; background-color:#ececfe;">
+            <h1 class="mail-title text-main" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 12px; color:#161616; font-size:32px; line-height:40px; font-weight:700;">REVUE DE PRESSE</h1>
+            <p class="text-muted" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0; color:#3a3a3a; font-size:14px; line-height:22px;">Édition du 14 octobre 2026</p>
+          </td></tr>
+          <tr><td class="surface content-pad" bgcolor="#ffffff" style="font-family:'Marianne',Arial,Helvetica,sans-serif; padding:28px 40px 20px; background-color:#ffffff;">
+            <p class="text-muted" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 8px; color:#3a3a3a; font-size:16px; line-height:24px;">Veille du 3 octobre 2026 au 13 octobre 2026 · 5 articles sélectionnés, dont 3 essentiels.</p>
+            <p class="text-muted" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 8px; color:#3a3a3a; font-size:16px; line-height:24px;">Bonne lecture&nbsp;!</p>
+          </td></tr>
+<div style="font-family:'Marianne',Arial,Helvetica,sans-serif; display:inline-block; padding:8px; background-color:#ffffff;">
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAI4AAAA/CAIAAAC5CWePAAAjB0lEQVR4nO18WXNc13XuOvPpPj3PQE+YSQAECQIkJFIkTNlkQtG05DiJX5LHVKVSdf9RElVclfuguqpIkWTLEk2KswiQBEECJIBGY+wGutHzdObpPqyoLy05t2JFpEoO1wMKODjd5+y99l7Dt761ic8/W13fkBSNsSwgaYogCNM0wTIp0iAJjWeN/qR/dCSe7PEAb7UK23vPltytNq9otAEM0KRN6jYoDK3zbGh0hOtLgEuwCdICwgYSLJsmKXgl34XQX1z78vrtA1Fy6oZF0zRBEKapg62zlMFQytTkQDJ6ysn5gAKwQel08plVOrPqarUJ3WKABZtWbFBYTnE7jzBE3CuA0wEEAMlYAJYFFAnE9z3IPw2ht7dLmUyz1bF0TadomiQJ29QJUDlaD/pp/2xqfHQ4GAEwAMBkGcZFQSe3YdYbtmrYwNoWLQMp8YLsc2uVMsgSmCZBEiQJFpBgf9/j+xMSmgQHYcq2xoBJ2BZtUmCbNpAmQZqhWCKSSHrDAAQYOtAc4fG43IJDMXRGlSxFo23KtCnCJmhCJxWCNjUgCLAJsAkCSBLAsm3CJl5tq+9ESIYULEWmTZEDnSVV2+gAKAwLFmV0LFEE1eRBZcBygKXLJmW7g37WF7B4h07YFm3QrMoyMkXJLK3RJACQYFBAcGABaMBRBFgA1h/YXLb9asf9cUIrssVyLlGmdVsH07IBnLzgDwusM+DxsJZliCJ4eaAZAJslddrLOWuMQBC8YRKEZZKUTYJNmLqpqaQNABTYBFgAuK0IANsCgsSHoXoIguj+fCX/daGBZgzGo9I86DoQQNOE2yfEIgG3DziuY4uKVACKBeAAVBGaLZ8JHoWyVYbSGJIgGBpsijBsRjFpMAEsEmwSbAASLAJIANuySIIEANu2uzvplZ6+hdAWoXd0FSwWwAYAwzJkRWrUTUM1ObZV2WPr+yndF2Udirj+tLyzqmY3pVqHFkHTGYaiCNI2SMIgOItkNROAIIAmAR0WgAkAJEEAEAAEQbzS0H
+          <tr><td class="surface content-pad" bgcolor="#ffffff" style="font-family:'Marianne',Arial,Helvetica,sans-serif; padding:24px 0; border-bottom:1px solid #e5e5e5;">
+                <p class="text-brand" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 8px; color:#000091; font-size:12px; line-height:20px; font-weight:700; letter-spacing:0.5px;">ESSENTIEL</p>
+                <h3 style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 10px; font-size:20px; line-height:28px; font-weight:700;"><span aria-hidden="true" class="text-brand" style="font-family:'Marianne',Arial,Helvetica,sans-serif; color:#000091; font-size:16px; font-weight:400;">→&nbsp;</span><a class="mail-link" data-article-link="U01" href="https://presse.economie.gouv.fr/bercy-vert-achats-mobilites-batiments-le-nouveau-bilan-carbone-de-bercy-identifie-les-principaux-leviers-de-transformation/" target="_blank" rel="noopener noreferrer" style="font-family:'Marianne',Arial,Helvetica,sans-serif; color:#000091; text-decoration:underline;">Bercy Vert : achats, mobilités, bâtiments… Le nouveau bilan carbone de Bercy identifie les principaux leviers de transformation</a></h3>
+                <p class="text-muted" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 16px; color:#666666; font-size:13px; line-height:21px;">Ministères économiques et financiers · <time datetime="2026-10-06" style="font-family:'Marianne',Arial,Helvetica,sans-serif;">6 octobre 2026</time></p>
+                <p class="text-main" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 12px; color:#161616; font-size:16px; line-height:24px; ">Les ministères économiques et financiers publient leur bilan carbone 2024 : 448 400 tCO₂e, avec 42 % liés aux achats.</p>
+                <p class="text-brand" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 12px; color:#000091; font-size:16px; line-height:24px;"><strong style="font-family:'Marianne',Arial,Helvetica,sans-serif;">À retenir&nbsp;:</strong> Les achats représentent 42 % des émissions de Bercy.</p>
+                <p class="text-muted" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 12px; color:#666666; font-size:14px; line-height:22px;"><strong style="font-family:'Marianne',Arial,Helvetica,sans-serif;">Intérêt pour le SNUM&nbsp;:</strong> Exemplarité écologique de l'État via la commande publique.</p>
+<p class="text-muted" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0; color:#666666; font-size:12px; line-height:20px;"><strong style="font-family:'Marianne',Arial,Helvetica,sans-serif;">Mots-clés&nbsp;:</strong> bilan carbone · achats publics · transformation écologique · Bercy Vert · réduction émissions</p>
+              </td></tr>
+          <tr><td class="surface content-pad" bgcolor="#ffffff" style="font-family:'Marianne',Arial,Helvetica,sans-serif; padding:24px 0; border-bottom:1px solid #e5e5e5;">
+                <p class="text-brand" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 8px; color:#000091; font-size:12px; line-height:20px; font-weight:700; letter-spacing:0.5px;">ESSENTIEL</p>
+                <h3 style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 10px; font-size:20px; line-height:28px; font-weight:700;"><span aria-hidden="true" class="text-brand" style="font-family:'Marianne',Arial,Helvetica,sans-serif; color:#000091; font-size:16px; font-weight:400;">→&nbsp;</span><a class="mail-link" data-article-link="U02" href="https://www.economie.gouv.fr/daj/le-conseil-national-de-la-commande-publique-adopte-son-reglement-interieur-et-son-programme-de-travail" target="_blank" rel="noopener noreferrer" style="font-family:'Marianne',Arial,Helvetica,sans-serif; color:#000091; text-decoration:underline;">Le Conseil national de la commande publique adopte son règlement intérieur et son programme de travail</a></h3>
+                <p class="text-muted" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 16px; color:#666666; font-size:13px; line-height:21px;">Ministère de l'Économie · <time datetime="2026-10-12" style="font-family:'Marianne',Arial,Helvetica,sans-serif;">12 octobre 2026</time></p>
+                <p class="text-main" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 12px; color:#161616; font-size:16px; line-height:24px; ">Le CNCP adopte son règlement intérieur et un programme ambitieux pour traiter les problématiques de la commande publique.</p>
+                <p class="text-brand" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 12px; color:#000091; font-size:16px; line-height:24px;"><strong style="font-family:'Marianne',Arial,Helvetica,sans-serif;">À retenir&nbsp;:</strong> Le CNCP structure sa gouvernance pour plus d'agilité.</p>
+                <p class="text-muted" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 12px; color:#666666; font-size:14px; line-height:22px;"><strong style="font-family:'Marianne',Arial,Helvetica,sans-serif;">Intérêt pour le SNUM&nbsp;:</strong> Renforcement de la gouvernance de la commande publique.</p>
+<p class="text-muted" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0; color:#666666; font-size:12px; line-height:20px;"><strong style="font-family:'Marianne',Arial,Helvetica,sans-serif;">Mots-clés&nbsp;:</strong> CNCP · règlement intérieur · commande publique · programme de travail · performance</p>
+              </td></tr>
+          <tr><td data-article-id="U03" class="mail-border" style="font-family:'Marianne',Arial,Helvetica,sans-serif; padding:24px 0; border-bottom:1px solid #e5e5e5;">
+                <p class="text-brand" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 8px; color:#000091; font-size:12px; line-height:20px; font-weight:700; letter-spacing:0.5px;">ESSENTIEL</p>
+                <h3 style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 10px; font-size:20px; line-height:28px; font-weight:700;"><span aria-hidden="true" class="text-brand" style="font-family:'Marianne',Arial,Helvetica,sans-serif; color:#000091; font-size:16px; font-weight:400;">→&nbsp;</span><a class="mail-link" data-article-link="U03" href="https://www.economie.gouv.fr/dae/signature-dune-convention-cadre-pour-mieux-accompagner-les-acheteurs-de-letat-dans-lintegration-de-clauses-dinsertion-dans-les-marches" target="_blank" rel="noopener noreferrer" style="font-family:'Marianne',Arial,Helvetica,sans-serif; color:#000091; text-decoration:underline;">Signature d’une convention-cadre pour mieux accompagner les acheteurs de l’État dans l’intégration de clauses d’insertion dans les marchés</a></h3>
+                <p class="text-muted" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 16px; color:#666666; font-size:13px; line-height:21px;">Direction des achats de l’État · <time datetime="2026-10-05" style="font-family:'Marianne',Arial,Helvetica,sans-serif;">5 octobre 2026</time></p>
+                <p class="text-main" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 12px; color:#161616; font-size:16px; line-height:24px; ">Une convention-cadre renforce l’accompagnement des acheteurs de l’État pour intégrer des clauses d’insertion dans les marchés publics.</p>
+                <p class="text-brand" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 12px; color:#000091; font-size:16px; line-height:24px;"><strong style="font-family:'Marianne',Arial,Helvetica,sans-serif;">À retenir&nbsp;:</strong> L'État renforce l'inclusion sociale dans ses marchés.</p>
+                <p class="text-muted" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 12px; color:#666666; font-size:14px; line-height:22px;"><strong style="font-family:'Marianne',Arial,Helvetica,sans-serif;">Intérêt pour le SNUM&nbsp;:</strong> Intégration des enjeux sociaux dans la commande publique.</p>
+<p class="text-muted" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0; color:#666666; font-size:12px; line-height:20px;"><strong style="font-family:'Marianne',Arial,Helvetica,sans-serif;">Mots-clés&nbsp;:</strong> clauses d'insertion · marchés publics · convention-cadre · achats responsables · SPASER</p>
+              </td></tr>
+          <tr><td data-article-id="U04" class="mail-border" style="font-family:'Marianne',Arial,Helvetica,sans-serif; padding:24px 0; border-bottom:1px solid #e5e5e5;">
+                
+                <h3 style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 10px; font-size:20px; line-height:28px; font-weight:700;"><span aria-hidden="true" class="text-brand" style="font-family:'Marianne',Arial,Helvetica,sans-serif; color:#000091; font-size:16px; font-weight:400;">→&nbsp;</span><a class="mail-link" data-article-link="U04" href="https://www.economie.gouv.fr/daj/la-commission-europeenne-publie-sa-proposition-de-revision-du-paquet-de-directives-europeennes-sur-la-commande-publique" target="_blank" rel="noopener noreferrer" style="font-family:'Marianne',Arial,Helvetica,sans-serif; color:#000091; text-decoration:underline;">La Commission européenne publie sa proposition de révision du paquet de directives européennes sur la commande publique</a></h3>
+                <p class="text-muted" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 16px; color:#666666; font-size:13px; line-height:21px;">Ministère de l'Économie · <time datetime="2026-10-05" style="font-family:'Marianne',Arial,Helvetica,sans-serif;">5 octobre 2026</time></p>
+                <p class="text-main" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 12px; color:#161616; font-size:16px; line-height:24px; ">La Commission européenne propose une révision des directives sur la commande publique, avec des critères environnementaux et sociaux renforcés.</p>
+                <p class="text-brand" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 12px; color:#000091; font-size:16px; line-height:24px;"><strong style="font-family:'Marianne',Arial,Helvetica,sans-serif;">À retenir&nbsp;:</strong> L'Europe modernise ses règles pour une commande publique plus durable.</p>
+                <p class="text-muted" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 12px; color:#666666; font-size:14px; line-height:22px;"><strong style="font-family:'Marianne',Arial,Helvetica,sans-serif;">Intérêt pour le SNUM&nbsp;:</strong> Harmonisation européenne des achats publics responsables.</p>
+<p class="text-muted" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0; color:#666666; font-size:12px; line-height:20px;"><strong style="font-family:'Marianne',Arial,Helvetica,sans-serif;">Mots-clés&nbsp;:</strong> révision directives · commande publique · critères sociaux · critères environnementaux · Europe</p>
+              </td></tr>
+          <tr><td data-article-id="U05" class="mail-border" style="font-family:'Marianne',Arial,Helvetica,sans-serif; padding:24px 0; border-bottom:1px solid #e5e5e5;">
+                
+                <h3 style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 10px; font-size:20px; line-height:28px; font-weight:700;"><span aria-hidden="true" class="text-brand" style="font-family:'Marianne',Arial,Helvetica,sans-serif; color:#000091; font-size:16px; font-weight:400;">→&nbsp;</span><a class="mail-link" data-article-link="U05" href="https://www.pass.fonction-publique.gouv.fr/offre/charge-de-developpement-des-ressources-humaines-hf" target="_blank" rel="noopener noreferrer" style="font-family:'Marianne',Arial,Helvetica,sans-serif; color:#000091; text-decoration:underline;">Chargé de Développement des Ressources Humaines H/F</a></h3>
+                <p class="text-muted" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 16px; color:#666666; font-size:13px; line-height:21px;">Ministère de l'Intérieur - DTNUM · <time datetime="2026-10-15" style="font-family:'Marianne',Arial,Helvetica,sans-serif;">15 octobre 2026</time></p>
+                <p class="text-main" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 12px; color:#161616; font-size:16px; line-height:24px; ">Offre de stage pour un chargé de développement RH au sein de la DTNUM, axé sur la formation et la GPEC.</p>
+                <p class="text-brand" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 12px; color:#000091; font-size:16px; line-height:24px;"><strong style="font-family:'Marianne',Arial,Helvetica,sans-serif;">À retenir&nbsp;:</strong> La DTNUM renforce ses compétences RH pour la transformation numérique.</p>
+                <p class="text-muted" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 12px; color:#666666; font-size:14px; line-height:22px;"><strong style="font-family:'Marianne',Arial,Helvetica,sans-serif;">Intérêt pour le SNUM&nbsp;:</strong> Montée en compétences des agents publics dans le numérique.</p>
+<p class="text-muted" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0; color:#666666; font-size:12px; line-height:20px;"><strong style="font-family:'Marianne',Arial,Helvetica,sans-serif;">Mots-clés&nbsp;:</strong> RH · formation · GPEC · compétences numériques · DTNUM</p>
+              </td></tr>
+            <tr><td class="section-bg content-pad" bgcolor="#f5f5fe" style="font-family:'Marianne',Arial,Helvetica,sans-serif; padding:24px 40px; background-color:#f5f5fe;">
+            <h2 class="text-brand" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 16px; color:#000091; font-size:18px; line-height:26px; font-weight:700;">À surveiller</h2>
+            <h3 class="text-main" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 6px; color:#161616; font-size:16px; line-height:24px; font-weight:700;">Aucune source valide pour la rubrique 'numerique'</h3>
+            <p class="text-muted" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 16px; color:#666666; font-size:14px; line-height:22px;">Aucun article n'a été retenu pour la rubrique 'numerique' dans la période spécifiée.</p>
+            <h3 class="text-main" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 6px; color:#161616; font-size:16px; line-height:24px; font-weight:700;">Aucune source valide pour la rubrique 'ia'</h3>
+            <p class="text-muted" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 16px; color:#666666; font-size:14px; line-height:22px;">Aucun article n'a été retenu pour la rubrique 'ia' dans la période spécifiée.</p>
+          </td></tr>
+          <tr><td class="footer-bg content-pad" bgcolor="#f5f5fe" style="font-family:'Marianne',Arial,Helvetica,sans-serif; padding:24px 40px; background-color:#f5f5fe;">
+            <p class="text-muted" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 6px; color:#666666; font-size:13px; line-height:21px; font-weight:700;">Revue de presse · Diffusion deux fois par semaine</p>
+            <p class="text-muted" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0; color:#666666; font-size:13px; line-height:21px;">Document à usage interne</p>
+          </td></tr>
+          <tr><td class="surface content-pad" bgcolor="#ffffff" style="font-family:'Marianne',Arial,Helvetica,sans-serif; padding:28px 40px; background-color:#ffffff;">
+            <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width:100%;">
+              <tr>
+                <td class="signature-image" width="147" valign="top" style="font-family:'Marianne',Arial,Helvetica,sans-serif; width:147px; vertical-align:top;">
+weCIGDEhb4K4+xUKoVpL/w+OvnKV71ooVExGCvHYjFBEAzDcDqdLpcLi0DIe5IkqVwu+/3+RCKBu6pLx/m+h/A/RYj19fVGo4EAks/n43kewVYMHDCJwewKS6tItmZZtruxUFuv1PaihUAaVz6fbzaboVAomUwi7olsbCy60zTNcRwmT9jygBsOvqK6vTJ9L0FobCG+fv26qqqnTp0yDCMYDPr9/v39/WazWSgUsJ+AZVncNLIsRyIRVCd81Qbzchpy/4cLrarq/fv3q9UqYtIbGxtItsZ2DDR6xWJR0zRsAHI4HPF4HKGEbm/MK7/1EoSu1+vtdhuZJIVCoV6v8zyfz+eRACMIAsdxeJ4C9kWlUik8+gI1hN9CfKsWs1fyRwktimIwGERWF3KesXdK1/VYLIYcI13XA4GALMvY94oRB3yFMxHPNZ2/khcnxPb2dqlUomkaG+JIkuzr68P9RJIkVhAsy0LSDxYjkHXbJezDq6TqpQgdjUa9Xi8AGIaBbfuRSAQrct1Ola+pBN0SHjWE4Her1cIzAb7HkfzJC01R1Pr6erlc1nXd7/enUqlQKKRpGvIm8OAJJMYi4o6lIOwflWUZD5tAqvorVb1QoTudTjabffr0qd/vDwQCyErI5/M0TTcaDTwAA7uRsasSS/V+vz+Xy5XLZWwTdrvd2MT5Sl6c0Hh2TDAYxBMvtra2kEicTCY9Ho+iKHjkBKbAu7u71Wo1kUhgEQt73BiGmZ2d/Vrj6iv5zoXe3t5uNBpDQ0P9/f2tVgsPPcKeZOSi4KEzyGryer1IRkMbiB1qDocDTwz6vsfyJy7Es2fPyuXywMAAniDT6XRarZaqqniCE8Z1SNzEbkZRFLGzo1sIRl5/JBL5vsfyJy7/F0b55DWzZ116AAAAAElFTkSuQmCC
+                <td class="signature-text" valign="top" style="font-family:'Marianne',Arial,Helvetica,sans-serif; padding-left:24px; vertical-align:top;">
+                  <p class="text-main" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 6px; color:#161616; font-size:13px; line-height:20px; font-weight:700;">Équipe Communication / Événementiel du SNUM</p>
+                  <p class="text-muted" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 6px; color:#666666; font-size:13px; line-height:20px;">Secteur relations bénéficiaires, gouvernance interne, communication</p>
+                  <p class="text-muted" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 6px; color:#666666; font-size:13px; line-height:20px;">Bureau aide à la gouvernance et fonctions supp
+ort (BGS)</p>
+                  <p class="text-muted" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 6px; color:#666666; font-size:13px; line-height:20px;">Service du numérique (SNUM) du SG</p>
+                </td>
+              </tr>
+            </table>
+          </td></tr>
+          <tr><td class="footer-bg content-pad mail-border" bgcolor="#f5f5fe" style="font-family:'Marianne',Arial,Helvetica,sans-serif; padding:24px 40px; border-top:1px solid #e5e5e5; background-color:#f5f5fe;">
+            <p class="text-muted" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 12px; color:#666666; font-size:14px; line-height:22px;">Vous souhaitez gérer votre abonnement&nbsp;? Vous avez des questions&nbsp;?</p>
+<p class="text-brand" style="font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0; color:#000091; font-size:14px; line-height:26px;"><span aria-hidden="true" style="font-family:'Marianne',Arial,Helvetica,sans-serif;">→ </span><a class="mail-link" href="mailto:agents-snum-subscribe@listes.finances.gouv.fr?subject=Je%20souhaite%20m&#x27;abonner%20%C3%A0%20la%20revue%20de%20presse%20du%20SNUM" target="_blank" rel="noopener noreferrer" style="font-family:'Marianne',Arial,Helvetica,sans-serif; color:#000091; text-decoration:underline; font-weight:700;">S’abonner</a> / <span aria-hidden="true" style="font-family:'Marianne',Arial,Helvetica,sans-serif;">→ </span><a class="mail-link" href="mailto:agents-snum-unsubscribe@listes.finances.gouv.fr?subject=Je%20souhaite%20me%20d%C3%A9sabonner%20de%20la%20revue%20de%20presse%20du%20SNUM" target="_blank" rel="noopener noreferrer" style="font-family:'Marianne',Arial,Helvetica,sans-serif; color:#000091; text-decoration:underline; font-weight:700;">Se désabonner</a> / <span aria-hidden="true" style="font-family:'Marianne',Arial,Helvetica,sans-serif;">→ </span><a class="mail-link" href="mailto:gouvernance.sg-snum@finances.gouv.fr?subject=Des%20questions%20sur%20la%20revue%20de%20presse%20du%20SNUM%20?" target="_blank" rel="noopener noreferrer" style="font-family:'Marianne',Arial,Helvetica,sans-serif; color:#000091; text-decoration:underline; font-weight:700;">Nous contacter</a></p>
+          </td></tr>
+        </table>
+        <!--[if mso]></td></tr></table><![endif]-->
+      </td></tr>
+    </table>
+  </div>
+</body>
+</html>
+
+## CONTROLES
+État : HTML_MAIL_DSFR_PRODUIT — contrôle métier requis

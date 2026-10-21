@@ -1,0 +1,28 @@
+{
+  "conversation": "https://assistant.numerique.gouv.fr/chat/fe3c3781-6753-4622-a581-97f84482d925",
+  "case": "articles=[]; watch=[]; fragments du logo sur des lignes de 76 caractères",
+  "observations": {
+    "generation_complete": true,
+    "html_code_blocks": 1,
+    "code_blocks": 1,
+    "html_characters": 12077,
+    "html_closed": true,
+    "empty_state_present": true,
+    "unresolved_placeholders": 0,
+    "base64_characters": 1206,
+    "image_decoded_bytes": 904,
+    "png_header_width": 1027,
+    "png_header_height": 150,
+    "image_sha256": "39138baf087b6f96be4e52449ba7e10ed0f7e5eaeed8b01fc940c392dc0507f6",
+    "self_reported_status": "HTML_MAIL_DSFR_PRODUIT — contrôle métier requis"
+  },
+  "expected_logo": {
+    "base64_characters": 12032,
+    "decoded_bytes": 9024,
+    "width": 142,
+    "height": 63,
+    "sha256": "848c52ae1b7ce86593bb10b6351beebcd74c5b90c63258c1b82ac740912012fb"
+  },
+  "verdict": "FAIL: logo altéré ; mêmes dimensions, taille et empreinte que l’image du deuxième essai",
+  "evidence_scope": "Mesures de la réponse terminale affichée dans la conversation indiquée, lue par les API de l’interface. Le document HTML intégral de cet essai n’a pas été enregistré sur disque."
+}

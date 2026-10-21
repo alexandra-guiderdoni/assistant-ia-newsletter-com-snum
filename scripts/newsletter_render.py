@@ -125,7 +125,7 @@ def publication_date(article, schema_version):
     return long_value
 
 
-def validate_packet(payload):
+def validate_packet(payload, *, allow_outside_window=False):
     if not isinstance(payload, dict):
         raise TypeError("objet JSON requis")
     if payload.get("schema_version") != SCHEMA_VERSION:
@@ -180,7 +180,7 @@ def validate_packet(payload):
             raise TypeError("champ essential booléen requis")
         publication_date(article, SCHEMA_VERSION)
         published = iso_date(article["publication_date_iso"], "date de publication")
-        if not window_start <= published <= window_end:
+        if not allow_outside_window and not window_start <= published <= window_end:
             raise ValueError("date de publication hors fenêtre")
         checked_url(article["url"])
         keywords = article["keywords"]

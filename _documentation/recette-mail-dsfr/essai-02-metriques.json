@@ -1,0 +1,25 @@
+{
+  "conversation": "https://assistant.numerique.gouv.fr/chat/4a620bd9-b12a-402d-b9bb-63fac01eb9c9",
+  "case": "articles=[]; watch=[]",
+  "observations": {
+    "html_code_blocks": 1,
+    "html_characters": 12077,
+    "html_closed": true,
+    "empty_state_present": true,
+    "unresolved_placeholders": 0,
+    "sources_cited": 9,
+    "base64_characters": 1206,
+    "image_decoded_bytes": 904,
+    "png_header_width": 1027,
+    "png_header_height": 150,
+    "image_sha256": "39138baf087b6f96be4e52449ba7e10ed0f7e5eaeed8b01fc940c392dc0507f6"
+  },
+  "expected_logo": {
+    "base64_characters": 12032,
+    "decoded_bytes": 9024,
+    "width": 142,
+    "height": 63
+  },
+  "verdict": "FAIL: logo altéré",
+  "evidence_scope": "Mesures de la sortie affichée, lue par les API de l’interface. Le document intégral de cet essai n’a pas été enregistré sur disque."
+}

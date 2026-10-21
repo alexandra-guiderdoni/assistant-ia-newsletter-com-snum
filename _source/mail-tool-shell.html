@@ -1,0 +1,85 @@
+<!doctype html>
+<!-- PDG-LARGE-FILE-JUSTIFICATION: livrable autonome assemblé depuis des sources séparées ; scripts, styles et logo intégrés pour l’usage hors connexion. -->
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="@@CSP@@">
+  <meta name="color-scheme" content="light">
+  <title>Newsletter SNUM - rendu DSFR</title>
+  <style>
+    * { box-sizing:border-box; }
+    body { margin:0; background:#f6f6f6; color:#161616; font:1rem/1.5 Marianne,Arial,Helvetica,sans-serif; }
+    a { color:#000091; text-underline-offset:.2em; }
+    :focus-visible { outline:3px solid #0a76f6; outline-offset:3px; }
+    .skip { position:absolute; top:-8rem; left:1rem; background:white; padding:.75rem; z-index:1; }
+    .skip:focus { top:.5rem; }
+    header { background:white; border-top:6px solid #000091; border-bottom:1px solid #ddd; padding:1.5rem max(1.25rem,calc((100vw - 1260px)/2)); }
+    h1 { margin:0 0 .5rem; font-size:clamp(1.6rem,3vw,2rem); line-height:1.25; color:#000091; }
+    header p { margin:0; max-width:60rem; }
+    main { max-width:1300px; padding:2rem 1.25rem; margin:auto; }
+    .layout { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.25fr); gap:1.5rem; align-items:start; }
+    section { min-width:0; background:white; padding:1.5rem; border:1px solid #ddd; }
+    h2 { margin:0 0 1rem; font-size:1.25rem; }
+    label { font-weight:700; display:block; }
+    .hint { margin:.4rem 0 .75rem; color:#555; font-size:.9rem; }
+    textarea { width:100%; min-height:26rem; padding:.75rem; resize:vertical; font: .9rem/1.5 ui-monospace,monospace; color:#161616; background:#eee; border:0; border-bottom:2px solid #666; border-radius:0; }
+    textarea[aria-invalid="true"] { border:2px solid #ce0500; }
+    .actions { display:flex; gap:1rem; flex-wrap:wrap; margin-top:1rem; }
+    .button { display:inline-block; border:0; padding:.75rem 1rem; background:#000091; color:white; font:700 1rem/1.5 Marianne,Arial,sans-serif; cursor:pointer; text-decoration:none; }
+    .button:hover { background:#1212ff; }
+    .secondary { background:#ececfe; color:#000091; }
+    .secondary:hover { background:#cecefc; }
+    [hidden] { display:none !important; }
+    .error { border-left:4px solid #ce0500; padding:.75rem; color:#a50000; background:#fff4f4; margin:1rem 0 0; }
+    #render-status { margin:1rem 0 0; }
+    #render-status:empty { margin:0; }
+    #preview-empty { color:#555; min-height:12rem; }
+    iframe { display:block; width:100%; height:75vh; min-height:32rem; border:1px solid #929292; background:#f6f6f6; }
+    .note { font-size:.9rem; margin:1.5rem 0 0; color:#555; }
+    .collection-notes { margin-top:1.5rem; padding:1rem; background:#e8edff; border-left:4px solid #0063cb; }
+    #collection-notes-text { white-space:pre-line; overflow-wrap:anywhere; }
+    @media (max-width:850px) { .layout { grid-template-columns:1fr; } textarea { min-height:18rem; } section { padding:1rem; } main { padding:1rem; } }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Aller au contenu</a>
+  <header>
+    <h1>Newsletter SNUM - rendu DSFR</h1>
+    <p>Collez le paquet de Collecte pour produire le mail avec le modèle et le logo intégrés.</p>
+  </header>
+  <main id="main" tabindex="-1">
+    <noscript><p class="error">Activez JavaScript dans ce navigateur pour générer le mail. Aucun accès à Internet n’est nécessaire.</p></noscript>
+    <div class="layout">
+      <section aria-labelledby="input-title">
+        <h2 id="input-title">1. Votre contenu</h2>
+        <form id="packet-form">
+          <label for="packet-input">Paquet produit par la Collecte</label>
+          <p id="packet-hint" class="hint">Copiez le paquet complet avec ses marqueurs START et END, ou le JSON seul.</p>
+          <textarea id="packet-input" name="packet" aria-describedby="packet-hint packet-error" spellcheck="false" autocomplete="off" placeholder="SNUM_PAQUET_RENDU_V519_START&#10;{ … }&#10;SNUM_PAQUET_RENDU_V519_END"></textarea>
+          <p id="packet-error" class="error" role="alert" tabindex="-1" hidden></p>
+          <div class="actions">
+            <button class="button" type="submit">Prévisualiser le mail</button>
+            <a id="mail-download" class="button secondary" hidden>Télécharger le mail (.html)</a>
+          </div>
+          <p id="render-status" role="status" aria-live="polite" aria-atomic="true"></p>
+        </form>
+      </section>
+      <section aria-labelledby="preview-title">
+        <h2 id="preview-title">2. Votre mail</h2>
+        <p id="preview-empty">L’aperçu apparaîtra ici après validation du paquet.</p>
+        <iframe id="mail-preview" title="Aperçu de la newsletter SNUM" sandbox="" referrerpolicy="no-referrer" hidden></iframe>
+      </section>
+    </div>
+    <aside id="collection-notes" class="collection-notes" aria-labelledby="notes-title" hidden>
+      <h2 id="notes-title">Commentaire sur la collecte (hors mail)</h2>
+      <p>Ces remarques vous sont destinées et ne figurent ni dans l’aperçu ni dans le mail téléchargé.</p>
+      <div id="collection-notes-text" role="status" aria-live="polite"></div>
+    </aside>
+    <p class="note">Cet outil fonctionne hors connexion et ne transmet pas le paquet. Le fichier téléchargé contient le logo. L’aperçu du navigateur ne garantit pas le rendu dans Outlook.</p>
+  </main>
+  <script id="mail-canon" type="application/json">@@CANON@@</script>
+  <script>@@RENDER@@</script>
+  <script>@@UI@@</script>
+</body>
+</html>

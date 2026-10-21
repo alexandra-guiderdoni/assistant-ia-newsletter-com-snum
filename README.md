@@ -3,6 +3,12 @@
 
 # Configurer les deux Projets Newsletter SNUM
 
+Pour produire un courriel DSFR, ouvrir [outil-rendu-dsfr.html](outil-rendu-dsfr.html), coller le même paquet de Collecte, puis prévisualiser et télécharger le mail. Le fichier fonctionne hors connexion et conserve le logo base64 original. Voir la [notice du rendu DSFR](NOTICE-RENDU-DSFR-V1.0.md) pour les preuves et limites. Les deux Projets historiques décrits ci-dessous sont conservés.
+
+Pour la démonstration du 21 octobre 2026, trois projets SNUM restent visibles dans l’Assistant : **Collecte - v5.23.6**, **Rendu HTML - v5.23.6** et **rendu DSFR**. Dix anciennes versions ont été supprimées ; les instructions et fichiers des projets conservés ont été préservés. Le Projet DSFR reste expérimental : pour obtenir le logo exact, utiliser le fichier autonome. Son aperçu a été confirmé par l’utilisateur ; la qualification Outlook reste ouverte.
+
+Les pièces de départ sont conservées dans [_documentation/reference-mail-dsfr/](_documentation/reference-mail-dsfr/) : l’entrée du 14 octobre, le modèle de mail adapté et l’édition HTML correspondante. Ce sont des instantanés de référence ; la source de maintenance du mail est `_source/30-BLOCS-MAIL-DSFR.md`.
+
 Le kit transforme une recherche d’actualité en newsletter HTML dans l’Assistant
 DINUM. Le métier utilise deux Projets enregistrés et deux conversations :
 

@@ -1,0 +1,283 @@
+<!doctype html>
+<!-- PDG-LARGE-FILE-JUSTIFICATION: livrable autonome assemblé depuis des sources séparées ; scripts, styles et logo intégrés pour l’usage hors connexion. -->
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-xY7eA2Iql7wqSNpqMw0g0Z76PTdmmZPgOzoEgdF/CEs=' 'sha256-wGQIlijdWCRYLKrJldWKRNDOqpLLGHZ8NXNsXTKuYDI='; style-src 'unsafe-inline'; img-src data:; frame-src 'self' blob:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="color-scheme" content="light">
+  <title>Newsletter SNUM - rendu DSFR</title>
+  <style>
+    * { box-sizing:border-box; }
+    body { margin:0; background:#f6f6f6; color:#161616; font:1rem/1.5 Marianne,Arial,Helvetica,sans-serif; }
+    a { color:#000091; text-underline-offset:.2em; }
+    :focus-visible { outline:3px solid #0a76f6; outline-offset:3px; }
+    .skip { position:absolute; top:-8rem; left:1rem; background:white; padding:.75rem; z-index:1; }
+    .skip:focus { top:.5rem; }
+    header { background:white; border-top:6px solid #000091; border-bottom:1px solid #ddd; padding:1.5rem max(1.25rem,calc((100vw - 1260px)/2)); }
+    h1 { margin:0 0 .5rem; font-size:clamp(1.6rem,3vw,2rem); line-height:1.25; color:#000091; }
+    header p { margin:0; max-width:60rem; }
+    main { max-width:1300px; padding:2rem 1.25rem; margin:auto; }
+    .layout { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.25fr); gap:1.5rem; align-items:start; }
+    section { min-width:0; background:white; padding:1.5rem; border:1px solid #ddd; }
+    h2 { margin:0 0 1rem; font-size:1.25rem; }
+    label { font-weight:700; display:block; }
+    .hint { margin:.4rem 0 .75rem; color:#555; font-size:.9rem; }
+    textarea { width:100%; min-height:26rem; padding:.75rem; resize:vertical; font: .9rem/1.5 ui-monospace,monospace; color:#161616; background:#eee; border:0; border-bottom:2px solid #666; border-radius:0; }
+    textarea[aria-invalid="true"] { border:2px solid #ce0500; }
+    .actions { display:flex; gap:1rem; flex-wrap:wrap; margin-top:1rem; }
+    .button { display:inline-block; border:0; padding:.75rem 1rem; background:#000091; color:white; font:700 1rem/1.5 Marianne,Arial,sans-serif; cursor:pointer; text-decoration:none; }
+    .button:hover { background:#1212ff; }
+    .secondary { background:#ececfe; color:#000091; }
+    .secondary:hover { background:#cecefc; }
+    [hidden] { display:none !important; }
+    .error { border-left:4px solid #ce0500; padding:.75rem; color:#a50000; background:#fff4f4; margin:1rem 0 0; }
+    #render-status { margin:1rem 0 0; }
+    #render-status:empty { margin:0; }
+    #preview-empty { color:#555; min-height:12rem; }
+    iframe { display:block; width:100%; height:75vh; min-height:32rem; border:1px solid #929292; background:#f6f6f6; }
+    .note { font-size:.9rem; margin:1.5rem 0 0; color:#555; }
+    .collection-notes { margin-top:1.5rem; padding:1rem; background:#e8edff; border-left:4px solid #0063cb; }
+    #collection-notes-text { white-space:pre-line; overflow-wrap:anywhere; }
+    @media (max-width:850px) { .layout { grid-template-columns:1fr; } textarea { min-height:18rem; } section { padding:1rem; } main { padding:1rem; } }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Aller au contenu</a>
+  <header>
+    <h1>Newsletter SNUM - rendu DSFR</h1>
+    <p>Collez le paquet de Collecte pour produire le mail avec le modèle et le logo intégrés.</p>
+  </header>
+  <main id="main" tabindex="-1">
+    <noscript><p class="error">Activez JavaScript dans ce navigateur pour générer le mail. Aucun accès à Internet n’est nécessaire.</p></noscript>
+    <div class="layout">
+      <section aria-labelledby="input-title">
+        <h2 id="input-title">1. Votre contenu</h2>
+        <form id="packet-form">
+          <label for="packet-input">Paquet produit par la Collecte</label>
+          <p id="packet-hint" class="hint">Copiez le paquet complet avec ses marqueurs START et END, ou le JSON seul.</p>
+          <textarea id="packet-input" name="packet" aria-describedby="packet-hint packet-error" spellcheck="false" autocomplete="off" placeholder="SNUM_PAQUET_RENDU_V519_START&#10;{ … }&#10;SNUM_PAQUET_RENDU_V519_END"></textarea>
+          <p id="packet-error" class="error" role="alert" tabindex="-1" hidden></p>
+          <div class="actions">
+            <button class="button" type="submit">Prévisualiser le mail</button>
+            <a id="mail-download" class="button secondary" hidden>Télécharger le mail (.html)</a>
+          </div>
+          <p id="render-status" role="status" aria-live="polite" aria-atomic="true"></p>
+        </form>
+      </section>
+      <section aria-labelledby="preview-title">
+        <h2 id="preview-title">2. Votre mail</h2>
+        <p id="preview-empty">L’aperçu apparaîtra ici après validation du paquet.</p>
+        <iframe id="mail-preview" title="Aperçu de la newsletter SNUM" sandbox="" referrerpolicy="no-referrer" hidden></iframe>
+      </section>
+    </div>
+    <aside id="collection-notes" class="collection-notes" aria-labelledby="notes-title" hidden>
+      <h2 id="notes-title">Commentaire sur la collecte (hors mail)</h2>
+      <p>Ces remarques vous sont destinées et ne figurent ni dans l’aperçu ni dans le mail téléchargé.</p>
+      <div id="collection-notes-text" role="status" aria-live="polite"></div>
+    </aside>
+    <p class="note">Cet outil fonctionne hors connexion et ne transmet pas le paquet. Le fichier téléchargé contient le logo. L’aperçu du navigateur ne garantit pas le rendu dans Outlook.</p>
+  </main>
+  <script id="mail-canon" type="application/json">{"PAGE": "\u003c!doctype html>\n\u003c!-- Courriel DSFR SNUM autonome ; logo incorporé et flèches décoratives.\nLe rendu navigateur ne constitue pas une recette Outlook. -->\n\u003chtml lang=\"fr\" xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:o=\"urn:schemas-microsoft-com:office:office\">\n\u003chead>\n  \u003cmeta charset=\"utf-8\">\n  \u003cmeta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  \u003cmeta name=\"color-scheme\" content=\"light dark\">\n  \u003cmeta name=\"supported-color-schemes\" content=\"light dark\">\n  \u003ctitle>Revue de presse du SNUM — @@EDITION_LONG@@\u003c/title>\n  \u003c!--[if mso]>\u003cxml>\u003co:OfficeDocumentSettings>\u003co:AllowPNG/>\u003co:PixelsPerInch>96\u003c/o:PixelsPerInch>\u003c/o:OfficeDocumentSettings>\u003c/xml>\u003c![endif]-->\n  \u003cstyle>\n    :root { color-scheme: light dark; supported-color-schemes: light dark; }\n    body { margin: 0; padding: 0; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }\n    table { border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt; }\n    td { mso-line-height-rule: at-least; }\n    img { border: 0; display: block; }\n    a { text-decoration: underline; text-underline-offset: 3px; }\n    a:focus-visible { outline: 2px solid #000091; outline-offset: 3px; }\n    @media only screen and (max-width: 600px) {\n      .outer-pad { padding: 0 !important; }\n      .content-pad { padding-left: 20px !important; padding-right: 20px !important; }\n      .mail-title { font-size: 28px !important; line-height: 36px !important; }\n      .signature-image, .signature-text { display: block !important; width: 100% !important; }\n      .signature-image { padding-bottom: 20px !important; }\n      .signature-text { padding-left: 0 !important; }\n    }\n    @media only screen and (max-width: 360px) {\n      .content-pad { padding-left: 16px !important; padding-right: 16px !important; }\n    }\n    @media (prefers-color-scheme: dark) {\n      body, .outer-bg { background-color: #161616 !important; }\n      .surface { background-color: #1e1e1e !important; }\n      .title-bg, .section-bg, .footer-bg { background-color: #1b1b35 !important; }\n      .text-main, .mail-title { color: #ffffff !important; }\n      .text-muted { color: #cecece !important; }\n      .text-brand, a.mail-link { color: #8585f6 !important; }\n      .mail-border { border-color: #353535 !important; }\n      .brand-rule { border-color: #8585f6 !important; }\n      a:focus-visible { outline-color: #8585f6; }\n    }\n    [data-ogsc] .outer-bg { background-color: #161616 !important; }\n    [data-ogsc] .surface { background-color: #1e1e1e !important; }\n    [data-ogsc] .title-bg, [data-ogsc] .section-bg, [data-ogsc] .footer-bg { background-color: #1b1b35 !important; }\n    [data-ogsc] .text-main, [data-ogsc] .mail-title { color: #ffffff !important; }\n    [data-ogsc] .text-muted { color: #cecece !important; }\n    [data-ogsc] .text-brand, [data-ogsc] a.mail-link { color: #8585f6 !important; }\n    [data-ogsc] .mail-border { border-color: #353535 !important; }\n    [data-ogsc] .brand-rule { border-color: #8585f6 !important; }\n    @media (forced-colors: active) { a { text-decoration: underline !important; } }\n  \u003c/style>\n\u003c/head>\n\u003cbody class=\"outer-bg\" style=\"margin:0; padding:0; background-color:#f6f6f6; color:#161616; font-family:'Marianne',Arial,Helvetica,sans-serif;\">\n  \u003cdiv role=\"article\" aria-roledescription=\"courriel\" lang=\"fr\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif;\">\n    \u003ctable role=\"presentation\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" bgcolor=\"#f6f6f6\" class=\"outer-bg\" style=\"width:100%; background-color:#f6f6f6;\">\n      \u003ctr>\u003ctd align=\"center\" class=\"outer-pad\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; padding:32px 16px;\">\n        \u003c!--[if mso]>\u003ctable role=\"presentation\" width=\"600\" align=\"center\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\u003ctr>\u003ctd style=\"font-family:'Marianne',Arial,Helvetica,sans-serif;\">\u003c![endif]-->\n        \u003ctable role=\"presentation\" width=\"600\" align=\"center\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" bgcolor=\"#ffffff\" class=\"surface mail-border\" style=\"width:100%; max-width:600px; margin:0 auto; background-color:#ffffff; border:1px solid #e5e5e5;\">\n          \u003ctr>\u003ctd class=\"surface content-pad brand-rule\" bgcolor=\"#ffffff\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; padding:24px 40px; border-top:3px solid #000091; background-color:#ffffff;\">\n            \u003cp class=\"text-main\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0; color:#161616; font-size:14px; line-height:22px; font-weight:700;\">SERVICE DU NUMÉRIQUE (SNUM)\u003c/p>\n          \u003c/td>\u003c/tr>\n          \u003ctr>\u003ctd class=\"title-bg content-pad\" bgcolor=\"#ececfe\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; padding:28px 40px 30px; background-color:#ececfe;\">\n            \u003ch1 class=\"mail-title text-main\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 12px; color:#161616; font-size:32px; line-height:40px; font-weight:700;\">REVUE DE PRESSE\u003c/h1>\n            \u003cp class=\"text-muted\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0; color:#3a3a3a; font-size:14px; line-height:22px;\">Édition du @@EDITION_LONG@@\u003c/p>\n          \u003c/td>\u003c/tr>\n          \u003ctr>\u003ctd class=\"surface content-pad\" bgcolor=\"#ffffff\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; padding:28px 40px 20px; background-color:#ffffff;\">\n            \u003cp class=\"text-muted\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 8px; color:#3a3a3a; font-size:16px; line-height:24px;\">@@INTRO@@\u003c/p>\n            \u003cp class=\"text-muted\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 8px; color:#3a3a3a; font-size:16px; line-height:24px;\">Bonne lecture&nbsp;!\u003c/p>\n          \u003c/td>\u003c/tr>\n\n@@RUBRICS@@\n@@WATCH@@\n          \u003ctr>\u003ctd class=\"footer-bg content-pad\" bgcolor=\"#f5f5fe\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; padding:24px 40px; background-color:#f5f5fe;\">\n            \u003cp class=\"text-muted\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 6px; color:#666666; font-size:13px; line-height:21px; font-weight:700;\">Revue de presse · Diffusion deux fois par semaine\u003c/p>\n            \u003cp class=\"text-muted\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0; color:#666666; font-size:13px; line-height:21px;\">Document à usage interne\u003c/p>\n          \u003c/td>\u003c/tr>\n          \u003ctr>\u003ctd class=\"surface content-pad\" bgcolor=\"#ffffff\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; padding:28px 40px; background-color:#ffffff;\">\n            \u003ctable role=\"presentation\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" style=\"width:100%;\">\n              \u003ctr>\n                \u003ctd class=\"signature-image\" width=\"147\" valign=\"top\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; width:147px; vertical-align:top;\">\n                  \u003cdiv style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; display:inline-block; padding:8px; background-color:#ffffff;\">\u003cimg src=\"data:image/png;base64,@@LOGO@@\" alt=\"Ministères économiques et financiers — Secrétariat général\" width=\"147\" style=\"display:block; width:147px; max-width:100%; height:auto; border:0; background-color:#ffffff;\">\u003c/div>\n                \u003c/td>\n                \u003ctd class=\"signature-text\" valign=\"top\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; padding-left:24px; vertical-align:top;\">\n                  \u003cp class=\"text-main\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 6px; color:#161616; font-size:13px; line-height:20px; font-weight:700;\">Équipe Communication / Événementiel du SNUM\u003c/p>\n                  \u003cp class=\"text-muted\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 6px; color:#666666; font-size:13px; line-height:20px;\">Secteur relations bénéficiaires, gouvernance interne, communication\u003c/p>\n                  \u003cp class=\"text-muted\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 6px; color:#666666; font-size:13px; line-height:20px;\">Bureau aide à la gouvernance et fonctions support (BGS)\u003c/p>\n                  \u003cp class=\"text-muted\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 6px; color:#666666; font-size:13px; line-height:20px;\">Service du numérique (SNUM) du SG\u003c/p>\n                \u003c/td>\n              \u003c/tr>\n            \u003c/table>\n          \u003c/td>\u003c/tr>\n          \u003ctr>\u003ctd class=\"footer-bg content-pad mail-border\" bgcolor=\"#f5f5fe\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; padding:24px 40px; border-top:1px solid #e5e5e5; background-color:#f5f5fe;\">\n            \u003cp class=\"text-muted\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 12px; color:#666666; font-size:14px; line-height:22px;\">Vous souhaitez gérer votre abonnement&nbsp;? Vous avez des questions&nbsp;?\u003c/p>\n            \u003cp class=\"text-brand\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0; color:#000091; font-size:14px; line-height:26px;\">\u003cspan aria-hidden=\"true\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif;\">→ \u003c/span>\u003ca class=\"mail-link\" href=\"mailto:agents-snum-subscribe@listes.finances.gouv.fr?subject=Je%20souhaite%20m&#x27;abonner%20à%20la%20revue%20de%20presse%20du%20SNUM\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; color:#000091; text-decoration:underline; font-weight:700;\">S’abonner\u003c/a> / \u003cspan aria-hidden=\"true\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif;\">→ \u003c/span>\u003ca class=\"mail-link\" href=\"mailto:agents-snum-unsubscribe@listes.finances.gouv.fr?subject=Je%20souhaite%20me%20désabonner%20de%20la%20revue%20de%20presse%20du%20SNUM\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; color:#000091; text-decoration:underline; font-weight:700;\">Se désabonner\u003c/a> / \u003cspan aria-hidden=\"true\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif;\">→ \u003c/span>\u003ca class=\"mail-link\" href=\"mailto:gouvernance.sg-snum@finances.gouv.fr?subject=Des%20questions%20sur%20la%20revue%20de%20presse%20du%20SNUM%20?\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; color:#000091; text-decoration:underline; font-weight:700;\">Nous contacter\u003c/a>\u003c/p>\n          \u003c/td>\u003c/tr>\n        \u003c/table>\n        \u003c!--[if mso]>\u003c/td>\u003c/tr>\u003c/table>\u003c![endif]-->\n      \u003c/td>\u003c/tr>\n    \u003c/table>\n  \u003c/div>\n\u003c/body>\n\u003c/html>\n\n", "ARTICLE": "              \u003ctr>\u003ctd data-article-id=\"@@ID@@\" class=\"mail-border\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; padding:24px 0; border-bottom:1px solid #e5e5e5;\">\n                @@ESSENTIAL@@\n                \u003ch3 style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 10px; font-size:20px; line-height:28px; font-weight:700;\">\u003cspan aria-hidden=\"true\" class=\"text-brand\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; color:#000091; font-size:16px; font-weight:400;\">→&nbsp;\u003c/span>\u003ca class=\"mail-link\" data-article-link=\"@@ID@@\" href=\"@@URL@@\" target=\"_blank\" rel=\"noopener noreferrer\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; color:#000091; text-decoration:underline;\">@@TITLE@@\u003c/a>\u003c/h3>\n                \u003cp class=\"text-muted\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 16px; color:#666666; font-size:13px; line-height:21px;\">@@SOURCE@@ · \u003ctime datetime=\"@@DATE_ISO@@\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif;\">@@DATE_LONG@@\u003c/time>\u003c/p>\n                \u003cp class=\"text-main\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 12px; color:#161616; font-size:16px; line-height:24px; \">@@FACT@@\u003c/p>\n                \u003cp class=\"text-brand\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 12px; color:#000091; font-size:16px; line-height:24px;\">\u003cstrong style=\"font-family:'Marianne',Arial,Helvetica,sans-serif;\">À retenir&nbsp;:\u003c/strong> @@TAKEAWAY@@\u003c/p>\n                \u003cp class=\"text-muted\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 12px; color:#666666; font-size:14px; line-height:22px;\">\u003cstrong style=\"font-family:'Marianne',Arial,Helvetica,sans-serif;\">Intérêt pour le SNUM&nbsp;:\u003c/strong> @@INTEREST@@\u003c/p>\n                \u003cp class=\"text-muted\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0; color:#666666; font-size:12px; line-height:20px;\">\u003cstrong style=\"font-family:'Marianne',Arial,Helvetica,sans-serif;\">Mots-clés&nbsp;:\u003c/strong> @@KEYWORDS@@\u003c/p>\n              \u003c/td>\u003c/tr>", "ESSENTIAL": "\u003cp class=\"text-brand\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 8px; color:#000091; font-size:12px; line-height:20px; font-weight:700; letter-spacing:0.5px;\">ESSENTIEL\u003c/p>", "RUBRIC": "          \u003ctr>\u003ctd class=\"surface content-pad\" bgcolor=\"#ffffff\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; padding:8px 40px 24px; background-color:#ffffff;\">\n            \u003ctable role=\"presentation\" width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\" style=\"width:100%;\">\n              \u003ctr>\u003ctd class=\"section-bg\" bgcolor=\"#f5f5fe\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; padding:14px 16px; background-color:#f5f5fe;\">\n                \u003ch2 class=\"text-brand\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0; color:#000091; font-size:18px; line-height:26px; font-weight:700;\">@@NUMBER@@ · @@LABEL@@\u003c/h2>\n                \n              \u003c/td>\u003c/tr>\n              \n@@ARTICLES@@\n            \u003c/table>\n          \u003c/td>\u003c/tr>", "WATCH": "          \u003ctr>\u003ctd class=\"section-bg content-pad\" bgcolor=\"#f5f5fe\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; padding:24px 40px; background-color:#f5f5fe;\">\n            \u003ch2 class=\"text-brand\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 16px; color:#000091; font-size:18px; line-height:26px; font-weight:700;\">À surveiller\u003c/h2>\n@@WATCH_ITEMS@@\n          \u003c/td>\u003c/tr>", "WATCH_ITEM": "            \u003ch3 class=\"text-main\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 6px; color:#161616; font-size:16px; line-height:24px; font-weight:700;\">@@WATCH_TITLE@@\u003c/h3>\n            \u003cp class=\"text-muted\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 16px; color:#666666; font-size:14px; line-height:22px;\">@@WATCH_SUMMARY@@\u003c/p>", "EMPTY": "          \u003ctr>\u003ctd class=\"surface content-pad\" bgcolor=\"#ffffff\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; padding:16px 40px 32px; background-color:#ffffff;\">\n            \u003ch2 class=\"text-brand\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0 0 12px; color:#000091; font-size:18px; line-height:26px;\">Collecte à compléter\u003c/h2>\n            \u003cp class=\"text-main\" style=\"font-family:'Marianne',Arial,Helvetica,sans-serif; margin:0; color:#161616; font-size:16px; line-height:24px;\">Aucun article transmis dans ce paquet.\u003c/p>\n          \u003c/td>\u003c/tr>", "LOGO": "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"}</script>
+  <script>/* Rendu déterministe du paquet V519 ; les données n'ajoutent aucun balisage. */
+(() => {
+  "use strict";
+  const months = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+  const labels = {numerique: "Numérique", ia: "Intelligence artificielle (IA)", commande: "Commande publique", rh: "Ressources humaines", bercy: "Bercy"};
+  const packetFields = ["schema_version", "edition_date", "edition_date_long", "window_start", "window_end", "articles", "watch"];
+  const articleFields = ["id", "rubric", "title", "source", "publication_date_iso", "publication_date_long", "url", "fact", "keywords", "takeaway", "snum_interest", "essential"];
+  const fail = message => { throw new Error(message); };
+  const isText = value => typeof value === "string" && value.trim().length > 0;
+
+  function fields(value, expected, label) {
+    if (!value || typeof value !== "object" || Array.isArray(value)) fail(`${label} : objet JSON requis.`);
+    const missing = expected.filter(key => !Object.hasOwn(value, key));
+    const extra = Object.keys(value).filter(key => !expected.includes(key));
+    if (missing.length) fail(`${label} : champs manquants (${missing.join(", ")}).`);
+    if (extra.length) fail(`${label} : champs inattendus (${extra.join(", ")}).`);
+  }
+
+  function isoDate(value, label) {
+    if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) fail(`${label} : date ISO attendue (AAAA-MM-JJ).`);
+    const [year, month, day] = value.split("-").map(Number);
+    const leap = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
+    const days = [31, leap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    if (year < 1 || month < 1 || month > 12 || day < 1 || day > days[month - 1]) fail(`${label} : date impossible.`);
+    return value;
+  }
+
+  function longDate(value, label, weekday = false) {
+    const prefix = weekday ? "(?:(?:lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche) )?" : "";
+    const match = typeof value === "string" && value.match(new RegExp(`^${prefix}([1-9]|[12]\\d|3[01]) (${months.join("|")}) (\\d{4})$`));
+    if (!match) fail(`${label} : date en toutes lettres attendue (14 octobre 2026).`);
+    return isoDate(`${match[3]}-${String(months.indexOf(match[2]) + 1).padStart(2, "0")}-${match[1].padStart(2, "0")}`, label);
+  }
+
+  function validate(payload) {
+    fields(payload, packetFields, "Paquet");
+    if (payload.schema_version !== "SNUM_PAQUET_RENDU_V519") fail("Le schéma SNUM_PAQUET_RENDU_V519 est requis.");
+    if (!Array.isArray(payload.articles) || !Array.isArray(payload.watch)) fail("articles et watch doivent être des listes.");
+    if (isoDate(payload.edition_date, "Édition") !== longDate(payload.edition_date_long, "Édition", true)) fail("Les dates d’édition sont incohérentes.");
+    if (isoDate(payload.window_start, "Début de période") > isoDate(payload.window_end, "Fin de période")) fail("La période de collecte est inversée.");
+    const ids = new Set(), urls = new Set();
+    payload.articles.forEach((article, index) => {
+      const name = `Article ${index + 1}`;
+      fields(article, articleFields, name);
+      articleFields.filter(key => !["keywords", "essential"].includes(key)).forEach(key => {
+        if (!isText(article[key])) fail(`${name} : texte requis dans ${key}.`);
+      });
+      if (!Object.hasOwn(labels, article.rubric)) fail(`${name} : rubrique inconnue.`);
+      if (typeof article.essential !== "boolean") fail(`${name} : essential doit être true ou false.`);
+      if (isoDate(article.publication_date_iso, name) !== longDate(article.publication_date_long, name)) fail(`${name} : dates de publication incohérentes.`);
+      if (!Array.isArray(article.keywords) || article.keywords.length < 3 || article.keywords.length > 5 || !article.keywords.every(isText)) fail(`${name} : trois à cinq mots-clés textuels sont requis.`);
+      let url;
+      try { url = new URL(article.url); } catch { fail(`${name} : URL HTTPS invalide.`); }
+      if (!article.url.startsWith("https://") || url.protocol !== "https:" || !url.hostname || /[\u0000-\u0020\u007f]/.test(article.url)) fail(`${name} : URL HTTPS invalide.`);
+      if (ids.has(article.id)) fail(`${name} : identifiant d’article dupliqué.`);
+      if (urls.has(article.url)) fail(`${name} : URL d’article dupliquée.`);
+      ids.add(article.id); urls.add(article.url);
+    });
+    payload.watch.forEach((item, index) => {
+      const name = `À surveiller ${index + 1}`;
+      fields(item, ["title", "summary"], name);
+      if (!isText(item.title) || !isText(item.summary)) fail(`${name} : titre et résumé textuels requis.`);
+    });
+  }
+
+  function parse(input) {
+    let value = input.trim();
+    const start = "SNUM_PAQUET_RENDU_V519_START", end = "SNUM_PAQUET_RENDU_V519_END";
+    if (!value) fail("Collez le paquet produit par la Collecte.");
+    if (value.startsWith("```")) {
+      const fenced = value.match(/^```(?:json)?\s*\n([\s\S]*?)\n```$/);
+      if (!fenced) fail("Le bloc JSON est incomplet.");
+      value = fenced[1].trim();
+    }
+    if (!value.startsWith("{") && value.includes(start)) {
+      const begin = value.indexOf(start) + start.length, finish = value.lastIndexOf(end);
+      if (finish < begin) fail("Le marqueur de fin du paquet manque. Recopiez le paquet complet.");
+      value = value.slice(begin, finish).trim();
+    }
+    let result;
+    try { result = JSON.parse(value); } catch { fail("Le JSON est incomplet ou invalide. Recopiez le paquet complet depuis la Collecte."); }
+    validate(result);
+    return result;
+  }
+
+  function text(value) {
+    const escapes = {"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#x27;"};
+    return String(value).replace(/[&<>"']/g, char => escapes[char])
+      .replace(/ ([;:!?%])/g, "&nbsp;$1")
+      .replace(/(\d) (\d{3}\b)/g, "$1&nbsp;$2")
+      .replace(/@@/g, "&#64;&#64;");
+  }
+
+  function fill(template, values) {
+    return template.replace(/@@([A-Z_]+)@@/g, (_, key) => {
+      if (!Object.hasOwn(values, key)) fail("Le modèle intégré est incomplet.");
+      return values[key];
+    });
+  }
+
+  function dateLabel(value) {
+    const [year, month, day] = value.split("-").map(Number);
+    return `${day} ${months[month - 1]} ${year}`;
+  }
+
+  function build(payload, canon) {
+    validate(payload);
+    const groups = new Map();
+    payload.articles.forEach(article => {
+      if (!groups.has(article.rubric)) groups.set(article.rubric, []);
+      groups.get(article.rubric).push(article);
+    });
+    const sections = Array.from(groups, ([rubric, articles], index) => {
+      const rows = articles.map(article => {
+        const values = {};
+        for (const [key, field] of Object.entries({ID: "id", URL: "url", TITLE: "title", SOURCE: "source", DATE_ISO: "publication_date_iso", DATE_LONG: "publication_date_long", FACT: "fact", TAKEAWAY: "takeaway", INTEREST: "snum_interest"})) values[key] = text(article[field]);
+        values.KEYWORDS = article.keywords.map(text).join(" · ");
+        values.ESSENTIAL = article.essential ? canon.ESSENTIAL : "";
+        return fill(canon.ARTICLE, values);
+      });
+      return fill(canon.RUBRIC, {NUMBER: String(index + 1).padStart(2, "0"), LABEL: labels[rubric], ARTICLES: rows.join("\n")});
+    });
+    const count = payload.articles.length, essentials = payload.articles.filter(article => article.essential).length;
+    const intro = count ? `Veille du ${dateLabel(payload.window_start)} au ${dateLabel(payload.window_end)} · ${count} ${count === 1 ? "article sélectionné" : "articles sélectionnés"}, dont ${essentials} ${essentials === 1 ? "essentiel" : "essentiels"}.` : "Aucun article sélectionné.";
+    return fill(canon.PAGE, {
+      EDITION_LONG: text(payload.edition_date_long), LOGO: canon.LOGO, INTRO: text(intro),
+      RUBRICS: count ? sections.join("\n") : canon.EMPTY,
+      WATCH: ""
+    });
+  }
+
+  window.SnumMail = Object.freeze({parse, build});
+})();
+</script>
+  <script>(() => {
+  "use strict";
+  const get = id => document.getElementById(id);
+  const canon = JSON.parse(get("mail-canon").textContent);
+  const form = get("packet-form"), input = get("packet-input"), error = get("packet-error");
+  const preview = get("mail-preview"), empty = get("preview-empty");
+  const download = get("mail-download"), status = get("render-status");
+  const notes = get("collection-notes"), notesText = get("collection-notes-text");
+  let objectURL = null;
+
+  function reset() {
+    preview.hidden = true;
+    preview.removeAttribute("src");
+    preview.removeAttribute("srcdoc");
+    if (objectURL) URL.revokeObjectURL(objectURL);
+    objectURL = null;
+    download.hidden = true;
+    download.removeAttribute("href");
+    empty.hidden = false;
+    error.hidden = true;
+    notes.hidden = true;
+    notesText.textContent = "";
+    input.removeAttribute("aria-invalid");
+  }
+
+  input.addEventListener("input", () => {
+    const wasRendered = objectURL !== null;
+    reset();
+    status.textContent = wasRendered ? "Le paquet a changé. Prévisualisez à nouveau pour télécharger le mail à jour." : "";
+  });
+
+  form.addEventListener("submit", event => {
+    event.preventDefault();
+    reset();
+    status.textContent = "";
+    try {
+      const packet = window.SnumMail.parse(input.value);
+      const html = window.SnumMail.build(packet, canon);
+      objectURL = URL.createObjectURL(new Blob([html], {type: "text/html;charset=utf-8"}));
+      download.href = objectURL;
+      download.download = `newsletter-snum-${packet.edition_date}.html`;
+      download.hidden = false;
+      preview.src = objectURL;
+      preview.hidden = false;
+      empty.hidden = true;
+      if (packet.watch.length) {
+        notesText.textContent = packet.watch.map(item => `${item.title}\n${item.summary}`).join("\n\n");
+        notes.hidden = false;
+      }
+      const count = packet.articles.length;
+      status.textContent = `${count} ${count === 1 ? "article" : "articles"}. Le mail est prêt à télécharger.`;
+    } catch (cause) {
+      reset();
+      error.textContent = cause.message;
+      error.hidden = false;
+      input.setAttribute("aria-invalid", "true");
+      error.focus();
+    }
+  });
+
+  window.addEventListener("pagehide", () => {
+    reset();
+    status.textContent = "";
+  });
+})();
+</script>
+</body>
+</html>

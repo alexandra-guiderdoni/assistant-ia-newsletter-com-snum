@@ -1,0 +1,11 @@
+# Les fragments littéraux doivent reconstituer exactement le canon testé.
+_source/30-BLOCS-MAIL-DSFR.md whitespace=-blank-at-eol
+31-MAIL-DSFR-COQUE-*.md whitespace=-blank-at-eol
+33-MAIL-DSFR-RUBRIC-V1.0.md whitespace=-blank-at-eol
+# Préserver aussi la terminaison des instructions et du paquet de référence.
+30-PROMPT-SYSTEME-RENDU-DSFR-V1.0.md whitespace=-blank-at-eof
+tests/fixtures/mail-dsfr/edition-2026-10-14.json whitespace=-blank-at-eof
+# Captures et instantanés : aucun nettoyage des données originales.
+_documentation/recette-mail-dsfr/essai-01.html -whitespace
+_documentation/recette-mail-dsfr/essai-01.txt -whitespace
+_documentation/reference-mail-dsfr/* -whitespace

@@ -1,0 +1,120 @@
+{
+  "schema_version": "SNUM_PAQUET_RENDU_V519",
+  "edition_date": "2026-10-14",
+  "edition_date_long": "14 octobre 2026",
+  "window_start": "2026-10-03",
+  "window_end": "2026-10-13",
+  "articles": [
+    {
+      "id": "U01",
+      "rubric": "bercy",
+      "title": "Bercy Vert : achats, mobilités, bâtiments… Le nouveau bilan carbone de Bercy identifie les principaux leviers de transformation",
+      "source": "Ministères économiques et financiers",
+      "publication_date_iso": "2026-10-06",
+      "publication_date_long": "6 octobre 2026",
+      "url": "https://presse.economie.gouv.fr/bercy-vert-achats-mobilites-batiments-le-nouveau-bilan-carbone-de-bercy-identifie-les-principaux-leviers-de-transformation/",
+      "fact": "Les ministères économiques et financiers publient leur bilan carbone 2024 : 448 400 tCO₂e, avec 42 % liés aux achats.",
+      "keywords": [
+        "bilan carbone",
+        "achats publics",
+        "transformation écologique",
+        "Bercy Vert",
+        "réduction émissions"
+      ],
+      "takeaway": "Les achats représentent 42 % des émissions de Bercy.",
+      "snum_interest": "Exemplarité écologique de l'État via la commande publique.",
+      "essential": true
+    },
+    {
+      "id": "U02",
+      "rubric": "commande",
+      "title": "Le Conseil national de la commande publique adopte son règlement intérieur et son programme de travail",
+      "source": "Ministère de l'Économie",
+      "publication_date_iso": "2026-10-12",
+      "publication_date_long": "12 octobre 2026",
+      "url": "https://www.economie.gouv.fr/daj/le-conseil-national-de-la-commande-publique-adopte-son-reglement-interieur-et-son-programme-de-travail",
+      "fact": "Le CNCP adopte son règlement intérieur et un programme ambitieux pour traiter les problématiques de la commande publique.",
+      "keywords": [
+        "CNCP",
+        "règlement intérieur",
+        "commande publique",
+        "programme de travail",
+        "performance"
+      ],
+      "takeaway": "Le CNCP structure sa gouvernance pour plus d'agilité.",
+      "snum_interest": "Renforcement de la gouvernance de la commande publique.",
+      "essential": true
+    },
+    {
+      "id": "U03",
+      "rubric": "commande",
+      "title": "Signature d’une convention-cadre pour mieux accompagner les acheteurs de l’État dans l’intégration de clauses d’insertion dans les marchés",
+      "source": "Direction des achats de l’État",
+      "publication_date_iso": "2026-10-05",
+      "publication_date_long": "5 octobre 2026",
+      "url": "https://www.economie.gouv.fr/dae/signature-dune-convention-cadre-pour-mieux-accompagner-les-acheteurs-de-letat-dans-lintegration-de-clauses-dinsertion-dans-les-marches",
+      "fact": "Une convention-cadre renforce l’accompagnement des acheteurs de l’État pour intégrer des clauses d’insertion dans les marchés publics.",
+      "keywords": [
+        "clauses d'insertion",
+        "marchés publics",
+        "convention-cadre",
+        "achats responsables",
+        "SPASER"
+      ],
+      "takeaway": "L'État renforce l'inclusion sociale dans ses marchés.",
+      "snum_interest": "Intégration des enjeux sociaux dans la commande publique.",
+      "essential": true
+    },
+    {
+      "id": "U04",
+      "rubric": "commande",
+      "title": "La Commission européenne publie sa proposition de révision du paquet de directives européennes sur la commande publique",
+      "source": "Ministère de l'Économie",
+      "publication_date_iso": "2026-10-05",
+      "publication_date_long": "5 octobre 2026",
+      "url": "https://www.economie.gouv.fr/daj/la-commission-europeenne-publie-sa-proposition-de-revision-du-paquet-de-directives-europeennes-sur-la-commande-publique",
+      "fact": "La Commission européenne propose une révision des directives sur la commande publique, avec des critères environnementaux et sociaux renforcés.",
+      "keywords": [
+        "révision directives",
+        "commande publique",
+        "critères sociaux",
+        "critères environnementaux",
+        "Europe"
+      ],
+      "takeaway": "L'Europe modernise ses règles pour une commande publique plus durable.",
+      "snum_interest": "Harmonisation européenne des achats publics responsables.",
+      "essential": false
+    },
+    {
+      "id": "U05",
+      "rubric": "rh",
+      "title": "Chargé de Développement des Ressources Humaines H/F",
+      "source": "Ministère de l'Intérieur - DTNUM",
+      "publication_date_iso": "2026-10-15",
+      "publication_date_long": "15 octobre 2026",
+      "url": "https://www.pass.fonction-publique.gouv.fr/offre/charge-de-developpement-des-ressources-humaines-hf",
+      "fact": "Offre de stage pour un chargé de développement RH au sein de la DTNUM, axé sur la formation et la GPEC.",
+      "keywords": [
+        "RH",
+        "formation",
+        "GPEC",
+        "compétences numériques",
+        "DTNUM"
+      ],
+      "takeaway": "La DTNUM renforce ses compétences RH pour la transformation numérique.",
+      "snum_interest": "Montée en compétences des agents publics dans le numérique.",
+      "essential": false
+    }
+  ],
+  "watch": [
+    {
+      "title": "Aucune source valide pour la rubrique 'numerique'",
+      "summary": "Aucun article n'a été retenu pour la rubrique 'numerique' dans la période spécifiée."
+    },
+    {
+      "title": "Aucune source valide pour la rubrique 'ia'",
+      "summary": "Aucun article n'a été retenu pour la rubrique 'ia' dans la période spécifiée."
+    }
+  ]
+}
+
