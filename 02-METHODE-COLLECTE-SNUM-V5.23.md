@@ -10,7 +10,18 @@ même réponse. N’affiche jamais de requête à recopier, de plan, de trace ou
 intermédiaire.
 
 La recherche couvre ensemble `numerique`, `ia`, `commande`, `rh` et `bercy`, avec
-les cinq axes complets du prompt. Ouvre les résultats avant de les retenir. Le Web
+les cinq axes complets du prompt.
+
+Interroge en priorité ces quatorze domaines, par des recherches ciblées sur chacun,
+puis complète avec d’autres sources fiables réellement trouvées :
+`economie.gouv.fr`, `numerique.gouv.fr`, `vie-publique.fr`, `cnil.fr`,
+`legifrance.gouv.fr`, `presse.economie.gouv.fr`, `acteurspublics.fr`,
+`lemonde.fr`, `modernisation.gouv.fr`, `picsel.alize.finances.rie.gouv.fr`,
+`itforbusiness.fr`, `next.ink`, `01net.com` et `journaldunet.com`. Un domaine
+inaccessible ou sans publication dans la fenêtre n’est pas une panne : poursuis
+avec les autres.
+
+Ouvre les résultats avant de les retenir. Le Web
 reste actif pendant tout ce cycle ; le métier ne copie aucune réponse entre deux
 chats et n’envoie aucune commande de continuation ou de normalisation.
 

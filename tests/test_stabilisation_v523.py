@@ -49,6 +49,32 @@ class StabilisationV523PreflightTests(unittest.TestCase):
             self.assertIn("Ouvre", content)
             self.assertIn("URL canonique", content)
 
+    def test_composite_search_targets_the_fourteen_priority_domains(self):
+        prompt = normalized("01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md")
+        method = normalized("02-METHODE-COLLECTE-SNUM-V5.23.md")
+        domains = (
+            "economie.gouv.fr",
+            "numerique.gouv.fr",
+            "vie-publique.fr",
+            "cnil.fr",
+            "legifrance.gouv.fr",
+            "presse.economie.gouv.fr",
+            "acteurspublics.fr",
+            "lemonde.fr",
+            "modernisation.gouv.fr",
+            "picsel.alize.finances.rie.gouv.fr",
+            "itforbusiness.fr",
+            "next.ink",
+            "01net.com",
+            "journaldunet.com",
+        )
+
+        for domain in domains:
+            self.assertIn(f"`{domain}`", method)
+        self.assertIn("Interroge en priorité ces quatorze domaines", method)
+        self.assertIn("n’est pas une panne", method)
+        self.assertIn("quatorze domaines prioritaires de la méthode", prompt)
+
     def test_web_results_are_normalized_inside_collecte(self):
         prompt = normalized("01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md")
         method = normalized("02-METHODE-COLLECTE-SNUM-V5.23.md")
