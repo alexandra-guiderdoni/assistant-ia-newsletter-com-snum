@@ -12,14 +12,21 @@ intermédiaire.
 La recherche couvre ensemble `numerique`, `ia`, `commande`, `rh` et `bercy`, avec
 les cinq axes complets du prompt.
 
-Interroge en priorité ces quatorze domaines, par des recherches ciblées sur chacun,
-puis complète avec d’autres sources fiables réellement trouvées :
-`economie.gouv.fr`, `numerique.gouv.fr`, `vie-publique.fr`, `cnil.fr`,
-`legifrance.gouv.fr`, `presse.economie.gouv.fr`, `acteurspublics.fr`,
-`lemonde.fr`, `modernisation.gouv.fr`, `picsel.alize.finances.rie.gouv.fr`,
-`itforbusiness.fr`, `next.ink`, `01net.com` et `journaldunet.com`. Un domaine
-inaccessible ou sans publication dans la fenêtre n’est pas une panne : poursuis
-avec les autres.
+Avant toute recherche générale, lance les quatre recherches groupées ci-dessous,
+une par groupe. Chaque requête nomme explicitement les domaines du groupe et la
+période en toutes lettres :
+
+- `G1` presse numérique : `next.ink`, `01net.com`, `journaldunet.com`,
+  `itforbusiness.fr`, `lemonde.fr` ;
+- `G2` action publique : `numerique.gouv.fr`, `modernisation.gouv.fr`,
+  `vie-publique.fr`, `acteurspublics.fr` ;
+- `G3` Bercy : `economie.gouv.fr`, `presse.economie.gouv.fr`,
+  `picsel.alize.finances.rie.gouv.fr` ;
+- `G4` régulation : `cnil.fr`, `legifrance.gouv.fr`.
+
+Ouvre les résultats de ces quatorze domaines avant ceux des autres sites, puis
+complète avec d’autres sources fiables. Un domaine inaccessible ou sans
+publication dans la fenêtre n’est pas une panne : poursuis avec les autres.
 
 Ouvre les résultats avant de les retenir. Le Web
 reste actif pendant tout ce cycle ; le métier ne copie aucune réponse entre deux
@@ -44,7 +51,8 @@ trois articles, aucun n’est essentiel.
 ## 3. Appliquer le best effort et rendre le paquet
 
 Une rubrique vide ajoute une alerte `watch`. Moins de cinq articles ajoute aussi une
-alerte. Ces insuffisances ne bloquent jamais le JSON. Si la recherche Web s’est
+alerte. Une alerte signale aussi quand moins de cinq articles proviennent des
+quatorze domaines. Ces insuffisances ne bloquent jamais le JSON. Si la recherche Web s’est
 exécutée mais ne fournit aucune source valide, produis tout de même le paquet avec
 `articles=[]`, aucun essentiel et les alertes nécessaires.
 

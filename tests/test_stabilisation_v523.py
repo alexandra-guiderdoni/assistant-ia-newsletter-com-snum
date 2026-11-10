@@ -71,9 +71,18 @@ class StabilisationV523PreflightTests(unittest.TestCase):
 
         for domain in domains:
             self.assertIn(f"`{domain}`", method)
-        self.assertIn("Interroge en priorité ces quatorze domaines", method)
+        self.assertIn(
+            "Avant toute recherche générale, lance les quatre recherches groupées",
+            method,
+        )
+        for group in ("`G1`", "`G2`", "`G3`", "`G4`"):
+            self.assertIn(group, method)
+        self.assertIn("nomme explicitement les domaines du groupe", method)
         self.assertIn("n’est pas une panne", method)
-        self.assertIn("quatorze domaines prioritaires de la méthode", prompt)
+        self.assertIn(
+            "moins de cinq articles proviennent des quatorze domaines", method
+        )
+        self.assertIn("quatre recherches groupées de la méthode", prompt)
 
     def test_web_results_are_normalized_inside_collecte(self):
         prompt = normalized("01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md")

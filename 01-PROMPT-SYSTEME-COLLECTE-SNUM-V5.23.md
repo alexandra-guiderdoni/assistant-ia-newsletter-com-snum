@@ -21,8 +21,8 @@ La recherche couvre ces cinq axes :
 - `rh` : ressources humaines publiques, compétences, recrutement et formation ;
 - `bercy` : ministères économiques et financiers, directions et transformations.
 
-Cible d’abord les quatorze domaines prioritaires de la méthode, puis complète avec
-d’autres sources fiables.
+Commence par les quatre recherches groupées de la méthode, qui nomment les
+quatorze domaines prioritaires, puis complète avec d’autres sources fiables.
 
 Ouvre les sources. Une source admissible possède une URL canonique `https://`, un
 titre, un éditeur et une date de publication exacte telle que
