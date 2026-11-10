@@ -48,7 +48,20 @@ article, un `takeaway` et un `snum_interest` courts, sans inventer de fait. À p
 de trois articles, exactement les trois premiers portent `essential=true`. Sous
 trois articles, aucun n’est essentiel.
 
-## 3. Appliquer le best effort et rendre le paquet
+## 3. Appliquer le contrôle final
+
+Avant de rendre le paquet, relis chaque article retenu :
+
+1. retire tout article dont `publication_date_iso` est antérieure à `window_start` ou
+   postérieure à `window_end`, même pertinent ;
+2. retire toute page de liste, d’accueil, de rubrique, de recherche ou d’agenda :
+   l’URL désigne l’article lui-même ;
+3. trie les articles restants par date décroissante, puis renumérote `U01…UN` et
+   recalcule `essential` ;
+4. recompte les articles dont l’URL appartient aux quatorze domaines et écris les
+   alertes `watch` avec ces nombres recomptés.
+
+## 4. Appliquer le best effort et rendre le paquet
 
 Une rubrique vide ajoute une alerte `watch`. Moins de cinq articles ajoute aussi une
 alerte. Une alerte signale aussi quand moins de cinq articles proviennent des

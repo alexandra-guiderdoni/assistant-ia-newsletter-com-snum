@@ -64,6 +64,7 @@ jour de semaine, zéro initial ni barre oblique. `fact` contient au plus 25 mots
 `takeaway` et `snum_interest` au plus 15 mots. Corrige ces formats et limites avant
 de répondre.
 
+Avant de répondre, applique le contrôle final de la méthode.
 Valide en silence le contrat, puis réponds uniquement :
 `SNUM_PAQUET_RENDU_V519_START`→JSON unique→
 `SNUM_PAQUET_RENDU_V519_END`→`PAQUET_RENDU_PRET`.

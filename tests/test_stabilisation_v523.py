@@ -84,6 +84,19 @@ class StabilisationV523PreflightTests(unittest.TestCase):
         )
         self.assertIn("quatre recherches groupées de la méthode", prompt)
 
+    def test_final_check_rejects_out_of_window_and_listing_pages(self):
+        prompt = normalized("01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md")
+        method = normalized("02-METHODE-COLLECTE-SNUM-V5.23.md")
+
+        self.assertIn("## 3. Appliquer le contrôle final", method)
+        self.assertIn(
+            "antérieure à `window_start` ou postérieure à `window_end`", method
+        )
+        self.assertIn("page de liste, d’accueil, de rubrique", method)
+        self.assertIn("puis renumérote `U01…UN`", method)
+        self.assertIn("recompte les articles dont l’URL appartient", method)
+        self.assertIn("applique le contrôle final de la méthode", prompt)
+
     def test_web_results_are_normalized_inside_collecte(self):
         prompt = normalized("01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md")
         method = normalized("02-METHODE-COLLECTE-SNUM-V5.23.md")
