@@ -12,21 +12,15 @@ intermédiaire.
 La recherche couvre ensemble `numerique`, `ia`, `commande`, `rh` et `bercy`, avec
 les cinq axes complets du prompt.
 
-Avant toute recherche générale, lance les quatre recherches groupées ci-dessous,
-une par groupe. Chaque requête nomme explicitement les domaines du groupe et la
-période en toutes lettres :
-
-- `G1` presse numérique : `next.ink`, `01net.com`, `journaldunet.com`,
-  `itforbusiness.fr`, `lemonde.fr` ;
-- `G2` action publique : `numerique.gouv.fr`, `modernisation.gouv.fr`,
-  `vie-publique.fr`, `acteurspublics.fr` ;
-- `G3` Bercy : `economie.gouv.fr`, `presse.economie.gouv.fr`,
-  `picsel.alize.finances.rie.gouv.fr` ;
-- `G4` régulation : `cnil.fr`, `legifrance.gouv.fr`.
-
-Ouvre les résultats de ces quatorze domaines avant ceux des autres sites, puis
-complète avec d’autres sources fiables. Un domaine inaccessible ou sans
+Étape A, avant toute recherche générale : pour chacun de ces 14 sites, fais une
+recherche séparée sur la période, puis ouvre ses résultats : `economie.gouv.fr`,
+`numerique.gouv.fr`, `vie-publique.fr`, `cnil.fr`, `legifrance.gouv.fr`,
+`presse.economie.gouv.fr`, `acteurspublics.fr`, `lemonde.fr`,
+`modernisation.gouv.fr`, `picsel.alize.finances.rie.gouv.fr`, `itforbusiness.fr`,
+`next.ink`, `01net.com` et `journaldunet.com`. Un site inaccessible ou sans
 publication dans la fenêtre n’est pas une panne : poursuis avec les autres.
+
+Étape B : complète ensuite avec d’autres sources fiables.
 
 Ouvre les résultats avant de les retenir. Le Web
 reste actif pendant tout ce cycle ; le métier ne copie aucune réponse entre deux
