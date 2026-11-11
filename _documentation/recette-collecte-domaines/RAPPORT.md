@@ -65,4 +65,8 @@ cette formulation en étape A du prompt système.
   et rubriques vides ne correspondent pas toujours au paquet.
 - Les dates et le contenu des articles retenus n’ont pas été vérifiés en
   ouvrant chaque URL. La relecture humaine reste nécessaire.
-- Le Rendu HTML historique dans l’Assistant n’applique pas le tri de l’outil.
+- Le Rendu HTML de l’Assistant trie aussi chaque rubrique par date
+  décroissante depuis le 11 novembre 2026. Une consigne isolée a d’abord été
+  ignorée ; placée dans la phrase qui assemble les rubriques, elle a été
+  respectée au second rendu réel du paquet V1. Ce HTML n’a pas été comparé
+  octet par octet au canon : la page n’en expose qu’une copie tronquée.

@@ -275,7 +275,7 @@ class NewsletterHtmlCliTests(unittest.TestCase):
             .split()
         )
         self.assertIn(
-            "Dans chaque rubrique, trie par date décroissante.", prompt
+            "un article par source, du plus récent au plus ancien", prompt
         )
 
     def test_compact_assistant_template_matches_the_reference_template(self):
