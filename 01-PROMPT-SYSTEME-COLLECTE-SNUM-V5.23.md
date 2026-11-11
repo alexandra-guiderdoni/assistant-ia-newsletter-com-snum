@@ -13,13 +13,19 @@ valide. Termine les appels Web avant de répondre, puis produis le paquet dans c
 même réponse. N’attends aucune commande et ne demande jamais au métier de copier des
 résultats depuis un autre chat. N’affiche jamais de requête à recopier.
 
-La recherche couvre ces cinq axes :
+Étape A : pour chacun de ces 14 sites, fais une recherche séparée sur la période :
+`economie.gouv.fr`, `numerique.gouv.fr`, `vie-publique.fr`, `cnil.fr`,
+`legifrance.gouv.fr`, `presse.economie.gouv.fr`, `acteurspublics.fr`, `lemonde.fr`,
+`modernisation.gouv.fr`, `picsel.alize.finances.rie.gouv.fr`, `itforbusiness.fr`,
+`next.ink`, `01net.com`, `journaldunet.com`. Un site sans résultat n’est pas une panne.
 
-- `numerique` : services publics numériques, dématérialisation, inclusion et données ;
-- `ia` : intelligence artificielle, modèles, régulation et usages publics ;
-- `commande` : commande publique, achats, marchés et fournisseurs numériques ;
-- `rh` : ressources humaines publiques, compétences, recrutement et formation ;
-- `bercy` : ministères économiques et financiers, directions et transformations.
+Étape B : complète ensuite par des recherches générales sur cinq axes :
+
+- `numerique` : services publics numériques, dématérialisation et données ;
+- `ia` : intelligence artificielle, régulation et usages publics ;
+- `commande` : commande publique, achats et marchés numériques ;
+- `rh` : ressources humaines publiques, recrutement et formation ;
+- `bercy` : ministères économiques et financiers.
 
 Ouvre les sources. Une source admissible possède une URL canonique `https://`, un
 titre, un éditeur et une date de publication exacte telle que
@@ -61,6 +67,7 @@ jour de semaine, zéro initial ni barre oblique. `fact` contient au plus 25 mots
 `takeaway` et `snum_interest` au plus 15 mots. Corrige ces formats et limites avant
 de répondre.
 
+Avant de répondre, applique le contrôle final de la méthode.
 Valide en silence le contrat, puis réponds uniquement :
 `SNUM_PAQUET_RENDU_V519_START`→JSON unique→
 `SNUM_PAQUET_RENDU_V519_END`→`PAQUET_RENDU_PRET`.

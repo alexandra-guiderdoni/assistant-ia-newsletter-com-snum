@@ -49,6 +49,52 @@ class StabilisationV523PreflightTests(unittest.TestCase):
             self.assertIn("Ouvre", content)
             self.assertIn("URL canonique", content)
 
+    def test_composite_search_targets_the_fourteen_priority_domains(self):
+        prompt = normalized("01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md")
+        method = normalized("02-METHODE-COLLECTE-SNUM-V5.23.md")
+        domains = (
+            "economie.gouv.fr",
+            "numerique.gouv.fr",
+            "vie-publique.fr",
+            "cnil.fr",
+            "legifrance.gouv.fr",
+            "presse.economie.gouv.fr",
+            "acteurspublics.fr",
+            "lemonde.fr",
+            "modernisation.gouv.fr",
+            "picsel.alize.finances.rie.gouv.fr",
+            "itforbusiness.fr",
+            "next.ink",
+            "01net.com",
+            "journaldunet.com",
+        )
+
+        for domain in domains:
+            self.assertIn(f"`{domain}`", prompt)
+            self.assertIn(f"`{domain}`", method)
+        for content in (prompt, method):
+            self.assertIn(
+                "pour chacun de ces 14 sites, fais une recherche séparée", content
+            )
+            self.assertIn("n’est pas une panne", content)
+        self.assertNotIn("`G1`", method)
+        self.assertIn(
+            "moins de cinq articles proviennent des quatorze domaines", method
+        )
+
+    def test_final_check_rejects_out_of_window_and_listing_pages(self):
+        prompt = normalized("01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md")
+        method = normalized("02-METHODE-COLLECTE-SNUM-V5.23.md")
+
+        self.assertIn("## 3. Appliquer le contrôle final", method)
+        self.assertIn(
+            "antérieure à `window_start` ou postérieure à `window_end`", method
+        )
+        self.assertIn("page de liste, d’accueil, de rubrique", method)
+        self.assertIn("puis renumérote `U01…UN`", method)
+        self.assertIn("recompte les articles dont l’URL appartient", method)
+        self.assertIn("applique le contrôle final de la méthode", prompt)
+
     def test_web_results_are_normalized_inside_collecte(self):
         prompt = normalized("01-PROMPT-SYSTEME-COLLECTE-SNUM-V5.23.md")
         method = normalized("02-METHODE-COLLECTE-SNUM-V5.23.md")

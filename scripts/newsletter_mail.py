@@ -69,9 +69,12 @@ def build(payload, canon=None):
         raise ValueError("URL d’article dupliquée")
     if any(a["rubric"] not in LABELS for a in articles):
         raise ValueError("rubrique inconnue")
-    groups = {}
-    for article in articles:
-        groups.setdefault(article["rubric"], []).append(article)
+    groups = {rubric: [] for rubric in LABELS}
+    for article in sorted(
+        articles, key=lambda item: item["publication_date_iso"], reverse=True
+    ):
+        groups[article["rubric"]].append(article)
+    groups = {rubric: entries for rubric, entries in groups.items() if entries}
     sections = []
     for number, (rubric, entries) in enumerate(groups.items(), 1):
         rows = []

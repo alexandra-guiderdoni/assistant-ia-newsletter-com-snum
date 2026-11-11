@@ -21,6 +21,8 @@ Pour produire un courriel DSFR, ouvrir [outil-rendu-dsfr.html](outil-rendu-dsfr.
 
 Pour la démonstration du 21 octobre 2026, trois projets SNUM restent visibles dans l’Assistant : **Collecte - v5.23.6**, **Rendu HTML - v5.23.6** et **rendu DSFR**. Dix anciennes versions ont été supprimées ; les instructions et fichiers des projets conservés ont été préservés. Le Projet DSFR reste expérimental : pour obtenir le logo exact, utiliser le fichier autonome. Son aperçu a été confirmé par l’utilisateur ; la qualification Outlook reste ouverte.
 
+Depuis le 10 novembre 2026, la Collecte interroge séparément quatorze sites prioritaires avant ses recherches générales ; l’outil DSFR et le Projet Rendu HTML trient les articles par date ; l’outil signale aussi les liens à paramètres. Recettes, diagnostic et limites : [rapport des domaines prioritaires](_documentation/recette-collecte-domaines/RAPPORT.md).
+
 Les pièces de départ sont conservées dans [_documentation/reference-mail-dsfr/](_documentation/reference-mail-dsfr/) : l’entrée du 14 octobre, le modèle de mail adapté et l’édition HTML correspondante. Ce sont des instantanés de référence ; la source de maintenance du mail est `_source/30-BLOCS-MAIL-DSFR.md`.
 
 Le kit transforme une recherche d’actualité en newsletter HTML dans l’Assistant

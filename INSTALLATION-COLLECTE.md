@@ -27,8 +27,9 @@ pièces jointes. Le prompt se copie dans les instructions du Projet.
 5. Attendre la fin de leur indexation, puis enregistrer.
 6. Dans une nouvelle conversation du Projet, activer la recherche Web.
 
-Si le Projet existe déjà avec ces instructions et ces deux ressources, le
-conserver. En cas de doute, créer un Projet distinct pour l’installation ; ne
+Si le Projet existe déjà, remplacer tout le texte des instructions par le
+fichier 01, puis ajouter le fichier 02 et choisir **Remplacer le fichier
+existant**. En cas de doute, créer un Projet distinct pour l’installation ; ne
 pas supprimer les autres Projets ou leurs conversations.
 
 ## Premier usage
@@ -49,7 +50,12 @@ Suivre le dépannage du [mode opératoire](MODE-OPERATOIRE.md).
 
 ## Limites
 
-Les sources et les dates doivent être relues. Le succès historique observé porte
-sur une collecte sans article retenu ; il ne garantit pas chaque future
-recherche. La version des fichiers V5.23 et le nom du Projet v5.23.6 sont
-volontairement conservés. Ce ZIP ne produit aucun mail à lui seul.
+La Collecte interroge d’abord séparément quatorze sites, listés dans le fichier
+01, puis complète par des recherches générales. La recette du 10 novembre 2026
+a rapporté vingt articles de ces sites ; une autre édition peut en couvrir
+moins. L’intranet `picsel.alize.finances.rie.gouv.fr` n’a jamais été consulté :
+l’Assistant ne l’atteint probablement pas.
+
+Les sources, les dates et les alertes doivent être relues. La version des
+fichiers V5.23 et le nom du Projet v5.23.6 sont volontairement conservés. Ce
+ZIP ne produit aucun mail à lui seul.

@@ -10,7 +10,19 @@ même réponse. N’affiche jamais de requête à recopier, de plan, de trace ou
 intermédiaire.
 
 La recherche couvre ensemble `numerique`, `ia`, `commande`, `rh` et `bercy`, avec
-les cinq axes complets du prompt. Ouvre les résultats avant de les retenir. Le Web
+les cinq axes complets du prompt.
+
+Étape A, avant toute recherche générale : pour chacun de ces 14 sites, fais une
+recherche séparée sur la période, puis ouvre ses résultats : `economie.gouv.fr`,
+`numerique.gouv.fr`, `vie-publique.fr`, `cnil.fr`, `legifrance.gouv.fr`,
+`presse.economie.gouv.fr`, `acteurspublics.fr`, `lemonde.fr`,
+`modernisation.gouv.fr`, `picsel.alize.finances.rie.gouv.fr`, `itforbusiness.fr`,
+`next.ink`, `01net.com` et `journaldunet.com`. Un site inaccessible ou sans
+publication dans la fenêtre n’est pas une panne : poursuis avec les autres.
+
+Étape B : complète ensuite avec d’autres sources fiables.
+
+Ouvre les résultats avant de les retenir. Le Web
 reste actif pendant tout ce cycle ; le métier ne copie aucune réponse entre deux
 chats et n’envoie aucune commande de continuation ou de normalisation.
 
@@ -30,10 +42,24 @@ article, un `takeaway` et un `snum_interest` courts, sans inventer de fait. À p
 de trois articles, exactement les trois premiers portent `essential=true`. Sous
 trois articles, aucun n’est essentiel.
 
-## 3. Appliquer le best effort et rendre le paquet
+## 3. Appliquer le contrôle final
+
+Avant de rendre le paquet, relis chaque article retenu :
+
+1. retire tout article dont `publication_date_iso` est antérieure à `window_start` ou
+   postérieure à `window_end`, même pertinent ;
+2. retire toute page de liste, d’accueil, de rubrique, de recherche ou d’agenda :
+   l’URL désigne l’article lui-même ;
+3. trie les articles restants par date décroissante, puis renumérote `U01…UN` et
+   recalcule `essential` ;
+4. recompte les articles dont l’URL appartient aux quatorze domaines et écris les
+   alertes `watch` avec ces nombres recomptés.
+
+## 4. Appliquer le best effort et rendre le paquet
 
 Une rubrique vide ajoute une alerte `watch`. Moins de cinq articles ajoute aussi une
-alerte. Ces insuffisances ne bloquent jamais le JSON. Si la recherche Web s’est
+alerte. Une alerte signale aussi quand moins de cinq articles proviennent des
+quatorze domaines. Ces insuffisances ne bloquent jamais le JSON. Si la recherche Web s’est
 exécutée mais ne fournit aucune source valide, produis tout de même le paquet avec
 `articles=[]`, aucun essentiel et les alertes nécessaires.
 

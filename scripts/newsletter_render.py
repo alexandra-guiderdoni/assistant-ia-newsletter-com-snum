@@ -320,7 +320,9 @@ def build(payload, blocks):
             raise ValueError(f"URL d’article dupliquée : {article_url}")
         seen_urls.add(article_url)
     grouped = {rubric_id: [] for rubric_id in RUBRICS}
-    for article in articles:
+    for article in sorted(
+        articles, key=lambda item: item["publication_date_iso"], reverse=True
+    ):
         grouped[article["rubric"]].append(article)
 
     essentials = [article for article in articles if article.get("essential")]

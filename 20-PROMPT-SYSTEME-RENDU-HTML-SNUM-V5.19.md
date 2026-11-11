@@ -22,7 +22,7 @@ autorisées et 3 à 5 mots-clés. Trois essentiels dès 3 articles, sinon aucun.
 `articles=[]` valide : rends `VIDE`, puis `SURVEILLER` si `watch`. Dans ce cas,
 `@@NAVIGATION@@` vaut exactement
 `<a class="fr-link" href="#surveiller">À surveiller</a><a class="fr-link" href="/revue-presse-snum/editions/">Archives</a>`.
-Jamais `DONNEES_MANQUANTES` ou `ESSENTIELS_INCORRECTS`. Ne reformule pas.
+Jamais `DONNEES_MANQUANTES` ou `ESSENTIELS_INCORRECTS`.
 
 Chaque article contient `publication_date_iso` au format `AAAA-MM-JJ` et
 `publication_date_long` avec le mois en lettres ; les deux désignent le même jour.
@@ -32,7 +32,7 @@ date avec barre oblique.
 
 Assemble la page : `COQUE` ; section `ESSENTIEL` seulement si elle est requise,
 avec exactement trois cartes ; une section `RUBRIQUE` par rubrique présente et un
-article par source ; `SURVEILLER` seulement si `watch` n’est pas vide. Chaque essentiel
+article par source, du plus récent au plus ancien ; `SURVEILLER` seulement si `watch` n’est pas vide. Chaque essentiel
 reste aussi dans sa rubrique. Remplace uniquement les marqueurs `@@...@@`.
 
 Si `ESSENTIEL` est présent, ajoute d’abord dans la navigation `L’essentiel` vers
