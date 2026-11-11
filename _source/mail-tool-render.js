@@ -105,11 +105,10 @@
 
   function build(payload, canon) {
     validate(payload);
-    const groups = new Map();
-    payload.articles.forEach(article => {
-      if (!groups.has(article.rubric)) groups.set(article.rubric, []);
-      groups.get(article.rubric).push(article);
-    });
+    const groups = new Map(Object.keys(labels).map(rubric => [rubric, []]));
+    const newestFirst = [...payload.articles].sort((a, b) => b.publication_date_iso.localeCompare(a.publication_date_iso));
+    newestFirst.forEach(article => groups.get(article.rubric).push(article));
+    for (const [rubric, articles] of groups) if (!articles.length) groups.delete(rubric);
     const sections = Array.from(groups, ([rubric, articles], index) => {
       const rows = articles.map(article => {
         const values = {};

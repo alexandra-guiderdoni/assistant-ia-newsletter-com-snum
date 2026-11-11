@@ -52,6 +52,9 @@ def cases():
     weekday = copy.deepcopy(sample)
     weekday["edition_date_long"] = "mercredi 14 octobre 2026"
     result.append(weekday)
+    unsorted = copy.deepcopy(sample)
+    unsorted["articles"].reverse()
+    result.append(unsorted)
     return result
 
 
@@ -122,8 +125,8 @@ class MailToolTests(unittest.TestCase):
             raise AssertionError(run.stderr)
         cls.result = json.loads(run.stdout)
 
-    def test_actual_bundle_matches_canon_for_ten_variants(self):
-        self.assertEqual(len(self.packets), 10)
+    def test_actual_bundle_matches_canon_for_eleven_variants(self):
+        self.assertEqual(len(self.packets), 11)
         for index, (packet, actual) in enumerate(
             zip(self.packets, self.result["rendered"], strict=True)
         ):

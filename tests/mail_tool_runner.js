@@ -83,6 +83,12 @@ async function main() {
   assert.equal(elements["mail-download"].hidden, false);
   assert.equal(elements["packet-input"].attributes["aria-invalid"], undefined);
   assert.equal(elements["collection-notes"].hidden, packets[1].watch.length === 0);
+  elements["packet-input"].value = JSON.stringify(packets[2]);
+  submit();
+  assert.equal(elements["collection-notes"].hidden, false);
+  assert.equal(elements["collection-notes-text"].textContent.includes("Lien à vérifier"), true);
+  assert.equal(elements["collection-notes-text"].textContent.includes(packets[2].articles[0].id), true);
+  assert.equal((await blobs.get(elements["mail-download"].href).text()).includes("Lien à vérifier"), false);
   const finalURL = elements["mail-download"].href;
   windowEvents.pagehide();
   assert.equal(revoked.includes(finalURL), true);

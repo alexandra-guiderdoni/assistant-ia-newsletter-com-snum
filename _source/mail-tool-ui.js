@@ -43,8 +43,11 @@
       preview.src = objectURL;
       preview.hidden = false;
       empty.hidden = true;
-      if (packet.watch.length) {
-        notesText.textContent = packet.watch.map(item => `${item.title}\n${item.summary}`).join("\n\n");
+      const checks = packet.articles.filter(article => new URL(article.url).search)
+        .map(article => ({title: "Lien à vérifier", summary: `${article.id} : l’adresse contient des paramètres et peut désigner une page de liste plutôt que l’article. ${article.title}`}));
+      const items = [...packet.watch, ...checks];
+      if (items.length) {
+        notesText.textContent = items.map(item => `${item.title}\n${item.summary}`).join("\n\n");
         notes.hidden = false;
       }
       const count = packet.articles.length;

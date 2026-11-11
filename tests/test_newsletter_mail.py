@@ -103,6 +103,38 @@ class MailTests(unittest.TestCase):
                 for article in articles:
                     self.assertEqual(html.count(f'href="{article["url"]}"'), 1)
 
+    def test_rubrics_follow_canonical_order_and_articles_newest_first(self):
+        base = self.payload["articles"][0]
+        specs = [
+            ("bercy", "2026-11-03", "B-ancien"),
+            ("numerique", "2026-11-04", "N-moyen"),
+            ("bercy", "2026-11-06", "B-recent"),
+            ("numerique", "2026-11-09", "N-recent"),
+            ("ia", "2026-11-03", "I-seul"),
+            ("numerique", "2026-11-03", "N-ancien"),
+        ]
+        articles = []
+        for index, (rubric, day, title) in enumerate(specs):
+            article = copy.deepcopy(base)
+            article.update(
+                id=f"U{index + 1:02d}",
+                url=f"https://example.org/tri/{index}",
+                rubric=rubric,
+                title=title,
+                publication_date_iso=day,
+                publication_date_long=f"{int(day[-2:])} novembre 2026",
+                essential=index < 3,
+            )
+            articles.append(article)
+        payload = {**self.payload, "articles": articles, "watch": []}
+        result, html = self.render(payload)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        order = sorted((html.index(f">{title}<"), title) for _, _, title in specs)
+        self.assertEqual(
+            [title for _, title in order],
+            ["N-recent", "N-moyen", "N-ancien", "I-seul", "B-recent", "B-ancien"],
+        )
+
     def test_untrusted_text_is_escaped_without_rewriting(self):
         self.payload["articles"][0]["title"] = '<script>alert("x")</script> & @@WATCH@@'
         self.payload["articles"][0]["fact"] = "x " * 80

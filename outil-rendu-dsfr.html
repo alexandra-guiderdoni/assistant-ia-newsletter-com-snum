@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-xY7eA2Iql7wqSNpqMw0g0Z76PTdmmZPgOzoEgdF/CEs=' 'sha256-wGQIlijdWCRYLKrJldWKRNDOqpLLGHZ8NXNsXTKuYDI='; style-src 'unsafe-inline'; img-src data:; frame-src 'self' blob:; connect-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-1ojbAz5+wzdZclgjE/yR5ORX3t+CCz/VCPWlV9zGE58=' 'sha256-inCyvqS9O26UskhgSu+DT3qNSj7d6CRWK8Dj89AtYU0='; style-src 'unsafe-inline'; img-src data:; frame-src 'self' blob:; connect-src 'none'; base-uri 'none'; form-action 'none'">
   <meta name="color-scheme" content="light">
   <title>Newsletter SNUM - rendu DSFR</title>
   <style>
@@ -186,11 +186,10 @@
 
   function build(payload, canon) {
     validate(payload);
-    const groups = new Map();
-    payload.articles.forEach(article => {
-      if (!groups.has(article.rubric)) groups.set(article.rubric, []);
-      groups.get(article.rubric).push(article);
-    });
+    const groups = new Map(Object.keys(labels).map(rubric => [rubric, []]));
+    const newestFirst = [...payload.articles].sort((a, b) => b.publication_date_iso.localeCompare(a.publication_date_iso));
+    newestFirst.forEach(article => groups.get(article.rubric).push(article));
+    for (const [rubric, articles] of groups) if (!articles.length) groups.delete(rubric);
     const sections = Array.from(groups, ([rubric, articles], index) => {
       const rows = articles.map(article => {
         const values = {};
@@ -258,8 +257,11 @@
       preview.src = objectURL;
       preview.hidden = false;
       empty.hidden = true;
-      if (packet.watch.length) {
-        notesText.textContent = packet.watch.map(item => `${item.title}\n${item.summary}`).join("\n\n");
+      const checks = packet.articles.filter(article => new URL(article.url).search)
+        .map(article => ({title: "Lien à vérifier", summary: `${article.id} : l’adresse contient des paramètres et peut désigner une page de liste plutôt que l’article. ${article.title}`}));
+      const items = [...packet.watch, ...checks];
+      if (items.length) {
+        notesText.textContent = items.map(item => `${item.title}\n${item.summary}`).join("\n\n");
         notes.hidden = false;
       }
       const count = packet.articles.length;
