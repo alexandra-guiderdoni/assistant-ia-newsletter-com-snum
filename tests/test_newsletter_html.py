@@ -241,6 +241,43 @@ class NewsletterHtmlCliTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, result.stderr)
             return output_path.read_text(encoding="utf-8")
 
+    def test_rubric_articles_are_rendered_newest_first(self):
+        payload = self.payload()
+        old, new = payload["articles"][0], payload["articles"][1]
+        old.update(
+            publication_date_iso="2026-10-04", publication_date_long="4 octobre 2026"
+        )
+        new.update(
+            publication_date_iso="2026-10-12", publication_date_long="12 octobre 2026"
+        )
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            input_path = Path(temporary_directory) / "newsletter.json"
+            output_path = Path(temporary_directory) / "index.html"
+            input_path.write_text(json.dumps(payload), encoding="utf-8")
+            result = self.run_cli(
+                "build",
+                "--input",
+                str(input_path),
+                "--output",
+                str(output_path),
+                "--template",
+                str(COMPACT_TEMPLATE),
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            html = output_path.read_text(encoding="utf-8")
+        rubric = html[html.index('<section id="numerique"') :]
+        self.assertLess(rubric.index(new["title"]), rubric.index(old["title"]))
+
+    def test_render_prompt_requires_newest_first_within_rubrics(self):
+        prompt = " ".join(
+            (PROJECT / "20-PROMPT-SYSTEME-RENDU-HTML-SNUM-V5.19.md")
+            .read_text(encoding="utf-8")
+            .split()
+        )
+        self.assertIn(
+            "Dans chaque rubrique, trie par date décroissante.", prompt
+        )
+
     def test_compact_assistant_template_matches_the_reference_template(self):
         self.assertEqual(self.build_html(COMPACT_TEMPLATE), self.build_html())
 
