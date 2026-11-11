@@ -24,7 +24,7 @@ Une erreur de structure est affichée sans correction silencieuse du contenu. Ap
 
 Les rubriques présentes et leur numérotation s’adaptent au paquet. Les articles sont regroupés selon la première apparition de leur rubrique, puis conservent leur ordre dans celle-ci. Les essentiels reçoivent une mention dans leur article, sans duplication.
 
-Les rubriques sans article ne sont pas affichées. Les alertes de `watch` apparaissent uniquement dans un encadré « Commentaire sur la collecte (hors mail) », séparé de l’aperçu. Elles sont exclues du mail téléchargé, y compris de ses commentaires HTML. Une liste vide ne montre aucun encadré. Un paquet entièrement vide conserve le message « Collecte à compléter ».
+Les rubriques suivent toujours l’ordre numérique, IA, commande publique, RH, Bercy, et les articles y sont rangés du plus récent au plus ancien, quel que soit l’ordre du paquet. Un lien dont l’adresse contient des paramètres est signalé dans l’encadré hors mail : il désigne souvent une page de liste ; le retirer du paquet si besoin. Les rubriques sans article ne sont pas affichées. Les alertes de `watch` apparaissent uniquement dans un encadré « Commentaire sur la collecte (hors mail) », séparé de l’aperçu. Elles sont exclues du mail téléchargé, y compris de ses commentaires HTML. Une liste vide ne montre aucun encadré. Un paquet entièrement vide conserve le message « Collecte à compléter ».
 
 Les titres, faits, mots-clés, liens, dates et intérêts SNUM sont conservés. Une date hors fenêtre est présentée comme les autres, conformément au choix métier pour ce rendu ; le filtrage de Collecte et du Rendu HTML historique reste inchangé.
 
