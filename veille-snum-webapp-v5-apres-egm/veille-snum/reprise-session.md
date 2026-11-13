@@ -42,7 +42,7 @@ node --test tests/test_storage.cjs        # 16 tests, OK
 1. Redémarrer le serveur 8766 et repasser la page au validateur W3C : l'erreur `class="stats"` venait de l'ancien code encore servi.
 2. Non vérifié : téléphone réel (375 px), zoom à 200 %, contrastes, mode sombre, lecteur d'écran réel.
 3. Les résumés Albert restent à relire : un résumé réel indiquait « 11 M$ » au lieu de 11 milliards.
-4. Le README et le rapport du dépôt newsletter ne décrivent pas encore Veille SNUM.
+4. Le README racine décrit Veille SNUM depuis la PR #3 ; le rapport du dépôt newsletter, pas encore.
 
 ## Ne pas oublier
 
