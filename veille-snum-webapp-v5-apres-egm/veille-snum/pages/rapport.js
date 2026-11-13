@@ -17,7 +17,10 @@
   return !!r && typeof r === 'object' && typeof r.status === 'string' && Array.isArray(r.sources)
    && Array.isArray(r.candidates) && Array.isArray(r.excluded);
  }
- const statusMessage = status => MESSAGES[status] || 'Impossible de produire un paquet complet : consulter les erreurs.';
+ // En phase « titres », needs_albert est l'issue attendue : les résumés sont demandés ensuite.
+ const statusMessage = (status, phase) => (phase === 'titres' && status === 'needs_albert'
+  ? 'Titres trouvés, sans résumé : gardez ci-dessus les titres à faire résumer par Albert.'
+  : MESSAGES[status] || 'Impossible de produire un paquet complet : consulter les erreurs.');
 
  // Huit compteurs [valeur, libellé], dans l'ordre de la page locale.
  function stats(report, packet) {
@@ -62,14 +65,14 @@
  }
 
  // report null : rapport absent (paquet publié avant) ou illisible, message affiché à la place.
- function render(report, packet, message) {
+ function render(report, packet, message, phase) {
   current = isReport(report) ? report : null;
   byId('report-content').hidden = !current;
   byId('report-download').disabled = !current;
   byId('report-status').textContent = '';
   const intro = byId('report-intro');
   if (!current) { intro.textContent = message || 'Le rapport de collecte n’est pas publié pour cette édition.'; return; }
-  intro.textContent = `Statut de la collecte : ${statusMessage(current.status)}`;
+  intro.textContent = `Statut de la collecte : ${statusMessage(current.status, phase)}`;
   if (packet && current.edition_date && current.edition_date !== packet.edition_date) {
    intro.textContent += ` Attention : ce rapport concerne l’édition du ${global.VeilleSelection.dateLong(current.edition_date)}.`;
   }

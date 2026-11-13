@@ -6,6 +6,8 @@
   HORS_THEMATIQUE: 'jugé hors thématique par Albert',
   BUDGET_DUREE_ALBERT: 'non résumé faute de temps',
   ECHEC_ALBERT: 'échec du résumé Albert',
+  NON_SELECTIONNE: 'non gardé au premier temps',
+  PAGE_NON_RELUE: 'page non relue au second temps : introuvable, hors période ou protégée',
  };
  // Ordre des champs d'un article V519 ; id et essential sont recalculés à l'export.
  const TEXT_FIELDS = ['title', 'source', 'publication_date_iso', 'publication_date_long', 'url', 'fact', 'takeaway', 'snum_interest'];
