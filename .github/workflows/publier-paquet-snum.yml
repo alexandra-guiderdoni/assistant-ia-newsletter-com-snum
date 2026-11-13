@@ -1,0 +1,76 @@
+# Collecte complète avec Albert, puis publication du paquet V519 sur
+# GitHub Pages : https://alexandra-guiderdoni.github.io/assistant-ia-newsletter-com-snum/paquet-v519.json
+# La page SNUM de l'atelier charge ce fichier pour la sélection.
+# Paquet public par décision du 13 novembre 2026 (docs/designs/hebergement-github.md).
+name: Publier le paquet Veille SNUM
+
+on:
+  workflow_dispatch:
+    inputs:
+      edition:
+        description: "Date d'édition AAAA-MM-JJ (vide : aujourd'hui, heure de Paris)"
+        required: false
+        default: ""
+      debut:
+        description: "Début de période AAAA-MM-JJ (vide : sept jours avant l'édition)"
+        required: false
+        default: ""
+      fin:
+        description: "Fin de période AAAA-MM-JJ (vide : date d'édition)"
+        required: false
+        default: ""
+  # Vérification sur la branche de travail : collecte et paquet, sans déploiement.
+  push:
+    branches: [feature/publication-paquet-pages]
+    paths: [.github/workflows/publier-paquet-snum.yml]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  collecte:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.12"
+
+      - name: Collecte et paquet V519
+        working-directory: veille-snum-webapp-v5-apres-egm/veille-snum
+        env:
+          ALBERT_API_KEY: ${{ secrets.ALBERT_API_KEY }}
+          ALBERT_MODEL: openweight-large
+          EDITION: ${{ inputs.edition }}
+          DEBUT: ${{ inputs.debut }}
+          FIN: ${{ inputs.fin }}
+        run: |
+          args=(--sortie "$GITHUB_WORKSPACE/site")
+          [ -n "${EDITION:-}" ] && args+=(--edition "$EDITION")
+          [ -n "${DEBUT:-}" ] && args+=(--debut "$DEBUT")
+          [ -n "${FIN:-}" ] && args+=(--fin "$FIN")
+          python -m veille_snum.publier "${args[@]}"
+
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: site
+
+  deploiement:
+    needs: collecte
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploiement.outputs.page_url }}
+    steps:
+      - id: deploiement
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
