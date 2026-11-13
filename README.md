@@ -23,6 +23,8 @@ Pour la démonstration du 21 octobre 2026, trois projets SNUM restent visibles d
 
 Depuis le 10 novembre 2026, la Collecte interroge séparément quatorze sites prioritaires avant ses recherches générales ; l’outil DSFR et le Projet Rendu HTML trient les articles par date ; l’outil signale aussi les liens à paramètres. Recettes, diagnostic et limites : [rapport des domaines prioritaires](_documentation/recette-collecte-domaines/RAPPORT.md).
 
+Depuis le 13 novembre 2026, le dépôt contient aussi **Veille SNUM**, un prototype local expérimental qui produit le même paquet V519 hors de l’Assistant. Il ne remplace aucun Projet : voir [Prototype Veille SNUM](#prototype-veille-snum).
+
 Les pièces de départ sont conservées dans [_documentation/reference-mail-dsfr/](_documentation/reference-mail-dsfr/) : l’entrée du 14 octobre, le modèle de mail adapté et l’édition HTML correspondante. Ce sont des instantanés de référence ; la source de maintenance du mail est `_source/30-BLOCS-MAIL-DSFR.md`.
 
 Le kit transforme une recherche d’actualité en newsletter HTML dans l’Assistant
@@ -175,6 +177,36 @@ Vérifiez :
 - la modale après le footer ;
 - les CSS et scripts DSFR 1.15.2 ;
 - l’indication de nouvelle fenêtre sur chaque lien externe.
+
+## Prototype Veille SNUM
+
+[veille-snum-webapp-v5-apres-egm/veille-snum/](veille-snum-webapp-v5-apres-egm/veille-snum/)
+est une application locale (Python, bibliothèque standard, et navigateur) qui
+remplace la conversation Collecte par une collecte programmée :
+
+1. elle parcourt les treize sources publiques fixes, en visitant d’abord les pages
+   les plus récentes ; la quatorzième, interne, est signalée comme non traitée ;
+2. elle ne retient que les articles datés dans la période et signale les sources
+   protégées contre les robots ou non couvertes dans `watch` ;
+3. avec une clé Albert API, elle résume et classe chaque article, puis rejette
+   les résumés en anglais ;
+4. l’utilisateur relit la sélection : garder ou écarter un article, changer sa
+   thématique, repêcher un candidat ; le paquet est revalidé avant téléchargement.
+
+Le paquet `SNUM_PAQUET_RENDU_V519` obtenu se colle dans `outil-rendu-dsfr.html`
+ou dans le Projet Rendu HTML, comme celui de Collecte. Lancement sur macOS :
+double-cliquer `Lancer Veille SNUM.command`, qui ouvre `http://127.0.0.1:8766/`.
+L’interface utilise les composants DSFR 1.15.4 embarqués, sans appel à un CDN.
+
+> **État : expérimental, non validé pour une vraie clé ministérielle.** Recette
+> du 11 novembre 2026 avec Albert : 31 articles, paquets acceptés par
+> `newsletter_mail.py verify`. Plusieurs sites refusent les robots (Légifrance,
+> economie.gouv.fr, Vie publique, Le Monde). Les résumés Albert restent à relire :
+> l’un indiquait 11 millions au lieu de 11 milliards. Aucune conformité DSFR ou
+> RGAA n’est revendiquée.
+
+Installation, sécurité de la clé et tests : [README du prototype](veille-snum-webapp-v5-apres-egm/veille-snum/README.md).
+État et travaux restants : [reprise de session](veille-snum-webapp-v5-apres-egm/veille-snum/reprise-session.md).
 
 ## Maintenance
 
