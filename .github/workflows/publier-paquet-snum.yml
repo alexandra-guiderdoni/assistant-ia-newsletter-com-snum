@@ -1,6 +1,9 @@
-# Collecte complète avec Albert, puis publication sur GitHub Pages de la page
-# de sélection (https://alexandra-guiderdoni.github.io/assistant-ia-newsletter-com-snum/),
-# du paquet V519 (paquet-v519.json) et des candidats écartés (candidats-ecartes.json).
+# Publication sur GitHub Pages de la page de sélection
+# (https://alexandra-guiderdoni.github.io/assistant-ia-newsletter-com-snum/) et des
+# fichiers de la collecte, en deux temps :
+#   titres     : exploration des sites sans Albert ; état et rapport (liste des titres) ;
+#   resumes    : Albert résume les seuls titres gardés ; paquet V519, écartés, archive.
+# Restent disponibles : collecte (les deux temps en une fois) et page seule.
 # Paquet public par décision du 13 novembre 2026 (docs/designs/hebergement-github.md).
 name: Publier le paquet Veille SNUM
 
@@ -20,11 +23,15 @@ on:
         required: false
         default: ""
       mode:
-        description: "collecte : nouvelle collecte avec Albert ; page seule : republier la page avec le paquet déjà en ligne, sans appel Albert"
+        description: "titres : explorer les sites sans Albert ; resumes : résumer les titres gardés ; collecte : tout en une fois ; page seule : republier la page avec les fichiers en ligne"
         required: false
         type: choice
-        options: [collecte, page seule]
-        default: collecte
+        options: [titres, resumes, collecte, page seule]
+        default: titres
+      selection:
+        description: "Mode resumes seulement : liste JSON des titres gardés, remplie par la page de sélection"
+        required: false
+        default: ""
 
 permissions:
   contents: read
@@ -44,8 +51,42 @@ jobs:
         with:
           python-version: "3.12"
 
+      # Premier temps : ni jeton ni modèle Albert dans l'environnement de cette étape.
+      - name: Collecte des titres, sans Albert
+        if: inputs.mode == 'titres'
+        working-directory: veille-snum-webapp-v5-apres-egm/veille-snum
+        env:
+          EDITION: ${{ inputs.edition }}
+          DEBUT: ${{ inputs.debut }}
+          FIN: ${{ inputs.fin }}
+        run: |
+          args=(--mode titres --sortie "$GITHUB_WORKSPACE/site" --run-id "$GITHUB_RUN_ID")
+          [ -n "${EDITION:-}" ] && args+=(--edition "$EDITION")
+          [ -n "${DEBUT:-}" ] && args+=(--debut "$DEBUT")
+          [ -n "${FIN:-}" ] && args+=(--fin "$FIN")
+          python -m veille_snum.publier "${args[@]}"
+
+      # Second temps : la sélection est lue dans la variable SELECTION, jamais
+      # recopiée dans le script ; le rapport des titres est relu sur le site en ligne.
+      - name: Résumés des titres gardés
+        if: inputs.mode == 'resumes'
+        working-directory: veille-snum-webapp-v5-apres-egm/veille-snum
+        env:
+          ALBERT_API_KEY: ${{ secrets.ALBERT_API_KEY }}
+          ALBERT_MODEL: openweight-large
+          SELECTION: ${{ inputs.selection }}
+          EDITION: ${{ inputs.edition }}
+          DEBUT: ${{ inputs.debut }}
+          FIN: ${{ inputs.fin }}
+        run: |
+          args=(--sortie "$GITHUB_WORKSPACE/site" --run-id "$GITHUB_RUN_ID")
+          [ -n "${EDITION:-}" ] && args+=(--edition "$EDITION")
+          [ -n "${DEBUT:-}" ] && args+=(--debut "$DEBUT")
+          [ -n "${FIN:-}" ] && args+=(--fin "$FIN")
+          python -m veille_snum.resumer "${args[@]}"
+
       - name: Collecte et paquet V519
-        if: inputs.mode != 'page seule'
+        if: inputs.mode == 'collecte'
         working-directory: veille-snum-webapp-v5-apres-egm/veille-snum
         env:
           ALBERT_API_KEY: ${{ secrets.ALBERT_API_KEY }}
@@ -54,22 +95,34 @@ jobs:
           DEBUT: ${{ inputs.debut }}
           FIN: ${{ inputs.fin }}
         run: |
-          args=(--sortie "$GITHUB_WORKSPACE/site")
+          args=(--sortie "$GITHUB_WORKSPACE/site" --run-id "$GITHUB_RUN_ID")
           [ -n "${EDITION:-}" ] && args+=(--edition "$EDITION")
           [ -n "${DEBUT:-}" ] && args+=(--debut "$DEBUT")
           [ -n "${FIN:-}" ] && args+=(--fin "$FIN")
           python -m veille_snum.publier "${args[@]}"
 
-      # Mode « page seule » : le paquet en ligne est repris tel quel ; il doit exister.
-      - name: Reprendre le paquet en ligne
+      # Mode « page seule » : les fichiers en ligne sont repris tels quels. Après un
+      # premier temps (phase titres), seul le rapport existe et il est exigé ; sinon
+      # le paquet est exigé, comme avant la collecte en deux temps.
+      - name: Reprendre les fichiers en ligne
         if: inputs.mode == 'page seule'
         run: |
           mkdir -p site
           base="https://alexandra-guiderdoni.github.io/assistant-ia-newsletter-com-snum"
-          curl -fsS -m 30 "$base/paquet-v519.json" -o site/paquet-v519.json
-          for fichier in candidats-ecartes.json rapport-collecte.json; do
-            curl -fsS -m 30 "$base/$fichier" -o "site/$fichier" || { rm -f "site/$fichier"; echo "$fichier absent du site en ligne : ignoré."; }
-          done
+          reprendre() { curl -fsS -m 30 "$base/$1" -o "site/$1"; }
+          facultatif() { reprendre "$1" || { rm -f "site/$1"; echo "$1 absent du site en ligne : ignoré."; }; }
+          phase=""
+          facultatif etat-collecte.json
+          if [ -f site/etat-collecte.json ]; then
+            phase=$(python -c 'import json, sys; print(json.load(open(sys.argv[1], encoding="utf-8"))["phase"])' site/etat-collecte.json)
+          fi
+          if [ "$phase" = titres ]; then
+            reprendre rapport-collecte.json
+          else
+            reprendre paquet-v519.json
+            facultatif candidats-ecartes.json
+            facultatif rapport-collecte.json
+          fi
 
       - name: Page de sélection et ressources DSFR
         working-directory: veille-snum-webapp-v5-apres-egm/veille-snum
@@ -78,38 +131,64 @@ jobs:
           cp -R veille_snum/dsfr "$GITHUB_WORKSPACE/site/dsfr"
 
       # Résumé affiché en tête de la page du run : où trouver la page, quoi en faire.
-      - name: Résumé du paquet
+      - name: Résumé du run
+        env:
+          MODE: ${{ inputs.mode }}
         run: |
           python - <<'PY'
           import collections, json, os
 
           site = "https://alexandra-guiderdoni.github.io/assistant-ia-newsletter-com-snum/"
-          p = json.load(open("site/paquet-v519.json", encoding="utf-8"))
-          chemin = "site/candidats-ecartes.json"
-          ecartes = json.load(open(chemin, encoding="utf-8"))["candidates"] if os.path.exists(chemin) else []
+
+          def lire(nom):
+              chemin = os.path.join("site", nom)
+              return json.load(open(chemin, encoding="utf-8")) if os.path.exists(chemin) else None
+
+          mode = os.environ.get("MODE", "")
+          p = lire("paquet-v519.json")
+          rapport = lire("rapport-collecte.json") or {}
+          etat = lire("etat-collecte.json") or {}
           fr = lambda iso: "/".join(reversed(iso.split("-")))
-          noms = {"numerique": "numérique", "ia": "IA", "commande": "commande", "rh": "RH", "bercy": "Bercy"}
-          compte = collections.Counter(a["rubric"] for a in p["articles"])
-          detail = ", ".join(f"{noms.get(r, r)} {n}" for r, n in compte.most_common())
-          lignes = [
-              "### Paquet Veille SNUM",
-              f"- Page de sélection : {site}",
-              f"- Édition du {fr(p['edition_date'])}, période du {fr(p['window_start'])} au {fr(p['window_end'])}",
-              f"- {len(p['articles'])} articles : {detail} ; {len(p['watch'])} alerte(s) ; {len(ecartes)} candidat(s) écarté(s)",
-              f"- Fichiers : {site}paquet-v519.json et {site}candidats-ecartes.json",
-              "- Étape suivante : sur la page de sélection, garder ou écarter les articles, copier le JSON, puis le coller dans https://alexandra-guiderdoni.github.io/builder-mail-dsfr/snum.html",
-          ]
+          titres = {"titres": "Titres Veille SNUM", "resumes": "Paquet Veille SNUM, résumés des titres gardés",
+                    "collecte": "Paquet Veille SNUM", "page seule": "Page Veille SNUM republiée"}
+          lignes = [f"### {titres.get(mode, 'Veille SNUM')}", f"- Page de sélection : {site}"]
+          if p:
+              ecartes = (lire("candidats-ecartes.json") or {}).get("candidates", [])
+              noms = {"numerique": "numérique", "ia": "IA", "commande": "commande", "rh": "RH", "bercy": "Bercy"}
+              compte = collections.Counter(a["rubric"] for a in p["articles"])
+              detail = ", ".join(f"{noms.get(r, r)} {n}" for r, n in compte.most_common())
+              lignes += [
+                  f"- Édition du {fr(p['edition_date'])}, période du {fr(p['window_start'])} au {fr(p['window_end'])}",
+                  f"- {len(p['articles'])} articles : {detail} ; {len(p['watch'])} alerte(s) ; {len(ecartes)} candidat(s) écarté(s)",
+                  f"- Fichiers : {site}paquet-v519.json et {site}candidats-ecartes.json",
+                  "- Étape suivante : sur la page de sélection, garder ou écarter les articles, copier le JSON, puis le coller dans https://alexandra-guiderdoni.github.io/builder-mail-dsfr/snum.html",
+              ]
+          else:
+              candidats = rapport.get("candidates") or []
+              lues = sum(1 for s in rapport.get("sources") or [] if s.get("status") in ("checked", "partial"))
+              if etat:
+                  lignes.append(f"- Édition du {fr(etat['edition_date'])}, période du {fr(etat['window_start'])} au {fr(etat['window_end'])}")
+              lignes += [
+                  f"- {len(candidats)} titre(s) trouvé(s) sur {lues} source(s) lue(s), sans appel Albert ; aucun paquet à ce stade",
+                  f"- Fichiers : {site}etat-collecte.json et {site}rapport-collecte.json",
+                  "- Étape suivante : sur la page de sélection, cocher les titres à garder, puis « Rédiger les résumés »",
+              ]
+          if mode == "titres":
+              lignes.append(f"- La collecte précédente n'est plus sur la page : elle reste consultable dans {site}archives.html")
+          if mode == "page seule":
+              lignes.append("- Fichiers en ligne repris tels quels : aucun appel Albert, aucune archive")
           if os.environ.get("GITHUB_REF") != "refs/heads/main":
-              lignes.append("- Hors de main : paquet produit mais non publié")
+              lignes.append("- Hors de main : fichiers produits mais non publiés")
           with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as f:
               f.write("\n".join(lignes) + "\n")
           print("\n".join(lignes))
           PY
 
-      # Archive de cette collecte (pas en mode « page seule ») : les trois fichiers
-      # et son entrée d'index, transmis à la tâche archivage.
+      # Archive de cette collecte, seulement quand un paquet vient d'être produit
+      # (modes resumes et collecte) : les trois fichiers et son entrée d'index,
+      # transmis à la tâche archivage.
       - name: Préparer l'archive
-        if: inputs.mode != 'page seule'
+        if: inputs.mode == 'resumes' || inputs.mode == 'collecte'
         working-directory: veille-snum-webapp-v5-apres-egm/veille-snum
         run: |
           A="$RUNNER_TEMP/archive"
@@ -117,7 +196,7 @@ jobs:
           cp "$GITHUB_WORKSPACE"/site/paquet-v519.json "$GITHUB_WORKSPACE"/site/candidats-ecartes.json "$GITHUB_WORKSPACE"/site/rapport-collecte.json "$A/"
           python -m veille_snum.archiver entree --site "$A" --run-id "$GITHUB_RUN_ID" --sortie "$A/entree.json"
 
-      - if: inputs.mode != 'page seule'
+      - if: inputs.mode == 'resumes' || inputs.mode == 'collecte'
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: archive-collecte
@@ -132,7 +211,7 @@ jobs:
   # collectes/<id>/ (trois fichiers) et collectes/index.json, recalculé à chaque essai.
   archivage:
     needs: collecte
-    if: github.ref == 'refs/heads/main' && inputs.mode != 'page seule'
+    if: github.ref == 'refs/heads/main' && (inputs.mode == 'resumes' || inputs.mode == 'collecte')
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
