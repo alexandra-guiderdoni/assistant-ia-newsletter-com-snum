@@ -4,9 +4,24 @@
 
 ## État Git
 
-- Le prototype est dans `main` du dépôt public `assistant-ia-newsletter-com-snum`, fusionné par la PR #2 depuis la branche `feature/prototype-veille-snum`.
+- Tout est dans `main` du dépôt public `assistant-ia-newsletter-com-snum`, sans changement local en attente. `main` est la seule branche, en local comme sur GitHub ; les branches fusionnées ont été supprimées.
+- PR fusionnées :
+
+  | PR | Contenu |
+  | --- | --- |
+  | #1 | 14 domaines prioritaires de la Collecte, tri des articles par date |
+  | #2 | prototype Veille SNUM |
+  | #3 | description du prototype dans le README racine |
+  | #4 | mesures du prototype dans `_documentation/recette-collecte-domaines/RAPPORT.md` |
+  | #5 | actualisation de ce fichier de reprise |
+
 - Reprendre : `git switch main && git pull`, puis créer une nouvelle branche pour la suite des travaux.
-- La branche `feat/collecte-domaines-prioritaires`, fusionnée par la PR #1, a été supprimée en local et sur GitHub.
+
+## Reprendre depuis l'autre Mac
+
+- Le code vient de GitHub : `git pull` suffit.
+- L'historique de la conversation reste sur le Mac d'origine (`~/.claude/projects/`) : `claude --continue` ne le retrouve pas. Ouvrir une nouvelle session et lui faire lire ce fichier.
+- Le fichier `~/Claude/projets-heberges/starter-kit-chatbox/.env`, qui contient la clé Albert, n'est pas dans Git : il doit exister sur ce Mac pour lancer une collecte avec résumés.
 
 ## Lancer l'application
 
@@ -43,6 +58,7 @@ node --test tests/test_storage.cjs        # 16 tests, OK
 1. Redémarrer le serveur 8766 et repasser la page au validateur W3C : l'erreur `class="stats"` venait de l'ancien code encore servi.
 2. Non vérifié : téléphone réel (375 px), zoom à 200 %, contrastes, mode sombre, lecteur d'écran réel.
 3. Les résumés Albert restent à relire : un résumé réel indiquait « 11 M$ » au lieu de 11 milliards.
+4. Le README du prototype indique encore `http://127.0.0.1:8765/` pour le lancement en ligne de commande, alors que le lanceur `.command` utilise le 8766.
 
 ## Ne pas oublier
 
