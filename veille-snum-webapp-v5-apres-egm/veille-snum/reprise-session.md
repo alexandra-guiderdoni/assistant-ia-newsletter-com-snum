@@ -40,14 +40,14 @@ Redémarrer après toute modification : Ctrl + C, flèche haut, Entrée.
 
 ```bash
 python3 -m unittest discover -s tests     # 130 tests, OK
-node --test tests/test_storage.cjs        # 17 tests, OK
+node --test tests/test_storage.cjs        # 19 tests, OK
 ```
 
 ## Fait
 
 - Collecte : 15 articles par site, 60 au total, budget de 180 s pour la découverte et de 360 s pour Albert, 2 appels Albert en parallèle (4 provoquaient des HTTP 429), sites anti-robots signalés.
 - Contrôle des résumés : détection de l'anglais champ par champ, suppression des tirets cadratins.
-- Sélection éditoriale : garder ou écarter, changer de thématique, repêcher un candidat, revalider le paquet avant téléchargement.
+- Sélection éditoriale : garder ou écarter, changer de thématique, repêcher un candidat, revalider le paquet avant téléchargement. Par défaut, seuls les deux premiers articles de chaque thématique sont cochés.
 - Modèle Albert : `openweight-large` par défaut, remplaçable par `ALBERT_MODEL` ou dans l'interface ; le jeton seul suffit.
 - Interface réécrite avec les composants DSFR 1.15.4 embarqués hors ligne (`veille_snum/dsfr/`, `MANIFEST.json`), avec une CSP stricte.
 - Grille et espacements vérifiés dans Chrome à 1280 px et à 606 px (statistiques sur 3 puis 2 colonnes, pas de défilement horizontal).

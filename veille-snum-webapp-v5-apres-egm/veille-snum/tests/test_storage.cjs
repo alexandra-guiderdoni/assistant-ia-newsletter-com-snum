@@ -7,6 +7,12 @@ const vm = require('node:vm');
 const html = fs.readFileSync(path.join(__dirname,'../veille_snum/index.html'),'utf8');
 const script = fs.readFileSync(path.join(__dirname,'../veille_snum/app.js'),'utf8');
 const key = 'veille-snum:albert:v2';
+// Élément créé par le script : assez de DOM pour rendre la sélection éditoriale.
+const domElement = () => ({
+  textContent:'', className:'', children:[], classList:{toggle(){}},
+  append(...items){this.children.push(...items);}, replaceChildren(){this.children=[];},
+  setAttribute(){}, removeAttribute(){}, addEventListener(){}, click(){},
+});
 async function load(storage = new Map(), failing = false, opts = {}) {
   const fails = failing === true ? {read:true,write:true,remove:true} : (failing || {});
   const nodes = new Map();
@@ -16,7 +22,7 @@ async function load(storage = new Map(), failing = false, opts = {}) {
       events:{},
       classList:{toggle(){}},
       addEventListener(type, cb) {this.events[type] = cb;},
-      replaceChildren(){}, append(){},
+      children:[], replaceChildren(){this.children=[];}, append(...items){this.children.push(...items);},
     });
     return nodes.get(id);
   };
@@ -26,7 +32,7 @@ async function load(storage = new Map(), failing = false, opts = {}) {
     removeItem(k) {if(fails.remove) throw Error('disabled');storage.delete(k);},
   };
   const ctx = {
-    document:{getElementById:element,createElement:()=>({textContent:'',append(){},click(){},setAttribute(){}}),createTextNode:s=>s},
+    document:{getElementById:element,createElement:domElement,createTextNode:s=>s},
     localStorage:ls, Date, String, URL, Blob, setTimeout(){},
     navigator:{locks: opts.locks === false ? undefined : (opts.locks || {request(_key,_opts,cb){return Promise.resolve(cb());}})},
     window:{addEventListener(type, cb) {this.events[type]=cb;},events:{}},
@@ -240,4 +246,37 @@ test('modèle prérempli par le serveur, sans écraser un modèle mémorisé',as
  const shared=new Map([[key,JSON.stringify({apiKey:'FAKE',model:'modele-test'})]]);
  const b=await load(shared,false,{info:{albert_model:'openweight-large'}});await tick();
  assert.equal(b.node('albert-model').value,'modele-test');
+});
+
+function packetArticle(i,rubric){
+ return {id:`U${String(i).padStart(2,'0')}`,rubric,title:`Article ${i}`,source:'Next',publication_date_iso:'2026-11-06',
+  publication_date_long:'6 novembre 2026',url:`https://next.ink/article/${i}`,fact:'Fait.',keywords:['numérique'],
+  takeaway:'À retenir.',snum_interest:'Intérêt.',essential:false};
+}
+const collectResult=rubrics=>({status:'ready',sources:[],candidates:[],excluded:[],errors:[],discovery_errors:0,
+ packet:{articles:rubrics.map((r,i)=>packetArticle(i+1,r)),watch:[]}});
+function keepBoxes(node,found={}){
+ if(node&&node.type==='checkbox'&&String(node.id).startsWith('garder-'))found[node.id]=node.checked;
+ for(const child of node?.children||[])keepBoxes(child,found);
+ return found;
+}
+
+test('par défaut, seuls les deux premiers articles de chaque thématique sont gardés',async()=>{
+ const a=await load();
+ a.ctx.showResult(collectResult(['numerique','numerique','numerique','ia','bercy','bercy','bercy']));
+ assert.equal(a.node('article-count').textContent,'5 article(s) gardé(s) sur 7, soumis à relecture.');
+ assert.deepEqual(keepBoxes(a.node('article-list')),
+  {'garder-0':true,'garder-1':true,'garder-2':false,'garder-3':true,'garder-4':true,'garder-5':true,'garder-6':false});
+ // La sélection par défaut diffère du paquet du serveur : export bloqué jusqu'à revalidation.
+ assert.equal(a.node('download').disabled,true);
+ assert.equal(a.node('update-packet').disabled,false);
+ assert.match(a.node('selection-notice').textContent,/2 premiers articles de chaque thématique/);
+});
+
+test('thématiques de deux articles au plus : tout reste gardé et le paquet reste téléchargeable',async()=>{
+ const a=await load();
+ a.ctx.showResult(collectResult(['numerique','numerique','ia']));
+ assert.equal(a.node('article-count').textContent,'3 article(s) gardé(s) sur 3, soumis à relecture.');
+ assert.equal(a.node('download').disabled,false);
+ assert.equal(a.node('update-packet').disabled,true);
 });

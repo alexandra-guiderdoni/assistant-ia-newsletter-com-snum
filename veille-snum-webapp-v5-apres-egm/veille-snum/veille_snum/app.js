@@ -157,6 +157,7 @@ const pad = n => String(n).padStart(2, '0');
 function localIso(d) { return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; }
 const today = new Date(), start = new Date(today); start.setDate(start.getDate()-7);
 byId('edition').value = localIso(today); byId('end').value = localIso(today); byId('start').value = localIso(start);
+const KEPT_PER_RUBRIC = 2; // articles cochés « Garder » par défaut dans chaque thématique
 const RUBRIC_LABELS = {numerique:'Numérique',ia:'Intelligence artificielle',commande:'Commande publique',rh:'Ressources humaines',bercy:'Bercy'};
 const statusNames = {checked:'Découverte effectuée',partial:'Partielle / tronquée',skipped_budget:'Non traitée (temps)',skipped_internal:'Non traitée (source interne)',blocked:'Bloquée (robots.txt ou protection anti-robot)',error:'Échec technique',pending:'En attente'};
 function line(list, label, url) {
@@ -270,7 +271,9 @@ function showResult(result){
   li.append(number,caption);stat.append(li);
  }
  for(const id of ['article-list','watch-list','source-list','candidate-list','excluded-list','error-list','rejected-list'])clear(id);
- selection=(currentPacket?.articles||[]).map(a=>({...a,keep:true}));
+ // Par défaut, seuls les premiers articles de chaque thématique (les plus récents) sont gardés.
+ const shown={};
+ selection=(currentPacket?.articles||[]).map(a=>({...a,keep:(shown[a.rubric]=(shown[a.rubric]??0)+1)<=KEPT_PER_RUBRIC}));
  // Repêchables : jugés hors thématique, non résumés faute de temps ou en échec Albert.
  const reasons={HORS_THEMATIQUE:'hors thématique',BUDGET_DUREE_ALBERT:'non résumé faute de temps'};
  const find=url=>result.candidates.find(c=>c.url===url);
@@ -280,7 +283,9 @@ function showResult(result){
   .filter(c=>c.url&&c.title&&!seen.has(c.url)&&seen.add(c.url));
  renderSelection();renderRejected();
  byId('selection-notice').textContent='';byId('update-packet').disabled=true;
- saveResult();
+ // La sélection par défaut diffère alors du paquet du serveur : il faut le revalider.
+ if(selection.some(a=>!a.keep))selectionChanged(`Par défaut, seuls les ${KEPT_PER_RUBRIC} premiers articles de chaque thématique sont gardés. Cochez ceux à ajouter, puis mettez à jour le paquet.`);
+ else saveResult();
  for(const w of currentPacket?.watch||[])line(byId('watch-list'),`${w.title} : ${w.summary}`);
  if(!(currentPacket?.watch?.length))line(byId('watch-list'),'Pas de paquet ou pas d’alerte à présenter.');
  for(const s of result.sources)line(byId('source-list'),`${s.label} : ${statusNames[s.status]||s.status} · ${s.discovered||0} URL découvertes · ${s.attempted||0} tentées · ${s.opened||0} pages reçues · ${s.eligible||0} candidats · ${s.technical_errors||0} erreurs d’articles · ${s.discovery_errors||0} erreurs de découverte · ${s.sitemap_skipped||0} URL/sitemaps ignorés · ${s.not_visited||0} non tentées. ${(s.notes||[]).join(' ; ')}`);
@@ -338,7 +343,7 @@ function restoreResult(){
  if(!saved?.report)return;
  showResult(saved.report);
  selection=saved.selection||[];rejected=saved.rejected||[];currentPacket=saved.packet||null;
- renderSelection();renderRejected();
+ renderSelection();renderRejected();byId('selection-notice').textContent='';
  byId('download').disabled=!currentPacket;byId('update-packet').disabled=!!currentPacket;
  byId('export-notice').textContent=currentPacket?'Après relecture, exporter le JSON.':'Sélection modifiée : mettez à jour le paquet avant de le télécharger.';
  notice('Résultat de la dernière collecte restauré dans cet onglet.');
