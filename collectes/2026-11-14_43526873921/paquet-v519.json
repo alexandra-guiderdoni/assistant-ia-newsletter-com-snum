@@ -1,0 +1,542 @@
+{
+  "schema_version": "SNUM_PAQUET_RENDU_V519",
+  "edition_date": "2026-11-14",
+  "edition_date_long": "14 novembre 2026",
+  "window_start": "2026-11-07",
+  "window_end": "2026-11-14",
+  "articles": [
+    {
+      "id": "U01",
+      "rubric": "numerique",
+      "title": "Rémi, chef de projet de la plateforme d'apprentissage Éléa - Direction du numérique pour l'Éducation",
+      "source": "DINUM",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://numerique.gouv.fr/rejoignez-nous/les-visages-de-numeriquegouv/remi-chef-de-projet-de-la-plateforme-dapprentissage-elea-direction-du-numerique-pour-leducation/",
+      "fact": "Rémi Lefeuvre pilote la plateforme d’apprentissage Éléa, développée par la DNE, pour créer des parcours pédagogiques en ligne à l’échelle nationale.",
+      "keywords": [
+        "plateforme Éléa",
+        "transformation numérique",
+        "éducation nationale",
+        "e‑learning",
+        "Direction du numérique"
+      ],
+      "takeaway": "Déployer une plateforme e‑learning nationale renforce le service public du numérique éducatif.",
+      "snum_interest": "Intérêt pour la coordination des projets numériques inter‑ministériels et le partage de bonnes pratiques.",
+      "essential": true
+    },
+    {
+      "id": "U02",
+      "rubric": "numerique",
+      "title": "6 millions d'identifiants volés ont été récupérés par la police : comment savoir si vous êtes concerné ?",
+      "source": "01net",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://www.01net.com/actualites/6-millions-identifiants-voles-recuperes-police-verifiez-si-vous-etes-concerne.html",
+      "fact": "Europol a démantelé l’infrastructure de trois malwares, récupérant plus de 6 millions d’identifiants volés.",
+      "keywords": [
+        "Europol",
+        "malware",
+        "identifiants volés",
+        "cybersécurité",
+        "ransomware"
+      ],
+      "takeaway": "Opération Endgame renforce la lutte contre les ransomwares et protège les données publiques.",
+      "snum_interest": "Renforcer la cybersécurité des services publics et prévenir les fuites d’identifiants.",
+      "essential": true
+    },
+    {
+      "id": "U03",
+      "rubric": "numerique",
+      "title": "Lutte anti-cybercriminalité : Europol annonce 354 arrestations dans l'opération TorNado",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://www.journaldunet.com/business/1557959-europol-annonce-354-arrestations-dans-l-operation-tornado/",
+      "fact": "Europol a coordonné l’opération TorNado, aboutissant à 354 arrestations et d’importantes saisies de drogues, armes et argent.",
+      "keywords": [
+        "Europol",
+        "opération TorNado",
+        "cybercriminalité",
+        "dark web",
+        "arrestations"
+      ],
+      "takeaway": "Renforcer la cybersécurité et la coopération internationale reste crucial.",
+      "snum_interest": "SNUM peut soutenir la lutte contre le dark web via outils numériques et partage d’informations.",
+      "essential": true
+    },
+    {
+      "id": "U04",
+      "rubric": "numerique",
+      "title": "Une panne de Microsoft 365 paralyse les entreprises dans de nombreux pays",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://www.journaldunet.com/business/1557967-une-panne-de-microsoft-365-paralyse-des-organisations-dans-de-nombreux-pays/",
+      "fact": "Une panne majeure de Microsoft 365 paralyse les administrations et services publics de plusieurs pays, dont la Nouvelle‑Zélande, le Japon et les Philippines.",
+      "keywords": [
+        "Microsoft 365",
+        "panne cloud",
+        "services publics",
+        "administrations",
+        "sécurité numérique"
+      ],
+      "takeaway": "Les dépendances aux services cloud exposent la continuité des services publics.",
+      "snum_interest": "Renforcer la résilience des infrastructures numériques publiques face aux pannes de fournisseurs externes.",
+      "essential": false
+    },
+    {
+      "id": "U05",
+      "rubric": "ia",
+      "title": "Après le scandale Nvidia, Washington envisage de nouvelles restrictions contre la Chine",
+      "source": "01net",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://www.01net.com/actualites/apres-le-scandale-nvidia-washington-envisage-de-nouvelles-restrictions-contre-la-chine.html",
+      "fact": "Washington envisage de durcir les restrictions d'exportation des puces IA Nvidia vers la Chine.",
+      "keywords": [
+        "Nvidia",
+        "restrictions exportation",
+        "puces IA",
+        "Chine",
+        "États‑Unis"
+      ],
+      "takeaway": "Les nouvelles mesures pourraient restreindre l’accès chinois aux puces IA avancées.",
+      "snum_interest": "Impacts sur la souveraineté technologique française et les achats publics de composants IA.",
+      "essential": false
+    },
+    {
+      "id": "U06",
+      "rubric": "ia",
+      "title": "Panne Microsoft : ChatGPT et Claude également touchés, et ils ne sont pas les seuls",
+      "source": "01net",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://www.01net.com/actualites/panne-microsoft-chatgpt-et-claude-egalement-touches-et-ils-ne-sont-pas-les-seuls.html",
+      "fact": "Une panne d’Exchange Online empêche les connecteurs Microsoft 365 de ChatGPT et Claude d’accéder aux e‑mails, agendas et SharePoint.",
+      "keywords": [
+        "panne Microsoft",
+        "connecteurs IA",
+        "Microsoft 365",
+        "ChatGPT",
+        "Claude"
+      ],
+      "takeaway": "Les IA dépendantes de Microsoft 365 sont vulnérables aux pannes de l’infrastructure.",
+      "snum_interest": "Surveiller la résilience des services IA intégrés aux plateformes Microsoft pour les administrations.",
+      "essential": false
+    },
+    {
+      "id": "U07",
+      "rubric": "rh",
+      "title": "Le Gouvernement propose des mesures pour augmenter le pouvoir d'achat de 1,3 million d'agents publics et ouvre cinq chantiers structurels en faveur de la fonction publique",
+      "source": "Presse Bercy",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://presse.economie.gouv.fr/le-gouvernement-propose-des-mesures-pour-augmenter-le-pouvoir-dachat-de-13-million-dagents-publics-et-ouvre-cinq-chantiers-structurels-en-faveur-de-la-fonction-publique/",
+      "fact": "Le gouvernement prévoit une revalorisation du SMIC de 1,6 % dès décembre et des points d’indice pour 1,3 million d’agents publics.",
+      "keywords": [
+        "pouvoir d'achat",
+        "agents publics",
+        "SMIC",
+        "points d’indice",
+        "fonction publique"
+      ],
+      "takeaway": "Des mesures salariales ciblées pour soutenir les agents les moins bien rémunérés.",
+      "snum_interest": "Intérêt pour le SNUM : suivi des impacts RH et budgétaires des mesures.",
+      "essential": false
+    },
+    {
+      "id": "U08",
+      "rubric": "bercy",
+      "title": "Les réserves nettes de change",
+      "source": "Presse Bercy",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://presse.economie.gouv.fr/les-reserves-nettes-de-change-186829/",
+      "fact": "Les réserves nettes de change de l'État sont de 353 952 M€ fin octobre 2026, en baisse de 10 796 M€ par rapport à septembre.",
+      "keywords": [
+        "réserves nettes",
+        "change",
+        "Bercy",
+        "FMI",
+        "euro"
+      ],
+      "takeaway": "Les réserves nettes de change diminuent en octobre 2026.",
+      "snum_interest": "Suivi de la souveraineté économique et de la situation financière de l'État.",
+      "essential": false
+    },
+    {
+      "id": "U09",
+      "rubric": "numerique",
+      "title": "À la Justice, une nouvelle gouvernance numérique à plusieurs étages",
+      "source": "Acteurs publics",
+      "publication_date_iso": "2026-11-12",
+      "publication_date_long": "12 novembre 2026",
+      "url": "https://acteurspublics.fr/articles/a-la-justice-une-nouvelle-gouvernance-numerique-a-plusieurs-etages/",
+      "fact": "Le secrétariat général de la Justice obtient missions transformation numérique et IA, avec 40 M€ pour la dématérialisation et 70 M€ 2026‑2027.",
+      "keywords": [
+        "Justice",
+        "transformation numérique",
+        "intelligence artificielle",
+        "budget",
+        "gouvernance"
+      ],
+      "takeaway": "Renforcement de la gouvernance numérique de la Justice, mais risques de déconnexion terrain.",
+      "snum_interest": "Suivi du plan « choc numérique » et de la gouvernance IA à la Justice.",
+      "essential": false
+    },
+    {
+      "id": "U10",
+      "rubric": "numerique",
+      "title": "Données de santé : de la migration vers un cloud souverain à la préparation du cadre européen",
+      "source": "DINUM",
+      "publication_date_iso": "2026-11-12",
+      "publication_date_long": "12 novembre 2026",
+      "url": "https://numerique.gouv.fr/actualites/donnees-de-sante-de-la-migration-vers-un-cloud-souverain-a-la-preparation-du-cadre-europeen/",
+      "fact": "La Plateforme des données de santé a retenu Scaleway comme hébergeur cloud souverain après un appel d’offres basé sur plus de 350 critères techniques.",
+      "keywords": [
+        "cloud souverain",
+        "données de santé",
+        "sécurité",
+        "Scaleway",
+        "DINUM"
+      ],
+      "takeaway": "Migration vers un cloud souverain renforce la sécurité des données de santé publiques.",
+      "snum_interest": "Intérêt pour la souveraineté numérique, la cybersécurité et l’infrastructure cloud de l’État.",
+      "essential": false
+    },
+    {
+      "id": "U11",
+      "rubric": "numerique",
+      "title": "Actualité du CEPD : adéquation de la Corée du Sud, versions finales des BCR-ST, et action coordonnée sur le recrutement via IA",
+      "source": "CNIL",
+      "publication_date_iso": "2026-11-12",
+      "publication_date_long": "12 novembre 2026",
+      "url": "https://www.cnil.fr/fr/actualite-du-cepd-adequation-de-la-coree-du-sud-versions-finales-des-bcr-st-et-action-coordonnee-sur",
+      "fact": "Le CEPD a validé l’adéquation de la Corée du Sud, incluant de nouveaux droits contre les décisions automatisées et des règles de transfert de données.",
+      "keywords": [
+        "adéquation Corée du Sud",
+        "protection des données",
+        "décisions automatisées IA",
+        "transferts transfrontières",
+        "règles d’entreprise contraignantes"
+      ],
+      "takeaway": "Renforcement des droits numériques et cadre de transfert pour la Corée du Sud.",
+      "snum_interest": "Impacts sur la souveraineté des données et les exigences IA pour les administrations françaises.",
+      "essential": false
+    },
+    {
+      "id": "U12",
+      "rubric": "numerique",
+      "title": "Yandex : près de 3% de données définitivement perdues après les frappes ukrainiennes",
+      "source": "IT for Business",
+      "publication_date_iso": "2026-11-12",
+      "publication_date_long": "12 novembre 2026",
+      "url": "https://www.itforbusiness.fr/yandex-cloud-perte-de-donnees-frappes-drones-109759",
+      "fact": "Yandex Cloud a perdu définitivement 2,84 % des données affectées après des frappes de drones sur trois datacenters.",
+      "keywords": [
+        "Yandex Cloud",
+        "perte de données",
+        "datacenters",
+        "cybersécurité",
+        "sauvegarde"
+      ],
+      "takeaway": "Les attaques physiques soulignent la nécessité de sauvegardes robustes et de résilience du cloud.",
+      "snum_interest": "Renforcer la souveraineté et la résilience des infrastructures cloud publiques françaises.",
+      "essential": false
+    },
+    {
+      "id": "U13",
+      "rubric": "rh",
+      "title": "À Bercy, des hauts fonctionnaires critiquent le manque de transparence autour de l’individualisation de leurs primes",
+      "source": "Acteurs publics",
+      "publication_date_iso": "2026-11-12",
+      "publication_date_long": "12 novembre 2026",
+      "url": "https://acteurspublics.fr/articles/a-bercy-des-hauts-fonctionnaires-critiquent-le-manque-de-transparence-autour-de-lindividualisation-de-leurs-primes/",
+      "fact": "L’individualisation de l’IFSE, mise en place depuis 2024, manque de transparence selon les hauts fonctionnaires de Bercy.",
+      "keywords": [
+        "IFSE",
+        "transparence",
+        "Bercy",
+        "primes",
+        "haute fonction publique"
+      ],
+      "takeaway": "Une meilleure communication sur les critères d’IFSE est attendue par les agents.",
+      "snum_interest": "Améliorer la transparence des primes renforce la confiance des agents et la gestion RH.",
+      "essential": false
+    },
+    {
+      "id": "U14",
+      "rubric": "bercy",
+      "title": "Presse - Ministère des Finances",
+      "source": "Presse Bercy",
+      "publication_date_iso": "2026-11-12",
+      "publication_date_long": "12 novembre 2026",
+      "url": "https://presse.economie.gouv.fr/",
+      "fact": "Le ministre David Amiel présente le bilan de l’opération COLBERT, mobilisation nationale contre la contrebande de tabac.",
+      "keywords": [
+        "COLBERT",
+        "contrebande de tabac",
+        "David Amiel",
+        "mobilisation"
+      ],
+      "takeaway": "Opération nationale visant à bloquer les circuits illégaux de tabac.",
+      "snum_interest": "Coordination interservices et lutte contre la fraude au sein du ministère.",
+      "essential": false
+    },
+    {
+      "id": "U15",
+      "rubric": "numerique",
+      "title": "La CNIL sera présente au Salon des maires et des collectivités locales 2026",
+      "source": "CNIL",
+      "publication_date_iso": "2026-11-10",
+      "publication_date_long": "10 novembre 2026",
+      "url": "https://www.cnil.fr/fr/salon-maires-collectivites-2026",
+      "fact": "La CNIL participera au Salon des maires (24‑26 nov. 2026) et au Forum IA pour conseiller collectivités sur la protection des données et l’IA.",
+      "keywords": [
+        "CNIL",
+        "Salon des maires",
+        "protection des données",
+        "IA",
+        "collectivités"
+      ],
+      "takeaway": "Les collectivités bénéficieront d’un accompagnement CNIL sur données et IA.",
+      "snum_interest": "Renforcer la conformité des services publics locaux en matière de données et d’intelligence artificielle.",
+      "essential": false
+    },
+    {
+      "id": "U16",
+      "rubric": "numerique",
+      "title": "Cyberattaques iraniennes : Paris prêt à dégainer ses capacités cyberoffensives ?",
+      "source": "IT for Business",
+      "publication_date_iso": "2026-11-10",
+      "publication_date_long": "10 novembre 2026",
+      "url": "https://www.itforbusiness.fr/cyberattaques-iraniennes-france-riposte-cyber-109661",
+      "fact": "La France attribue à l'Iran une campagne de sabotage de réfrigération touchant 700 magasins et évoque des mesures de rétorsion cyberoffensives.",
+      "keywords": [
+        "cybersécurité",
+        "sabotage industriel",
+        "Iran",
+        "réponse française"
+      ],
+      "takeaway": "Le gouvernement prépare une riposte cyber pour protéger les infrastructures critiques.",
+      "snum_interest": "Renforcer la souveraineté numérique et les capacités offensives face aux menaces étatiques.",
+      "essential": false
+    },
+    {
+      "id": "U17",
+      "rubric": "numerique",
+      "title": "France Expérimentation : quand l'administration accompagne les innovations sur le terrain | DITP",
+      "source": "Modernisation de l'action publique",
+      "publication_date_iso": "2026-11-10",
+      "publication_date_long": "10 novembre 2026",
+      "url": "https://www.modernisation.gouv.fr/publications/france-experimentation-quand-ladministration-accompagne-les-innovations-sur-le-terrain",
+      "fact": "France Expérimentation accompagne projets comme la réutilisation des eaux usées à Château Palmer et la lutte contre le moustique tigre, en levant les obstacles réglementaires.",
+      "keywords": [
+        "France Expérimentation",
+        "eaux usées",
+        "moustique tigre",
+        "réglementation"
+      ],
+      "takeaway": "Faciliter l'innovation publique nécessite des dispositifs pour adapter la réglementation.",
+      "snum_interest": "Intérêt pour le SNUM : renforcer l'agilité réglementaire des projets numériques et environnementaux.",
+      "essential": false
+    },
+    {
+      "id": "U18",
+      "rubric": "rh",
+      "title": "Fonction publique : les députés veulent pousser l’État à affiner les données sur le recours au temps partiel thérapeutique",
+      "source": "Acteurs publics",
+      "publication_date_iso": "2026-11-10",
+      "publication_date_long": "10 novembre 2026",
+      "url": "https://acteurspublics.fr/articles/les-deputes-veulent-pousser-letat-a-affiner-les-donnees-sur-le-recours-au-temps-partiel-therapeutique-dans-la-fonction-publique/",
+      "fact": "La DRH de l’État ne possède pas de données précises sur le nombre d’agents en temps partiel thérapeutique en 2026.",
+      "keywords": [
+        "temps partiel thérapeutique",
+        "données RH",
+        "fonction publique",
+        "coût",
+        "rapport parlementaire"
+      ],
+      "takeaway": "Manque de données empêche d’évaluer le TPT et son impact financier.",
+      "snum_interest": "Nécessité d’agréger les données RH pour piloter la politique publique et le budget.",
+      "essential": false
+    },
+    {
+      "id": "U19",
+      "rubric": "rh",
+      "title": "Recrutements, IA, cloisonnement administratif, chatbot… La revue de presse internationale",
+      "source": "Acteurs publics",
+      "publication_date_iso": "2026-11-10",
+      "publication_date_long": "10 novembre 2026",
+      "url": "https://acteurspublics.fr/articles/recrutements-ia-cloisonnement-administratif-chatbot-la-revue-de-presse-internationale/",
+      "fact": "Le GAO signale la perte de 63 spécialistes IA au service des impôts en 2025, malgré 126 cas d’usage actifs.",
+      "keywords": [
+        "recrutement IA",
+        "talents technologiques",
+        "secteur public",
+        "processus de sélection",
+        "partage de données"
+      ],
+      "takeaway": "Accélérer l’embauche et le partage de données pour retenir les experts IA publics.",
+      "snum_interest": "Optimiser les procédures RH et la gouvernance IA pour le ministère économique et financier.",
+      "essential": false
+    },
+    {
+      "id": "U20",
+      "rubric": "bercy",
+      "title": "France 2030 : avec l'appel à projets « Première Usine », le Gouvernement soutient 13 nouveaux projets industriels pour accélérer la réindustrialisation du pays",
+      "source": "Presse Bercy",
+      "publication_date_iso": "2026-11-10",
+      "publication_date_long": "10 novembre 2026",
+      "url": "https://presse.economie.gouv.fr/france-2030-avec-lappel-a-projets-premiere-usine-le-gouvernement-soutient-13-nouveaux-projets-industriels-pour-accelerer-la-reindustrialisation-du-pays/",
+      "fact": "Le gouvernement soutient 13 nouveaux projets industriels via l’appel à projets « Première Usine », financés par subventions et avances remboursables.",
+      "keywords": [
+        "Première Usine",
+        "France 2030",
+        "subventions industrielles",
+        "réindustrialisation"
+      ],
+      "takeaway": "13 projets renforcent la réindustrialisation française grâce à un financement public ciblé.",
+      "snum_interest": "Intérêt pour la coordination des financements numériques et industriels au sein du ministère.",
+      "essential": false
+    },
+    {
+      "id": "U21",
+      "rubric": "bercy",
+      "title": "La communauté internationale soutient le fonds géré par la BERD destiné à la remise en état de l'arche de confinement de Tchernobyl",
+      "source": "Presse Bercy",
+      "publication_date_iso": "2026-11-10",
+      "publication_date_long": "10 novembre 2026",
+      "url": "https://presse.economie.gouv.fr/la-communaute-internationale-soutient-le-fonds-gere-par-la-berd-destine-a-la-remise-en-etat-de-larche-de-confinement-de-tchernobyl/",
+      "fact": "Quatorze pays et organisations ont engagé 303 M€ au fonds ICCA géré par la BERD pour la remise en état de l’arche de Tchernobyl.",
+      "keywords": [
+        "Tchernobyl",
+        "fonds ICCA",
+        "BERD",
+        "financement",
+        "G7"
+      ],
+      "takeaway": "Le financement international renforce la sécurisation de Tchernobyl, sous l’impulsion du ministère des Finances.",
+      "snum_interest": "Soutien financier majeur, coordination internationale, impact sur la politique de financement du ministère.",
+      "essential": false
+    },
+    {
+      "id": "U22",
+      "rubric": "bercy",
+      "title": "La France poursuit ses engagements en matière de financements pour le climat et la biodiversité dans les pays en développement en 2025",
+      "source": "Presse Bercy",
+      "publication_date_iso": "2026-11-10",
+      "publication_date_long": "10 novembre 2026",
+      "url": "https://presse.economie.gouv.fr/la-france-poursuit-ses-engagements-en-matiere-de-financements-pour-le-climat-et-la-biodiversite-dans-les-pays-en-developpement-en-2025/",
+      "fact": "En 2025, la France a alloué 7,4 milliards d’euros à la finance climat, dont 3,2 milliards pour l’adaptation, et 1,4 milliard à la biodiversité.",
+      "keywords": [
+        "finance climat",
+        "adaptation",
+        "biodiversité",
+        "développement",
+        "Bercy"
+      ],
+      "takeaway": "La France dépasse ses objectifs de financement climat et biodiversité.",
+      "snum_interest": "Suivi des engagements financiers climatiques du ministère, indicateur de performance budgétaire.",
+      "essential": false
+    },
+    {
+      "id": "U23",
+      "rubric": "bercy",
+      "title": "Pablo Hernandez de Cos et Klaas Knot s'opposent pour présider la BCE",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-10",
+      "publication_date_long": "10 novembre 2026",
+      "url": "https://www.journaldunet.com/business/action-publique/1557797-pablo-hernandez-de-cos-et-klaas-knot-s-opposent-pour-presider-la-bce/",
+      "fact": "Pablo Hernandez de Cos et Klaas Knot s'affrontent pour succéder à Christine Lagarde à la présidence de la BCE.",
+      "keywords": [
+        "BCE",
+        "Pablo Hernandez de Cos",
+        "Klaas Knot",
+        "Christine Lagarde"
+      ],
+      "takeaway": "Le choix du président de la BCE sera décisif pour la politique monétaire européenne.",
+      "snum_interest": "Impact sur la coordination budgétaire et la stratégie économique du ministère des Finances.",
+      "essential": false
+    },
+    {
+      "id": "U24",
+      "rubric": "numerique",
+      "title": "Les Enchères du Domaine organisent une nouvelle vente exceptionnelle pour le compte de l'Agrasc le 10 novembre à Bordeaux",
+      "source": "Presse Bercy",
+      "publication_date_iso": "2026-11-09",
+      "publication_date_long": "9 novembre 2026",
+      "url": "https://presse.economie.gouv.fr/les-encheres-du-domaine-organisent-une-nouvelle-vente-exceptionnelle-pour-le-compte-de-lagrasc-le-10-novembre-a-bordeaux/",
+      "fact": "Enchères-domaine, plateforme web officielle des ventes aux enchères publiques de l'État, organise une vente exceptionnelle le 10 novembre 2026 à Bordeaux.",
+      "keywords": [
+        "enchères publiques",
+        "plateforme numérique",
+        "Agrasc",
+        "transparence",
+        "économie circulaire"
+      ],
+      "takeaway": "Renforcer la transparence et l’accessibilité des biens publics via une plateforme numérique sécurisée.",
+      "snum_interest": "Valoriser les services numériques de l’État et promouvoir l’économie circulaire.",
+      "essential": false
+    },
+    {
+      "id": "U25",
+      "rubric": "numerique",
+      "title": "Cybersécurité des collectivités territoriales : la CNIL prononce dix sanctions",
+      "source": "CNIL",
+      "publication_date_iso": "2026-11-09",
+      "publication_date_long": "9 novembre 2026",
+      "url": "https://www.cnil.fr/fr/sanctions-cybersecurite-collectivites-territoriales",
+      "fact": "En novembre 2026, la CNIL a infligé dix sanctions financières aux collectivités territoriales pour manquements à la cybersécurité et au RGPD.",
+      "keywords": [
+        "cybersécurité",
+        "collectivités territoriales",
+        "sanctions CNIL",
+        "RGPD",
+        "RGS"
+      ],
+      "takeaway": "Renforcer les mesures de sécurité et l’homologation RGS pour éviter de futures sanctions.",
+      "snum_interest": "Prioriser la conformité cybersécurité des systèmes d’information des collectivités dans la stratégie SNUM.",
+      "essential": false
+    },
+    {
+      "id": "U26",
+      "rubric": "rh",
+      "title": "Avec la mise en place des emplois fonctionnels, l’Insee entre de plain-pied dans la réforme de la haute fonction publique",
+      "source": "Acteurs publics",
+      "publication_date_iso": "2026-11-09",
+      "publication_date_long": "9 novembre 2026",
+      "url": "https://acteurspublics.fr/articles/avec-la-mise-en-place-des-emplois-fonctionnels-linsee-entre-de-plain-pied-dans-la-reforme-de-la-haute-fonction-publique/",
+      "fact": "Le SG de Bercy a présenté un projet de décret créant des emplois fonctionnels supérieurs à l'Insee dès le premier semestre 2027.",
+      "keywords": [
+        "emploi fonctionnel",
+        "INSEE",
+        "réforme haute fonction publique",
+        "Bercy",
+        "primes"
+      ],
+      "takeaway": "Création d’emplois fonctionnels avec primes élevées pour renforcer les cadres de l’Insee.",
+      "snum_interest": "Impact sur la gestion des talents et la motivation des cadres dans les services statistiques.",
+      "essential": false
+    }
+  ],
+  "watch": [
+    {
+      "title": "Rubrique sans article : commande",
+      "summary": "Aucun article admissible établi pour cette rubrique."
+    },
+    {
+      "title": "Sources protégées contre les robots",
+      "summary": "Accès automatisé refusé, à couvrir autrement : Ministères économiques et financiers, Vie publique, Légifrance, Le Monde."
+    },
+    {
+      "title": "Source interne non traitée",
+      "summary": "La source métier interne exige une configuration privée : à compléter manuellement."
+    },
+    {
+      "title": "Découverte bornée",
+      "summary": "9296 URL découvertes n'ont pas été analysées (plafond ou budget temporel)."
+    }
+  ]
+}
