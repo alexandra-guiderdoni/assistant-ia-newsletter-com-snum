@@ -6,8 +6,7 @@
 
 - Le prototype est commité sur la branche `feature/prototype-veille-snum` du dépôt public `assistant-ia-newsletter-com-snum`, poussée sur GitHub. Il n'est pas fusionné dans `main` (`cfdbe98`).
 - Reprendre : `git switch feature/prototype-veille-snum`.
-- La branche `feat/collecte-domaines-prioritaires` est déjà fusionnée dans `main` ; elle peut être supprimée.
-- Deux copies identiques restent sur le disque hors Git : `NOTE-V5-APRES-CONTRE-REVUE (1).md` et `PROMPT-CONTRE-REVUE-V5 (1).md`.
+- Seules branches : `main` et `feature/prototype-veille-snum`. La branche `feat/collecte-domaines-prioritaires`, fusionnée par la PR #1, a été supprimée en local et sur GitHub.
 
 ## Lancer l'application
 
