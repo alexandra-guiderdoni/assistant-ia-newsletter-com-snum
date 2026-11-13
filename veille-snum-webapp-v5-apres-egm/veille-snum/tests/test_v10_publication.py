@@ -9,7 +9,7 @@ from unittest import mock
 
 from test_veille_snum import FakeHttp, good_summary
 from veille_snum.core import collect
-from veille_snum.publier import FICHIER, fenetre, main, publier
+from veille_snum.publier import ECARTES, FICHIER, ecartes, fenetre, main, publier
 
 TOKEN = "JETON-FACTICE-NE-PAS-PUBLIER"
 PAYLOAD = {
@@ -127,6 +127,79 @@ class PublicationTests(unittest.TestCase):
         code = publier(PAYLOAD, self.dossier, collecter=lambda payload: rapport)
         self.assertEqual(code, 1)
         self.assertFalse((self.dossier / FICHIER).exists())
+        self.assertFalse((self.dossier / ECARTES).exists())
+
+    def test_candidats_ecartes_publies_a_cote_du_paquet(self):
+        with mock.patch.dict(
+            "os.environ", {"ALBERT_API_KEY": TOKEN, "ALBERT_MODEL": "modele-test"}
+        ):
+            publier(PAYLOAD, self.dossier, collecter=fake_collect)
+        texte = (self.dossier / ECARTES).read_text(encoding="utf-8")
+        publie = json.loads(texte)
+        self.assertEqual(publie["schema_version"], "SNUM_CANDIDATS_ECARTES_V1")
+        self.assertEqual(
+            [publie["edition_date"], publie["window_start"], publie["window_end"]],
+            ["2026-11-11", "2026-11-01", "2026-11-10"],
+        )
+        self.assertEqual(publie["candidates"], [])
+        self.assertNotIn(TOKEN, texte)
+
+
+def candidat(nom):
+    return {
+        "title": f"Titre {nom}",
+        "source": "DINUM",
+        "publication_date_iso": "2026-11-05",
+        "url": f"https://exemple.gouv.fr/{nom}",
+    }
+
+
+RAPPORT = {
+    "candidates": [candidat(n) for n in "abcd"],
+    "packet": {"articles": [{"url": "https://exemple.gouv.fr/a"}]},
+    "excluded": [
+        {
+            "url": "https://exemple.gouv.fr/b",
+            "reason": "HORS_THEMATIQUE",
+            "source": "numerique",
+        },
+        {
+            "url": "https://exemple.gouv.fr/d",
+            "reason": "BUDGET_DUREE_ALBERT",
+            "source": "numerique",
+        },
+    ],
+    "errors": [{"url": "https://exemple.gouv.fr/c", "reason": "Albert : HTTP 500"}],
+}
+
+
+class EcartesTests(unittest.TestCase):
+    def test_candidats_non_retenus_avec_leur_motif(self):
+        self.assertEqual(
+            [(c["url"][-1], c["reason"]) for c in ecartes(RAPPORT)],
+            [
+                ("b", "HORS_THEMATIQUE"),
+                ("c", "ECHEC_ALBERT"),
+                ("d", "BUDGET_DUREE_ALBERT"),
+            ],
+        )
+
+    def test_champs_publies_sans_extrait_d_article(self):
+        premier = ecartes(
+            {**RAPPORT, "candidates": [{**candidat("b"), "content": "Extrait."}]}
+        )[0]
+        self.assertEqual(
+            sorted(premier),
+            [
+                "publication_date_iso",
+                "publication_date_long",
+                "reason",
+                "source",
+                "title",
+                "url",
+            ],
+        )
+        self.assertEqual(premier["publication_date_long"], "5 novembre 2026")
 
 
 if __name__ == "__main__":

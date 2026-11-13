@@ -12,10 +12,28 @@ import sys
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from .core import collect
+from .core import collect, date_long
 
 FICHIER = "paquet-v519.json"
+ECARTES = "candidats-ecartes.json"
 PUBLIABLES = ("ready", "partial")
+CHAMPS_CANDIDAT = ("title", "source", "publication_date_iso", "url")
+
+
+def ecartes(rapport):
+    """Candidats trouvés mais absents du paquet, avec leur motif, sans extrait d'article."""
+    retenus = {a["url"] for a in (rapport.get("packet") or {}).get("articles", [])}
+    motifs = {e["url"]: e["reason"] for e in rapport.get("excluded") or []}
+    motifs.update({e["url"]: "ECHEC_ALBERT" for e in rapport.get("errors") or []})
+    return [
+        {k: c[k] for k in CHAMPS_CANDIDAT}
+        | {
+            "publication_date_long": date_long(c["publication_date_iso"]),
+            "reason": motifs.get(c["url"], "NON_RETENU"),
+        }
+        for c in rapport.get("candidates") or []
+        if c["url"] not in retenus
+    ]
 
 
 def fenetre(aujourdhui, jours=7):
@@ -56,6 +74,16 @@ def publier(payload, sortie, collecter=collect):
     sortie.mkdir(parents=True, exist_ok=True)
     texte = json.dumps(paquet, ensure_ascii=False, indent=2) + "\n"
     (sortie / FICHIER).write_text(texte, encoding="utf-8")
+    liste = {
+        "schema_version": "SNUM_CANDIDATS_ECARTES_V1",
+        "edition_date": paquet["edition_date"],
+        "window_start": paquet["window_start"],
+        "window_end": paquet["window_end"],
+        "candidates": ecartes(rapport),
+    }
+    (sortie / ECARTES).write_text(
+        json.dumps(liste, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
     print(
         f"Paquet {rapport['status']} : {len(paquet['articles'])} article(s), "
         f"{len(rapport.get('candidates') or [])} candidat(s), {len(rapport.get('errors') or [])} échec(s) Albert."
