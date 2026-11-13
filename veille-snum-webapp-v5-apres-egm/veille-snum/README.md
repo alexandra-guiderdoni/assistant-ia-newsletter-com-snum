@@ -31,6 +31,10 @@ Mesurée par une collecte réelle sans Albert, du 4 au 11 novembre 2026 : 49 can
 
 Tests : 122 Python et 16 Node réussis hors réseau. Recette avec une vraie clé Albert le 11 novembre 2026, avant parallélisme : 23 articles conformes au V519, 11 candidats non résumés faute de temps.
 
+## Sans Python : la page GitHub Pages
+
+https://alexandra-guiderdoni.github.io/assistant-ia-newsletter-com-snum/ offre le même usage sans serveur local : la collecte et Albert passent par GitHub Actions (tâches « Publier le paquet Veille SNUM » et « Repêcher un candidat Veille SNUM »), la sélection et l'export JSON V519 se font dans le navigateur. Lancer une collecte ou un repêchage depuis la page demande un jeton GitHub personnel : procédure, permissions, sécurité et dépannage dans [docs/jeton-github.md](docs/jeton-github.md).
+
 ## Démarrer
 
 Python 3.10+ ; bibliothèque standard uniquement. Aucune installation de package nécessaire. Sur macOS, double-cliquer `Lancer Veille SNUM.command` (sous réserve des règles de sécurité du poste) ; la fenêtre Terminal reste ouverte pendant l’utilisation. En cas de blocage macOS, suivre les procédures autorisées sans contourner la politique du poste.
