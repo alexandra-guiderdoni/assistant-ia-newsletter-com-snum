@@ -6,6 +6,8 @@ name: Test d'accès à Albert depuis GitHub
 on:
   push:
     branches: [config/test-albert-github]
+    # Un envoi de documentation ne doit pas consommer d'appel Albert.
+    paths: [.github/workflows/test-acces-albert-github.yml]
   workflow_dispatch:
 
 permissions:
