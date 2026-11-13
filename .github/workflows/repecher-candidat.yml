@@ -1,0 +1,146 @@
+# Repêchage d'un candidat écarté, lancé par la page de sélection (workflow_dispatch) :
+# Albert résume l'article dans la rubrique choisie par l'éditeur, puis le résultat
+# est déposé sur la branche donnees-repechage, que la page relit sans jeton :
+# https://raw.githubusercontent.com/alexandra-guiderdoni/assistant-ia-newsletter-com-snum/donnees-repechage/repechages/<run_id>.json
+# Le résultat est publié même en cas de refus : la page affiche alors le motif.
+name: Repêcher un candidat Veille SNUM
+
+run-name: "Repêchage ${{ inputs.rubrique }} : ${{ inputs.url }}"
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "Adresse HTTPS de l'article, parmi les 13 sources publiques"
+        required: true
+      rubrique:
+        description: "Rubrique choisie par l'éditeur"
+        required: true
+        type: choice
+        options:
+          - numerique
+          - ia
+          - commande
+          - rh
+          - bercy
+      debut:
+        description: "Début de période JJ/MM/AAAA, par exemple 13/11/2026"
+        required: true
+      fin:
+        description: "Fin de période JJ/MM/AAAA, par exemple 20/11/2026"
+        required: true
+
+# Écriture limitée à la branche de résultats donnees-repechage.
+permissions:
+  contents: write
+
+# Pas de groupe de concurrence : GitHub n'y garde qu'un run en attente et
+# annulerait un repêchage lancé juste après un autre. Les envois simultanés
+# vers donnees-repechage sont réglés par les nouvelles tentatives de push.
+
+jobs:
+  repechage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      BRANCHE: donnees-repechage
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.12"
+
+      # Un refus (code 1) n'arrête pas la tâche : son motif doit être publié.
+      - name: Repêchage par Albert
+        working-directory: veille-snum-webapp-v5-apres-egm/veille-snum
+        env:
+          ALBERT_API_KEY: ${{ secrets.ALBERT_API_KEY }}
+          ALBERT_MODEL: openweight-large
+          URL: ${{ inputs.url }}
+          RUBRIQUE: ${{ inputs.rubrique }}
+          DEBUT: ${{ inputs.debut }}
+          FIN: ${{ inputs.fin }}
+        run: |
+          RESULTAT="$RUNNER_TEMP/repechage.json"
+          code=0
+          python -m veille_snum.repecher --url="$URL" --rubrique="$RUBRIQUE" \
+            --debut="$DEBUT" --fin="$FIN" --sortie="$RESULTAT" || code=$?
+          if [ ! -s "$RESULTAT" ]; then
+            printf '%s\n' '{"schema_version": "SNUM_REPECHAGE_V1", "url": "", "status": "erreur", "message": "Repêchage interrompu avant son résultat : consulter le journal de la tâche.", "article": null}' > "$RESULTAT"
+          fi
+          echo "Code de sortie du repêchage : $code"
+
+      # Le fichier est ajouté par un commit construit hors de l'arbre de travail :
+      # la branche est créée orpheline au premier passage, jamais forcée ensuite.
+      - name: Publication du résultat
+        env:
+          GIT_AUTHOR_NAME: github-actions[bot]
+          GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: github-actions[bot]
+          GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+        run: |
+          RESULTAT="$RUNNER_TEMP/repechage.json"
+          export GIT_INDEX_FILE="$RUNNER_TEMP/index-repechage"
+          fichier="repechages/${GITHUB_RUN_ID}.json"
+          blob=$(git hash-object -w "$RESULTAT")
+          publie=non
+          for essai in 1 2 3 4 5; do
+            rm -f "$GIT_INDEX_FILE"
+            parent=""
+            etat=0
+            git ls-remote --exit-code --heads origin "$BRANCHE" > /dev/null || etat=$?
+            if [ "$etat" -eq 0 ]; then
+              git fetch --quiet --depth 1 origin "$BRANCHE"
+              parent=$(git rev-parse FETCH_HEAD)
+              git read-tree "$parent"
+            elif [ "$etat" -ne 2 ]; then
+              echo "Essai $essai : dépôt distant injoignable (code $etat)."
+              sleep $((essai * 2))
+              continue
+            fi
+            git update-index --add --cacheinfo "100644,$blob,$fichier"
+            arbre=$(git write-tree)
+            commit=$(git commit-tree "$arbre" ${parent:+-p "$parent"} -m "Repêchage ${GITHUB_RUN_ID}")
+            if git push --quiet origin "$commit:refs/heads/$BRANCHE"; then
+              publie=oui
+              break
+            fi
+            echo "Essai $essai : la branche a avancé entre-temps, nouvelle tentative."
+            sleep $((essai * 2))
+          done
+          if [ "$publie" != oui ]; then
+            echo "Résultat non publié après 5 essais." >&2
+            exit 1
+          fi
+          echo "Résultat publié : $fichier ($commit)"
+
+      # Résumé affiché en tête de la page du run : où lire le résultat.
+      - name: Résumé du repêchage
+        if: always()
+        run: |
+          python - <<'PY'
+          import json, os
+
+          lecture = (
+              "https://raw.githubusercontent.com/alexandra-guiderdoni/assistant-ia-newsletter-com-snum/"
+              f"{os.environ['BRANCHE']}/repechages/{os.environ['GITHUB_RUN_ID']}.json"
+          )
+          try:
+              r = json.load(open(os.path.join(os.environ["RUNNER_TEMP"], "repechage.json"), encoding="utf-8"))
+          except (OSError, ValueError):
+              r = {"status": "erreur", "message": "Aucun résultat produit.", "url": "", "article": None}
+          lignes = [
+              "### Repêchage Veille SNUM",
+              f"- Statut : {r['status']}",
+              f"- Message : {r['message']}",
+              f"- Adresse demandée : {r['url'] or 'non relevée'}",
+          ]
+          if r.get("article"):
+              a = r["article"]
+              lignes.append(f"- Article : {a['title']} ({a['source']}, {a['publication_date_long']}), rubrique {a['rubric']}")
+          lignes.append(f"- Résultat lu par la page de sélection : {lecture}")
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as f:
+              f.write("\n".join(lignes) + "\n")
+          print("\n".join(lignes))
+          PY
