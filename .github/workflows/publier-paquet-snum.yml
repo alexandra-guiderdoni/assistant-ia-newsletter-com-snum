@@ -1,6 +1,6 @@
-# Collecte complète avec Albert, puis publication du paquet V519 sur
-# GitHub Pages : https://alexandra-guiderdoni.github.io/assistant-ia-newsletter-com-snum/paquet-v519.json
-# La page SNUM de l'atelier charge ce fichier pour la sélection.
+# Collecte complète avec Albert, puis publication sur GitHub Pages de la page
+# de sélection (https://alexandra-guiderdoni.github.io/assistant-ia-newsletter-com-snum/),
+# du paquet V519 (paquet-v519.json) et des candidats écartés (candidats-ecartes.json).
 # Paquet public par décision du 13 novembre 2026 (docs/designs/hebergement-github.md).
 name: Publier le paquet Veille SNUM
 
@@ -19,6 +19,12 @@ on:
         description: "Fin de période JJ/MM/AAAA (vide : date d'édition)"
         required: false
         default: ""
+      mode:
+        description: "collecte : nouvelle collecte avec Albert ; page seule : republier la page avec le paquet déjà en ligne, sans appel Albert"
+        required: false
+        type: choice
+        options: [collecte, page seule]
+        default: collecte
 
 permissions:
   contents: read
@@ -39,6 +45,7 @@ jobs:
           python-version: "3.12"
 
       - name: Collecte et paquet V519
+        if: inputs.mode != 'page seule'
         working-directory: veille-snum-webapp-v5-apres-egm/veille-snum
         env:
           ALBERT_API_KEY: ${{ secrets.ALBERT_API_KEY }}
@@ -53,24 +60,44 @@ jobs:
           [ -n "${FIN:-}" ] && args+=(--fin "$FIN")
           python -m veille_snum.publier "${args[@]}"
 
-      # Résumé affiché en tête de la page du run : où trouver le paquet, quoi en faire.
+      # Mode « page seule » : le paquet en ligne est repris tel quel ; il doit exister.
+      - name: Reprendre le paquet en ligne
+        if: inputs.mode == 'page seule'
+        run: |
+          mkdir -p site
+          base="https://alexandra-guiderdoni.github.io/assistant-ia-newsletter-com-snum"
+          curl -fsS -m 30 "$base/paquet-v519.json" -o site/paquet-v519.json
+          for fichier in candidats-ecartes.json rapport-collecte.json; do
+            curl -fsS -m 30 "$base/$fichier" -o "site/$fichier" || { rm -f "site/$fichier"; echo "$fichier absent du site en ligne : ignoré."; }
+          done
+
+      - name: Page de sélection et ressources DSFR
+        working-directory: veille-snum-webapp-v5-apres-egm/veille-snum
+        run: |
+          cp pages/*.html pages/*.js "$GITHUB_WORKSPACE/site/"
+          cp -R veille_snum/dsfr "$GITHUB_WORKSPACE/site/dsfr"
+
+      # Résumé affiché en tête de la page du run : où trouver la page, quoi en faire.
       - name: Résumé du paquet
         run: |
           python - <<'PY'
           import collections, json, os
 
-          url = "https://alexandra-guiderdoni.github.io/assistant-ia-newsletter-com-snum/paquet-v519.json"
+          site = "https://alexandra-guiderdoni.github.io/assistant-ia-newsletter-com-snum/"
           p = json.load(open("site/paquet-v519.json", encoding="utf-8"))
+          chemin = "site/candidats-ecartes.json"
+          ecartes = json.load(open(chemin, encoding="utf-8"))["candidates"] if os.path.exists(chemin) else []
           fr = lambda iso: "/".join(reversed(iso.split("-")))
           noms = {"numerique": "numérique", "ia": "IA", "commande": "commande", "rh": "RH", "bercy": "Bercy"}
           compte = collections.Counter(a["rubric"] for a in p["articles"])
           detail = ", ".join(f"{noms.get(r, r)} {n}" for r, n in compte.most_common())
           lignes = [
               "### Paquet Veille SNUM",
-              f"- Paquet JSON : {url}",
+              f"- Page de sélection : {site}",
               f"- Édition du {fr(p['edition_date'])}, période du {fr(p['window_start'])} au {fr(p['window_end'])}",
-              f"- {len(p['articles'])} articles : {detail} ; {len(p['watch'])} alerte(s)",
-              "- Étape suivante : copier le JSON, le coller dans https://alexandra-guiderdoni.github.io/builder-mail-dsfr/snum.html, puis « Convertir et afficher l'aperçu »",
+              f"- {len(p['articles'])} articles : {detail} ; {len(p['watch'])} alerte(s) ; {len(ecartes)} candidat(s) écarté(s)",
+              f"- Fichiers : {site}paquet-v519.json et {site}candidats-ecartes.json",
+              "- Étape suivante : sur la page de sélection, garder ou écarter les articles, copier le JSON, puis le coller dans https://alexandra-guiderdoni.github.io/builder-mail-dsfr/snum.html",
           ]
           if os.environ.get("GITHUB_REF") != "refs/heads/main":
               lignes.append("- Hors de main : paquet produit mais non publié")
@@ -92,8 +119,7 @@ jobs:
       id-token: write
     environment:
       name: github-pages
-      # La racine du site n'a pas de page : le lien du déploiement mène au paquet.
-      url: ${{ steps.deploiement.outputs.page_url }}paquet-v519.json
+      url: ${{ steps.deploiement.outputs.page_url }}
     steps:
       - id: deploiement
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
