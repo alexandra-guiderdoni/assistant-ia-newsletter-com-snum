@@ -3,6 +3,7 @@
 import datetime as dt
 import io
 import tempfile
+import threading
 import unittest
 from pathlib import Path
 from unittest import mock
@@ -10,6 +11,7 @@ from urllib.error import HTTPError
 
 from test_v13_deux_temps import (
     ALBERT,
+    ECARTES,
     PAQUET,
     PREMIER,
     RAPPORT,
@@ -21,7 +23,9 @@ from test_v13_deux_temps import (
     lire,
     selection,
 )
+from test_veille_snum import good_summary
 
+from veille_snum.core import validate_packet_v519
 from veille_snum.repecher import repecher
 from veille_snum.resumer import lire_rapport, publier_resumes
 
@@ -198,6 +202,71 @@ class SelectionHostileTests(Cas):
         self.assertGreater(len(texte), 60_000)
         self.assertEqual(self.lancer(texte), 1)
         self.assertIn("absente des titres", self.sortie_erreur.getvalue())
+
+
+class AlbertSature(Albert):
+    """Albert refuse par un 429 tout appel au-delà de deux simultanés."""
+
+    def __init__(self, duree):
+        super().__init__(duree=duree)
+        self.refus = 0
+
+    def __call__(self, candidat, feedback=None, forced_rubric=None):
+        with self.verrou:
+            if self.en_cours >= 2:
+                self.refus += 1
+                raise HTTPError(ALBERT, 429, "Too Many Requests", {}, None)
+        return super().__call__(candidat, feedback, forced_rubric)
+
+
+class TroisAppelsSimultanesTests(Cas):
+    """Risque relevé en relecture : un repêchage pendant la rédaction porte les appels à trois."""
+
+    def test_repechage_pendant_la_redaction_degrade_sans_casser(self):
+        albert = AlbertSature(duree=0.02)
+        choix = selection(*[(url, "") for url in URLS[:10]])
+        bilans = []
+
+        def repecher_en_boucle():
+            for url in URLS[10:13] * 4:
+                bilans.append(repecher(url, "ia", DEBUT, FIN, Site(), albert))
+
+        with (
+            mock.patch("veille_snum.resumer._retry_delay", return_value=0.03),
+            mock.patch("veille_snum.repecher._retry_delay", return_value=0.03),
+        ):
+            concurrent = threading.Thread(target=repecher_en_boucle)
+            concurrent.start()
+            code = self.lancer(choix, albert=albert)
+            concurrent.join()
+        # La saturation a bien eu lieu, et jamais plus de deux appels n'ont été servis ensemble.
+        self.assertGreater(albert.refus, 0)
+        self.assertEqual(albert.maximum, 2)
+        # Chaque titre gardé finit résumé, ou écarté avec un motif lisible et repêchable.
+        self.assertEqual(code, 0)
+        paquet = lire(self.dossier, PAQUET)
+        self.assertTrue(validate_packet_v519(paquet))
+        resumes = {a["url"] for a in paquet["articles"]}
+        echecs = {
+            c["url"]
+            for c in lire(self.dossier, ECARTES)["candidates"]
+            if c["reason"] == "ECHEC_ALBERT"
+        }
+        self.assertEqual(resumes | echecs, set(URLS[:10]))
+        self.assertFalse(resumes & echecs)
+        for erreur in lire(self.dossier, RAPPORT)["errors"]:
+            self.assertEqual(erreur["reason"], "Albert : HTTP 429")
+        # Chaque repêchage se termine par un article ou par un message lisible.
+        self.assertEqual(len(bilans), 12)
+        for bilan in bilans:
+            self.assertIn(
+                bilan["message"],
+                ("Article repêché dans la rubrique ia.", "Albert : HTTP 429"),
+            )
+            if bilan["status"] == "ok":
+                self.assertEqual(
+                    bilan["article"]["fact"], good_summary(bilan["article"])["fact"]
+                )
 
 
 if __name__ == "__main__":
