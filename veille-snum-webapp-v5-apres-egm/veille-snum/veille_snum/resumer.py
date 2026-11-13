@@ -148,7 +148,9 @@ def resumer_gardes(choix, premier, edition, client, resumer):
         source, adresse = source_publique(element["url"])
         candidat = lire_candidat(adresse, source, debut, fin, client)
         if element["rubrique"]:
-            return candidat, resumer_valide(candidat, element["rubrique"], resumer)
+            return candidat, resumer_valide(
+                candidat, element["rubrique"], resumer, limite
+            )
         return candidat, classer_valide(candidat, resumer, limite)
 
     issues = {}
