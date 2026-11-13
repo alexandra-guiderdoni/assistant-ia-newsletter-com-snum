@@ -1,7 +1,7 @@
 # Repêchage d'un candidat écarté, lancé par la page de sélection (workflow_dispatch) :
 # Albert résume l'article dans la rubrique choisie par l'éditeur, puis le résultat
-# est déposé sur la branche donnees-repechage, que la page relit sans jeton :
-# https://raw.githubusercontent.com/alexandra-guiderdoni/assistant-ia-newsletter-com-snum/donnees-repechage/repechages/<run_id>.json
+# est déposé sur la branche donnees-veille, que la page relit sans jeton :
+# https://raw.githubusercontent.com/alexandra-guiderdoni/assistant-ia-newsletter-com-snum/donnees-veille/repechages/<run_id>.json
 # Le résultat est publié même en cas de refus : la page affiche alors le motif.
 name: Repêcher un candidat Veille SNUM
 
@@ -30,20 +30,20 @@ on:
         description: "Fin de période JJ/MM/AAAA, par exemple 20/11/2026"
         required: true
 
-# Écriture limitée à la branche de résultats donnees-repechage.
+# Écriture limitée à la branche de résultats donnees-veille.
 permissions:
   contents: write
 
 # Pas de groupe de concurrence : GitHub n'y garde qu'un run en attente et
 # annulerait un repêchage lancé juste après un autre. Les envois simultanés
-# vers donnees-repechage sont réglés par les nouvelles tentatives de push.
+# vers donnees-veille sont réglés par les nouvelles tentatives de push.
 
 jobs:
   repechage:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
-      BRANCHE: donnees-repechage
+      BRANCHE: donnees-veille
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 

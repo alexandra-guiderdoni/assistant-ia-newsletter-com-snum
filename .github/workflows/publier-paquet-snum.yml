@@ -106,9 +106,103 @@ jobs:
           print("\n".join(lignes))
           PY
 
+      # Archive de cette collecte (pas en mode « page seule ») : les trois fichiers
+      # et son entrée d'index, transmis à la tâche archivage.
+      - name: Préparer l'archive
+        if: inputs.mode != 'page seule'
+        working-directory: veille-snum-webapp-v5-apres-egm/veille-snum
+        run: |
+          A="$RUNNER_TEMP/archive"
+          mkdir -p "$A"
+          cp "$GITHUB_WORKSPACE"/site/paquet-v519.json "$GITHUB_WORKSPACE"/site/candidats-ecartes.json "$GITHUB_WORKSPACE"/site/rapport-collecte.json "$A/"
+          python -m veille_snum.archiver entree --site "$A" --run-id "$GITHUB_RUN_ID" --sortie "$A/entree.json"
+
+      - if: inputs.mode != 'page seule'
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: archive-collecte
+          path: ${{ runner.temp }}/archive
+          retention-days: 1
+
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: site
+
+  # Seule tâche autorisée à écrire dans le dépôt, et seulement sur donnees-veille :
+  # collectes/<id>/ (trois fichiers) et collectes/index.json, recalculé à chaque essai.
+  archivage:
+    needs: collecte
+    if: github.ref == 'refs/heads/main' && inputs.mode != 'page seule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    env:
+      BRANCHE: donnees-veille
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.12"
+
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: archive-collecte
+          path: ${{ runner.temp }}/archive
+
+      # Depuis la racine du dépôt : git update-index lit les chemins par rapport
+      # au dossier courant.
+      - name: Archiver la collecte
+        env:
+          PYTHONPATH: veille-snum-webapp-v5-apres-egm/veille-snum
+          GIT_AUTHOR_NAME: github-actions[bot]
+          GIT_AUTHOR_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+          GIT_COMMITTER_NAME: github-actions[bot]
+          GIT_COMMITTER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
+        run: |
+          A="$RUNNER_TEMP/archive"
+          id=$(python -c 'import json, sys; print(json.load(open(sys.argv[1]))["id"])' "$A/entree.json")
+          export GIT_INDEX_FILE="$RUNNER_TEMP/index-archive"
+          publie=non
+          for essai in 1 2 3 4 5; do
+            rm -f "$GIT_INDEX_FILE" "$RUNNER_TEMP/index-ancien.json"
+            parent=""
+            etat=0
+            git ls-remote --exit-code --heads origin "$BRANCHE" > /dev/null || etat=$?
+            if [ "$etat" -eq 0 ]; then
+              git fetch --quiet --depth 1 origin "$BRANCHE"
+              parent=$(git rev-parse FETCH_HEAD)
+              git read-tree "$parent"
+              git show "$parent:collectes/index.json" > "$RUNNER_TEMP/index-ancien.json" 2>/dev/null || rm -f "$RUNNER_TEMP/index-ancien.json"
+            elif [ "$etat" -ne 2 ]; then
+              echo "Essai $essai : dépôt distant injoignable (code $etat)."
+              sleep $((essai * 2))
+              continue
+            fi
+            python -m veille_snum.archiver fusion --ancien "$RUNNER_TEMP/index-ancien.json" --entree "$A/entree.json" --sortie "$RUNNER_TEMP/index.json"
+            for nom in paquet-v519.json candidats-ecartes.json rapport-collecte.json; do
+              git update-index --add --cacheinfo "100644,$(git hash-object -w "$A/$nom"),collectes/$id/$nom"
+            done
+            git update-index --add --cacheinfo "100644,$(git hash-object -w "$RUNNER_TEMP/index.json"),collectes/index.json"
+            arbre=$(git write-tree)
+            commit=$(git commit-tree "$arbre" ${parent:+-p "$parent"} -m "Archive de la collecte $id")
+            if git push --quiet origin "$commit:refs/heads/$BRANCHE"; then
+              publie=oui
+              break
+            fi
+            echo "Essai $essai : la branche a avancé entre-temps, nouvelle tentative."
+            sleep $((essai * 2))
+          done
+          if [ "$publie" != oui ]; then
+            echo "Archive non publiée après 5 essais." >&2
+            exit 1
+          fi
+          {
+            echo "### Archive"
+            echo "- Collecte archivée : $id"
+            echo "- Consultation : https://alexandra-guiderdoni.github.io/assistant-ia-newsletter-com-snum/archives.html"
+          } >> "$GITHUB_STEP_SUMMARY"
 
   deploiement:
     needs: collecte

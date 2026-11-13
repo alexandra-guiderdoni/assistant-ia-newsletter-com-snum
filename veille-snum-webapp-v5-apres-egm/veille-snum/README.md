@@ -35,6 +35,8 @@ Tests : 122 Python et 16 Node réussis hors réseau. Recette avec une vraie clé
 
 https://alexandra-guiderdoni.github.io/assistant-ia-newsletter-com-snum/ offre le même usage sans serveur local : la collecte et Albert passent par GitHub Actions (tâches « Publier le paquet Veille SNUM » et « Repêcher un candidat Veille SNUM »), la sélection et l'export JSON V519 se font dans le navigateur. Lancer une collecte ou un repêchage depuis la page demande un jeton GitHub personnel : procédure, permissions, sécurité et dépannage dans [docs/jeton-github.md](docs/jeton-github.md).
 
+Chaque collecte publiée est archivée sur la branche publique `donnees-veille` (`collectes/<édition>_<run>/` : paquet, candidats écartés, rapport ; index `collectes/index.json`), avec les résultats de repêchage (`repechages/`). La page [archives.html](https://alexandra-guiderdoni.github.io/assistant-ia-newsletter-com-snum/archives.html) les liste et rouvre une ancienne collecte dans la page de sélection, sans jeton. Une republication en mode « page seule » n'archive rien.
+
 ## Démarrer
 
 Python 3.10+ ; bibliothèque standard uniquement. Aucune installation de package nécessaire. Sur macOS, double-cliquer `Lancer Veille SNUM.command` (sous réserve des règles de sécurité du poste) ; la fenêtre Terminal reste ouverte pendant l’utilisation. En cas de blocage macOS, suivre les procédures autorisées sans contourner la politique du poste.
