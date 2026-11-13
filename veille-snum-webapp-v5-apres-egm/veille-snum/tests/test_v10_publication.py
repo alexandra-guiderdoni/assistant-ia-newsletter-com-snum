@@ -56,6 +56,40 @@ class FenetreTests(unittest.TestCase):
         self.assertEqual(payload["window_start"], "2026-11-01")
         self.assertEqual(payload["window_end"], "2026-11-19")
 
+    def test_dates_au_format_francais(self):
+        self.assertEqual(
+            self.periode(
+                "--edition",
+                "20/11/2026",
+                "--debut",
+                "01/11/2026",
+                "--fin",
+                "19/11/2026",
+            ),
+            {
+                "edition_date": "2026-11-20",
+                "window_start": "2026-11-01",
+                "window_end": "2026-11-19",
+            },
+        )
+
+    def test_edition_francaise_seule(self):
+        payload = self.periode("--edition", " 20/11/2026 ")
+        self.assertEqual(payload["window_start"], "2026-11-13")
+        self.assertEqual(payload["window_end"], "2026-11-20")
+
+    def test_date_impossible_refusee_avant_la_collecte(self):
+        for valeur in ("31/02/2026", "20-11-2026", "2026/11/20", "lundi"):
+            with (
+                self.subTest(valeur=valeur),
+                mock.patch("veille_snum.publier.publier") as appel,
+                mock.patch("sys.stderr"),
+                self.assertRaises(SystemExit) as fin,
+            ):
+                main(["--edition", valeur])
+            self.assertEqual(fin.exception.code, 2)
+            appel.assert_not_called()
+
 
 class PublicationTests(unittest.TestCase):
     def setUp(self):
