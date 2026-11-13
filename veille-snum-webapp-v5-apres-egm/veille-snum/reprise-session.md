@@ -36,13 +36,13 @@ node --test tests/test_storage.cjs        # 16 tests, OK
 - Interface réécrite avec les composants DSFR 1.15.4 embarqués hors ligne (`veille_snum/dsfr/`, `MANIFEST.json`), avec une CSP stricte.
 - Grille et espacements vérifiés dans Chrome à 1280 px et à 606 px (statistiques sur 3 puis 2 colonnes, pas de défilement horizontal).
 - Paquets réels validés par `newsletter_mail.py verify` (`HTML_MAIL_DSFR_CANONIQUE_OK`).
+- Veille SNUM décrit dans le README racine et dans `_documentation/recette-collecte-domaines/RAPPORT.md`.
 
 ## Reste à faire
 
 1. Redémarrer le serveur 8766 et repasser la page au validateur W3C : l'erreur `class="stats"` venait de l'ancien code encore servi.
 2. Non vérifié : téléphone réel (375 px), zoom à 200 %, contrastes, mode sombre, lecteur d'écran réel.
 3. Les résumés Albert restent à relire : un résumé réel indiquait « 11 M$ » au lieu de 11 milliards.
-4. Le README racine décrit Veille SNUM depuis la PR #3 ; le rapport du dépôt newsletter, pas encore.
 
 ## Ne pas oublier
 

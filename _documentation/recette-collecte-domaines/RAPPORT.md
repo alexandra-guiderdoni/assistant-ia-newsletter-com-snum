@@ -70,3 +70,34 @@ cette formulation en étape A du prompt système.
   ignorée ; placée dans la phrase qui assemble les rubriques, elle a été
   respectée au second rendu réel du paquet V1. Ce HTML n’a pas été comparé
   octet par octet au canon : la page n’en expose qu’une copie tronquée.
+
+## Prototype Veille SNUM
+
+Depuis le 13 novembre 2026, le dépôt contient aussi le prototype local
+[Veille SNUM](../../veille-snum-webapp-v5-apres-egm/veille-snum/README.md).
+Il visite lui-même les mêmes sites, sans passer par la recherche Web de
+l’Assistant, puis produit un paquet V519 avec Albert API. Mesures réelles du
+11 novembre 2026 :
+
+| Collecte | Période | Résultat |
+| --- | --- | --- |
+| V5, sans Albert | du 4 au 11 novembre | 10 candidats issus de 3 sites |
+| V6, sans Albert | du 4 au 11 novembre | 49 candidats issus de 9 sites, aucune erreur technique |
+| V6, avec Albert | non consignée | 31 articles en 5 rubriques, 1 refus HTTP 429, aucun résumé en anglais |
+
+Les paquets obtenus sont acceptés par `scripts/newsletter_mail.py verify`
+(`HTML_MAIL_DSFR_CANONIQUE_OK`) et par `scripts/newsletter_html.py build`.
+
+Ce que ces mesures montrent, et ce qu’elles ne montrent pas :
+
+- Quatre sites refusent les robots : `economie.gouv.fr` et `legifrance.gouv.fr`
+  (HTTP 403), `vie-publique.fr` (vérification JavaScript) et `lemonde.fr`
+  (page « Client Challenge »). Le prototype les signale dans `watch` sans
+  contournement ; la Collecte de l’Assistant reste la seule voie pour eux.
+- `picsel.alize.finances.rie.gouv.fr` n’est pas visité : il est signalé comme
+  source interne non traitée, comme dans les recettes de l’Assistant.
+- Les périodes diffèrent de celles des recettes V1 à V4 (du 3 au 9 novembre) :
+  les chiffres ne permettent pas de classer les deux méthodes.
+- Un résumé Albert réel indiquait 11 millions au lieu de 11 milliards. La
+  relecture humaine reste nécessaire, comme pour Collecte.
+- Le prototype est expérimental et non validé pour une vraie clé ministérielle.
