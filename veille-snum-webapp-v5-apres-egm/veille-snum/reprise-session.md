@@ -4,9 +4,9 @@
 
 ## État Git
 
-- Le prototype est commité sur la branche `feature/prototype-veille-snum` du dépôt public `assistant-ia-newsletter-com-snum`, poussée sur GitHub. Il n'est pas fusionné dans `main` (`cfdbe98`).
-- Reprendre : `git switch feature/prototype-veille-snum`.
-- Seules branches : `main` et `feature/prototype-veille-snum`. La branche `feat/collecte-domaines-prioritaires`, fusionnée par la PR #1, a été supprimée en local et sur GitHub.
+- Le prototype est dans `main` du dépôt public `assistant-ia-newsletter-com-snum`, fusionné par la PR #2 depuis la branche `feature/prototype-veille-snum`.
+- Reprendre : `git switch main && git pull`, puis créer une nouvelle branche pour la suite des travaux.
+- La branche `feat/collecte-domaines-prioritaires`, fusionnée par la PR #1, a été supprimée en local et sur GitHub.
 
 ## Lancer l'application
 
@@ -39,11 +39,10 @@ node --test tests/test_storage.cjs        # 16 tests, OK
 
 ## Reste à faire
 
-1. Décider de la fusion de `feature/prototype-veille-snum` dans `main` (par PR).
-2. Redémarrer le serveur 8766 et repasser la page au validateur W3C : l'erreur `class="stats"` venait de l'ancien code encore servi.
-3. Non vérifié : téléphone réel (375 px), zoom à 200 %, contrastes, mode sombre, lecteur d'écran réel.
-4. Les résumés Albert restent à relire : un résumé réel indiquait « 11 M$ » au lieu de 11 milliards.
-5. Le README et le rapport du dépôt newsletter ne décrivent pas encore Veille SNUM.
+1. Redémarrer le serveur 8766 et repasser la page au validateur W3C : l'erreur `class="stats"` venait de l'ancien code encore servi.
+2. Non vérifié : téléphone réel (375 px), zoom à 200 %, contrastes, mode sombre, lecteur d'écran réel.
+3. Les résumés Albert restent à relire : un résumé réel indiquait « 11 M$ » au lieu de 11 milliards.
+4. Le README et le rapport du dépôt newsletter ne décrivent pas encore Veille SNUM.
 
 ## Ne pas oublier
 
