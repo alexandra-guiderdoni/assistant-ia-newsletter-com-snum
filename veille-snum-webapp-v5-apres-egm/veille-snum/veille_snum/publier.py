@@ -28,6 +28,20 @@ def fenetre(aujourdhui, jours=7):
     }
 
 
+def date_saisie(texte):
+    """Date du formulaire GitHub : JJ/MM/AAAA, ou AAAA-MM-JJ par compatibilité."""
+    valeur = texte.strip()
+    for forme in ("%d/%m/%Y", "%Y-%m-%d"):
+        try:
+            paris = ZoneInfo("Europe/Paris")
+            return dt.datetime.strptime(valeur, forme).replace(tzinfo=paris).date()
+        except ValueError:
+            continue
+    raise argparse.ArgumentTypeError(
+        f"date invalide « {valeur} » : attendu JJ/MM/AAAA, par exemple 20/11/2026"
+    )
+
+
 def publier(payload, sortie, collecter=collect):
     rapport = collecter(payload)
     paquet = rapport.get("packet")
@@ -54,24 +68,26 @@ def main(argv=None):
         description="Collecte complète puis écriture du paquet V519."
     )
     parser.add_argument(
-        "--edition", help="AAAA-MM-JJ ; aujourd'hui, heure de Paris, par défaut"
+        "--edition",
+        type=date_saisie,
+        help="JJ/MM/AAAA ; aujourd'hui, heure de Paris, par défaut",
     )
     parser.add_argument(
-        "--debut", help="AAAA-MM-JJ ; sept jours avant l'édition par défaut"
+        "--debut",
+        type=date_saisie,
+        help="JJ/MM/AAAA ; sept jours avant l'édition par défaut",
     )
-    parser.add_argument("--fin", help="AAAA-MM-JJ ; date d'édition par défaut")
+    parser.add_argument(
+        "--fin", type=date_saisie, help="JJ/MM/AAAA ; date d'édition par défaut"
+    )
     parser.add_argument("--sortie", default="site")
     args = parser.parse_args(argv)
-    edition = (
-        dt.date.fromisoformat(args.edition)
-        if args.edition
-        else dt.datetime.now(ZoneInfo("Europe/Paris")).date()
-    )
+    edition = args.edition or dt.datetime.now(ZoneInfo("Europe/Paris")).date()
     payload = fenetre(edition)
     if args.debut:
-        payload["window_start"] = args.debut
+        payload["window_start"] = args.debut.isoformat()
     if args.fin:
-        payload["window_end"] = args.fin
+        payload["window_end"] = args.fin.isoformat()
     return publier(payload, args.sortie)
 
 
