@@ -10,9 +10,15 @@ from urllib.error import HTTPError
 
 from test_v13_deux_temps import (
     ALBERT,
+    PAQUET,
+    PREMIER,
+    RAPPORT,
+    URL_RAPPORT,
     URLS,
     Albert,
     Site,
+    fichiers,
+    lire,
     selection,
 )
 
@@ -105,6 +111,36 @@ class BudgetTests(Cas):
             bilan = repecher(URLS[0], "ia", DEBUT, FIN, Site(), sature)
         self.assertEqual(bilan["message"], "Albert : HTTP 429")
         self.assertEqual(horloge.attentes, [20.0, 20.0, 20.0])
+
+
+class RapportDejaResumeTests(Cas):
+    """Deux personnes lancent la rédaction : la seconde demande ne refait pas le travail."""
+
+    def test_rapport_d_un_paquet_deja_publie_refuse(self):
+        for statut in ("ready", "partial", "incomplete", "unavailable"):
+            with self.subTest(statut=statut):
+                albert = Albert()
+                client = Site(rapport={**PREMIER, "status": statut})
+                code = self.lancer(selection((URLS[0], "")), client, albert)
+                self.assertEqual(code, 1)
+                self.assertEqual(albert.appels, [])
+                self.assertEqual(client.calls, [URL_RAPPORT])
+                self.assertFalse(self.dossier.exists() and fichiers(self.dossier))
+                self.assertIn("déjà", self.sortie_erreur.getvalue())
+
+    def test_seconde_demande_apres_une_premiere_publiee(self):
+        choix = selection((URLS[0], ""), (URLS[1], "ia"))
+        self.assertEqual(self.lancer(choix), 0)
+        publie = lire(self.dossier, RAPPORT)
+        premier_paquet = (self.dossier / PAQUET).read_text(encoding="utf-8")
+        albert = Albert()
+        autre = selection((URLS[2], ""), (URLS[3], ""))
+        self.assertEqual(self.lancer(autre, Site(rapport=publie), albert), 1)
+        self.assertEqual(albert.appels, [])
+        # Le paquet de la première demande reste en place, octet pour octet.
+        self.assertEqual(
+            (self.dossier / PAQUET).read_text(encoding="utf-8"), premier_paquet
+        )
 
 
 if __name__ == "__main__":

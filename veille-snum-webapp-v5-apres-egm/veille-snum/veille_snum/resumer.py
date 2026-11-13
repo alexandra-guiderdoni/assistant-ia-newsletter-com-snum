@@ -40,6 +40,8 @@ DOMAINE_SITE = "alexandra-guiderdoni.github.io"
 RAPPORT_EN_LIGNE = (
     f"https://{DOMAINE_SITE}/assistant-ia-newsletter-com-snum/rapport-collecte.json"
 )
+# Statut du rapport publié par le premier temps : seul un tel rapport peut être résumé.
+STATUT_TITRES = "needs_albert"
 NON_SELECTIONNE = "NON_SELECTIONNE"
 PAGE_NON_RELUE = "PAGE_NON_RELUE"
 
@@ -114,6 +116,11 @@ def lire_rapport(client, adresse=RAPPORT_EN_LIGNE):
         raise Refus("Rapport des titres illisible : relancer la collecte.") from exc
     if not valide:
         raise Refus("Rapport des titres incomplet : relancer la collecte.")
+    if rapport.get("status") != STATUT_TITRES:
+        raise Refus(
+            "Les titres en ligne ont déjà été résumés, ou le site publie une collecte complète : "
+            "recharger la page, qui affiche le paquet publié."
+        )
     return rapport
 
 
