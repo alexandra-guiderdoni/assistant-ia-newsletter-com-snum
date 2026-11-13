@@ -59,7 +59,7 @@ node --test tests/test_storage.cjs        # 16 tests, OK
 2. Non vérifié : téléphone réel (375 px), zoom à 200 %, contrastes, mode sombre, lecteur d'écran réel.
 3. Les résumés Albert restent à relire : un résumé réel indiquait « 11 M$ » au lieu de 11 milliards.
 4. Le README du prototype indique encore `http://127.0.0.1:8765/` pour le lancement en ligne de commande, alors que le lanceur `.command` utilise le 8766.
-5. Hébergement sur GitHub pour des collègues sans Python : faisabilité prouvée le 13 novembre 2026, décisions en attente. Voir [docs/designs/hebergement-github.md](docs/designs/hebergement-github.md). Le secret `ALBERT_API_KEY` est enregistré dans le dépôt.
+5. Hébergement sur GitHub pour des collègues sans Python : paquet publié sur GitHub Pages depuis le 13 novembre 2026 (tâche « Publier le paquet Veille SNUM ») ; reste la sélection dans la page SNUM de l'atelier. Voir [docs/designs/hebergement-github.md](docs/designs/hebergement-github.md). Le secret `ALBERT_API_KEY` est enregistré dans le dépôt.
 
 ## Ne pas oublier
 

@@ -1,6 +1,6 @@
 # Étude : faire tourner Veille SNUM sur GitHub
 
-État : **faisabilité prouvée, rien n'est construit**. Date : 13 novembre 2026.
+État : **publication du paquet en service** ; sélection dans l'atelier à construire. Date : 13 novembre 2026.
 Complète la décision de portée 1 de [veille-snum.md](veille-snum.md) (serveur Python local).
 
 ## Besoin
@@ -43,16 +43,27 @@ Témoins négatifs exécutés en local avant l'envoi : sans secret, la tâche s'
 - Une seule collecte complète a tourné sur GitHub. Un site peut filtrer plus tard les adresses de GitHub.
 - GitHub a exécuté Python 3.14.4, le Mac Python 3.12. La version définitive doit fixer la version de Python.
 
-## Décisions à prendre
+## Décisions du 13 novembre 2026
 
-- **Visibilité du paquet.** Le dépôt est public : chaque paquet publié, résumés compris, le serait aussi. L'alternative est un dépôt privé dédié.
-- **Place de la sélection.** Soit une page autonome sur GitHub Pages, soit une étape ajoutée à la page SNUM de l'atelier.
+- **Paquet public sur GitHub Pages**, choisi en connaissance de deux points : une page Pages reste publique même depuis un dépôt privé, et le point 7 de [veille-snum.md](veille-snum.md) demande une revue des droits de réutilisation avant diffusion institutionnelle.
+- **Sélection dans la page SNUM de l'atelier**, plutôt qu'une page autonome : une page de moins pour les collègues.
+
+## Publication en service
+
+- Tâche « Publier le paquet Veille SNUM » (`.github/workflows/publier-paquet-snum.yml`, PR #15) : lancement à la main depuis l'onglet Actions, dates facultatives ; script `veille_snum/publier.py`.
+- Adresse : https://alexandra-guiderdoni.github.io/assistant-ia-newsletter-com-snum/paquet-v519.json, servie avec `Access-Control-Allow-Origin: *` et un cache de dix minutes.
+- Premier paquet ([run 43511462193](https://github.com/alexandra-guiderdoni/assistant-ia-newsletter-com-snum/actions/runs/43511462193)) : 29 articles sur 45 candidats, aucun échec Albert, aucune trace de jeton.
+- Un paquet ni complet ni partiel n'est pas publié : le précédent reste en ligne.
+
+## Décisions restantes
+
+- **Calendrier.** La tâche ne part qu'à la main ; un lancement planifié demande de fixer le jour et l'heure de l'édition.
 - **Gestes à la demande.** Une collecte sur d'autres dates, ou le repêchage d'un candidat, passerait par un déclenchement manuel : quelques minutes d'attente, et un compte ayant les droits sur le dépôt.
 - **Sécurité (issue #6).** Le secret `ALBERT_API_KEY` est enregistré dans le dépôt depuis le 13 novembre 2026, 20 h 56 UTC. Toute tâche poussée par une personne ayant les droits d'écriture peut l'utiliser. Le retirer : `gh secret delete ALBERT_API_KEY -R alexandra-guiderdoni/assistant-ia-newsletter-com-snum`.
 
-## Travail à faire si la voie est retenue
+## Travail restant
 
-1. Tâche planifiée de collecte et publication du paquet, avec une version de Python fixée.
+1. Page SNUM de l'atelier : charger le paquet publié, afficher la sélection (deux articles cochés par thématique), puis convertir.
 2. Réécriture en JavaScript de la reconstruction du paquet après sélection, aujourd'hui côté serveur (`/api/packet`, `rebuild_packet`).
 3. Repêchage (`/api/summarize`) remplacé par un déclenchement manuel, ou abandonné.
 4. Retrait de la tâche de test et archivage de la branche `config/test-albert-github`.
