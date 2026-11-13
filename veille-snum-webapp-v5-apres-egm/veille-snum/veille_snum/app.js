@@ -203,6 +203,9 @@ async function info() {
    memoryStatus('Mémorisation interdite dans cette exécution. Nettoyage des anciennes entrées en cours.');
    void forgetAlbert(true,true);
   }
+  // Modèle par défaut du serveur, remplaçable ; un modèle mémorisé reste prioritaire.
+  const model=byId('albert-model');
+  if(!model.value && typeof x.albert_model==='string')model.value=x.albert_model;
   byId('configuration').textContent=`${x.sources.length} sources configurées · Albert ${x.albert_configured?'configuré sur ce poste':'à renseigner dans les options pour obtenir le JSON'}`;}
  catch(e) {byId('configuration').textContent='Configuration inaccessible';}
 }

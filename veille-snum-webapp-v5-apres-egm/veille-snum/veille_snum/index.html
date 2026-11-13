@@ -76,7 +76,7 @@
     <section class="fr-accordion">
      <h3 class="fr-accordion__title"><button class="fr-accordion__btn" type="button" aria-expanded="false" aria-controls="acc-albert">Connexion à Albert API (facultative pour découvrir les articles)</button></h3>
      <div class="fr-collapse" id="acc-albert">
-      <p class="fr-text--sm">Si Albert n'est pas déjà configuré sur ce poste, saisissez votre jeton et l'identifiant d'un modèle de génération autorisé par votre compte. Ces informations sont transmises au serveur local pour l’appel Albert et ne sont jamais incluses dans les exports. La mémorisation dans ce navigateur est désactivée par défaut.</p>
+      <p class="fr-text--sm">Si Albert n'est pas déjà configuré sur ce poste, saisissez votre jeton ; le modèle openweight-large est proposé par défaut. Ces informations sont transmises au serveur local pour l’appel Albert et ne sont jamais incluses dans les exports. La mémorisation dans ce navigateur est désactivée par défaut.</p>
       <div class="fr-grid-row fr-grid-row--gutters">
        <div class="fr-col-12 fr-col-md-6">
         <div class="fr-input-group">
@@ -86,7 +86,7 @@
        </div>
        <div class="fr-col-12 fr-col-md-6">
         <div class="fr-input-group">
-         <label class="fr-label" for="albert-model">Identifiant du modèle Albert (facultatif)<span class="fr-hint-text">Identifiant renvoyé par /v1/models, par exemple openweight-large</span></label>
+         <label class="fr-label" for="albert-model">Identifiant du modèle Albert (facultatif)<span class="fr-hint-text">Par défaut openweight-large, également utilisé si le champ est vide. Remplaçable par un autre identifiant renvoyé par /v1/models.</span></label>
          <input class="fr-input" id="albert-model" name="albert_model" type="text" autocomplete="off" spellcheck="false">
         </div>
        </div>

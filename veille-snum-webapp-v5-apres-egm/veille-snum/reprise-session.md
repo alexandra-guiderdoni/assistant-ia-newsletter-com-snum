@@ -30,7 +30,7 @@ Port **8766**, car le 8765 est capturé par le service worker de l'« Atelier de
 ```bash
 cd ~/Claude/git-hors-workflow/assistant-ia-newsletter-com-snum/veille-snum-webapp-v5-apres-egm/veille-snum
 # exporter ALBERT_API_KEY depuis ~/Claude/projets-heberges/starter-kit-chatbox/.env, puis :
-export ALBERT_MODEL=openweight-large SNUM_PORT=8766
+export SNUM_PORT=8766  # modèle par défaut : openweight-large, remplaçable par ALBERT_MODEL ou dans l'interface
 python3 -m veille_snum.web
 ```
 
@@ -39,8 +39,8 @@ Redémarrer après toute modification : Ctrl + C, flèche haut, Entrée.
 ## Tests
 
 ```bash
-python3 -m unittest discover -s tests     # 122 tests, OK
-node --test tests/test_storage.cjs        # 16 tests, OK
+python3 -m unittest discover -s tests     # 130 tests, OK
+node --test tests/test_storage.cjs        # 17 tests, OK
 ```
 
 ## Fait
@@ -48,6 +48,7 @@ node --test tests/test_storage.cjs        # 16 tests, OK
 - Collecte : 15 articles par site, 60 au total, budget de 180 s pour la découverte et de 360 s pour Albert, 2 appels Albert en parallèle (4 provoquaient des HTTP 429), sites anti-robots signalés.
 - Contrôle des résumés : détection de l'anglais champ par champ, suppression des tirets cadratins.
 - Sélection éditoriale : garder ou écarter, changer de thématique, repêcher un candidat, revalider le paquet avant téléchargement.
+- Modèle Albert : `openweight-large` par défaut, remplaçable par `ALBERT_MODEL` ou dans l'interface ; le jeton seul suffit.
 - Interface réécrite avec les composants DSFR 1.15.4 embarqués hors ligne (`veille_snum/dsfr/`, `MANIFEST.json`), avec une CSP stricte.
 - Grille et espacements vérifiés dans Chrome à 1280 px et à 606 px (statistiques sur 3 puis 2 colonnes, pas de défilement horizontal).
 - Paquets réels validés par `newsletter_mail.py verify` (`HTML_MAIL_DSFR_CANONIQUE_OK`).

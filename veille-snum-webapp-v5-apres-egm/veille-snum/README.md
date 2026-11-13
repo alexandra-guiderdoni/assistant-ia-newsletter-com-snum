@@ -29,7 +29,7 @@ Mesurée par une collecte réelle sans Albert, du 4 au 11 novembre 2026 : 49 can
 - Formulaires : mention « Sauf mention contraire, tous les champs sont obligatoires », champs Albert marqués « (facultatif) », validation différée des dates (contraintes posées au premier envoi, état `fr-input-group--error`, message `fr-message--error` relié par `aria-describedby`, `aria-invalid`, focus sur le premier champ en erreur, contrôle de l’ordre et des 61 jours) ; invite « Sélectionner une thématique » et état d’erreur pour le repêchage.
 - Suivi de l’avancement : `/api/progress` et message mis à jour pendant la collecte (« Recherche sur les sites : 5/13 », « Résumés Albert : 12/43 »).
 
-Tests : 122 Python et 16 Node réussis hors réseau. Recette avec une vraie clé Albert le 11 novembre 2026, avant parallélisme : 23 articles conformes au V519, 11 candidats non résumés faute de temps.
+Tests : 130 Python et 17 Node réussis hors réseau. Recette avec une vraie clé Albert le 11 novembre 2026, avant parallélisme : 23 articles conformes au V519, 11 candidats non résumés faute de temps.
 
 ## Démarrer
 
@@ -41,11 +41,11 @@ python3 -m veille_snum.web
 # puis ouvrir http://127.0.0.1:8765/
 ```
 
-Le formulaire fonctionne sans Albert et permet d'inspecter les sources et les candidats, puis de télécharger le rapport de collecte. Pour générer le JSON lors d’un lancement par double-clic, ouvrir « Connexion à Albert API » et saisir temporairement le jeton et le modèle ; le jeton n’est jamais inclus dans les rapports. Par défaut, il n’est pas enregistré et le champ est vidé après la collecte. La case à cocher de conservation localStorage est **désactivée par défaut par le serveur**, qui tente aussi d'effacer les anciennes entrées du stockage sous cette politique. Pour une démonstration personnelle avec une clé factice uniquement, lancer `SNUM_ALLOW_LOCALSTORAGE=1 python3 -m veille_snum.web`. L'enregistrement demeure explicite, en clair, et exige un navigateur prenant en charge la Web Locks API. Ne pas activer sur un poste institutionnel sans validation de sa politique de sécurité. **L'export V519 nécessite un modèle et une clé Albert**, fournis dans l’interface ou par variables d’environnement ; sans eux, le bouton de téléchargement reste désactivé.
+Le formulaire fonctionne sans Albert et permet d'inspecter les sources et les candidats, puis de télécharger le rapport de collecte. Pour générer le JSON lors d’un lancement par double-clic, ouvrir « Connexion à Albert API » et saisir temporairement le jeton ; le modèle `openweight-large` est prérempli et reste remplaçable. Le jeton n’est jamais inclus dans les rapports. Par défaut, il n’est pas enregistré et le champ est vidé après la collecte. La case à cocher de conservation localStorage est **désactivée par défaut par le serveur**, qui tente aussi d'effacer les anciennes entrées du stockage sous cette politique. Pour une démonstration personnelle avec une clé factice uniquement, lancer `SNUM_ALLOW_LOCALSTORAGE=1 python3 -m veille_snum.web`. L'enregistrement demeure explicite, en clair, et exige un navigateur prenant en charge la Web Locks API. Ne pas activer sur un poste institutionnel sans validation de sa politique de sécurité. **L'export V519 nécessite une clé Albert**, fournie dans l’interface ou par variable d’environnement ; sans elle, le bouton de téléchargement reste désactivé. Le modèle est choisi dans cet ordre : champ de l’interface, puis `ALBERT_MODEL`, puis `openweight-large`.
 
 ```bash
 export ALBERT_API_KEY='votre-jeton-personnel'
-export ALBERT_MODEL='identifiant-retourné-par-GET-/v1/models'
+export ALBERT_MODEL='identifiant-retourné-par-GET-/v1/models'  # facultatif, remplace openweight-large
 python3 -m veille_snum.web
 ```
 

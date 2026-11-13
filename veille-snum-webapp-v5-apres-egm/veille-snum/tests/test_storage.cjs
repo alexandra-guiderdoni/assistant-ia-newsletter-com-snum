@@ -30,7 +30,7 @@ async function load(storage = new Map(), failing = false, opts = {}) {
     localStorage:ls, Date, String, URL, Blob, setTimeout(){},
     navigator:{locks: opts.locks === false ? undefined : (opts.locks || {request(_key,_opts,cb){return Promise.resolve(cb());}})},
     window:{addEventListener(type, cb) {this.events[type]=cb;},events:{}},
-    fetch:async()=>({ok:true,json:async()=>({sources:Array(14),albert_configured:false,secret_persistence_enabled:opts.persistence !== false})}),
+    fetch:async()=>({ok:true,json:async()=>({sources:Array(14),albert_configured:false,secret_persistence_enabled:opts.persistence !== false,...(opts.info || {})})}),
   };
   vm.runInNewContext(script,ctx,{filename:'index.html'});
   await new Promise(resolve=>setImmediate(resolve));
@@ -232,4 +232,12 @@ test('V5 : désactivation serveur efface un secret antérieurement persisté',as
  assert.equal(shared.has(key),false);
  assert.equal(a.node('albert-key').value,'');
  assert.equal(a.node('remember-albert').disabled,true);
+});
+
+test('modèle prérempli par le serveur, sans écraser un modèle mémorisé',async()=>{
+ const a=await load(new Map(),false,{persistence:false,info:{albert_model:'openweight-large'}});await tick();
+ assert.equal(a.node('albert-model').value,'openweight-large');
+ const shared=new Map([[key,JSON.stringify({apiKey:'FAKE',model:'modele-test'})]]);
+ const b=await load(shared,false,{info:{albert_model:'openweight-large'}});await tick();
+ assert.equal(b.node('albert-model').value,'modele-test');
 });
