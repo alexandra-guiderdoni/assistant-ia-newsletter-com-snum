@@ -1,0 +1,204 @@
+{
+  "schema_version": "SNUM_PAQUET_RENDU_V519",
+  "edition_date": "2026-11-14",
+  "edition_date_long": "14 novembre 2026",
+  "window_start": "2026-11-13",
+  "window_end": "2026-11-14",
+  "articles": [
+    {
+      "id": "U01",
+      "rubric": "numerique",
+      "title": "Rémi, chef de projet de la plateforme d'apprentissage Éléa - Direction du numérique pour l'Éducation",
+      "source": "DINUM",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://numerique.gouv.fr/rejoignez-nous/les-visages-de-numeriquegouv/remi-chef-de-projet-de-la-plateforme-dapprentissage-elea-direction-du-numerique-pour-leducation/",
+      "fact": "Rémi Lefeuvre pilote la plateforme d’apprentissage Éléa, développée par la DNE, pour les personnels de l’Éducation nationale.",
+      "keywords": [
+        "plateforme Éléa",
+        "transformation numérique",
+        "éducation nationale",
+        "e‑learning"
+      ],
+      "takeaway": "Déployer une solution e‑learning nationale renforce la mission éducative du service public numérique.",
+      "snum_interest": "Intérêt pour la diffusion d’outils numériques éducatifs à l’échelle de l’État.",
+      "essential": true
+    },
+    {
+      "id": "U02",
+      "rubric": "numerique",
+      "title": "6 millions d'identifiants volés ont été récupérés par la police : comment savoir si vous êtes concerné ?",
+      "source": "01net",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://www.01net.com/actualites/6-millions-identifiants-voles-recuperes-police-verifiez-si-vous-etes-concerne.html",
+      "fact": "Europol a démantelé l’infrastructure de trois malwares, récupérant plus de 6 millions d’identifiants volés.",
+      "keywords": [
+        "Europol",
+        "malware",
+        "ransomware",
+        "identifiants volés",
+        "cybersécurité"
+      ],
+      "takeaway": "Opération Endgame renforce la lutte contre les rançongiciels et protège les données publiques.",
+      "snum_interest": "Renforcer la cybersécurité des services publics et prévenir les fuites d’identifiants.",
+      "essential": true
+    },
+    {
+      "id": "U03",
+      "rubric": "numerique",
+      "title": "Vincent Franceschini (Biomemory) : « Une fois dans l’ADN, l’information numérique ne peut plus être modifiée »",
+      "source": "IT for Business",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://www.itforbusiness.fr/biomemory-dna-shield-stockage-adn-109764",
+      "fact": "Biomemory lance DNA Shield, un service de stockage d’informations critiques dans l’ADN, offrant densité exceptionnelle et immuabilité.",
+      "keywords": [
+        "ADN",
+        "stockage de données",
+        "DNA Shield",
+        "Biomemory",
+        "immuabilité"
+      ],
+      "takeaway": "L’ADN permet un archivage ultra‑dense et durable des données publiques.",
+      "snum_interest": "Renforcer la souveraineté et la pérennité des archives numériques de l’État.",
+      "essential": true
+    },
+    {
+      "id": "U04",
+      "rubric": "numerique",
+      "title": "Lutte anti-cybercriminalité : Europol annonce 354 arrestations dans l'opération TorNado",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://www.journaldunet.com/business/1557959-europol-annonce-354-arrestations-dans-l-operation-tornado/",
+      "fact": "Europol a coordonné l’opération TorNado, aboutissant à 354 arrestations et d’importantes saisies de drogues, armes et argent.",
+      "keywords": [
+        "Europol",
+        "opération TorNado",
+        "cybercriminalité",
+        "dark web",
+        "arrestations"
+      ],
+      "takeaway": "Renforcer la cybersécurité et la coopération internationale reste crucial.",
+      "snum_interest": "Intérêt pour la prévention des cybermenaces et le partage d’informations entre administrations.",
+      "essential": false
+    },
+    {
+      "id": "U05",
+      "rubric": "numerique",
+      "title": "Une panne de Microsoft 365 paralyse les entreprises dans de nombreux pays",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://www.journaldunet.com/business/1557967-une-panne-de-microsoft-365-paralyse-des-organisations-dans-de-nombreux-pays/",
+      "fact": "Une panne majeure de Microsoft 365 a paralysé les administrations et services publics de plusieurs pays, bloquant messagerie et outils en ligne.",
+      "keywords": [
+        "Microsoft 365",
+        "panne",
+        "services publics",
+        "cloud",
+        "sécurité"
+      ],
+      "takeaway": "Les dépendances aux services cloud exposent la continuité des services publics.",
+      "snum_interest": "Renforcer la résilience des infrastructures numériques publiques face aux pannes cloud.",
+      "essential": false
+    },
+    {
+      "id": "U06",
+      "rubric": "ia",
+      "title": "Panne Microsoft : ChatGPT et Claude également touchés, et ils ne sont pas les seuls",
+      "source": "01net",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://www.01net.com/actualites/panne-microsoft-chatgpt-et-claude-egalement-touches-et-ils-ne-sont-pas-les-seuls.html",
+      "fact": "Une panne d’Exchange Online empêche les connecteurs Microsoft 365 de ChatGPT et Claude d’accéder aux e‑mails, agendas et SharePoint.",
+      "keywords": [
+        "panne Microsoft",
+        "ChatGPT",
+        "Claude",
+        "connecteurs IA",
+        "Microsoft 365"
+      ],
+      "takeaway": "Les IA dépendantes de services cloud sont vulnérables aux incidents d’infrastructure.",
+      "snum_interest": "Sensibiliser aux risques de dépendance aux fournisseurs cloud pour les services publics IA.",
+      "essential": false
+    },
+    {
+      "id": "U07",
+      "rubric": "rh",
+      "title": "Le Gouvernement propose des mesures pour augmenter le pouvoir d'achat de 1,3 million d'agents publics et ouvre cinq chantiers structurels en faveur de la fonction publique",
+      "source": "Presse Bercy",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://presse.economie.gouv.fr/le-gouvernement-propose-des-mesures-pour-augmenter-le-pouvoir-dachat-de-13-million-dagents-publics-et-ouvre-cinq-chantiers-structurels-en-faveur-de-la-fonction-publique/",
+      "fact": "Le gouvernement augmente le SMIC de 1,6 % dès décembre, profitant à 1,3 million d’agents publics, et ajoute des points d’indice aux moins bien rémunérés.",
+      "keywords": [
+        "pouvoir d'achat",
+        "agents publics",
+        "SMIC 1,6%",
+        "points d'indice",
+        "fonction publique"
+      ],
+      "takeaway": "Des mesures salariales ciblées pour soutenir le pouvoir d'achat des agents publics.",
+      "snum_interest": "Impact sur la motivation du personnel numérique et la capacité à déployer les projets digitaux.",
+      "essential": false
+    },
+    {
+      "id": "U08",
+      "rubric": "bercy",
+      "title": "Budget 2027 : le Sénat rabote le supplément familial de traitement et le temps partiel thérapeutique des fonctionnaires",
+      "source": "Acteurs publics",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://acteurspublics.fr/articles/budget-2027-le-senat-rabote-le-supplement-familial-de-traitement-et-le-temps-partiel-therapeutique-des-fonctionnaires/",
+      "fact": "Le Sénat propose de forfaitiser le supplément familial de traitement, visant une économie d’environ 250 M€ dans le budget 2027.",
+      "keywords": [
+        "supplément familial de traitement",
+        "budget 2027",
+        "économies publiques"
+      ],
+      "takeaway": "Réduction du SFT pourrait alléger les dépenses publiques, impactant surtout les hauts fonctionnaires.",
+      "snum_interest": "Impact sur le financement des projets numériques de l’État, priorité du SNUM.",
+      "essential": false
+    },
+    {
+      "id": "U09",
+      "rubric": "bercy",
+      "title": "Les réserves nettes de change",
+      "source": "Presse Bercy",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://presse.economie.gouv.fr/les-reserves-nettes-de-change-186829/",
+      "fact": "Les réserves nettes de change de l'État s'établissent à 353 952 M€ fin octobre 2026, soit une baisse de 10 796 M€ depuis septembre.",
+      "keywords": [
+        "réserves nettes",
+        "change",
+        "État",
+        "Bercy",
+        "FMI"
+      ],
+      "takeaway": "Les réserves nettes de change de l'État diminuent légèrement en octobre 2026.",
+      "snum_interest": "Suivi des réserves de change, indicateur de la santé financière de l'État.",
+      "essential": false
+    }
+  ],
+  "watch": [
+    {
+      "title": "Rubrique sans article : commande",
+      "summary": "Aucun article admissible établi pour cette rubrique."
+    },
+    {
+      "title": "Sources protégées contre les robots",
+      "summary": "Accès automatisé refusé, à couvrir autrement : Ministères économiques et financiers, Vie publique, Légifrance, Le Monde."
+    },
+    {
+      "title": "Source interne non traitée",
+      "summary": "La source métier interne exige une configuration privée : à compléter manuellement."
+    },
+    {
+      "title": "Découverte bornée",
+      "summary": "9299 URL découvertes n'ont pas été analysées (plafond ou budget temporel)."
+    }
+  ]
+}

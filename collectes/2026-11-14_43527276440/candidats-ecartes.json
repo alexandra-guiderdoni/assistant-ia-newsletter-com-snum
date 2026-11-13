@@ -1,0 +1,96 @@
+{
+  "schema_version": "SNUM_CANDIDATS_ECARTES_V1",
+  "edition_date": "2026-11-14",
+  "window_start": "2026-11-13",
+  "window_end": "2026-11-14",
+  "candidates": [
+    {
+      "title": "Campagne présidentielle : les hauts fonctionnaires engagés dans les écuries sous vigilance déontologique",
+      "source": "Acteurs publics",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://acteurspublics.fr/articles/campagne-presidentielle-les-hauts-fonctionnaires-engages-dans-les-ecuries-sous-vigilance-deontologique/",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    },
+    {
+      "title": "Mathilde, data scientist - Direction du numérique pour l'Éducation",
+      "source": "DINUM",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://numerique.gouv.fr/rejoignez-nous/les-visages-de-numeriquegouv/mathilde-da-cruz-data-scientist-direction-du-numerique-pour-leducation/",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    },
+    {
+      "title": "55 000 € pour une batterie d’occasion : Mercedes propose de remplacer un pack défectueux avec 300 000 km",
+      "source": "01net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.01net.com/actualites/55-000-euros-batterie-occasion-mercedes-propose-remplacer-pack-defectueux-modele-300-000-km.html",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    },
+    {
+      "title": "Après le scandale Nvidia, Washington envisage de nouvelles restrictions contre la Chine",
+      "source": "01net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.01net.com/actualites/apres-le-scandale-nvidia-washington-envisage-de-nouvelles-restrictions-contre-la-chine.html",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    },
+    {
+      "title": "Hugging Face perd son meilleur allié pour l'IA open source chez Nvidia, deux mois après le rachat",
+      "source": "01net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.01net.com/actualites/hugging-face-perd-son-meilleur-allie-pour-lia-open-source-chez-nvidia-deux-mois-apres-le-rachat.html",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    },
+    {
+      "title": "BYD a trouvé la solution pour simplifier à l'extrême la charge de votre voiture électrique : vous n'aurez même plus à sortir",
+      "source": "01net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.01net.com/actualites/la-solution-ultime-pour-simplifier-la-charge-de-votre-voiture-electrique-vous-naurez-meme-plus-a-sortir.html",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    },
+    {
+      "title": "Outlook, Hotmail, Live, MSN : des mails ont été bloqué pendant 4 jours, Microsoft annonce une mauvaise nouvelle",
+      "source": "01net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.01net.com/actualites/outlook-hotmail-live-msn-des-mails-ont-ete-bloque-pendant-4-jours-microsoft-annonce-une-mauvaise-nouvelle.html",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    },
+    {
+      "title": "Alice Huang était proche du plus important concurrent chinois de Nvidia",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.journaldunet.com/business/1557957-alice-huang-a-detenu-des-participations-dans-des-entreprises-ayant-beneficie-a-huawei/",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    },
+    {
+      "title": "Distribution : L'Autorité de la concurrence soupçonne l'alliance Aura de pratiques anticoncurrentielles",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.journaldunet.com/business/1557965-l-autorite-de-la-concurrence-soupconne-l-alliance-aura-de-pratiques-anticoncurrentielles/",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    },
+    {
+      "title": "L'ancien gouverneur de la Banque de France estime que la France peut rétablir la confiance des marchés",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.journaldunet.com/business/action-publique/1557961-christian-noyer-estime-que-la-france-peut-retablir-la-confiance-des-marches/",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    },
+    {
+      "title": "SpaceX va essayer de rattraper les deux étages de Starship",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.journaldunet.com/economie/industrie/1557963-spacex-va-essayer-de-rattraper-les-deux-etages-de-starship/",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    }
+  ]
+}
