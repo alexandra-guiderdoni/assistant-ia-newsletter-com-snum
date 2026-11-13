@@ -57,6 +57,7 @@ def lire_selection(texte):
         if (
             not isinstance(element, dict)
             or "url" not in element
+            or not isinstance(element["url"], str)
             or not set(element) <= {"url", "rubrique"}
         ):
             raise Refus(

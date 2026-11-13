@@ -354,7 +354,6 @@ class ResumesTests(unittest.TestCase):
             "https://exemple.test/article/veille-snum",
             URLS[0] + "?page=2",
             "",
-            None,
         ):
             with self.subTest(url=url):
                 self.refus(selection((URLS[1], ""), (url, "")), "absente des titres")
@@ -381,6 +380,10 @@ class ResumesTests(unittest.TestCase):
             '"' + URLS[0] + '"',
             json.dumps([URLS[0]]),
             json.dumps([{"url": URLS[0], "rubrique": "", "autre": 1}]),
+            # Relecture indépendante : une adresse non textuelle levait TypeError.
+            json.dumps([{"url": [1], "rubrique": ""}]),
+            json.dumps([{"url": {"a": 1}, "rubrique": ""}]),
+            json.dumps([{"url": None, "rubrique": ""}]),
         ):
             with self.subTest(texte=texte):
                 self.refus(texte, "Sélection")
