@@ -33,13 +33,13 @@ Tâche `.github/workflows/test-acces-albert-github.yml`, branche `config/test-al
    - GitHub : 147/148 pages reçues, 45 candidats, 1 source sans réserve, 8 partielles, 9 298 adresses non visitées, 0 erreur de plan de site.
    - Mac, collecte du même soir à 21 h 29 : 147/148, 45, 1, 8, 9 297, 0.
    - Sources bloquées sur GitHub : Ministères économiques et financiers, Vie publique, Légifrance, Le Monde. Les totaux du Mac étant identiques, elles l'étaient très probablement aussi en local ; la comparaison source par source n'a pas été faite.
-3. **Appel Albert authentifié** ([run 43506200123](https://github.com/alexandra-guiderdoni/assistant-ia-newsletter-com-snum/actions/runs/43506200123)) : premier candidat DINUM de la période, « Achats publics : un premier guide pratique pour accompagner les administrations dans leurs achats d'IA ». Modèle `openweight-large`, réponse validée par `validate_summary` à la première tentative, en 11,8 s, thématique `commande`.
+3. **Appel Albert authentifié** ([run 43506200123](https://github.com/alexandra-guiderdoni/assistant-ia-newsletter-com-snum/actions/runs/43506200123)) : premier candidat DINUM de la période, « Achats publics : un premier guide pratique pour accompagner les administrations dans leurs achats d'IA ». Modèle `openweight-large`, réponse validée par `validate_summary` à la première tentative, en 11,8 s, thématique `commande`. Reproduit au [run 43506702724](https://github.com/alexandra-guiderdoni/assistant-ia-newsletter-com-snum/actions/runs/43506702724) : 12,1 s, première tentative.
 
 Témoins négatifs exécutés en local avant l'envoi : sans secret, la tâche s'arrête sur « secret ALBERT_API_KEY absent » ; avec un jeton factice, Albert répond HTTP 401.
 
 ## Limites de ces preuves
 
-- Un seul appel Albert a été fait depuis GitHub. Les quotas et le débit sur 45 candidats, environ cinq minutes en local, n'y sont pas mesurés.
+- Deux appels Albert seulement ont été faits depuis GitHub, sur le même candidat. Les quotas et le débit sur 45 candidats, environ cinq minutes en local, n'y sont pas mesurés.
 - Une seule collecte complète a tourné sur GitHub. Un site peut filtrer plus tard les adresses de GitHub.
 - GitHub a exécuté Python 3.14.4, le Mac Python 3.12. La version définitive doit fixer la version de Python.
 
