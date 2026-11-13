@@ -1,0 +1,46 @@
+{
+  "schema_version": "SNUM_PAQUET_RENDU_V519",
+  "edition_date": "2026-11-05",
+  "edition_date_long": "5 novembre 2026",
+  "window_start": "2026-11-14",
+  "window_end": "2026-11-14",
+  "articles": [],
+  "watch": [
+    {
+      "title": "Rubrique sans article : numerique",
+      "summary": "Aucun article admissible établi pour cette rubrique."
+    },
+    {
+      "title": "Rubrique sans article : ia",
+      "summary": "Aucun article admissible établi pour cette rubrique."
+    },
+    {
+      "title": "Rubrique sans article : commande",
+      "summary": "Aucun article admissible établi pour cette rubrique."
+    },
+    {
+      "title": "Rubrique sans article : rh",
+      "summary": "Aucun article admissible établi pour cette rubrique."
+    },
+    {
+      "title": "Rubrique sans article : bercy",
+      "summary": "Aucun article admissible établi pour cette rubrique."
+    },
+    {
+      "title": "Collecte limitée",
+      "summary": "Moins de cinq articles admissibles ont été établis."
+    },
+    {
+      "title": "Sources protégées contre les robots",
+      "summary": "Accès automatisé refusé, à couvrir autrement : Ministères économiques et financiers, Vie publique, Légifrance, Le Monde."
+    },
+    {
+      "title": "Source interne non traitée",
+      "summary": "La source métier interne exige une configuration privée : à compléter manuellement."
+    },
+    {
+      "title": "Découverte bornée",
+      "summary": "9295 URL découvertes n'ont pas été analysées (plafond ou budget temporel)."
+    }
+  ]
+}

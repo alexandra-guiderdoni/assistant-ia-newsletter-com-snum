@@ -1,0 +1,1038 @@
+{
+  "status": "partial",
+  "edition_date": "2026-11-05",
+  "window_start": "2026-11-14",
+  "window_end": "2026-11-14",
+  "started_at_utc": "2026-11-13T23:49:22.388327+00:00",
+  "collector_version": "6.0-experimental",
+  "collector_sha256": "251990e26cb325c95ca04b1b805c59545febd9e7cbd24d9abe9fe542539c455c",
+  "sources": [
+    {
+      "id": "economie",
+      "label": "Ministères économiques et financiers",
+      "status": "blocked",
+      "discovered": 0,
+      "attempted": 0,
+      "opened": 0,
+      "checked": 0,
+      "eligible": 0,
+      "editorial_excluded": 0,
+      "technical_errors": 0,
+      "robots_denied": 0,
+      "not_visited": 0,
+      "discovery_errors": 0,
+      "sitemap_skipped": 0,
+      "notes": [
+        "Protection anti-robot du site : accès automatisé refusé, aucune page lue (ValueError)"
+      ]
+    },
+    {
+      "id": "numerique",
+      "label": "DINUM",
+      "status": "partial",
+      "discovered": 313,
+      "attempted": 15,
+      "opened": 15,
+      "checked": 15,
+      "eligible": 0,
+      "editorial_excluded": 15,
+      "technical_errors": 0,
+      "robots_denied": 0,
+      "not_visited": 298,
+      "discovery_errors": 0,
+      "sitemap_skipped": 259,
+      "notes": [
+        "Sitemap non visité : plafond de liens sitemap (×259)",
+        "Budget par source atteint : 298 URL non tentées"
+      ]
+    },
+    {
+      "id": "vie-publique",
+      "label": "Vie publique",
+      "status": "blocked",
+      "discovered": 0,
+      "attempted": 0,
+      "opened": 0,
+      "checked": 0,
+      "eligible": 0,
+      "editorial_excluded": 0,
+      "technical_errors": 0,
+      "robots_denied": 0,
+      "not_visited": 0,
+      "discovery_errors": 0,
+      "sitemap_skipped": 0,
+      "notes": [
+        "Protection anti-robot du site : accès automatisé refusé, aucune page lue (page de vérification JavaScript)"
+      ]
+    },
+    {
+      "id": "cnil",
+      "label": "CNIL",
+      "status": "partial",
+      "discovered": 311,
+      "attempted": 15,
+      "opened": 15,
+      "checked": 15,
+      "eligible": 0,
+      "editorial_excluded": 15,
+      "technical_errors": 0,
+      "robots_denied": 0,
+      "not_visited": 296,
+      "discovery_errors": 0,
+      "sitemap_skipped": 1482,
+      "notes": [
+        "Sitemap non visité : plafond de liens sitemap (×1482)",
+        "Budget par source atteint : 296 URL non tentées"
+      ]
+    },
+    {
+      "id": "legifrance",
+      "label": "Légifrance",
+      "status": "blocked",
+      "discovered": 0,
+      "attempted": 0,
+      "opened": 0,
+      "checked": 0,
+      "eligible": 0,
+      "editorial_excluded": 0,
+      "technical_errors": 0,
+      "robots_denied": 0,
+      "not_visited": 0,
+      "discovery_errors": 0,
+      "sitemap_skipped": 0,
+      "notes": [
+        "Protection anti-robot du site : accès automatisé refusé, aucune page lue (ValueError)"
+      ]
+    },
+    {
+      "id": "presse-economie",
+      "label": "Presse Bercy",
+      "status": "partial",
+      "discovered": 909,
+      "attempted": 15,
+      "opened": 15,
+      "checked": 15,
+      "eligible": 0,
+      "editorial_excluded": 15,
+      "technical_errors": 0,
+      "robots_denied": 0,
+      "not_visited": 894,
+      "discovery_errors": 0,
+      "sitemap_skipped": 22,
+      "notes": [
+        "Sitemap non visité : plafond de sitemaps enfants (×22)",
+        "Budget par source atteint : 894 URL non tentées"
+      ]
+    },
+    {
+      "id": "acteurs-publics",
+      "label": "Acteurs publics",
+      "status": "partial",
+      "discovered": 305,
+      "attempted": 15,
+      "opened": 15,
+      "checked": 15,
+      "eligible": 0,
+      "editorial_excluded": 15,
+      "technical_errors": 0,
+      "robots_denied": 0,
+      "not_visited": 290,
+      "discovery_errors": 0,
+      "sitemap_skipped": 748,
+      "notes": [
+        "Sitemap non visité : plafond de liens sitemap (×748)",
+        "Budget par source atteint : 290 URL non tentées"
+      ]
+    },
+    {
+      "id": "le-monde",
+      "label": "Le Monde",
+      "status": "blocked",
+      "discovered": 615,
+      "attempted": 15,
+      "opened": 15,
+      "checked": 15,
+      "eligible": 0,
+      "editorial_excluded": 15,
+      "technical_errors": 0,
+      "robots_denied": 0,
+      "not_visited": 600,
+      "discovery_errors": 0,
+      "sitemap_skipped": 0,
+      "notes": [
+        "Budget par source atteint : 600 URL non tentées",
+        "Protection anti-robot du site : accès automatisé refusé, aucune page lue (pages remplacées par une vérification)"
+      ]
+    },
+    {
+      "id": "modernisation",
+      "label": "Modernisation de l'action publique",
+      "status": "partial",
+      "discovered": 311,
+      "attempted": 15,
+      "opened": 15,
+      "checked": 15,
+      "eligible": 0,
+      "editorial_excluded": 15,
+      "technical_errors": 0,
+      "robots_denied": 0,
+      "not_visited": 296,
+      "discovery_errors": 0,
+      "sitemap_skipped": 809,
+      "notes": [
+        "Sitemap non visité : plafond de liens sitemap (×809)",
+        "Budget par source atteint : 296 URL non tentées"
+      ]
+    },
+    {
+      "id": "source-interne",
+      "label": "Source métier interne, configuration privée requise",
+      "status": "skipped_internal",
+      "discovered": 0,
+      "attempted": 0,
+      "opened": 0,
+      "checked": 0,
+      "eligible": 0,
+      "editorial_excluded": 0,
+      "technical_errors": 0,
+      "robots_denied": 0,
+      "not_visited": 0,
+      "discovery_errors": 0,
+      "sitemap_skipped": 0,
+      "notes": [
+        "Réseau métier et autorisation à traiter séparément"
+      ]
+    },
+    {
+      "id": "itforbusiness",
+      "label": "IT for Business",
+      "status": "partial",
+      "discovered": 454,
+      "attempted": 15,
+      "opened": 15,
+      "checked": 15,
+      "eligible": 0,
+      "editorial_excluded": 15,
+      "technical_errors": 0,
+      "robots_denied": 0,
+      "not_visited": 439,
+      "discovery_errors": 0,
+      "sitemap_skipped": 9328,
+      "notes": [
+        "Sitemap non visité : plafond de liens sitemap (×9328)",
+        "Budget par source atteint : 439 URL non tentées"
+      ]
+    },
+    {
+      "id": "next",
+      "label": "Next",
+      "status": "partial",
+      "discovered": 6083,
+      "attempted": 15,
+      "opened": 14,
+      "checked": 14,
+      "eligible": 0,
+      "editorial_excluded": 15,
+      "technical_errors": 0,
+      "robots_denied": 0,
+      "not_visited": 6068,
+      "discovery_errors": 0,
+      "sitemap_skipped": 35,
+      "notes": [
+        "Sitemap non visité : plafond de sitemaps enfants (×35)",
+        "Budget par source atteint : 6068 URL non tentées"
+      ]
+    },
+    {
+      "id": "01net",
+      "label": "01net",
+      "status": "partial",
+      "discovered": 129,
+      "attempted": 15,
+      "opened": 15,
+      "checked": 15,
+      "eligible": 0,
+      "editorial_excluded": 15,
+      "technical_errors": 0,
+      "robots_denied": 0,
+      "not_visited": 114,
+      "discovery_errors": 0,
+      "sitemap_skipped": 0,
+      "notes": [
+        "Budget par source atteint : 114 URL non tentées"
+      ]
+    },
+    {
+      "id": "jdn",
+      "label": "Journal du Net",
+      "status": "checked",
+      "discovered": 13,
+      "attempted": 13,
+      "opened": 13,
+      "checked": 13,
+      "eligible": 0,
+      "editorial_excluded": 13,
+      "technical_errors": 0,
+      "robots_denied": 0,
+      "not_visited": 0,
+      "discovery_errors": 0,
+      "sitemap_skipped": 0,
+      "notes": []
+    }
+  ],
+  "candidates": [],
+  "excluded": [
+    {
+      "url": "https://numerique.gouv.fr/actualites/donnees-de-sante-de-la-migration-vers-un-cloud-souverain-a-la-preparation-du-cadre-europeen/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "numerique"
+    },
+    {
+      "url": "https://numerique.gouv.fr/agenda/hackathon-desinformation-souverainete-democratique-adopt-ai-2026/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "numerique"
+    },
+    {
+      "url": "https://numerique.gouv.fr/rejoignez-nous/les-visages-de-numeriquegouv/claire-raynal-cheffe-de-bureau-en-charge-des-operateurs-au-sein-de-lacmoss/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "numerique"
+    },
+    {
+      "url": "https://numerique.gouv.fr/rejoignez-nous/les-visages-de-numeriquegouv/iza-marfisi-enseignante-chercheuse-laboratoire-dinformatique-universite-du-mans/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "numerique"
+    },
+    {
+      "url": "https://numerique.gouv.fr/rejoignez-nous/les-visages-de-numeriquegouv/mathilde-da-cruz-data-scientist-direction-du-numerique-pour-leducation/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "numerique"
+    },
+    {
+      "url": "https://numerique.gouv.fr/rejoignez-nous/les-visages-de-numeriquegouv/remi-chef-de-projet-de-la-plateforme-dapprentissage-elea-direction-du-numerique-pour-leducation/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "numerique"
+    },
+    {
+      "url": "https://numerique.gouv.fr/rejoignez-nous/les-visages-de-numeriquegouv/sarah-bouaffre-administratrice-reseau-et-securit%C3%A9-universite-de-bordeaux/",
+      "reason": "CANONIQUE_DIVERGENTE_NON_VERIFIEE",
+      "source": "numerique"
+    },
+    {
+      "url": "https://www.numerique.gouv.fr/actualites/achats-publics-guide-pratique-achats-intelligence-artificielle/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "numerique"
+    },
+    {
+      "url": "https://www.numerique.gouv.fr/actualites/portefeuille-europeen-identite-numerique-eu-digital-identity-wallets/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "numerique"
+    },
+    {
+      "url": "https://www.numerique.gouv.fr/actualites/",
+      "reason": "DATE_PUBLICATION_ABSENTE",
+      "source": "numerique"
+    },
+    {
+      "url": "https://www.numerique.gouv.fr/actualites/ia-etat-experimentations-aux-usages/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "numerique"
+    },
+    {
+      "url": "https://www.numerique.gouv.fr/intelligence-artificielle/",
+      "reason": "DATE_PUBLICATION_ABSENTE",
+      "source": "numerique"
+    },
+    {
+      "url": "https://www.numerique.gouv.fr/rejoignez-nous/les-visages-de-numeriquegouv/ishan-chef-du-departement-intelligence-artificielle-dans-letat-dinum/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "numerique"
+    },
+    {
+      "url": "https://www.numerique.gouv.fr/accessibilit%C3%A9/",
+      "reason": "CANONIQUE_DIVERGENTE_NON_VERIFIEE",
+      "source": "numerique"
+    },
+    {
+      "url": "https://www.numerique.gouv.fr/agents/",
+      "reason": "DATE_PUBLICATION_ABSENTE",
+      "source": "numerique"
+    },
+    {
+      "url": "https://www.cnil.fr/fr/actualite-du-cepd-adequation-de-la-coree-du-sud-versions-finales-des-bcr-st-et-action-coordonnee-sur",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "cnil"
+    },
+    {
+      "url": "https://www.cnil.fr/fr/air2026",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "cnil"
+    },
+    {
+      "url": "https://www.cnil.fr/fr/actualite",
+      "reason": "DATE_PUBLICATION_ABSENTE",
+      "source": "cnil"
+    },
+    {
+      "url": "https://www.cnil.fr/fr/mes-demarches/les-droits-pour-maitriser-vos-donnees-personnelles",
+      "reason": "DATE_PUBLICATION_ABSENTE",
+      "source": "cnil"
+    },
+    {
+      "url": "https://www.cnil.fr/fr/vigilance-accompagnement-violation-de-donnees",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "cnil"
+    },
+    {
+      "url": "https://www.cnil.fr/fr/audeladelecran",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "cnil"
+    },
+    {
+      "url": "https://www.cnil.fr/fr/sanctions-cybersecurite-collectivites-territoriales",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "cnil"
+    },
+    {
+      "url": "https://www.cnil.fr/fr/tag/Num%C3%A9rique%2Badolescent",
+      "reason": "DATE_PUBLICATION_ABSENTE",
+      "source": "cnil"
+    },
+    {
+      "url": "https://www.cnil.fr/fr/tag/Violation%2Bde%2Bdonn%C3%A9es",
+      "reason": "DATE_PUBLICATION_ABSENTE",
+      "source": "cnil"
+    },
+    {
+      "url": "https://www.cnil.fr/fr/agir/saisir-la-cnil",
+      "reason": "DATE_PUBLICATION_ABSENTE",
+      "source": "cnil"
+    },
+    {
+      "url": "https://www.cnil.fr/fr/cepd-privacy-for-kids",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "cnil"
+    },
+    {
+      "url": "https://www.cnil.fr/fr/cnil-direct?visiteur=part",
+      "reason": "CANONIQUE_DIVERGENTE_NON_VERIFIEE",
+      "source": "cnil"
+    },
+    {
+      "url": "https://www.cnil.fr/fr/fantomapp-lapplication-de-la-cnil-pour-se-proteger-sur-les-reseaux-sociaux",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "cnil"
+    },
+    {
+      "url": "https://www.cnil.fr/fr/lunettes-connectees-appel-a-la-vigilance",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "cnil"
+    },
+    {
+      "url": "https://www.cnil.fr/fr/rejeu-de-session-vos-droits",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "cnil"
+    },
+    {
+      "url": "https://presse.economie.gouv.fr/le-gouvernement-propose-des-mesures-pour-augmenter-le-pouvoir-dachat-de-13-million-dagents-publics-et-ouvre-cinq-chantiers-structurels-en-faveur-de-la-fonction-publique/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "presse-economie"
+    },
+    {
+      "url": "https://presse.economie.gouv.fr/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "presse-economie"
+    },
+    {
+      "url": "https://presse.economie.gouv.fr/les-reserves-nettes-de-change-186829/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "presse-economie"
+    },
+    {
+      "url": "https://presse.economie.gouv.fr/nar-deplacement-de-catherine-vautrin-et-sebastien-martin-dans-le-lot-vendredi-13-novembre-2026/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "presse-economie"
+    },
+    {
+      "url": "https://presse.economie.gouv.fr/nar-deplacement-de-sebastien-martin-a-la-14e-edition-du-mif-expo-le-salon-du-made-in-france-samedi-14-novembre-2026/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "presse-economie"
+    },
+    {
+      "url": "https://presse.economie.gouv.fr/nar-semaine-de-lindustrie-deplacement-de-sebastien-martin-dans-le-tarn-vendredi-13-novembre-2026/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "presse-economie"
+    },
+    {
+      "url": "https://presse.economie.gouv.fr/plan-de-relance-europeen-versement-de-la-derniere-subvention-pour-la-france/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "presse-economie"
+    },
+    {
+      "url": "https://presse.economie.gouv.fr/plus-de-40-tonnes-de-tabacs-saisies-en-une-semaine-david-amiel-presente-les-resultats-exceptionnels-de-loperation-colbert-iv/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "presse-economie"
+    },
+    {
+      "url": "https://presse.economie.gouv.fr/?s=+&ministre=le-ministere",
+      "reason": "DATE_PUBLICATION_ABSENTE",
+      "source": "presse-economie"
+    },
+    {
+      "url": "https://presse.economie.gouv.fr/?s=+&thematique=numerique",
+      "reason": "DATE_PUBLICATION_ABSENTE",
+      "source": "presse-economie"
+    },
+    {
+      "url": "https://presse.economie.gouv.fr/?s=+&thematique=fonction-publique",
+      "reason": "DATE_PUBLICATION_ABSENTE",
+      "source": "presse-economie"
+    },
+    {
+      "url": "https://presse.economie.gouv.fr/?s=+&ministre=anne-le-henanff",
+      "reason": "DATE_PUBLICATION_ABSENTE",
+      "source": "presse-economie"
+    },
+    {
+      "url": "https://presse.economie.gouv.fr/?s=+&ministre=david-amiel",
+      "reason": "DATE_PUBLICATION_ABSENTE",
+      "source": "presse-economie"
+    },
+    {
+      "url": "https://presse.economie.gouv.fr/?s=+&ministre=maud-bregeon",
+      "reason": "DATE_PUBLICATION_ABSENTE",
+      "source": "presse-economie"
+    },
+    {
+      "url": "https://presse.economie.gouv.fr/?s=+&ministre=roland-lescure-ministres",
+      "reason": "DATE_PUBLICATION_ABSENTE",
+      "source": "presse-economie"
+    },
+    {
+      "url": "https://acteurspublics.fr/articles/a-bercy-des-hauts-fonctionnaires-critiquent-le-manque-de-transparence-autour-de-lindividualisation-de-leurs-primes/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "acteurs-publics"
+    },
+    {
+      "url": "https://acteurspublics.fr/articles/intelligence-artificielle-education-nationale-collectivites/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "acteurs-publics"
+    },
+    {
+      "url": "https://acteurspublics.fr/articles/pouvoir-dachat-les-syndicats-de-la-fonction-publique-recus-a-matignon-sans-grandes-illusions/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "acteurs-publics"
+    },
+    {
+      "url": "https://acteurspublics.fr/articles/a-la-justice-une-nouvelle-gouvernance-numerique-a-plusieurs-etages/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "acteurs-publics"
+    },
+    {
+      "url": "https://acteurspublics.fr/articles/budget-2027-le-senat-rabote-le-supplement-familial-de-traitement-et-le-temps-partiel-therapeutique-des-fonctionnaires/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "acteurs-publics"
+    },
+    {
+      "url": "https://acteurspublics.fr/articles/campagne-presidentielle-les-hauts-fonctionnaires-engages-dans-les-ecuries-sous-vigilance-deontologique/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "acteurs-publics"
+    },
+    {
+      "url": "https://acteurspublics.fr/articles/cyberattaques-contre-letat-apres-la-crise-de-lete-une-accalmie-encore-fragile/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "acteurs-publics"
+    },
+    {
+      "url": "https://acteurspublics.fr/articles/fonction-publique-cumul-des-mandats-protection-des-agents/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "acteurs-publics"
+    },
+    {
+      "url": "https://acteurspublics.fr/articles/fonction-publique-pres-de-15-millions-deuros-economises-sur-laction-sociale-interministerielle-en-2026/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "acteurs-publics"
+    },
+    {
+      "url": "https://acteurspublics.fr/articles/liberte-dexpression-avant-la-presidentielle-ladministration-actualise-les-regles-du-jeu-pour-les-agents-de-la-fonction-publique/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "acteurs-publics"
+    },
+    {
+      "url": "https://acteurspublics.fr/articles/promotion-penitentiaire-bercy-quoi-de-neuf-au-jo-cette-semaine/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "acteurs-publics"
+    },
+    {
+      "url": "https://acteurspublics.fr/articles/recrutement-des-professeurs-des-universites-le-classement-par-letablissement-ne-suffit-pas-a-garantir-une-nomination/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "acteurs-publics"
+    },
+    {
+      "url": "https://acteurspublics.fr/articles/salaires-dans-la-fonction-publique-les-syndicats-repartent-bredouille-de-leur-rencontre-avec-le-premier-ministre/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "acteurs-publics"
+    },
+    {
+      "url": "https://acteurspublics.fr/articles/ecole-une-gouvernance-renouvelee-pour-faire-face-aux-realites-actuelles/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "acteurs-publics"
+    },
+    {
+      "url": "https://acteurspublics.fr/articles/immobilier-de-letat-ladministration-mise-davantage-sur-la-location-face-a-lessoufflement-des-ventes/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "acteurs-publics"
+    },
+    {
+      "url": "https://www.lemonde.fr/economie/article/2026/11/13/la-panne-de-microsoft-alerte-entreprises-et-salaries-sur-leur-dependance-aux-outils-numeriques-on-a-tous-un-peu-ete-dans-le-meme-bateau-que-nos-clients_6809369_3234.html",
+      "reason": "PAGE_VERIFICATION_OU_CAPTCHA",
+      "source": "le-monde"
+    },
+    {
+      "url": "https://www.lemonde.fr/economie/article/2026/11/13/le-marche-mondial-du-petrole-devrait-redevenir-excedentaire-au-dernier-trimestre-selon-l-agence-internationale-de-l-energie_6809326_3234.html",
+      "reason": "PAGE_VERIFICATION_OU_CAPTCHA",
+      "source": "le-monde"
+    },
+    {
+      "url": "https://www.lemonde.fr/international/article/2026/11/13/nvidia-le-secretaire-au-tresor-des-etats-unis-rejette-sur-le-ministere-du-commerce-la-responsabilite-de-la-fuite-des-puces-vers-la-chine_6809341_3210.html",
+      "reason": "PAGE_VERIFICATION_OU_CAPTCHA",
+      "source": "le-monde"
+    },
+    {
+      "url": "https://www.lemonde.fr/pixels/article/2026/11/13/avec-le-mouvement-lyceen-le-monde-numerique-a-permis-de-nouvelles-formes-de-reel_6809282_4408996.html",
+      "reason": "PAGE_VERIFICATION_OU_CAPTCHA",
+      "source": "le-monde"
+    },
+    {
+      "url": "https://www.lemonde.fr/politique/article/2026/11/13/les-effets-de-la-hausse-du-smic-sur-le-marche-du-travail-suscitent-des-interrogations_6809363_823448.html",
+      "reason": "PAGE_VERIFICATION_OU_CAPTCHA",
+      "source": "le-monde"
+    },
+    {
+      "url": "https://www.lemonde.fr/societe/article/2026/11/12/trois-fausses-alertes-a-la-bombe-signalees-jeudi-matin-dans-des-etablissements-scolaires-en-france-selon-le-ministere-de-l-education-nationale_6809119_3224.html",
+      "reason": "PAGE_VERIFICATION_OU_CAPTCHA",
+      "source": "le-monde"
+    },
+    {
+      "url": "https://www.lemonde.fr/actualite-medias/article/2026/11/11/christophe-gleizes-journaliste-detenu-en-algerie-depuis-500-jours-rsf-organise-un-match-solidaire-pour-appeler-a-sa-liberation_6808956_3236.html",
+      "reason": "PAGE_VERIFICATION_OU_CAPTCHA",
+      "source": "le-monde"
+    },
+    {
+      "url": "https://www.lemonde.fr/actualite-medias/video/2026/11/11/christophe-gleizes-plusieurs-personnalites-rassemblees-pour-soutenir-le-journaliste-detenu-depuis-500-jours_6809026_3236.html",
+      "reason": "PAGE_VERIFICATION_OU_CAPTCHA",
+      "source": "le-monde"
+    },
+    {
+      "url": "https://www.lemonde.fr/campus/article/2026/11/12/avis-de-tempete-sur-les-ecoles-de-commerce-certaines-se-trouvent-quasiment-au-bord-du-precipice_6809122_4401467.html",
+      "reason": "PAGE_VERIFICATION_OU_CAPTCHA",
+      "source": "le-monde"
+    },
+    {
+      "url": "https://www.lemonde.fr/economie/article/2026/11/12/jensen-huang-patron-emblematique-de-nvidia-et-parrain-de-l-ia-demis-de-ses-fonctions_6809106_3234.html",
+      "reason": "PAGE_VERIFICATION_OU_CAPTCHA",
+      "source": "le-monde"
+    },
+    {
+      "url": "https://www.lemonde.fr/guides-d-achat/article/2026/11/13/les-meilleurs-balais-vapeur_6596301_5306572.html",
+      "reason": "PAGE_VERIFICATION_OU_CAPTCHA",
+      "source": "le-monde"
+    },
+    {
+      "url": "https://www.lemonde.fr/idees/article/2026/11/12/le-plan-de-relance-agricole-laisse-les-eleveurs-seuls-face-a-une-transformation-qui-en-realite-a-deja-commence_6809075_3232.html",
+      "reason": "PAGE_VERIFICATION_OU_CAPTCHA",
+      "source": "le-monde"
+    },
+    {
+      "url": "https://www.lemonde.fr/international/article/2026/11/13/l-allemagne-renforce-ses-services-de-renseignement-face-a-la-menace-russe-et-aux-cyberattaques_6809331_3210.html",
+      "reason": "PAGE_VERIFICATION_OU_CAPTCHA",
+      "source": "le-monde"
+    },
+    {
+      "url": "https://www.lemonde.fr/intimites/article/2026/11/13/comment-consoler-son-enfant-lorsque-le-bisou-magique-ne-marche-plus_6809346_6190330.html",
+      "reason": "PAGE_VERIFICATION_OU_CAPTCHA",
+      "source": "le-monde"
+    },
+    {
+      "url": "https://www.lemonde.fr/m-le-mag/article/2026/11/13/gaspard-de-monclin-le-nouveau-loup-de-la-presse-eco-qui-mise-a-fond-sur-l-ia_6809274_4500055.html",
+      "reason": "PAGE_VERIFICATION_OU_CAPTCHA",
+      "source": "le-monde"
+    },
+    {
+      "url": "https://www.modernisation.gouv.fr/actualites",
+      "reason": "DATE_PUBLICATION_ABSENTE",
+      "source": "modernisation"
+    },
+    {
+      "url": "https://www.modernisation.gouv.fr/actualites/pour-ameliorer-les-services-publics-il-faut-partir-des-besoins-du-terrain",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "modernisation"
+    },
+    {
+      "url": "https://www.modernisation.gouv.fr/actualites/comment-creer-ou-simplifier-des-formulaires-administratifs",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "modernisation"
+    },
+    {
+      "url": "https://www.modernisation.gouv.fr/actualites/laccueil-en-msa-un-cadre-commun-des-reponses-adaptees-aux-territoires",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "modernisation"
+    },
+    {
+      "url": "https://www.modernisation.gouv.fr/actualites/terratis-innove-dans-la-lutte-contre-le-moustique-tigre",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "modernisation"
+    },
+    {
+      "url": "https://www.modernisation.gouv.fr/publications",
+      "reason": "DATE_PUBLICATION_ABSENTE",
+      "source": "modernisation"
+    },
+    {
+      "url": "https://www.modernisation.gouv.fr/publications/connaitre-les-modes-dacces-aux-services-publics-et-leurs-evolutions",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "modernisation"
+    },
+    {
+      "url": "https://www.modernisation.gouv.fr/publications/france-experimentation-quand-ladministration-accompagne-les-innovations-sur-le-terrain",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "modernisation"
+    },
+    {
+      "url": "https://www.modernisation.gouv.fr/publications/lassistant-ia-bilan-de-lexperimentation-menee-aupres-des-agents",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "modernisation"
+    },
+    {
+      "url": "https://www.modernisation.gouv.fr/accompagner-les-administrations/laboratoires-dinnovation-publique/design-de-services-publics",
+      "reason": "DATE_PUBLICATION_ABSENTE",
+      "source": "modernisation"
+    },
+    {
+      "url": "https://www.modernisation.gouv.fr/campus-de-la-transformation-publique",
+      "reason": "DATE_PUBLICATION_ABSENTE",
+      "source": "modernisation"
+    },
+    {
+      "url": "https://www.modernisation.gouv.fr/accompagner-les-administrations/agence-de-conseil-interne-de-letat",
+      "reason": "DATE_PUBLICATION_ABSENTE",
+      "source": "modernisation"
+    },
+    {
+      "url": "https://www.modernisation.gouv.fr/accompagner-les-administrations/agence-de-conseil-interne-de-letat/excellence-administrative",
+      "reason": "DATE_PUBLICATION_ABSENTE",
+      "source": "modernisation"
+    },
+    {
+      "url": "https://www.modernisation.gouv.fr/accompagner-les-administrations/laboratoires-dinnovation-publique/laboratoires-interministeriels",
+      "reason": "DATE_PUBLICATION_ABSENTE",
+      "source": "modernisation"
+    },
+    {
+      "url": "https://www.modernisation.gouv.fr/accompagner-les-administrations/laboratoires-dinnovation-publique/sciences-comportementales",
+      "reason": "DATE_PUBLICATION_ABSENTE",
+      "source": "modernisation"
+    },
+    {
+      "url": "https://www.itforbusiness.fr/format/news",
+      "reason": "DATE_PUBLICATION_ABSENTE",
+      "source": "itforbusiness"
+    },
+    {
+      "url": "https://www.itforbusiness.fr/conformite-numerique-garance-mathias-levier-croissance-108192",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "itforbusiness"
+    },
+    {
+      "url": "https://www.itforbusiness.fr/biomemory-dna-shield-stockage-adn-109764",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "itforbusiness"
+    },
+    {
+      "url": "https://www.itforbusiness.fr/cedric-thomas-elkin-dsi-emeis-prix-dsin-culture-digitale-transformation-103166",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "itforbusiness"
+    },
+    {
+      "url": "https://www.itforbusiness.fr/data-ia-intelligence-artificielle",
+      "reason": "DATE_PUBLICATION_ABSENTE",
+      "source": "itforbusiness"
+    },
+    {
+      "url": "https://www.itforbusiness.fr/dependances-numeriques-risque-strategique-dsi-108171",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "itforbusiness"
+    },
+    {
+      "url": "https://www.itforbusiness.fr/et-si-lhopital-se-soignait-au-numerique-108248",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "itforbusiness"
+    },
+    {
+      "url": "https://www.itforbusiness.fr/protection-des-donnees-perte-de-controle-prix-108480",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "itforbusiness"
+    },
+    {
+      "url": "https://www.itforbusiness.fr/yandex-cloud-perte-de-donnees-frappes-drones-109759",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "itforbusiness"
+    },
+    {
+      "url": "https://www.itforbusiness.fr/agents-ia-soc-spie-sekoia-108515",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "itforbusiness"
+    },
+    {
+      "url": "https://www.itforbusiness.fr/ai-security-report-2026-check-point-ia-cyberattaques-108222",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "itforbusiness"
+    },
+    {
+      "url": "https://www.itforbusiness.fr/cloud-hybride-securite-ia-mythos-109475-109475",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "itforbusiness"
+    },
+    {
+      "url": "https://www.itforbusiness.fr/covea-reduit-les-risques-cyber-de-ses-systemes-legacy-avec-le-patching-virtuel-108506",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "itforbusiness"
+    },
+    {
+      "url": "https://www.itforbusiness.fr/cyberattaques-hopitaux-securite-si-108330",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "itforbusiness"
+    },
+    {
+      "url": "https://www.itforbusiness.fr/cyberattaques-iraniennes-france-riposte-cyber-109661",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "itforbusiness"
+    },
+    {
+      "url": "https://next.ink/?begin=2026-11-27&end=2026-11-20",
+      "reason": "DATE_PUBLICATION_ABSENTE",
+      "source": "next"
+    },
+    {
+      "url": "https://next.ink/266516/cyberattaque-contre-les-frigos-de-700-supermarches-pourquoi-la-france-accuse-liran/",
+      "reason": "Réponse trop volumineuse",
+      "source": "next"
+    },
+    {
+      "url": "https://next.ink/266327/ia-et-droit-dauteur-mistral-et-les-industriels-du-numerique-accentuent-le-lobbying/",
+      "reason": "DATES_PUBLICATION_CONTRADICTOIRES",
+      "source": "next"
+    },
+    {
+      "url": "https://next.ink/266549/google-lance-deux-nouvelles-puces-ia-pour-proteger-les-donnees-et-accelerer-les-agents/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "next"
+    },
+    {
+      "url": "https://next.ink/266856/abonnements-jeux-ia-leurope-veut-dejouer-les-arnaques-du-numerique-avec-le-dfa/",
+      "reason": "DATES_PUBLICATION_CONTRADICTOIRES",
+      "source": "next"
+    },
+    {
+      "url": "https://next.ink/267269/presidentielle-2027-lfi-detaille-son-programme-pour-democratiser-la-revolution-numerique/",
+      "reason": "DATES_PUBLICATION_CONTRADICTOIRES",
+      "source": "next"
+    },
+    {
+      "url": "https://next.ink/brief-article/manquements-relatifs-a-la-cybersecurite-des-services-publics-sanctionnes-par-la-cnil/",
+      "reason": "DATES_PUBLICATION_CONTRADICTOIRES",
+      "source": "next"
+    },
+    {
+      "url": "https://next.ink/266285/ea-ouvre-ses-archives-et-redonne-vie-a-wing-commander-et-road-rash/",
+      "reason": "DATES_PUBLICATION_CONTRADICTOIRES",
+      "source": "next"
+    },
+    {
+      "url": "https://next.ink/brief-article/fox-met-la-main-sur-roku-pour-22-milliards-de-dollars/",
+      "reason": "DATES_PUBLICATION_CONTRADICTOIRES",
+      "source": "next"
+    },
+    {
+      "url": "https://next.ink/brief-article/ia-submergees-par-les-cyberattaques-les-pontes-de-la-cybersecurite-refusent-des-clients/",
+      "reason": "DATES_PUBLICATION_CONTRADICTOIRES",
+      "source": "next"
+    },
+    {
+      "url": "https://next.ink/brief-article/vivaldi-8-3-devient-plus-agressif-contre-les-publicites-et-les-traqueurs/",
+      "reason": "DATES_PUBLICATION_CONTRADICTOIRES",
+      "source": "next"
+    },
+    {
+      "url": "https://next.ink/category/societe-numerique/",
+      "reason": "DATE_PUBLICATION_ABSENTE",
+      "source": "next"
+    },
+    {
+      "url": "https://next.ink/260033/tuto-agents-ia-installer-le-harnais-pi-dev-ou-sa-version-dopee-aux-hormones-oh-my-pi/",
+      "reason": "DATES_PUBLICATION_CONTRADICTOIRES",
+      "source": "next"
+    },
+    {
+      "url": "https://next.ink/263676/google-dereference-9-des-plus-gros-sites-dinfos-generes-par-ia-qui-polluent-discover/",
+      "reason": "DATES_PUBLICATION_CONTRADICTOIRES",
+      "source": "next"
+    },
+    {
+      "url": "https://next.ink/265942/telephonie-mobile-bouygues-telecom-et-orange-reorganisent-leur-spectre-900-et-2-100-mhz/",
+      "reason": "DATES_PUBLICATION_CONTRADICTOIRES",
+      "source": "next"
+    },
+    {
+      "url": "https://www.01net.com/actualites/",
+      "reason": "DATE_PUBLICATION_ABSENTE",
+      "source": "01net"
+    },
+    {
+      "url": "https://www.01net.com/actualites/guide-d-achat-comment-bien-choisir-sa-camera-de-surveillance-1706064.html",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "01net"
+    },
+    {
+      "url": "https://www.01net.com/actualites/hugging-face-perd-son-meilleur-allie-pour-lia-open-source-chez-nvidia-deux-mois-apres-le-rachat.html",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "01net"
+    },
+    {
+      "url": "https://www.01net.com/actualites/securite/",
+      "reason": "DATE_PUBLICATION_ABSENTE",
+      "source": "01net"
+    },
+    {
+      "url": "https://www.01net.com/actualites/55-000-euros-batterie-occasion-mercedes-propose-remplacer-pack-defectueux-modele-300-000-km.html",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "01net"
+    },
+    {
+      "url": "https://www.01net.com/actualites/6-millions-identifiants-voles-recuperes-police-verifiez-si-vous-etes-concerne.html",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "01net"
+    },
+    {
+      "url": "https://www.01net.com/actualites/applis-logiciels/",
+      "reason": "DATE_PUBLICATION_ABSENTE",
+      "source": "01net"
+    },
+    {
+      "url": "https://www.01net.com/actualites/apres-le-scandale-nvidia-washington-envisage-de-nouvelles-restrictions-contre-la-chine.html",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "01net"
+    },
+    {
+      "url": "https://www.01net.com/actualites/buzz-societe/",
+      "reason": "DATE_PUBLICATION_ABSENTE",
+      "source": "01net"
+    },
+    {
+      "url": "https://www.01net.com/actualites/culture-medias/",
+      "reason": "DATE_PUBLICATION_ABSENTE",
+      "source": "01net"
+    },
+    {
+      "url": "https://www.01net.com/actualites/jeux-video-gaming/",
+      "reason": "DATE_PUBLICATION_ABSENTE",
+      "source": "01net"
+    },
+    {
+      "url": "https://www.01net.com/actualites/la-solution-ultime-pour-simplifier-la-charge-de-votre-voiture-electrique-vous-naurez-meme-plus-a-sortir.html",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "01net"
+    },
+    {
+      "url": "https://www.01net.com/actualites/nvidia-sans-jensen-huang-qui-pourrait-remplacer-lillustre-pdg.html",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "01net"
+    },
+    {
+      "url": "https://www.01net.com/actualites/outlook-hotmail-live-msn-des-mails-ont-ete-bloque-pendant-4-jours-microsoft-annonce-une-mauvaise-nouvelle.html",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "01net"
+    },
+    {
+      "url": "https://www.01net.com/actualites/panne-microsoft-chatgpt-et-claude-egalement-touches-et-ils-ne-sont-pas-les-seuls.html",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "01net"
+    },
+    {
+      "url": "https://www.journaldunet.com/business/action-publique/1557961-christian-noyer-estime-que-la-france-peut-retablir-la-confiance-des-marches/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "jdn"
+    },
+    {
+      "url": "https://www.journaldunet.com/business/1557959-europol-annonce-354-arrestations-dans-l-operation-tornado/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "jdn"
+    },
+    {
+      "url": "https://www.journaldunet.com/business/1557967-une-panne-de-microsoft-365-paralyse-des-organisations-dans-de-nombreux-pays/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "jdn"
+    },
+    {
+      "url": "https://www.journaldunet.com/business/action-publique/1557887-face-a-l-impuissance-de-l-etat-deux-hauts-fonctionnaires-proposent-de-transformer-l-action-publique/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "jdn"
+    },
+    {
+      "url": "https://www.journaldunet.com/business/1557791-les-magasins-bhv-marais-et-bhv-parly-2-ferment-temporairement/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "jdn"
+    },
+    {
+      "url": "https://www.journaldunet.com/business/1557883-la-crise-climatique-pourrait-representer-un-tiers-de-l-inflation-alimentaire-en-2027-selon-oxfam/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "jdn"
+    },
+    {
+      "url": "https://www.journaldunet.com/business/1557889-ce-que-l-on-sait-de-megaspeed-et-sa-fondatrice-alice-huang-a-l-origine-de-la-chute-du-patron-de-nvidia/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "jdn"
+    },
+    {
+      "url": "https://www.journaldunet.com/business/1557957-alice-huang-a-detenu-des-participations-dans-des-entreprises-ayant-beneficie-a-huawei/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "jdn"
+    },
+    {
+      "url": "https://www.journaldunet.com/business/1557965-l-autorite-de-la-concurrence-soupconne-l-alliance-aura-de-pratiques-anticoncurrentielles/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "jdn"
+    },
+    {
+      "url": "https://www.journaldunet.com/business/action-publique/1557797-pablo-hernandez-de-cos-et-klaas-knot-s-opposent-pour-presider-la-bce/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "jdn"
+    },
+    {
+      "url": "https://www.journaldunet.com/business/action-publique/1557805-le-taux-de-chomage-en-france-baisse-a-8-2-au-troisieme-trimestre-2026/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "jdn"
+    },
+    {
+      "url": "https://www.journaldunet.com/economie/industrie/1557885-acc-espere-fabriquer-300-000-modules-de-batteries-en-2026/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "jdn"
+    },
+    {
+      "url": "https://www.journaldunet.com/economie/industrie/1557963-spacex-va-essayer-de-rattraper-les-deux-etages-de-starship/",
+      "reason": "DATE_HORS_PERIODE",
+      "source": "jdn"
+    }
+  ],
+  "errors": [],
+  "discovery_errors": 0,
+  "limits": {
+    "per_source": 15,
+    "global_candidates": 60,
+    "global_candidates_dropped": 0,
+    "soft_seconds": 180,
+    "albert_seconds": 360,
+    "unanalyzed_due_to_time": 0
+  },
+  "fact_check": "NON_EFFECTUE_CONTROLE_HUMAIN_REQUIS",
+  "notice": "Collecte exploratoire : les synthèses sont validées structurellement, pas factuellement. Vérification humaine avant diffusion."
+}
