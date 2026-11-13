@@ -52,8 +52,9 @@ jobs:
           python-version: "3.12"
 
       # Premier temps : ni jeton ni modèle Albert dans l'environnement de cette étape.
+      # Un lancement sans entrée « mode » (ancienne page, appel direct de l'API) vaut « titres ».
       - name: Collecte des titres, sans Albert
-        if: inputs.mode == 'titres'
+        if: inputs.mode == 'titres' || inputs.mode == ''
         working-directory: veille-snum-webapp-v5-apres-egm/veille-snum
         env:
           EDITION: ${{ inputs.edition }}
@@ -103,13 +104,14 @@ jobs:
 
       # Mode « page seule » : les fichiers en ligne sont repris tels quels. Après un
       # premier temps (phase titres), seul le rapport existe et il est exigé ; sinon
-      # le paquet est exigé, comme avant la collecte en deux temps.
+      # le paquet est exigé, comme avant la collecte en deux temps. GitHub Pages
+      # répond parfois 503 un court instant : chaque lecture est retentée.
       - name: Reprendre les fichiers en ligne
         if: inputs.mode == 'page seule'
         run: |
           mkdir -p site
           base="https://alexandra-guiderdoni.github.io/assistant-ia-newsletter-com-snum"
-          reprendre() { curl -fsS -m 30 "$base/$1" -o "site/$1"; }
+          reprendre() { curl -fsS -m 30 --retry 3 --retry-delay 2 "$base/$1" -o "site/$1"; }
           facultatif() { reprendre "$1" || { rm -f "site/$1"; echo "$1 absent du site en ligne : ignoré."; }; }
           phase=""
           facultatif etat-collecte.json
@@ -144,7 +146,7 @@ jobs:
               chemin = os.path.join("site", nom)
               return json.load(open(chemin, encoding="utf-8")) if os.path.exists(chemin) else None
 
-          mode = os.environ.get("MODE", "")
+          mode = os.environ.get("MODE") or "titres"
           p = lire("paquet-v519.json")
           rapport = lire("rapport-collecte.json") or {}
           etat = lire("etat-collecte.json") or {}
