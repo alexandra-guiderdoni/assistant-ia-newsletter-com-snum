@@ -16,8 +16,20 @@ from .core import collect, date_long
 
 FICHIER = "paquet-v519.json"
 ECARTES = "candidats-ecartes.json"
+RAPPORT_PUBLIE = "rapport-collecte.json"
+# Listes de milliers d'adresses non visitées : seuls leurs nombres sont publiés.
+LISTES_SOURCE = ("not_visited_urls", "sitemap_skipped_urls")
 PUBLIABLES = ("ready", "partial")
 CHAMPS_CANDIDAT = ("title", "source", "publication_date_iso", "url")
+
+
+def rapport_public(rapport):
+    """Rapport de collecte de la page : sans le paquet, publié à part, ni listes d'adresses."""
+    sources = [
+        {k: v for k, v in s.items() if k not in LISTES_SOURCE}
+        for s in rapport.get("sources") or []
+    ]
+    return {k: v for k, v in rapport.items() if k != "packet"} | {"sources": sources}
 
 
 def ecartes(rapport):
@@ -83,6 +95,10 @@ def publier(payload, sortie, collecter=collect):
     }
     (sortie / ECARTES).write_text(
         json.dumps(liste, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    (sortie / RAPPORT_PUBLIE).write_text(
+        json.dumps(rapport_public(rapport), ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
     )
     print(
         f"Paquet {rapport['status']} : {len(paquet['articles'])} article(s), "

@@ -9,7 +9,15 @@ from unittest import mock
 
 from test_veille_snum import FakeHttp, good_summary
 from veille_snum.core import collect
-from veille_snum.publier import ECARTES, FICHIER, ecartes, fenetre, main, publier
+from veille_snum.publier import (
+    ECARTES,
+    FICHIER,
+    RAPPORT_PUBLIE,
+    ecartes,
+    fenetre,
+    main,
+    publier,
+)
 
 TOKEN = "JETON-FACTICE-NE-PAS-PUBLIER"
 PAYLOAD = {
@@ -143,6 +151,24 @@ class PublicationTests(unittest.TestCase):
         )
         self.assertEqual(publie["candidates"], [])
         self.assertNotIn(TOKEN, texte)
+
+    def test_rapport_publie_sans_paquet_ni_listes_d_adresses(self):
+        with mock.patch.dict(
+            "os.environ", {"ALBERT_API_KEY": TOKEN, "ALBERT_MODEL": "modele-test"}
+        ):
+            publier(PAYLOAD, self.dossier, collecter=fake_collect)
+        texte = (self.dossier / RAPPORT_PUBLIE).read_text(encoding="utf-8")
+        rapport = json.loads(texte)
+        self.assertEqual(rapport["status"], "ready")
+        self.assertNotIn("packet", rapport)
+        self.assertEqual(len(rapport["sources"]), 14)
+        self.assertEqual(len(rapport["candidates"]), 13)
+        for source in rapport["sources"]:
+            self.assertNotIn("not_visited_urls", source)
+            self.assertNotIn("sitemap_skipped_urls", source)
+            self.assertIn("not_visited", source)
+        self.assertNotIn(TOKEN, texte)
+        self.assertNotIn('"content"', texte)
 
 
 def candidat(nom):
