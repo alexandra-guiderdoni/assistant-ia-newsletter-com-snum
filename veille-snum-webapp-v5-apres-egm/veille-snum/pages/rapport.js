@@ -66,6 +66,7 @@
   current = isReport(report) ? report : null;
   byId('report-content').hidden = !current;
   byId('report-download').disabled = !current;
+  byId('report-status').textContent = '';
   const intro = byId('report-intro');
   if (!current) { intro.textContent = message || 'Le rapport de collecte n’est pas publié pour cette édition.'; return; }
   intro.textContent = `Statut de la collecte : ${statusMessage(current.status)}`;
