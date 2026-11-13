@@ -1,0 +1,16 @@
+[
+  {"id":"economie","label":"Ministères économiques et financiers","domain":"economie.gouv.fr","homepage":"https://www.economie.gouv.fr/","internal":false},
+  {"id":"numerique","label":"DINUM","domain":"numerique.gouv.fr","homepage":"https://www.numerique.gouv.fr/","internal":false},
+  {"id":"vie-publique","label":"Vie publique","domain":"vie-publique.fr","homepage":"https://www.vie-publique.fr/","internal":false},
+  {"id":"cnil","label":"CNIL","domain":"cnil.fr","homepage":"https://www.cnil.fr/","internal":false},
+  {"id":"legifrance","label":"Légifrance","domain":"legifrance.gouv.fr","homepage":"https://www.legifrance.gouv.fr/","internal":false},
+  {"id":"presse-economie","label":"Presse Bercy","domain":"presse.economie.gouv.fr","homepage":"https://presse.economie.gouv.fr/","internal":false},
+  {"id":"acteurs-publics","label":"Acteurs publics","domain":"acteurspublics.fr","homepage":"https://acteurspublics.fr/","internal":false},
+  {"id":"le-monde","label":"Le Monde","domain":"lemonde.fr","homepage":"https://www.lemonde.fr/","internal":false},
+  {"id":"modernisation","label":"Modernisation de l'action publique","domain":"modernisation.gouv.fr","homepage":"https://www.modernisation.gouv.fr/","internal":false},
+  {"id":"source-interne","label":"Source métier interne — configuration privée requise","domain":null,"homepage":null,"internal":true},
+  {"id":"itforbusiness","label":"IT for Business","domain":"itforbusiness.fr","homepage":"https://www.itforbusiness.fr/","internal":false},
+  {"id":"next","label":"Next","domain":"next.ink","homepage":"https://next.ink/","internal":false},
+  {"id":"01net","label":"01net","domain":"01net.com","homepage":"https://www.01net.com/","internal":false},
+  {"id":"jdn","label":"Journal du Net","domain":"journaldunet.com","homepage":"https://www.journaldunet.com/","internal":false}
+]

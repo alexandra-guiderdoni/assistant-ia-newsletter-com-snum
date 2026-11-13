@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="fr" dir="ltr" data-fr-scheme="system">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Veille SNUM : collecte et paquet JSON</title>
+<meta name="description" content="Prototype local de veille du SNUM : collecte d’articles sur 14 sources, résumés Albert et export du paquet JSON V519 pour la newsletter.">
+<link rel="stylesheet" href="/dsfr/dsfr.min.css">
+<link rel="apple-touch-icon" href="/dsfr/favicon/apple-touch-icon.png">
+<link rel="icon" href="/dsfr/favicon/favicon.svg" type="image/svg+xml">
+<style>.unselected summary{text-decoration:line-through}</style>
+</head>
+<body>
+<div class="fr-skiplinks">
+ <nav class="fr-container" role="navigation" aria-label="Accès rapide">
+  <ul class="fr-skiplinks__list">
+   <li><a class="fr-link" href="#contenu">Contenu</a></li>
+   <li><a class="fr-link" href="#footer">Pied de page</a></li>
+  </ul>
+ </nav>
+</div>
+<header role="banner" class="fr-header">
+ <div class="fr-header__body">
+  <div class="fr-container">
+   <div class="fr-header__body-row">
+    <div class="fr-header__brand fr-enlarge-link">
+     <div class="fr-header__service">
+      <a href="/" title="Accueil - Veille SNUM">
+       <p class="fr-header__service-title">Veille SNUM</p>
+      </a>
+      <p class="fr-header__service-tagline">Prototype de collecte : 14 sources, 5 thématiques, export JSON V519</p>
+     </div>
+    </div>
+   </div>
+  </div>
+ </div>
+</header>
+<main id="contenu" class="fr-container fr-my-4w">
+<div class="fr-grid-row fr-grid-row--center">
+<div class="fr-col-12 fr-col-lg-10">
+ <h1>Collecte de la veille SNUM</h1>
+ <section aria-labelledby="settings-heading" class="fr-mb-6w">
+  <h2 id="settings-heading">Préparer une édition</h2>
+  <p>La recherche consulte des sources publiques dans la période indiquée. Une source interne reste non traitée dans ce prototype. Les résultats nécessitent une relecture humaine.</p>
+  <form id="form" novalidate>
+   <p class="fr-text--sm">Sauf mention contraire, tous les champs sont obligatoires.</p>
+   <fieldset class="fr-fieldset" aria-labelledby="dates-legend">
+    <legend class="fr-fieldset__legend" id="dates-legend">Dates de la collecte</legend>
+    <div class="fr-fieldset__element">
+     <div class="fr-grid-row fr-grid-row--gutters">
+      <div class="fr-col-12 fr-col-md-4">
+       <div class="fr-input-group" id="edition-group">
+        <label class="fr-label" for="edition">Date d'édition<span class="fr-hint-text">Date figurant sur la newsletter</span></label>
+        <input class="fr-input" id="edition" name="edition_date" type="date" aria-describedby="edition-messages">
+        <div class="fr-messages-group" id="edition-messages" aria-live="polite"></div>
+       </div>
+      </div>
+      <div class="fr-col-12 fr-col-md-4">
+       <div class="fr-input-group" id="start-group">
+        <label class="fr-label" for="start">Début de période<span class="fr-hint-text">Date incluse</span></label>
+        <input class="fr-input" id="start" name="window_start" type="date" aria-describedby="start-messages">
+        <div class="fr-messages-group" id="start-messages" aria-live="polite"></div>
+       </div>
+      </div>
+      <div class="fr-col-12 fr-col-md-4">
+       <div class="fr-input-group" id="end-group">
+        <label class="fr-label" for="end">Fin de période<span class="fr-hint-text">Date incluse, 61 jours au plus après le début</span></label>
+        <input class="fr-input" id="end" name="window_end" type="date" aria-describedby="end-messages">
+        <div class="fr-messages-group" id="end-messages" aria-live="polite"></div>
+       </div>
+      </div>
+     </div>
+    </div>
+   </fieldset>
+   <div class="fr-accordions-group fr-mb-3w">
+    <section class="fr-accordion">
+     <h3 class="fr-accordion__title"><button class="fr-accordion__btn" type="button" aria-expanded="false" aria-controls="acc-albert">Connexion à Albert API (facultative pour découvrir les articles)</button></h3>
+     <div class="fr-collapse" id="acc-albert">
+      <p class="fr-text--sm">Si Albert n'est pas déjà configuré sur ce poste, saisissez votre jeton et l'identifiant d'un modèle de génération autorisé par votre compte. Ces informations sont transmises au serveur local pour l’appel Albert et ne sont jamais incluses dans les exports. La mémorisation dans ce navigateur est désactivée par défaut.</p>
+      <div class="fr-grid-row fr-grid-row--gutters">
+       <div class="fr-col-12 fr-col-md-6">
+        <div class="fr-input-group">
+         <label class="fr-label" for="albert-key">Jeton Albert API (facultatif)<span class="fr-hint-text">Inutile si Albert est configuré sur ce poste</span></label>
+         <input class="fr-input" id="albert-key" name="albert_api_key" type="password" autocomplete="off" spellcheck="false">
+        </div>
+       </div>
+       <div class="fr-col-12 fr-col-md-6">
+        <div class="fr-input-group">
+         <label class="fr-label" for="albert-model">Identifiant du modèle Albert (facultatif)<span class="fr-hint-text">Identifiant renvoyé par /v1/models, par exemple openweight-large</span></label>
+         <input class="fr-input" id="albert-model" name="albert_model" type="text" autocomplete="off" spellcheck="false">
+        </div>
+       </div>
+      </div>
+      <div class="fr-checkbox-group fr-mb-2w">
+       <input id="remember-albert" type="checkbox" aria-describedby="albert-storage-warning">
+       <label class="fr-label" for="remember-albert">Mémoriser facultativement la clé et le modèle<span class="fr-hint-text" id="albert-storage-warning">Stockage non chiffré, coordination des onglets requise. Sur un poste partagé ou administré, ne cochez pas cette option sans autorisation : tout script de cette origine peut lire la clé.</span></label>
+      </div>
+      <button class="fr-btn fr-btn--tertiary fr-btn--sm" id="forget-albert" type="button">Effacer la clé enregistrée</button>
+      <p id="albert-storage-status" class="fr-text--sm fr-mt-2w" role="status">Par défaut, la clé n'est pas enregistrée.</p>
+     </div>
+    </section>
+   </div>
+   <ul class="fr-btns-group fr-btns-group--inline-md">
+    <li><button class="fr-btn" id="collect" type="submit">Lancer la collecte</button></li>
+   </ul>
+   <p id="configuration" class="fr-text--sm fr-mb-3w" role="status">Vérification de la configuration…</p>
+  </form>
+  <div id="notice" class="fr-alert fr-alert--info fr-alert--sm" role="status"><p>Prêt à collecter.</p></div>
+ </section>
+ <section aria-labelledby="result-heading" id="results" class="fr-mb-6w" hidden>
+  <h2 id="result-heading">Résultat de la collecte</h2>
+  <ul id="summary" class="fr-grid-row fr-grid-row--gutters fr-mb-3w" hidden aria-label="Statistiques de collecte"></ul>
+  <ul class="fr-btns-group fr-btns-group--inline-md">
+   <li><button class="fr-btn" id="download" type="button" disabled>Télécharger le JSON V519</button></li>
+   <li><button class="fr-btn fr-btn--secondary" id="report-download" type="button" disabled>Télécharger le rapport de collecte</button></li>
+  </ul>
+  <p id="export-notice" class="fr-text--sm fr-mb-4w" role="status"></p>
+  <h3>Articles retenus</h3>
+  <p id="article-count"></p>
+  <p class="fr-text--sm">Décochez un article pour l’écarter de la newsletter ou changez sa thématique, puis cliquez sur « Mettre à jour le paquet ».</p>
+  <div id="article-list"></div>
+  <ul class="fr-btns-group fr-btns-group--inline-md fr-mt-2w">
+   <li><button class="fr-btn" id="update-packet" type="button" disabled>Mettre à jour le paquet</button></li>
+  </ul>
+  <p id="selection-notice" class="fr-text--sm fr-mb-4w" role="status"></p>
+  <div class="fr-accordions-group fr-mb-4w">
+   <section class="fr-accordion" id="rejected-section">
+    <h3 class="fr-accordion__title"><button class="fr-accordion__btn" type="button" aria-expanded="false" aria-controls="acc-rejected">Articles écartés ou non résumés par Albert</button></h3>
+    <div class="fr-collapse" id="acc-rejected">
+     <p class="fr-text--sm">Choisissez une thématique puis « Ajouter » : Albert rédige alors le résumé de cet article dans la thématique choisie.</p>
+     <ul id="rejected-list"></ul>
+    </div>
+   </section>
+  </div>
+  <section aria-labelledby="watch-heading" id="watch-section" class="fr-mb-4w">
+   <h3 id="watch-heading">Alertes de collecte à relire</h3>
+   <p class="fr-text--sm">Ces alertes figurent dans le paquet V519, mais ne sont pas insérées dans le courriel.</p>
+   <ul id="watch-list"></ul>
+  </section>
+  <div class="fr-accordions-group fr-mb-4w">
+   <section class="fr-accordion">
+    <h3 class="fr-accordion__title"><button class="fr-accordion__btn" type="button" aria-expanded="true" aria-controls="acc-sources">État des 14 sources</button></h3>
+    <div class="fr-collapse" id="acc-sources"><ul id="source-list"></ul></div>
+   </section>
+   <section class="fr-accordion">
+    <h3 class="fr-accordion__title"><button class="fr-accordion__btn" type="button" aria-expanded="false" aria-controls="acc-candidates">Candidats trouvés, sans les synthèses</button></h3>
+    <div class="fr-collapse" id="acc-candidates"><ul id="candidate-list"></ul></div>
+   </section>
+   <section class="fr-accordion">
+    <h3 class="fr-accordion__title"><button class="fr-accordion__btn" type="button" aria-expanded="false" aria-controls="acc-excluded">Articles exclus et motifs</button></h3>
+    <div class="fr-collapse" id="acc-excluded"><ul id="excluded-list"></ul></div>
+   </section>
+   <section class="fr-accordion">
+    <h3 class="fr-accordion__title"><button class="fr-accordion__btn" type="button" aria-expanded="false" aria-controls="acc-errors">Erreurs d'analyse Albert</button></h3>
+    <div class="fr-collapse" id="acc-errors"><ul id="error-list"></ul></div>
+   </section>
+  </div>
+  <p class="fr-text--sm">Une source consultée sans article n'est pas une preuve d'absence d'actualité. L'extraction et la structure JSON sont contrôlées, mais les faits ne sont pas certifiés automatiquement. Aucun courriel n'est envoyé ; des extraits des publications publiques retenues sont transmis à Albert lorsque la génération est activée. Vérifiez les droits de réutilisation et la conformité de chaque fait avant diffusion.</p>
+ </section>
+ <section aria-labelledby="help-heading">
+  <h2 id="help-heading">Passer au builder DSFR</h2>
+  <p>Après téléchargement, utiliser le <a class="fr-link" href="https://github.com/alexandra-guiderdoni/builder-mail-dsfr/blob/main/app/distribution/snum.html" target="_blank" rel="noopener noreferrer" title="convertisseur SNUM (fichier à récupérer sur GitHub) - nouvelle fenêtre">convertisseur SNUM (fichier à récupérer sur GitHub)</a> pour transformer le paquet V519 en composition JSON, puis importer cette composition dans le <a class="fr-link" href="https://alexandra-guiderdoni.github.io/builder-mail-dsfr/" target="_blank" rel="noopener noreferrer" title="builder DSFR - nouvelle fenêtre">builder DSFR</a>. Le builder ne lit pas directement le paquet V519 comme une composition.</p>
+  <p class="fr-text--sm">La clé Albert est saisie temporairement dans le navigateur et transmise au serveur local pour l'appel HTTPS à Albert ; elle n'est pas incluse dans les exports. Elle peut aussi être fournie dans l'environnement du serveur. Ce prototype doit faire l'objet d'une recette et d'une validation de sécurité avant son utilisation institutionnelle.</p>
+ </section>
+</div>
+</div>
+</main>
+<footer class="fr-footer" role="contentinfo" id="footer">
+ <div class="fr-container">
+  <div class="fr-footer__body">
+   <div class="fr-footer__brand"><p class="fr-footer__brand-link">Veille SNUM</p></div>
+   <div class="fr-footer__content">
+    <p class="fr-footer__content-desc">Prototype local de collecte pour la newsletter du Service du numérique. Aucun courriel n'est envoyé depuis cette page.</p>
+   </div>
+  </div>
+  <div class="fr-footer__bottom">
+   <ul class="fr-footer__bottom-list">
+    <li class="fr-footer__bottom-item"><span class="fr-footer__bottom-link">Accessibilité : non conforme (audit non réalisé)</span></li>
+    <li class="fr-footer__bottom-item"><span class="fr-footer__bottom-link">Mentions légales, données personnelles et plan du site : à rédiger avant tout usage institutionnel</span></li>
+   </ul>
+  </div>
+ </div>
+</footer>
+<script type="module" src="/dsfr/dsfr.module.min.js"></script>
+<script nomodule src="/dsfr/dsfr.nomodule.min.js"></script>
+<script src="/app.js" defer></script>
+</body>
+</html>
