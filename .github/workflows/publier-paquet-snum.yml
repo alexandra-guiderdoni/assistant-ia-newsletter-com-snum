@@ -53,6 +53,32 @@ jobs:
           [ -n "${FIN:-}" ] && args+=(--fin "$FIN")
           python -m veille_snum.publier "${args[@]}"
 
+      # Résumé affiché en tête de la page du run : où trouver le paquet, quoi en faire.
+      - name: Résumé du paquet
+        run: |
+          python - <<'PY'
+          import collections, json, os
+
+          url = "https://alexandra-guiderdoni.github.io/assistant-ia-newsletter-com-snum/paquet-v519.json"
+          p = json.load(open("site/paquet-v519.json", encoding="utf-8"))
+          fr = lambda iso: "/".join(reversed(iso.split("-")))
+          noms = {"numerique": "numérique", "ia": "IA", "commande": "commande", "rh": "RH", "bercy": "Bercy"}
+          compte = collections.Counter(a["rubric"] for a in p["articles"])
+          detail = ", ".join(f"{noms.get(r, r)} {n}" for r, n in compte.most_common())
+          lignes = [
+              "### Paquet Veille SNUM",
+              f"- Paquet JSON : {url}",
+              f"- Édition du {fr(p['edition_date'])}, période du {fr(p['window_start'])} au {fr(p['window_end'])}",
+              f"- {len(p['articles'])} articles : {detail} ; {len(p['watch'])} alerte(s)",
+              "- Étape suivante : copier le JSON, le coller dans https://alexandra-guiderdoni.github.io/builder-mail-dsfr/snum.html, puis « Convertir et afficher l'aperçu »",
+          ]
+          if os.environ.get("GITHUB_REF") != "refs/heads/main":
+              lignes.append("- Hors de main : paquet produit mais non publié")
+          with open(os.environ["GITHUB_STEP_SUMMARY"], "a", encoding="utf-8") as f:
+              f.write("\n".join(lignes) + "\n")
+          print("\n".join(lignes))
+          PY
+
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
           path: site
@@ -66,7 +92,8 @@ jobs:
       id-token: write
     environment:
       name: github-pages
-      url: ${{ steps.deploiement.outputs.page_url }}
+      # La racine du site n'a pas de page : le lien du déploiement mène au paquet.
+      url: ${{ steps.deploiement.outputs.page_url }}paquet-v519.json
     steps:
       - id: deploiement
         uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
