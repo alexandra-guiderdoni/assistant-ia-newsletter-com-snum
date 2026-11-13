@@ -42,6 +42,8 @@ RAPPORT_EN_LIGNE = (
 )
 # Statut du rapport publié par le premier temps : seul un tel rapport peut être résumé.
 STATUT_TITRES = "needs_albert"
+LECTURES_RAPPORT = 3
+ATTENTE_RAPPORT = 5
 NON_SELECTIONNE = "NON_SELECTIONNE"
 PAGE_NON_RELUE = "PAGE_NON_RELUE"
 
@@ -50,7 +52,7 @@ def lire_selection(texte):
     """Sélection de la page : liste JSON de 1 à 60 couples adresse et rubrique (vide : Albert choisit)."""
     try:
         choix = json.loads(texte)
-    except (TypeError, ValueError) as exc:
+    except (TypeError, ValueError, RecursionError) as exc:
         raise Refus("Sélection illisible : liste JSON attendue.") from exc
     if not isinstance(choix, list) or not 1 <= len(choix) <= MAX_ARTICLES:
         raise Refus(f"Sélection refusée : 1 à {MAX_ARTICLES} articles attendus.")
@@ -78,16 +80,23 @@ def lire_selection(texte):
 
 def lire_rapport(client, adresse=RAPPORT_EN_LIGNE):
     """Rapport du premier temps, lu sur le site en ligne et contrôlé avant tout usage."""
-    try:
-        _, texte = client.get(adresse, DOMAINE_SITE, max_bytes=3_000_000, timeout=30)
-    except HTTPError as exc:
-        raise Refus(
-            f"Rapport des titres introuvable en ligne : HTTP {exc.code}."
-        ) from exc
-    except Exception as exc:
-        raise Refus(
-            f"Rapport des titres introuvable en ligne : {type(exc).__name__}."
-        ) from exc
+    for essai in range(1, LECTURES_RAPPORT + 1):
+        try:
+            _, texte = client.get(
+                adresse, DOMAINE_SITE, max_bytes=3_000_000, timeout=30
+            )
+            break
+        except Exception as exc:
+            code = exc.code if isinstance(exc, HTTPError) else None
+            motif_lecture = f"HTTP {code}" if code else type(exc).__name__
+            # GitHub Pages répond parfois 503 un court instant : seules une réponse 5xx
+            # et une panne de réseau justifient une nouvelle lecture.
+            passager = code >= 500 if code else isinstance(exc, OSError)
+            if essai == LECTURES_RAPPORT or not passager:
+                raise Refus(
+                    f"Rapport des titres introuvable en ligne : {motif_lecture}."
+                ) from exc
+            time.sleep(ATTENTE_RAPPORT * essai)
     try:
         rapport = json.loads(texte)
         if iso_date(rapport["window_start"]) > iso_date(rapport["window_end"]):

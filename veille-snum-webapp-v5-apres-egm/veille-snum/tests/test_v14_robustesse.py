@@ -23,7 +23,7 @@ from test_v13_deux_temps import (
 )
 
 from veille_snum.repecher import repecher
-from veille_snum.resumer import publier_resumes
+from veille_snum.resumer import lire_rapport, publier_resumes
 
 DEBUT, FIN = dt.date(2026, 11, 1), dt.date(2026, 11, 10)
 
@@ -141,6 +141,63 @@ class RapportDejaResumeTests(Cas):
         self.assertEqual(
             (self.dossier / PAQUET).read_text(encoding="utf-8"), premier_paquet
         )
+
+
+class RapportIndisponibleTests(Cas):
+    """GitHub Pages répond parfois 503 un court instant : le rapport est redemandé."""
+
+    def site_capricieux(self, pannes, code=503):
+        etat = {"reste": pannes}
+
+        class Capricieux(Site):
+            def get(self, url, domain, max_bytes=600_000, timeout=7):
+                if url == URL_RAPPORT and etat["reste"]:
+                    etat["reste"] -= 1
+                    self.calls.append(url)
+                    raise HTTPError(url, code, "indisponible", {}, None)
+                return super().get(url, domain, max_bytes, timeout)
+
+        return Capricieux()
+
+    def test_deux_reponses_503_puis_le_rapport(self):
+        client = self.site_capricieux(2)
+        with mock.patch("time.sleep") as attente:
+            rapport = lire_rapport(client)
+        self.assertEqual(rapport["status"], "needs_albert")
+        self.assertEqual(client.calls, [URL_RAPPORT] * 3)
+        self.assertEqual(attente.call_count, 2)
+
+    def test_panne_durable_refus_lisible(self):
+        client = self.site_capricieux(9)
+        with mock.patch("time.sleep"):
+            code = self.lancer(selection((URLS[0], "")), client)
+        self.assertEqual(code, 1)
+        self.assertEqual(client.calls, [URL_RAPPORT] * 3)
+        self.assertIn("HTTP 503", self.sortie_erreur.getvalue())
+
+    def test_rapport_absent_404_sans_nouvelle_tentative(self):
+        client = self.site_capricieux(9, code=404)
+        with mock.patch("time.sleep") as attente:
+            code = self.lancer(selection((URLS[0], "")), client)
+        self.assertEqual(code, 1)
+        self.assertEqual(client.calls, [URL_RAPPORT])
+        attente.assert_not_called()
+
+
+class SelectionHostileTests(Cas):
+    def test_imbrication_profonde_refusee_sans_trace(self):
+        code = self.lancer("[" * 100_000)
+        self.assertEqual(code, 1)
+        self.assertIn("Sélection illisible", self.sortie_erreur.getvalue())
+
+    def test_selection_volumineuse_de_soixante_adresses_longues(self):
+        # 60 éléments de 1 000 caractères : proche du plafond GitHub de 65 535 caractères.
+        texte = selection(
+            *[(URLS[0] + "?" + "a" * 1000 + str(i), "") for i in range(60)]
+        )
+        self.assertGreater(len(texte), 60_000)
+        self.assertEqual(self.lancer(texte), 1)
+        self.assertIn("absente des titres", self.sortie_erreur.getvalue())
 
 
 if __name__ == "__main__":
