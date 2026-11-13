@@ -41,6 +41,13 @@
 <div class="fr-col-12 fr-col-lg-10">
  <h1>Collecte et sélection de la veille SNUM</h1>
  <p>La collecte consulte des sources publiques dans la période indiquée, puis Albert résume les articles retenus. Elle s’exécute sur GitHub Actions et publie le paquet sur cette page. Relisez ensuite chaque article, gardez ou écartez-le, corrigez sa thématique si besoin, puis exportez le JSON V519. Les faits ne sont pas certifiés automatiquement : vérifiez chaque source avant diffusion.</p>
+ <p><a class="fr-link" href="archives.html">Archives des collectes</a></p>
+
+ <div id="archive-notice" class="fr-alert fr-alert--info fr-mb-6w" hidden>
+  <h2 class="fr-alert__title" id="archive-title">Collecte archivée</h2>
+  <p id="archive-text" role="status">Chargement de la collecte archivée…</p>
+  <p><a class="fr-link" href="./">Revenir à la collecte en cours</a></p>
+ </div>
 
  <section aria-labelledby="github-heading" class="fr-mb-6w">
   <h2 id="github-heading">Connexion à GitHub</h2>
@@ -54,7 +61,7 @@
   <p id="gh-token-status" class="fr-text--sm fr-mt-2w" role="status"></p>
  </section>
 
- <section aria-labelledby="collect-heading" class="fr-mb-6w">
+ <section aria-labelledby="collect-heading" id="collect-section" class="fr-mb-6w">
   <h2 id="collect-heading">Lancer une collecte</h2>
   <p class="fr-text--sm">La collecte remplace le paquet publié sur cette page pour toutes les personnes qui la consultent. Elle dure environ huit minutes ; vous pouvez suivre son avancement ici ou sur GitHub.</p>
   <form id="collect-form" novalidate>
@@ -206,6 +213,7 @@
 <script src="github.js" defer></script>
 <script src="rapport.js" defer></script>
 <script src="ecartes.js" defer></script>
+<script src="archives.js" defer></script>
 <script src="page.js" defer></script>
 </body>
 </html>

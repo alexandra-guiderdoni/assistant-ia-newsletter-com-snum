@@ -44,7 +44,7 @@ test('suivi : adresses de run, de tâches, de liste et de résultat public', () 
  assert.equal(G.jobsUrl(42), `${API}/actions/runs/42/jobs`);
  assert.equal(G.runsListUrl('collecte'), `${API}/actions/workflows/publier-paquet-snum.yml/runs?event=workflow_dispatch&per_page=5`);
  assert.equal(G.repechageResultUrl(42, 7),
-  'https://raw.githubusercontent.com/alexandra-guiderdoni/assistant-ia-newsletter-com-snum/donnees-repechage/repechages/42.json?t=7');
+  'https://raw.githubusercontent.com/alexandra-guiderdoni/assistant-ia-newsletter-com-snum/donnees-veille/repechages/42.json?t=7');
  assert.throws(() => G.runUrl('42/../x'), /RUN_INVALIDE/);
  assert.equal(G.tokenLooksValid(FAKE), true);
  assert.equal(G.tokenLooksValid('ghp_court'), false);

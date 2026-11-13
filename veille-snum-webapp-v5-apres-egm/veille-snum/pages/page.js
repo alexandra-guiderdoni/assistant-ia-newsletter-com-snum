@@ -1,7 +1,8 @@
 'use strict';
 // Page Veille SNUM sur GitHub Pages : chargement des fichiers publiés, connexion
 // à GitHub et lancement de la collecte par GitHub Actions, qui joue le rôle du
-// serveur local (collecte, Albert, publication).
+// serveur local (collecte, Albert, publication). Avec ?collecte=<id>, la page
+// rouvre une collecte archivée (archives.js) au lieu des fichiers du site.
 (function (global) {
  const DATE_FIELDS = [['edition', 'la date d’édition'], ['start', 'la date de début de période'], ['end', 'la date de fin de période']];
  const pad = n => String(n).padStart(2, '0');
@@ -29,8 +30,9 @@
  if (typeof document === 'undefined' || !document.getElementById('collect-form')) return;
 
  // ---------- Interface ----------
- const S = global.VeilleSelection, G = global.VeilleGithub, R = global.VeilleRapport, E = global.VeilleEcartes;
+ const S = global.VeilleSelection, G = global.VeilleGithub, R = global.VeilleRapport, E = global.VeilleEcartes, A = global.VeilleArchives;
  const byId = id => document.getElementById(id);
+ const target = A.requested(global.location.search);
  let collecting = false;
 
  function setFieldError(id, message) {
@@ -95,8 +97,10 @@
   p.append(a);
  }
 
+ // Collecte en cours : fichiers du site. Archive : branche donnees-veille, toujours relue fraîche.
  async function fetchJson(name, bust) {
-  const r = await fetch(`./${name}${bust ? `?v=${bust}` : ''}`, {cache: 'no-store'});
+  const url = target.mode === 'archive' ? A.archiveUrl(target.id, name, bust || Date.now()) : `./${name}${bust ? `?v=${bust}` : ''}`;
+  const r = await fetch(url, {cache: 'no-store'});
   if (r.status === 404) return {missing: true};
   if (!r.ok) throw new Error(`le serveur a répondu ${r.status}`);
   return {data: await r.json()};
@@ -111,10 +115,15 @@
    if (!S.isPacket(got.data)) throw new Error('le fichier ne suit pas le schéma SNUM_PAQUET_RENDU_V519');
    packet = got.data;
   } catch (err) {
-   S.showLoadError(`Le paquet de la semaine n’a pas pu être chargé (${String(err.message || err)}). Lancez une collecte ou réessayez plus tard.`);
+   const why = String(err.message || err);
+   S.showLoadError(target.mode === 'archive'
+    ? `Le paquet de la collecte archivée ${target.id} n’a pas pu être chargé (${why}). Une archive récente peut mettre quelques minutes à être lisible : réessayez plus tard.`
+    : `Le paquet de la semaine n’a pas pu être chargé (${why}). Lancez une collecte ou réessayez plus tard.`);
+   if (target.mode === 'archive') byId('archive-text').textContent = 'Collecte archivée indisponible.';
    return false;
   }
   S.mount(packet);
+  if (target.mode === 'archive') showArchive(packet);
   try {
    const got = await fetchJson('rapport-collecte.json', bust);
    R.render(got.missing ? null : got.data, packet, got.missing ? 'Le rapport de collecte n’est pas publié pour cette édition (paquet publié avant son ajout).' : '');
@@ -130,6 +139,18 @@
   return true;
  }
 
+ // Mode archive : bandeau explicite, lancement de collecte retiré ; le repêchage reste possible.
+ function showArchive(packet) {
+  const when = packet.edition_date_long || S.dateLong(packet.edition_date);
+  byId('archive-title').textContent = `Collecte archivée du ${when}`;
+  byId('archive-text').textContent = `Vous consultez la collecte archivée ${target.id}, période du ${S.dateLong(packet.window_start)} au ${S.dateLong(packet.window_end)}. La sélection, l’export et la copie portent sur cette collecte ; la collecte en cours n’est pas modifiée.`;
+  document.title = `Veille SNUM · Collecte archivée du ${when}`;
+ }
+ if (target.mode !== 'current') {
+  byId('archive-notice').hidden = false;
+  byId('collect-section').hidden = true;
+ }
+
  const dates = defaultDates(new Date());
  for (const [id] of DATE_FIELDS) {
   byId(id).value = dates[id];
@@ -139,7 +160,7 @@
  byId('collect-form').addEventListener('submit', async event => {
   event.preventDefault();
   const button = byId('collect');
-  if (collecting) return;
+  if (collecting || target.mode !== 'current') return;
   const values = Object.fromEntries(DATE_FIELDS.map(([id]) => [id, byId(id).value]));
   const errors = dateErrors(values.edition, values.start, values.end);
   for (const [id] of DATE_FIELDS) {
@@ -181,5 +202,9 @@
 
  E.configure({requireToken, isCollecting: () => collecting});
  tokenHints();
- load('');
+ if (target.mode === 'invalid') {
+  byId('archive-title').textContent = 'Collecte archivée introuvable';
+  byId('archive-text').textContent = 'Identifiant de collecte invalide.';
+  S.showLoadError(`L’identifiant de collecte « ${target.value} » n’est pas valide : rouvrez la collecte depuis la page des archives.`);
+ } else load('');
 })(typeof window !== 'undefined' ? window : globalThis);

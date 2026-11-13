@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://api.github.com https://raw.githubusercontent.com; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>Veille SNUM · Archives des collectes</title>
+<meta name="description" content="Archives des collectes de la veille SNUM publiées par GitHub Actions : téléchargement des fichiers et réouverture d’une collecte dans la page de sélection.">
+<link rel="stylesheet" href="dsfr/dsfr.min.css">
+<link rel="apple-touch-icon" href="dsfr/favicon/apple-touch-icon.png">
+<link rel="icon" href="dsfr/favicon/favicon.svg" type="image/svg+xml">
+<style>.archive-list{list-style:none;padding-left:0}</style>
+</head>
+<body>
+<div class="fr-skiplinks">
+ <nav class="fr-container" role="navigation" aria-label="Accès rapide">
+  <ul class="fr-skiplinks__list">
+   <li><a class="fr-link" href="#contenu">Contenu</a></li>
+   <li><a class="fr-link" href="#footer">Pied de page</a></li>
+  </ul>
+ </nav>
+</div>
+<header role="banner" class="fr-header">
+ <div class="fr-header__body">
+  <div class="fr-container">
+   <div class="fr-header__body-row">
+    <div class="fr-header__brand fr-enlarge-link">
+     <div class="fr-header__service">
+      <a href="./" title="Accueil - Veille SNUM">
+       <p class="fr-header__service-title">Veille SNUM</p>
+      </a>
+      <p class="fr-header__service-tagline">Collecte par GitHub Actions, sélection de la semaine et export JSON V519</p>
+     </div>
+    </div>
+   </div>
+  </div>
+ </div>
+</header>
+<main id="contenu" class="fr-container fr-my-4w">
+<div class="fr-grid-row fr-grid-row--center">
+<div class="fr-col-12 fr-col-lg-10">
+ <h1>Archives des collectes</h1>
+ <p>Chaque collecte publiée est archivée par GitHub Actions sur la branche publique « donnees-veille » du dépôt. Téléchargez ses fichiers, ou rouvrez-la dans la page de sélection pour refaire une sélection et exporter son JSON V519. Une collecte rouverte ne remplace pas la collecte en cours.</p>
+ <p><a class="fr-link" href="./">Revenir à la collecte en cours</a></p>
+ <p id="archives-status" role="status">Chargement des archives…</p>
+ <div id="archives-error" class="fr-alert fr-alert--error fr-mb-4w" role="alert" hidden></div>
+ <ul id="archives-list" class="archive-list fr-grid-row fr-grid-row--gutters fr-mb-4w"></ul>
+ <p id="download-status" class="fr-text--sm" role="status"></p>
+ <p class="fr-text--sm">Une archive publiée peut mettre quelques minutes à apparaître ici. Les faits ne sont pas certifiés automatiquement : vérifiez chaque source avant diffusion.</p>
+</div>
+</div>
+</main>
+<footer class="fr-footer" role="contentinfo" id="footer">
+ <div class="fr-container">
+  <div class="fr-footer__body">
+   <div class="fr-footer__brand"><p class="fr-footer__brand-link">Veille SNUM</p></div>
+   <div class="fr-footer__content">
+    <p class="fr-footer__content-desc">Archives des collectes de la newsletter du Service du numérique. Aucun courriel n’est envoyé depuis cette page et aucune donnée n’est enregistrée dans le navigateur.</p>
+   </div>
+  </div>
+  <div class="fr-footer__bottom">
+   <ul class="fr-footer__bottom-list">
+    <li class="fr-footer__bottom-item"><span class="fr-footer__bottom-link">Accessibilité : audit non réalisé</span></li>
+    <li class="fr-footer__bottom-item"><span class="fr-footer__bottom-link">Mentions légales, données personnelles et plan du site : à rédiger avant tout usage institutionnel</span></li>
+   </ul>
+  </div>
+ </div>
+</footer>
+<script type="module" src="dsfr/dsfr.module.min.js"></script>
+<script nomodule src="dsfr/dsfr.nomodule.min.js"></script>
+<script src="selection.js" defer></script>
+<script src="github.js" defer></script>
+<script src="archives.js" defer></script>
+</body>
+</html>

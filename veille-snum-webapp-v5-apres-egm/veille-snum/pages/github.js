@@ -5,7 +5,10 @@
 (function (global) {
  const REPO = 'alexandra-guiderdoni/assistant-ia-newsletter-com-snum';
  const API = `https://api.github.com/repos/${REPO}`;
- const RAW = `https://raw.githubusercontent.com/${REPO}/donnees-repechage/repechages/`;
+ // Branche publique des données produites par GitHub Actions : archives des
+ // collectes (collectes/) et résultats de repêchage (repechages/).
+ const RAW_BASE = `https://raw.githubusercontent.com/${REPO}/donnees-veille/`;
+ const RAW = `${RAW_BASE}repechages/`;
  const WORKFLOWS = {collecte: 'publier-paquet-snum.yml', repechage: 'repecher-candidat.yml'};
  const API_VERSION = '2026-03-10';
  const POLL_MS = 10000;
@@ -143,6 +146,6 @@
   throw new Error('Le résultat du repêchage n’est pas encore publié : réessayez dans une minute.');
  }
 
- global.VeilleGithub = {REPO, WORKFLOWS, POLL_MS, isoToFr, tokenLooksValid, collectInputs, repechageInputs, dispatchRequest,
+ global.VeilleGithub = {REPO, RAW_BASE, WORKFLOWS, POLL_MS, isoToFr, tokenLooksValid, collectInputs, repechageInputs, dispatchRequest,
   runsListUrl, runUrl, jobsUrl, repechageResultUrl, pickRun, progress, elapsed, httpError, dispatch, follow, readRepechage};
 })(typeof window !== 'undefined' ? window : globalThis);
