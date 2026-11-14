@@ -1,0 +1,152 @@
+{
+  "schema_version": "SNUM_CANDIDATS_ECARTES_V1",
+  "edition_date": "2026-11-14",
+  "window_start": "2026-11-07",
+  "window_end": "2026-11-14",
+  "candidates": [
+    {
+      "title": "Mathilde, data scientist - Direction du numérique pour l'Éducation",
+      "source": "DINUM",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://numerique.gouv.fr/rejoignez-nous/les-visages-de-numeriquegouv/mathilde-da-cruz-data-scientist-direction-du-numerique-pour-leducation/",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    },
+    {
+      "title": "55 000 € pour une batterie d’occasion : Mercedes propose de remplacer un pack défectueux avec 300 000 km",
+      "source": "01net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.01net.com/actualites/55-000-euros-batterie-occasion-mercedes-propose-remplacer-pack-defectueux-modele-300-000-km.html",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    },
+    {
+      "title": "Hugging Face perd son meilleur allié pour l'IA open source chez Nvidia, deux mois après le rachat",
+      "source": "01net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.01net.com/actualites/hugging-face-perd-son-meilleur-allie-pour-lia-open-source-chez-nvidia-deux-mois-apres-le-rachat.html",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    },
+    {
+      "title": "BYD a trouvé la solution pour simplifier à l'extrême la charge de votre voiture électrique : vous n'aurez même plus à sortir",
+      "source": "01net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.01net.com/actualites/la-solution-ultime-pour-simplifier-la-charge-de-votre-voiture-electrique-vous-naurez-meme-plus-a-sortir.html",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    },
+    {
+      "title": "Outlook, Hotmail, Live, MSN : des mails ont été bloqué pendant 4 jours, Microsoft annonce une mauvaise nouvelle",
+      "source": "01net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.01net.com/actualites/outlook-hotmail-live-msn-des-mails-ont-ete-bloque-pendant-4-jours-microsoft-annonce-une-mauvaise-nouvelle.html",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    },
+    {
+      "title": "Panne Microsoft : ChatGPT et Claude également touchés, et ils ne sont pas les seuls",
+      "source": "01net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.01net.com/actualites/panne-microsoft-chatgpt-et-claude-egalement-touches-et-ils-ne-sont-pas-les-seuls.html",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "ECHEC_ALBERT"
+    },
+    {
+      "title": "Alice Huang était proche du plus important concurrent chinois de Nvidia",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.journaldunet.com/business/1557957-alice-huang-a-detenu-des-participations-dans-des-entreprises-ayant-beneficie-a-huawei/",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    },
+    {
+      "title": "Distribution : L'Autorité de la concurrence soupçonne l'alliance Aura de pratiques anticoncurrentielles",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.journaldunet.com/business/1557965-l-autorite-de-la-concurrence-soupconne-l-alliance-aura-de-pratiques-anticoncurrentielles/",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    },
+    {
+      "title": "L'ancien gouverneur de la Banque de France estime que la France peut rétablir la confiance des marchés",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.journaldunet.com/business/action-publique/1557961-christian-noyer-estime-que-la-france-peut-retablir-la-confiance-des-marches/",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    },
+    {
+      "title": "SpaceX va essayer de rattraper les deux étages de Starship",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.journaldunet.com/economie/industrie/1557963-spacex-va-essayer-de-rattraper-les-deux-etages-de-starship/",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    },
+    {
+      "title": "Nvidia sans Jensen Huang : qui pourrait remplacer l’illustre PDG ?",
+      "source": "01net",
+      "publication_date_iso": "2026-11-12",
+      "url": "https://www.01net.com/actualites/nvidia-sans-jensen-huang-qui-pourrait-remplacer-lillustre-pdg.html",
+      "publication_date_long": "12 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    },
+    {
+      "title": "La crise climatique pourrait représenter un tiers de l'inflation alimentaire en 2027, selon Oxfam",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-12",
+      "url": "https://www.journaldunet.com/business/1557883-la-crise-climatique-pourrait-representer-un-tiers-de-l-inflation-alimentaire-en-2027-selon-oxfam/",
+      "publication_date_long": "12 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    },
+    {
+      "title": "Ce que l'on sait de Megaspeed et sa fondatrice Alice Huang, à l'origine de la chute du patron de Nvidia",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-12",
+      "url": "https://www.journaldunet.com/business/1557889-ce-que-l-on-sait-de-megaspeed-et-sa-fondatrice-alice-huang-a-l-origine-de-la-chute-du-patron-de-nvidia/",
+      "publication_date_long": "12 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    },
+    {
+      "title": "Face à l'impuissance de l'Etat, deux hauts fonctionnaires appellent à transformer l'action publique",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-12",
+      "url": "https://www.journaldunet.com/business/action-publique/1557887-face-a-l-impuissance-de-l-etat-deux-hauts-fonctionnaires-proposent-de-transformer-l-action-publique/",
+      "publication_date_long": "12 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    },
+    {
+      "title": "A Douvrin, la gigafactory ACC espère fabriquer 300 000 modules de batteries automobiles en 2026",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-12",
+      "url": "https://www.journaldunet.com/economie/industrie/1557885-acc-espere-fabriquer-300-000-modules-de-batteries-en-2026/",
+      "publication_date_long": "12 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    },
+    {
+      "title": "La France poursuit ses engagements en matière de financements pour le climat et la biodiversité dans les pays en développement en 2025",
+      "source": "Presse Bercy",
+      "publication_date_iso": "2026-11-10",
+      "url": "https://presse.economie.gouv.fr/la-france-poursuit-ses-engagements-en-matiere-de-financements-pour-le-climat-et-la-biodiversite-dans-les-pays-en-developpement-en-2025/",
+      "publication_date_long": "10 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    },
+    {
+      "title": "Les magasins BHV Marais et BHV Parly 2 ferment temporairement",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-10",
+      "url": "https://www.journaldunet.com/business/1557791-les-magasins-bhv-marais-et-bhv-parly-2-ferment-temporairement/",
+      "publication_date_long": "10 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    },
+    {
+      "title": "Le taux de chômage en France baisse à 8,2% au troisième trimestre 2026",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-10",
+      "url": "https://www.journaldunet.com/business/action-publique/1557805-le-taux-de-chomage-en-france-baisse-a-8-2-au-troisieme-trimestre-2026/",
+      "publication_date_long": "10 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    }
+  ]
+}
