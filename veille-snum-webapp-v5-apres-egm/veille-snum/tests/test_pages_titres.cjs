@@ -42,7 +42,9 @@ test('sélection : titres gardés dans l’ordre, rubrique imposée ou vide pour
  const got = plain(T.buildSelection([entry('a', true, 'ia'), entry('b', false, 'rh'), entry('c', true), entry('d', true, 'bercy')]));
  assert.deepEqual(got, [{url: 'https://www.numerique.gouv.fr/a', rubrique: 'ia'}, {url: 'https://www.numerique.gouv.fr/c', rubrique: ''},
   {url: 'https://www.numerique.gouv.fr/d', rubrique: 'bercy'}]);
- for (const r of ['numerique', 'ia', 'commande', 'rh', 'bercy', '']) assert.equal(T.buildSelection([entry('x', true, r)])[0].rubrique, r);
+ for (const r of [...W.VeilleSelection.RUBRICS, '']) assert.equal(T.buildSelection([entry('x', true, r)])[0].rubrique, r);
+ // L'ancienne thématique ne se choisit plus pour une nouvelle collecte.
+ assert.throws(() => T.buildSelection([entry('x', true, 'numerique')]), /RUBRIQUE_INVALIDE/);
 });
 
 test('sélection refusée : vide, plus de 60, rubrique inconnue, adresse non https ou en double', () => {

@@ -31,7 +31,7 @@ SOURCES = [
 ]
 
 
-def article(i, day, rubric="numerique"):
+def article(i, day, rubric="administration"):
     return {
         "title": f"Un article de veille numéro {i}",
         "source": "Next",
@@ -84,7 +84,7 @@ class ReconstructionTests(unittest.TestCase):
             {**article(1, "2026-11-04"), "url": "https://example.com/hors-liste"},
             {**article(1, "2026-11-04"), "url": "http://next.ink/a"},
             {**article(1, "2026-10-01")},
-            {**article(1, "2026-11-04"), "rubric": "economie"},
+            {**article(1, "2026-11-04"), "rubric": "culture"},
             {**article(1, "2026-11-04"), "fact": "mot " * 30},
             {k: v for k, v in article(1, "2026-11-04").items() if k != "title"},
         ]

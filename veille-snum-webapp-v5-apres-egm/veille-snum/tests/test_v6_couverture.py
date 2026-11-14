@@ -132,7 +132,7 @@ class CouvertureTests(TestCase):
         only_next = [x for x in sources() if x["id"] in ("next", "source-interne")]
         summary = {
             "relevant": True,
-            "rubric": "numerique",
+            "rubric": "administration",
             "fact": "Le service public présente une évolution de ses outils numériques.",
             "keywords": ["numérique", "service public", "administration"],
             "takeaway": "Une évolution des outils publics est décrite.",

@@ -301,7 +301,7 @@ class ResumesTests(unittest.TestCase):
         self.lancer(selection((URLS[0], "")))
         self.assertEqual(self.albert.rubriques(), {URLS[0]: None})
         self.assertEqual(
-            lire(self.dossier, PAQUET)["articles"][0]["rubric"], "numerique"
+            lire(self.dossier, PAQUET)["articles"][0]["rubric"], "administration"
         )
 
     def test_candidat_transmis_avec_son_extrait_borne(self):

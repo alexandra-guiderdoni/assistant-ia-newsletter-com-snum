@@ -3,8 +3,12 @@
 // Première partie : fonctions pures, testables sans DOM (tests/test_pages_selection.cjs).
 // Seconde partie : interface, montée par page.js si la page est présente.
 (function (global) {
- const RUBRICS = ['numerique', 'ia', 'commande', 'rh', 'bercy'];
- const RUBRIC_LABELS = {numerique: 'Numérique', ia: 'Intelligence artificielle', commande: 'Commande publique', rh: 'Ressources humaines', bercy: 'Bercy'};
+ // Rubriques de la revue de presse, dans l'ordre du courriel (#32). « numerique », ancienne
+ // thématique, n'est plus proposée : elle reste lisible dans les collectes archivées.
+ const RUBRICS = ['ia', 'administration', 'dsi', 'economie', 'infrastructure', 'securite', 'applications', 'droit', 'commande', 'rh', 'bercy'];
+ const LEGACY_RUBRICS = ['numerique'];
+ const KNOWN_RUBRICS = [...RUBRICS, ...LEGACY_RUBRICS];
+ const RUBRIC_LABELS = {ia: 'Intelligence artificielle (IA)', administration: 'Administration électronique', dsi: 'DSI, méthode, métier', economie: 'Économie numérique', infrastructure: 'Infrastructure, réseaux', securite: 'Sécurité informatique', applications: 'Applications et développement', droit: 'Droit, informatique et libertés', commande: 'Achat public', rh: 'Ressources humaines et nominations', bercy: 'Vie de Bercy', numerique: 'Numérique'};
  const KEPT_PER_RUBRIC = 2;
  const MONTHS = ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'];
  const EMPTY_RUBRIC_PREFIX = 'Rubrique sans article : ';
@@ -34,11 +38,11 @@
  // selection : [{article, keep, rubric}] ; les autres champs sont conservés.
  function rebuild(packet, selection) {
   const kept = selection.filter(s => s.keep).map(s => {
-   if (!RUBRICS.includes(s.rubric)) throw new Error('RUBRIQUE_INVALIDE');
+   if (!KNOWN_RUBRICS.includes(s.rubric)) throw new Error('RUBRIQUE_INVALIDE');
    return {...s.article, rubric: s.rubric};
   });
   kept.sort((a, b) => compare(b.publication_date_iso, a.publication_date_iso)
-   || RUBRICS.indexOf(a.rubric) - RUBRICS.indexOf(b.rubric)
+   || KNOWN_RUBRICS.indexOf(a.rubric) - KNOWN_RUBRICS.indexOf(b.rubric)
    || compare(a.url, b.url));
   const articles = kept.map((a, i) => ({...a, id: `U${String(i + 1).padStart(2, '0')}`, essential: kept.length >= 3 && i < 3}));
   const present = new Set(articles.map(a => a.rubric));
@@ -106,7 +110,8 @@
    o.value = ''; o.selected = true; o.disabled = true;
    select.append(o);
   }
-  for (const r of RUBRICS) {
+  // Une ancienne thématique reste affichée pour l'article qui la porte, sans être proposée aux autres.
+  for (const r of LEGACY_RUBRICS.includes(value) ? [...RUBRICS, value] : RUBRICS) {
    const o = el('option', '', RUBRIC_LABELS[r]);
    o.value = r; o.selected = r === value;
    select.append(o);
@@ -211,7 +216,7 @@
   const box = byId('article-list');
   box.replaceChildren();
   if (!selection.length) { box.append(el('p', '', 'Le paquet publié ne contient aucun article.')); return; }
-  for (const rubric of RUBRICS) {
+  for (const rubric of KNOWN_RUBRICS) {
    const items = selection.filter(s => s.rubric === rubric);
    if (!items.length) continue;
    const section = el('section', 'fr-mb-4w');

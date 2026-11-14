@@ -20,8 +20,14 @@ on:
         required: true
         type: choice
         options:
-          - numerique
           - ia
+          - administration
+          - dsi
+          - economie
+          - infrastructure
+          - securite
+          - applications
+          - droit
           - commande
           - rh
           - bercy

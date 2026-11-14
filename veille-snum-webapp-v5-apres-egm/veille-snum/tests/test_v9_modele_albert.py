@@ -140,7 +140,7 @@ class ServeurModeleTests(unittest.TestCase):
         ):
             code, body = self.request(
                 "/api/summarize",
-                {"url": url, "rubric": "numerique", "albert_api_key": TOKEN},
+                {"url": url, "rubric": "administration", "albert_api_key": TOKEN},
             )
         self.assertEqual(code, 200, body)
         self.assertEqual(seen, ["openweight-large"])

@@ -3,7 +3,7 @@ from unittest import TestCase, main, mock
 from urllib.parse import urlsplit
 
 from veille_snum.core import (sources, normalized_url, iso_date, parse_page, sitemap_entries,
-                             packet_for, validate_summary, discover_source, collect)
+                             packet_for, validate_summary, discover_source, collect, RUBRICS)
 
 
 class FakeHttp:
@@ -31,7 +31,7 @@ class FakeHttp:
 
 
 def good_summary(candidate):
-    return {"relevant": True, "rubric": "numerique", "fact": "Le service public présente une évolution de ses outils numériques.",
+    return {"relevant": True, "rubric": "administration", "fact": "Le service public présente une évolution de ses outils numériques.",
             "keywords": ["numérique", "service public", "administration"],
             "takeaway": "Une évolution des outils publics est décrite.", "snum_interest": "À examiner pour les services numériques du ministère."}
 
@@ -89,7 +89,7 @@ class CollecteTests(TestCase):
         self.assertEqual([a["id"] for a in report["packet"]["articles"]], [f"U{i:02d}" for i in range(1, 14)])
         self.assertEqual(sum(x["essential"] for x in report["packet"]["articles"]), 3)
         self.assertTrue(any("Source interne non traitée" in x["title"] for x in report["packet"]["watch"]))
-        self.assertTrue(all(a["rubric"] in ("numerique", "ia", "commande", "rh", "bercy") for a in report["packet"]["articles"]))
+        self.assertTrue(all(a["rubric"] in RUBRICS for a in report["packet"]["articles"]))
         self.assertFalse(any("source-interne" in url for url in client.calls))
 
     def test_sans_albert_pas_de_faux_paquet(self):
@@ -102,7 +102,7 @@ class CollecteTests(TestCase):
 
     def test_mauvaise_sortie_modele_bloque_export(self):
         def wrong(_):
-            return {"relevant": True, "rubric": "numerique", "fact": "ok", "keywords": [], "takeaway": "ok", "snum_interest": "ok"}
+            return {"relevant": True, "rubric": "administration", "fact": "ok", "keywords": [], "takeaway": "ok", "snum_interest": "ok"}
         report = collect({"edition_date": "2026-11-11", "window_start": "2026-11-01", "window_end": "2026-11-10"},
                          client=FakeHttp(), summarize=wrong)
         self.assertEqual(report["status"], "incomplete")
@@ -111,7 +111,7 @@ class CollecteTests(TestCase):
     def test_paquet_vide_autorise_sous_recherche_executee(self):
         result = packet_for(dt.date(2026, 11, 11), dt.date(2026, 11, 1), dt.date(2026, 11, 10), [], [])
         self.assertEqual(result["articles"], [])
-        self.assertEqual(len(result["watch"]), 6)
+        self.assertEqual(len(result["watch"]), len(RUBRICS) + 1)  # une alerte par rubrique vide, plus « Collecte limitée »
 
 
 class ExhaustionTests(TestCase):

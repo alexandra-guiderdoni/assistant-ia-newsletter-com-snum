@@ -97,8 +97,10 @@ class ThematiquesAffichageTests(unittest.TestCase):
         root = Path(web.__file__).parent
         script = (root / "app.js").read_text(encoding="utf-8")
         page = (root / "index.html").read_text(encoding="utf-8")
-        for label in ("Numérique", "Intelligence artificielle", "Commande publique",
-                      "Ressources humaines", "Bercy"):
+        for label in ("Intelligence artificielle (IA)", "Administration électronique", "DSI, méthode, métier",
+                      "Économie numérique", "Infrastructure, réseaux", "Sécurité informatique",
+                      "Applications et développement", "Droit, informatique et libertés", "Achat public",
+                      "Ressources humaines et nominations", "Vie de Bercy"):
             self.assertIn(label, script)
         self.assertIn("RUBRIC_LABELS", script)
         self.assertNotIn("${a.rubric} ·", script)
