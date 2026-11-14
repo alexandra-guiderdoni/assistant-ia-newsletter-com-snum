@@ -83,6 +83,8 @@
  // failed(texte, étatEnLigne) renvoie {message, reload} ; done(vue) renvoie le message de fin.
  async function launch(o) {
   const {ui, button} = o, fresh = () => String(Date.now());
+  // Une erreur d'affichage des fichiers relus ne doit pas passer pour une interruption du lancement.
+  const reload = () => hooks.load(fresh()).catch(() => false);
   running = true;
   showError(ui, ''); showRun(ui, ''); showError(COLLECT_UI, '');
   // Le bouton garde le focus : il est marqué indisponible au lieu d'être désactivé.
@@ -109,7 +111,9 @@
    });
    say(ui, `${o.name} terminée sur GitHub : lecture des fichiers publiés…`);
    let etat = await hooks.readEtat(fresh());
-   for (let i = 0; end.state === 'success' && !publishedBy(etat, run.id) && i < FRESH_TRIES; i++) {
+   // Archivage en échec : la publication, tâche séparée, a pu réussir ; la nouvelle version est attendue de même.
+   const expected = end.state === 'success' || end.failedJob === 'archivage';
+   for (let i = 0; expected && !publishedBy(etat, run.id) && i < FRESH_TRIES; i++) {
     say(ui, `${o.name} terminée sur GitHub : la page publiée se met à jour, nouvelle lecture dans quelques secondes…`);
     await G.sleep(FRESH_WAIT_MS);
     etat = await hooks.readEtat(fresh());
@@ -118,18 +122,18 @@
    if (result === 'attente') { conclude(ui, `${o.name} terminée, résultat pas encore visible.`, TEXT.stale(o.name), link); return; }
    if (result === 'echec') {
     const failure = o.failed(end.text, etat);
-    if (failure.reload) await hooks.load(fresh());
+    if (failure.reload) await reload();
     conclude(ui, `${o.name} en échec.`, failure.message, link);
     return;
    }
-   const view = await hooks.load(fresh());
+   const view = await reload();
    if (result === 'publie-en-echec') conclude(ui, `${o.name} publiée, mais exécution en échec.`, TEXT.publishedFailed(end.text), link);
    else conclude(ui, view ? o.done(view) : `${o.name} terminée, mais les fichiers publiés n’ont pas pu être relus : rechargez la page.`, '');
   } catch (err) {
    const why = String(err.message || err);
    if (err.lost) {
     // Page vidée au lancement : ce qui est publié pour l'instant est réaffiché.
-    if (sent && o.onAccepted) await hooks.load(fresh());
+    if (sent && o.onAccepted) await reload();
     conclude(ui, `${o.name} : suivi interrompu.`, TEXT.lost(o.subject, why), link);
    } else conclude(ui, sent ? `${o.name} interrompue.` : `${o.name} non lancée.`, why, err.link || link);
   } finally {
