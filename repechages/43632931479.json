@@ -1,0 +1,22 @@
+{
+  "schema_version": "SNUM_REPECHAGE_V1",
+  "url": "https://www.01net.com/actualites/jai-remplace-mes-enceintes-sonos-par-le-systeme-jbl-cove-pari-reussi-ou-fausse-note.html",
+  "status": "ok",
+  "message": "Article repêché dans la rubrique infrastructure.",
+  "article": {
+    "rubric": "infrastructure",
+    "title": "J’ai remplacé mes enceintes Sonos par le système JBL Cove : pari réussi ou fausse note ?",
+    "source": "01net",
+    "publication_date_iso": "2026-11-14",
+    "publication_date_long": "14 novembre 2026",
+    "url": "https://www.01net.com/actualites/jai-remplace-mes-enceintes-sonos-par-le-systeme-jbl-cove-pari-reussi-ou-fausse-note.html",
+    "fact": "L’article compare les enceintes JBL Cove aux Sonos, sans lien avec le secteur public.",
+    "keywords": [
+      "JBL Cove",
+      "Sonos",
+      "enceintes multiroom"
+    ],
+    "takeaway": "Pas d’impact pour le SNUM.",
+    "snum_interest": "Négligeable pour les ministères économiques et financiers."
+  }
+}
