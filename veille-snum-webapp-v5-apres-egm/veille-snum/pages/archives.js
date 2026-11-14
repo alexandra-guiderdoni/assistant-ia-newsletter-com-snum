@@ -113,7 +113,7 @@
   badge.append(hidden('Statut : '), document.createTextNode(d.status));
   badges.append(el('li')); badges.firstChild.append(badge); start.append(badges);
   const end = el('div', 'fr-card__end');
-  end.append(counts, el('p', 'fr-card__detail', d.archived));
+  end.append(counts, el('p', 'fr-text--sm fr-mb-0', d.archived));
   content.append(el('h2', 'fr-card__title', d.title), el('p', 'fr-card__desc', d.period), start, end);
   const footer = el('div', 'fr-card__footer'), links = el('ul', 'fr-links-group');
   for (const f of FILES) {

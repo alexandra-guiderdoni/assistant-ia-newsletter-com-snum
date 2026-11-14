@@ -140,6 +140,16 @@ jobs:
         run: |
           cp pages/*.html pages/*.js "$GITHUB_WORKSPACE/site/"
           cp -R veille_snum/dsfr "$GITHUB_WORKSPACE/site/dsfr"
+          # Chaque script est appelé avec le commit publié dans son adresse : après une mise à
+          # jour, le navigateur ne mélange pas la nouvelle page avec d'anciens scripts en cache.
+          python - "$GITHUB_WORKSPACE/site" "$GITHUB_SHA" <<'PY'
+          import pathlib, re, sys
+
+          for nom in ("index.html", "archives.html"):
+              page = pathlib.Path(sys.argv[1]) / nom
+              texte = page.read_text(encoding="utf-8")
+              page.write_text(re.sub(r'(<script src="[a-z]+\.js)(" defer>)', rf"\1?v={sys.argv[2][:12]}\2", texte), encoding="utf-8")
+          PY
 
       # Résumé affiché en tête de la page du run : où trouver la page, quoi en faire.
       - name: Résumé du run

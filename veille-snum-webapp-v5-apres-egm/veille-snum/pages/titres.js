@@ -85,6 +85,8 @@
   if (n === 1) return 'Rédiger le résumé de l’article gardé';
   return n > 1 ? `Rédiger les résumés des ${n} articles gardés` : 'Rédiger les résumés des articles gardés';
  }
+ // Bouton de groupe : garde tous les titres d'une source, ou les retire tous s'ils sont déjà gardés.
+ const groupAction = (kept, total) => (total > 0 && kept === total ? 'Tout retirer' : 'Tout garder');
  const countText = (kept, total) => `${kept} titre${kept > 1 ? 's' : ''} gardé${kept > 1 ? 's' : ''} sur ${total}`;
  // Durée annoncée : estimée d'après quatre collectes publiques du 13 novembre 2026, non mesurée pour ce mode.
  function durationText(kept) {
@@ -93,7 +95,7 @@
  }
 
  global.VeilleTitres = {MAX_SELECTION, MAX_SELECTION_CHARS, SAFE_SELECTION, MOVED, parseEtat, view, isSelectable, buildSelection, resumesInputs, moved, launchInputs,
-  groupBySource, resumesLabel, countText, durationText};
+  groupBySource, groupAction, resumesLabel, countText, durationText};
 
  if (typeof document === 'undefined' || !document.getElementById('titres-section')) return;
 
@@ -120,6 +122,20 @@
   const items = entries.filter(e => e.source === source);
   const kept = items.filter(e => e.keep).length;
   return `${source} (${kept} gardé${kept > 1 ? 's' : ''} sur ${items.length})`;
+ }
+ // Titre et bouton du groupe après un changement ; le bouton nomme sa source pour les lecteurs d'écran.
+ function updateGroup(group, source) {
+  const items = entries.filter(e => e.source === source);
+  byId(`titres-heading-${group}`).textContent = groupHeading(source);
+  const button = byId(`titres-tout-${group}`);
+  if (button) button.replaceChildren(document.createTextNode(groupAction(items.filter(e => e.keep).length, items.length)), el('span', 'fr-sr-only', ` : ${source}`));
+ }
+ function toggleGroup(group, source) {
+  const items = entries.filter(e => e.source === source);
+  const keep = groupAction(items.filter(e => e.keep).length, items.length) === 'Tout garder';
+  for (const e of items) { e.keep = keep; byId(`titre-garder-${e.key}`).checked = keep; }
+  updateGroup(group, source);
+  refresh(`${keep ? 'Tous les titres gardés' : 'Tous les titres retirés'} : ${source}`);
  }
 
  // Compteur, libellé et état du bouton ; bouton bloqué sans titre gardé, au-delà de 60 ou sans jeton.
@@ -165,7 +181,7 @@
   keep.type = 'checkbox'; keep.id = `titre-garder-${e.key}`; keep.checked = false;
   keep.addEventListener('change', () => {
    e.keep = keep.checked;
-   byId(`titres-heading-${e.group}`).textContent = groupHeading(e.source);
+   updateGroup(e.group, e.source);
    refresh(`${e.keep ? 'Titre gardé' : 'Titre retiré'} : ${e.title}`);
   });
   keepGroup.append(keep, label(keep.id, 'Garder', e.title));
@@ -196,9 +212,12 @@
    h.id = `titres-heading-${gi + 1}`;
    section.setAttribute('aria-labelledby', h.id);
    for (const [e, c] of items) list.append(titreItem(e, c));
-   section.append(h, list);
+   const all = el('button', 'fr-btn fr-btn--tertiary fr-btn--sm fr-mb-2w');
+   all.type = 'button'; all.id = `titres-tout-${gi + 1}`;
+   all.addEventListener('click', () => { if (!all.disabled) toggleGroup(String(gi + 1), g.source); });
+   section.append(h, ...(items.some(([e]) => e.url) ? [all] : []), list);
    box.append(section);
-   h.textContent = groupHeading(g.source);
+   updateGroup(String(gi + 1), g.source);
   });
   entries.sort((a, b) => Number(a.key) - Number(b.key));
   if (!groups.length) box.append(el('p', '', 'Aucun titre trouvé pour cette période.'));
@@ -218,7 +237,7 @@
   if (url) { const a = el('a', 'fr-link', 'Voir le détail de l’exécution sur GitHub (nouvelle fenêtre)'); a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer'; box.append(a); }
  }
  function lock(on) {
-  for (const field of byId('titres-list').querySelectorAll('input, select')) field.disabled = on;
+  for (const field of byId('titres-list').querySelectorAll('input, select, button')) field.disabled = on;
  }
  const SELECTION_ERRORS = {SELECTION_VIDE: 'Gardez au moins un titre.', SELECTION_TROP_LONGUE: `Gardez au plus ${MAX_SELECTION} titres.`,
   SELECTION_TROP_VOLUMINEUSE: 'La sélection dépasse la taille acceptée par GitHub : gardez moins de titres, puis repêchez les autres ensuite.'};
