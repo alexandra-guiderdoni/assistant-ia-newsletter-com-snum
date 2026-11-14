@@ -223,14 +223,14 @@ const sansDefilement = page => page.evaluate(() => document.documentElement.scro
   await page.fill('#gh-token', 'pas un jeton !');
   await page.click('#collect');
   check('C3 jeton mal formé : refusé avant tout envoi', /ne ressemble pas à un jeton GitHub/.test(await o.texte('#gh-token-messages')) && !m.appels.some(c => c.hote === 'api' && c.headers && c.headers.authorization));
-  const cas = {expire: [/erreur 401/, /expiré ou révoqué/], lecture: [/erreur 403/, /Actions : Read and write/], 'sans-acces': [/erreur 404/, /ne donne pas accès au dépôt/]};
+  const cas = {expire: [/erreur 401/, /expiré ou révoqué/], lecture: [/erreur 403/, /pas le droit de lancer une tâche/], 'sans-acces': [/erreur 404/, /ne donne pas accès au dépôt/]};
   for (const [droit, [code, conseil]] of Object.entries(cas)) {
    m.jetons[JETON] = droit;
    await page.fill('#gh-token', JETON);
    await page.click('#collect');
    await o.attendre(() => !document.getElementById('collect-error').hidden);
    const erreur = await o.texte('#collect-error');
-   check(`C4 jeton ${droit} : message clair, lien vers la marche à suivre cité, titres toujours affichés`, code.test(erreur) && conseil.test(erreur) && /Créer ou renouveler un jeton GitHub/.test(erreur)
+   check(`C4 jeton ${droit} : message clair, lien vers la marche à suivre cité, titres toujours affichés`, code.test(erreur) && conseil.test(erreur) && /Jeton GitHub de l’équipe : marche à suivre/.test(erreur)
     && (await o.texte('#collect-status')) === 'Collecte non lancée.' && (await page.$$('#titres-list input[type=checkbox]')).length === 13 && await o.actif() === 'collect', erreur);
   }
   await capture(page, 'c1-jeton-refuse.png');

@@ -40,3 +40,23 @@ test('pied de page : mention d’accessibilité exacte, liée au relevé présen
 test('rapport : « plans de site » plutôt que le mot anglais', () => {
  assert.doesNotMatch(lire('rapport.js'), /URL\/sitemaps/);
 });
+
+test('aucun paragraphe vide dans les pages : les zones de messages sont des div', () => {
+ for (const nom of ['index.html', 'archives.html']) assert.doesNotMatch(lire(nom), /<p [^>]*><\/p>/, nom);
+ assert.match(lire('index.html'), /<div id="collect-elapsed" class="fr-mb-1v"><\/div>/);
+ assert.match(lire('index.html'), /<div id="titres-count" class="fr-text--sm" role="status"><\/div>/);
+});
+
+test('messages d’erreur du jeton : en français, sans libellé anglais, adaptés au jeton partagé', () => {
+ const vm = require('node:vm');
+ const ctx = {window: {}};
+ for (const nom of ['selection.js', 'github.js']) vm.runInNewContext(lire(nom), ctx, {filename: nom});
+ const G = ctx.window.VeilleGithub;
+ for (const code of [401, 403, 404]) {
+  const message = G.httpError(code);
+  assert.doesNotMatch(message, /Read and write|fine-grained|Contents/, String(code));
+  assert.match(message, /personne qui gère le dépôt/, String(code));
+  assert.match(message, /« Jeton GitHub de l’équipe : marche à suivre »/, String(code));
+ }
+ assert.match(lire('index.html'), /id="gh-token-doc"[^>]*>Jeton GitHub de l’équipe : marche à suivre \(nouvelle fenêtre\)</);
+});

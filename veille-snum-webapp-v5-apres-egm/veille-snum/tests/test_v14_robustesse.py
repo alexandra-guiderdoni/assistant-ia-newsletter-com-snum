@@ -587,3 +587,24 @@ class TroisAppelsSimultanesTests(Cas):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class NotesDeCollecteTests(unittest.TestCase):
+    """Relevé d'accessibilité : les notes de collecte lues par la page étaient en partie en anglais."""
+
+    def test_notes_sur_le_plan_de_site_en_francais(self):
+        from veille_snum.core import discover_source, sources
+
+        class SansPlan(Site):
+            def get(self, url, domain, max_bytes=600_000, timeout=7):
+                if url.endswith("/sitemap.xml"):
+                    raise HTTPError(url, 503, "Service Unavailable", {}, None)
+                return super().get(url, domain, max_bytes, timeout)
+
+        source = next(s for s in sources() if not s["internal"])
+        _, _, etat = discover_source(source, DEBUT, FIN, SansPlan())
+        notes = " ".join(etat["notes"])
+        self.assertIn("Plan de site indisponible : HTTP 503", notes)
+        self.assertNotIn("itemap", notes)
+        # Les noms de champs du rapport ne changent pas : la page et les archives les lisent.
+        self.assertIn("sitemap_skipped", etat)

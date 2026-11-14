@@ -604,7 +604,7 @@ def discover_source(source, window_start, window_end, client, deadline=None):
     def skip_sitemap(url, reason):
         state["sitemap_skipped"] += 1
         state["sitemap_skipped_urls"].append(url)
-        state["notes"].append(f"Sitemap non visité : {reason}")
+        state["notes"].append(f"Plan de site non visité : {reason}")
     try:
         if not robots_allowed(client, home, domain, sitemap_url, robots_cache):
             state["robots_denied"] += 1
@@ -618,7 +618,7 @@ def discover_source(source, window_start, window_end, client, deadline=None):
                 sitemap_index.sort(key=lambda pair: hinted_date(pair[0], pair[1]) or dt.date.min, reverse=True)
                 selected = [u for u, _ in sitemap_index[:MAX_SITEMAP_CHILDREN]]
                 for child, _ in sitemap_index[MAX_SITEMAP_CHILDREN:]:
-                    skip_sitemap(child, "plafond de sitemaps enfants")
+                    skip_sitemap(child, "plafond de plans de site enfants")
                 # Les enfants sont indépendants : une panne ne masque pas les suivants.
                 for pos, child in enumerate(selected):
                     try:
@@ -639,17 +639,17 @@ def discover_source(source, window_start, window_end, client, deadline=None):
             else:
                 dated.sort(key=lambda pair: hinted_date(pair[0], pair[1]) or dt.date.min, reverse=True)
                 for u, _ in dated[300:]:
-                    skip_sitemap(u, "plafond de liens sitemap")
+                    skip_sitemap(u, "plafond de liens du plan de site")
                 links.extend((visit_weight(u, u, window_start, m), u) for u, m in dated[:300])
     except HTTPError as exc:
         if exc.code != 404:
             state["discovery_errors"] += 1
-            state["notes"].append(f"Sitemap indisponible : HTTP {exc.code}")
+            state["notes"].append(f"Plan de site indisponible : HTTP {exc.code}")
     except BudgetExceeded:
         skip_sitemap(sitemap_url, "budget de durée dépassé")
     except Exception as exc:
         state["discovery_errors"] += 1
-        state["notes"].append(f"Sitemap indisponible : {type(exc).__name__}")
+        state["notes"].append(f"Plan de site indisponible : {type(exc).__name__}")
 
     unique = {}
     for weight, url in links:
