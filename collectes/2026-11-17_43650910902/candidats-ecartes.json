@@ -1,0 +1,72 @@
+{
+  "schema_version": "SNUM_CANDIDATS_ECARTES_V1",
+  "edition_date": "2026-11-17",
+  "window_start": "2026-11-13",
+  "window_end": "2026-11-17",
+  "candidates": [
+    {
+      "title": "6 000 € et 320 km d’autonomie : cette petite électrique est-elle la voiture dont nous avons tous besoin ?",
+      "source": "01net",
+      "publication_date_iso": "2026-11-14",
+      "url": "https://www.01net.com/actualites/6-000-euros-320-km-autonomie-petite-electrique-voiture-avons-tous-besoin.html",
+      "publication_date_long": "14 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    },
+    {
+      "title": "Cette marque française a capté plus de 20 % des véhicules électriques en leasing social",
+      "source": "01net",
+      "publication_date_iso": "2026-11-14",
+      "url": "https://www.01net.com/actualites/cette-marque-francaise-a-capte-plus-de-20-des-vehicules-electriques-en-leasing-social.html",
+      "publication_date_long": "14 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    },
+    {
+      "title": "J’ai remplacé mes enceintes Sonos par le système JBL Cove : pari réussi ou fausse note ?",
+      "source": "01net",
+      "publication_date_iso": "2026-11-14",
+      "url": "https://www.01net.com/actualites/jai-remplace-mes-enceintes-sonos-par-le-systeme-jbl-cove-pari-reussi-ou-fausse-note.html",
+      "publication_date_long": "14 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    },
+    {
+      "title": "Les salariés des magasins Leclerc peuvent réclamer leur part des résultats même sans signature de leur employeur",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-14",
+      "url": "https://www.journaldunet.com/patrimoine/finances-personnelles/1557939-e-leclerc-salaries/",
+      "publication_date_long": "14 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    },
+    {
+      "title": "Mathilde, data scientist - Direction du numérique pour l'Éducation",
+      "source": "DINUM",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://numerique.gouv.fr/rejoignez-nous/les-visages-de-numeriquegouv/mathilde-da-cruz-data-scientist-direction-du-numerique-pour-leducation/",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    },
+    {
+      "title": "Distribution : L'Autorité de la concurrence soupçonne l'alliance Aura de pratiques anticoncurrentielles",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.journaldunet.com/business/1557965-l-autorite-de-la-concurrence-soupconne-l-alliance-aura-de-pratiques-anticoncurrentielles/",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    },
+    {
+      "title": "L'ancien gouverneur de la Banque de France estime que la France peut rétablir la confiance des marchés",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.journaldunet.com/business/action-publique/1557961-christian-noyer-estime-que-la-france-peut-retablir-la-confiance-des-marches/",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    },
+    {
+      "title": "SpaceX va essayer de rattraper les deux étages de Starship",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.journaldunet.com/economie/industrie/1557963-spacex-va-essayer-de-rattraper-les-deux-etages-de-starship/",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    }
+  ]
+}

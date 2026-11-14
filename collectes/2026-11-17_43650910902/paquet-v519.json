@@ -1,0 +1,318 @@
+{
+  "schema_version": "SNUM_PAQUET_RENDU_V519",
+  "edition_date": "2026-11-17",
+  "edition_date_long": "17 novembre 2026",
+  "window_start": "2026-11-13",
+  "window_end": "2026-11-17",
+  "articles": [
+    {
+      "id": "U01",
+      "rubric": "ia",
+      "title": "Après le scandale Nvidia, Washington envisage de nouvelles restrictions contre la Chine",
+      "source": "01net",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://www.01net.com/actualites/apres-le-scandale-nvidia-washington-envisage-de-nouvelles-restrictions-contre-la-chine.html",
+      "fact": "Washington prévoit de durcir les restrictions d’exportation des puces d’IA Nvidia vers la Chine, suite à un scandale impliquant un espion présumé.",
+      "keywords": [
+        "Nvidia",
+        "puces IA",
+        "exportations",
+        "restrictions américaines",
+        "Chine"
+      ],
+      "takeaway": "Renforcement des contrôles sur les puces d’IA pourrait freiner l’accès chinois aux technologies avancées.",
+      "snum_interest": "Suivi des politiques d’exportation des technologies IA, impact sur souveraineté numérique et marché.",
+      "essential": true
+    },
+    {
+      "id": "U02",
+      "rubric": "ia",
+      "title": "Hugging Face perd son meilleur allié pour l'IA open source chez Nvidia, deux mois après le rachat",
+      "source": "01net",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://www.01net.com/actualites/hugging-face-perd-son-meilleur-allie-pour-lia-open-source-chez-nvidia-deux-mois-apres-le-rachat.html",
+      "fact": "Nvidia a racheté Hugging Face pour 12,93 milliards de dollars, mais le PDG Jensen Huang a démissionné deux mois après.",
+      "keywords": [
+        "Nvidia",
+        "Hugging Face",
+        "IA open source",
+        "acquisition",
+        "Jensen Huang"
+      ],
+      "takeaway": "Le départ du dirigeant Nvidia crée incertitude pour l’avenir open‑source d’Hugging Face.",
+      "snum_interest": "Suivre l’impact de l’acquisition sur la souveraineté et l’ouverture de l’IA publique.",
+      "essential": true
+    },
+    {
+      "id": "U03",
+      "rubric": "administration",
+      "title": "Rémi, chef de projet de la plateforme d'apprentissage Éléa - Direction du numérique pour l'Éducation",
+      "source": "DINUM",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://numerique.gouv.fr/rejoignez-nous/les-visages-de-numeriquegouv/remi-chef-de-projet-de-la-plateforme-dapprentissage-elea-direction-du-numerique-pour-leducation/",
+      "fact": "Rémi Lefeuvre pilote la plateforme d’apprentissage Éléa, destinée aux personnels de l’Éducation nationale pour créer des parcours pédagogiques en ligne.",
+      "keywords": [
+        "plateforme Éléa",
+        "e-learning",
+        "transformation numérique",
+        "Éducation nationale"
+      ],
+      "takeaway": "Déployer une plateforme e‑learning nationale renforce la mission éducative du ministère.",
+      "snum_interest": "Intérêt pour le SNUM : suivi des projets numériques éducatifs et bonnes pratiques de déploiement.",
+      "essential": true
+    },
+    {
+      "id": "U04",
+      "rubric": "infrastructure",
+      "title": "Vincent Franceschini (Biomemory) : « Une fois dans l’ADN, l’information numérique ne peut plus être modifiée »",
+      "source": "IT for Business",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://www.itforbusiness.fr/biomemory-dna-shield-stockage-adn-109764",
+      "fact": "Biomemory propose DNA Shield, un service de stockage de données critiques dans l’ADN, offrant densité élevée, durabilité séculaire et immuabilité hors ligne.",
+      "keywords": [
+        "stockage ADN",
+        "Biomemory",
+        "DNA Shield",
+        "conservation durable",
+        "immuabilité"
+      ],
+      "takeaway": "L’ADN pourrait devenir le futur support de stockage ultra‑durable.",
+      "snum_interest": "Intérêt pour les solutions de stockage résilientes et hors‑ligne au sein du service du numérique.",
+      "essential": false
+    },
+    {
+      "id": "U05",
+      "rubric": "securite",
+      "title": "6 millions d'identifiants volés ont été récupérés par la police : comment savoir si vous êtes concerné ?",
+      "source": "01net",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://www.01net.com/actualites/6-millions-identifiants-voles-recuperes-police-verifiez-si-vous-etes-concerne.html",
+      "fact": "Europol a démantelé trois malwares, récupérant plus de 6 millions d’identifiants volés, ciblant entreprises et organisations.",
+      "keywords": [
+        "malware",
+        "ransomware",
+        "identifiants volés",
+        "Europol",
+        "cybercriminalité"
+      ],
+      "takeaway": "Renforcer la détection et la réponse aux malwares au sein des administrations.",
+      "snum_interest": "Améliorer la coopération internationale pour protéger les données publiques.",
+      "essential": false
+    },
+    {
+      "id": "U06",
+      "rubric": "securite",
+      "title": "Alice Huang était proche du plus important concurrent chinois de Nvidia",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://www.journaldunet.com/business/1557957-alice-huang-a-detenu-des-participations-dans-des-entreprises-ayant-beneficie-a-huawei/",
+      "fact": "Alice Huang aurait détenu des participations dans des entreprises fournissant des puces IA à Huawei, soulevant des enjeux de sécurité nationale.",
+      "keywords": [
+        "Alice Huang",
+        "Huawei",
+        "puces IA",
+        "sécurité nationale",
+        "Nvidia"
+      ],
+      "takeaway": "Des liens financiers entre Nvidia et Huawei posent des risques géopolitiques.",
+      "snum_interest": "Surveiller les dépendances technologiques critiques et les risques de souveraineté numérique.",
+      "essential": false
+    },
+    {
+      "id": "U07",
+      "rubric": "securite",
+      "title": "Lutte anti-cybercriminalité : Europol annonce 354 arrestations dans l'opération TorNado",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://www.journaldunet.com/business/1557959-europol-annonce-354-arrestations-dans-l-operation-tornado/",
+      "fact": "Europol a arrêté 354 personnes lors de l’opération TorNado, saisissant drogues, armes, argent et cryptomonnaies entre mai 2025 et octobre 2026.",
+      "keywords": [
+        "Europol",
+        "opération TorNado",
+        "cybercriminalité",
+        "dark web",
+        "arrestations"
+      ],
+      "takeaway": "Lutte internationale efficace contre le dark web, mais les marchés restent résilients.",
+      "snum_interest": "Impact sur la lutte contre le blanchiment et la sécurisation des transactions numériques.",
+      "essential": false
+    },
+    {
+      "id": "U08",
+      "rubric": "applications",
+      "title": "Panne Microsoft : ChatGPT et Claude également touchés, et ils ne sont pas les seuls",
+      "source": "01net",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://www.01net.com/actualites/panne-microsoft-chatgpt-et-claude-egalement-touches-et-ils-ne-sont-pas-les-seuls.html",
+      "fact": "Une panne d’Exchange Online empêche les connecteurs Microsoft 365 de ChatGPT et Claude d’accéder aux e‑mails, agendas et SharePoint.",
+      "keywords": [
+        "panne Microsoft",
+        "Exchange Online",
+        "ChatGPT",
+        "Claude",
+        "connecteurs IA"
+      ],
+      "takeaway": "Les services IA dépendent fortement des infrastructures Microsoft, créant un point de défaillance unique.",
+      "snum_interest": "Vulnérabilité des services numériques publics face aux pannes d’infrastructures critiques.",
+      "essential": false
+    },
+    {
+      "id": "U09",
+      "rubric": "applications",
+      "title": "Panne Microsoft : la messagerie Outlook et Teams commencent à se rétablir, ce que l’on sait",
+      "source": "01net",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://www.01net.com/actualites/panne-outlook-la-messagerie-de-microsoft-toujours-inaccessible-ce-vendredi-ce-que-lon-sait.html",
+      "fact": "Une panne mondiale de Microsoft 365 perturbe Outlook, Teams, SharePoint et Copilot, avec rétablissement progressif en Europe et Amérique du Nord.",
+      "keywords": [
+        "panne",
+        "Microsoft 365",
+        "Outlook",
+        "Teams",
+        "services cloud"
+      ],
+      "takeaway": "Les services cloud critiques subissent des interruptions, nécessitant des plans de continuité.",
+      "snum_interest": "Suivi de la disponibilité des outils numériques essentiels pour l'administration.",
+      "essential": false
+    },
+    {
+      "id": "U10",
+      "rubric": "applications",
+      "title": "Panne Microsoft : pourquoi elle tombe au pire moment pour l’État français",
+      "source": "01net",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://www.01net.com/actualites/panne-outlook-pourquoi-elle-tombe-au-pire-moment-pour-letat-francais.html",
+      "fact": "Une panne mondiale d’Outlook affecte Microsoft 365, perturbant les services de l’État français, notamment les ARS, malgré restrictions du cloud.",
+      "keywords": [
+        "Outlook",
+        "Microsoft 365",
+        "panne",
+        "administration",
+        "cloud"
+      ],
+      "takeaway": "Les pannes de services cloud peuvent paralysier les missions essentielles de l’État.",
+      "snum_interest": "Surveiller la résilience des outils bureautiques cloud pour garantir la continuité des services publics.",
+      "essential": false
+    },
+    {
+      "id": "U11",
+      "rubric": "applications",
+      "title": "Une panne de Microsoft 365 paralyse les entreprises dans de nombreux pays",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://www.journaldunet.com/business/1557967-une-panne-de-microsoft-365-paralyse-des-organisations-dans-de-nombreux-pays/",
+      "fact": "Une panne majeure de Microsoft 365 a paralysé entreprises, administrations et services publics dans de nombreux pays, affectant messagerie Outlook et autres outils cloud.",
+      "keywords": [
+        "Microsoft 365",
+        "panne",
+        "services publics",
+        "messagerie Outlook",
+        "cloud"
+      ],
+      "takeaway": "Les services numériques critiques doivent disposer de plans de continuité robustes.",
+      "snum_interest": "Impact sur la continuité des services publics, nécessité de renforcer la résilience des outils numériques.",
+      "essential": false
+    },
+    {
+      "id": "U12",
+      "rubric": "rh",
+      "title": "Budget 2027 : le Sénat rabote le supplément familial de traitement et le temps partiel thérapeutique des fonctionnaires",
+      "source": "Acteurs publics",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://acteurspublics.fr/articles/budget-2027-le-senat-rabote-le-supplement-familial-de-traitement-et-le-temps-partiel-therapeutique-des-fonctionnaires/",
+      "fact": "Le Sénat propose de forfaitiser le supplément familial de traitement, réduisant d’environ 250 M€ les dépenses de la fonction publique.",
+      "keywords": [
+        "supplément familial",
+        "fonction publique",
+        "budget 2027",
+        "forfaitisation",
+        "rémunération"
+      ],
+      "takeaway": "La réforme vise à alléger le budget en modifiant la rémunération des agents.",
+      "snum_interest": "Impact sur la masse salariale et la politique de rémunération du secteur public.",
+      "essential": false
+    },
+    {
+      "id": "U13",
+      "rubric": "rh",
+      "title": "Le Gouvernement propose des mesures pour augmenter le pouvoir d'achat de 1,3 million d'agents publics et ouvre cinq chantiers structurels en faveur de la fonction publique",
+      "source": "Presse Bercy",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://presse.economie.gouv.fr/le-gouvernement-propose-des-mesures-pour-augmenter-le-pouvoir-dachat-de-13-million-dagents-publics-et-ouvre-cinq-chantiers-structurels-en-faveur-de-la-fonction-publique/",
+      "fact": "Le gouvernement prévoit une revalorisation du SMIC de 1,6 % dès décembre et des points d’indice pour les agents les moins bien rémunérés.",
+      "keywords": [
+        "pouvoir d'achat",
+        "agents publics",
+        "revalorisation SMIC",
+        "points d'indice",
+        "fonction publique"
+      ],
+      "takeaway": "Des mesures salariales ciblées visent à soutenir les agents les moins bien payés.",
+      "snum_interest": "Intérêt SNUM : rémunération et évolution de carrière des agents publics.",
+      "essential": false
+    },
+    {
+      "id": "U14",
+      "rubric": "bercy",
+      "title": "Les réserves nettes de change",
+      "source": "Presse Bercy",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://presse.economie.gouv.fr/les-reserves-nettes-de-change-186829/",
+      "fact": "Les réserves nettes de change de l'État atteignent 353 952 M€ fin octobre 2026, soit une baisse de 10 796 M€ depuis septembre.",
+      "keywords": [
+        "réserves nettes",
+        "change",
+        "État",
+        "Bercy",
+        "octobre 2026"
+      ],
+      "takeaway": "Les réserves de change diminuent légèrement en octobre 2026.",
+      "snum_interest": "Suivi des réserves publiques, indicateur de solvabilité de l'État.",
+      "essential": false
+    }
+  ],
+  "watch": [
+    {
+      "title": "Rubrique sans article : dsi",
+      "summary": "Aucun article admissible établi pour cette rubrique."
+    },
+    {
+      "title": "Rubrique sans article : economie",
+      "summary": "Aucun article admissible établi pour cette rubrique."
+    },
+    {
+      "title": "Rubrique sans article : droit",
+      "summary": "Aucun article admissible établi pour cette rubrique."
+    },
+    {
+      "title": "Rubrique sans article : commande",
+      "summary": "Aucun article admissible établi pour cette rubrique."
+    },
+    {
+      "title": "Sources protégées contre les robots",
+      "summary": "Accès automatisé refusé, à couvrir autrement : Ministères économiques et financiers, Vie publique, Légifrance, Le Monde."
+    },
+    {
+      "title": "Source interne non traitée",
+      "summary": "La source métier interne exige une configuration privée : à compléter manuellement."
+    },
+    {
+      "title": "Découverte bornée",
+      "summary": "9271 URL découvertes n'ont pas été analysées (plafond ou budget temporel)."
+    }
+  ]
+}
