@@ -12,6 +12,8 @@
  const WORKFLOWS = {collecte: 'publier-paquet-snum.yml', repechage: 'repecher-candidat.yml'};
  const API_VERSION = '2026-03-10';
  const POLL_MS = 10000;
+ // Délai maximal d'un appel : sans lui, une requête restée sans réponse bloquerait le suivi et le bouton.
+ const CALL_TIMEOUT_MS = 30000;
  const FOLLOW_LIMIT_MS = 45 * 60000;
  const WAITING = ['queued', 'waiting', 'pending', 'requested'];
  const FAILED = ['failure', 'timed_out', 'cancelled', 'startup_failure'];
@@ -50,10 +52,12 @@
  const jobsUrl = id => `${API}/actions/runs/${runId(id)}/jobs`;
  const repechageResultUrl = (id, bust) => `${RAW}${runId(id)}.json?t=${encodeURIComponent(bust)}`;
 
- // Réponse 204 sans corps : le run est le plus récent créé après l'envoi,
- // avec une tolérance de 30 secondes pour l'écart entre les horloges.
- function pickRun(runs, sentAt) {
-  const recent = (Array.isArray(runs) ? runs : []).filter(r => r && Date.parse(r.created_at) >= sentAt - 30000);
+ // Réponse 204 sans corps : le run est le plus récent créé après l'envoi, avec une tolérance
+ // de 30 secondes pour l'écart entre les horloges. known : numéros des runs qui existaient
+ // avant l'envoi (lancement d'une autre personne), jamais pris pour le nôtre.
+ function pickRun(runs, sentAt, known) {
+  const before = (known || []).map(String);
+  const recent = (Array.isArray(runs) ? runs : []).filter(r => r && Date.parse(r.created_at) >= sentAt - 30000 && !before.includes(String(r.id)));
   recent.sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at));
   return recent[0] || null;
  }
@@ -103,8 +107,11 @@
 
  const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
  const lost = message => Object.assign(new Error(message), {lost: true});
+ // Chaque appel est abandonné après CALL_TIMEOUT_MS : un abandon vaut « injoignable ».
+ // Un navigateur sans AbortSignal.timeout garde l'appel sans délai plutôt que d'échouer.
+ const timed = init => (typeof AbortSignal !== 'undefined' && AbortSignal.timeout ? {...init, signal: AbortSignal.timeout(CALL_TIMEOUT_MS)} : init);
  async function call(url, init) {
-  try { return await fetch(url, init); }
+  try { return await fetch(url, timed(init)); }
   catch (_) { throw new Error('GitHub est injoignable : vérifiez la connexion réseau puis réessayez.'); }
  }
  const read = token => ({headers: headers(token), cache: 'no-store'});
@@ -112,6 +119,14 @@
 
  // Envoie le déclenchement et renvoie {id, htmlUrl} du run créé.
  async function dispatch(workflow, inputs, token) {
+  // Runs déjà présents, relevés avant l'envoi : sans numéro dans la réponse, ils sont écartés de la
+  // recherche. Relevé impossible (null) : aucun run ne sera deviné.
+  let known = null;
+  try {
+   const b = await call(runsListUrl(workflow), read(token));
+   const list = b.ok ? ((await b.json().catch(() => null)) || {}).workflow_runs : null;
+   if (Array.isArray(list)) known = list.filter(Boolean).map(x => x.id);
+  } catch (_) { known = null; }
   const sentAt = Date.now();
   const {url, init} = dispatchRequest(workflow, inputs, token);
   const r = await call(url, init);
@@ -119,20 +134,24 @@
    const x = await r.json().catch(() => null);
    if (x && x.workflow_run_id) return {id: runId(x.workflow_run_id), htmlUrl: githubLink(x.html_url)};
   } else if (r.status !== 204) throw new Error(httpError(r.status));
+  // À partir d'ici la demande est acceptée : toute erreur est une perte de suivi, jamais un refus.
+  const unknown = 'La demande est partie, mais GitHub n’a pas indiqué quelle exécution lui correspond.';
+  if (!known) throw lost(unknown);
   for (let attempt = 0; attempt < 8; attempt++) {
    await sleep(attempt ? 3000 : 2000);
-   const l = await call(runsListUrl(workflow), read(token));
+   let l;
+   try { l = await call(runsListUrl(workflow), read(token)); } catch (err) { throw lost(String(err.message || err)); }
    if (!l.ok) throw lost(httpError(l.status));
-   const run = pickRun(((await l.json().catch(() => null)) || {}).workflow_runs, sentAt);
+   const run = pickRun(((await l.json().catch(() => null)) || {}).workflow_runs, sentAt, known);
    if (run) return {id: runId(run.id), htmlUrl: githubLink(run.html_url)};
   }
-  throw lost('La demande est partie, mais GitHub n’a pas indiqué quelle exécution lui correspond.');
+  throw lost(unknown);
  }
 
  // Lecture facultative du run en cours, avec jeton ou sans (dépôt public) : toute erreur vaut « inconnu ».
  async function findActive(workflow, token) {
   try {
-   const r = await fetch(runsListUrl(workflow), token ? read(token) : {headers: {Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': API_VERSION}, cache: 'no-store'});
+   const r = await fetch(runsListUrl(workflow), timed(token ? read(token) : {headers: {Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': API_VERSION}, cache: 'no-store'}));
    return r.ok ? activeRun(((await r.json()) || {}).workflow_runs) : null;
   } catch (_) { return null; }
  }
@@ -166,13 +185,13 @@
   for (let attempt = 0; attempt < 6; attempt++) {
    if (attempt) await sleep(4000);
    let r;
-   try { r = await fetch(repechageResultUrl(id, Date.now()), {cache: 'no-store'}); } catch (_) { continue; }
+   try { r = await fetch(repechageResultUrl(id, Date.now()), timed({cache: 'no-store'})); } catch (_) { continue; }
    if (r.ok) return r.json();
    if (r.status !== 404) throw new Error(`Résultat du repêchage illisible (erreur ${r.status}).`);
   }
   throw new Error('Le résultat du repêchage n’est pas encore publié : réessayez dans une minute.');
  }
 
- global.VeilleGithub = {REPO, RAW_BASE, WORKFLOWS, POLL_MS, isoToFr, tokenLooksValid, collectInputs, repechageInputs, dispatchRequest,
+ global.VeilleGithub = {REPO, RAW_BASE, WORKFLOWS, POLL_MS, CALL_TIMEOUT_MS, timed, isoToFr, tokenLooksValid, collectInputs, repechageInputs, dispatchRequest,
   runsListUrl, runUrl, jobsUrl, repechageResultUrl, pickRun, activeRun, failedStep, progress, elapsed, httpError, sleep, dispatch, findActive, follow, readRepechage};
 })(typeof window !== 'undefined' ? window : globalThis);

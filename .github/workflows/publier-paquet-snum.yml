@@ -84,6 +84,15 @@ jobs:
           [ -n "${EDITION:-}" ] && args+=(--edition "$EDITION")
           [ -n "${DEBUT:-}" ] && args+=(--debut "$DEBUT")
           [ -n "${FIN:-}" ] && args+=(--fin "$FIN")
+          # Index des archives lu par git, jamais servi par un cache : des titres déjà
+          # résumés sont refusés même si le site sert encore leur rapport. Sans index
+          # (première collecte, panne passagère), le contrôle du rapport en ligne reste seul.
+          index="$RUNNER_TEMP/archives-index.json"
+          if git fetch --quiet --depth 1 origin donnees-veille && git show FETCH_HEAD:collectes/index.json > "$index" 2>/dev/null; then
+            args+=(--archives "$index")
+          else
+            echo "Index des archives indisponible : contrôle par le seul rapport en ligne."
+          fi
           python -m veille_snum.resumer "${args[@]}"
 
       - name: Collecte et paquet V519
@@ -176,7 +185,7 @@ jobs:
                   "- Étape suivante : sur la page de sélection, cocher les titres à garder, puis « Rédiger les résumés »",
               ]
           if mode == "titres":
-              lignes.append(f"- La collecte précédente n'est plus sur la page : elle reste consultable dans {site}archives.html")
+              lignes.append(f"- La collecte précédente n'est plus sur la page : si elle avait été résumée, elle reste consultable dans {site}archives.html")
           if mode == "page seule":
               lignes.append("- Fichiers en ligne repris tels quels : aucun appel Albert, aucune archive")
           if os.environ.get("GITHUB_REF") != "refs/heads/main":
@@ -244,6 +253,14 @@ jobs:
         run: |
           A="$RUNNER_TEMP/archive"
           id=$(python -c 'import json, sys; print(json.load(open(sys.argv[1]))["id"])' "$A/entree.json")
+          # Un paquet sans article (tout jugé hors thématique, aucun candidat) est publié,
+          # pour que ses candidats restent repêchables, mais n'encombre pas les archives.
+          articles=$(python -c 'import json, sys; print(json.load(open(sys.argv[1]))["articles"])' "$A/entree.json")
+          if [ "$articles" -eq 0 ]; then
+            echo "Paquet sans article : collecte $id non archivée."
+            { echo "### Archive"; echo "- Paquet sans article : collecte non archivée"; } >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
           export GIT_INDEX_FILE="$RUNNER_TEMP/index-archive"
           publie=non
           for essai in 1 2 3 4 5; do
@@ -252,7 +269,12 @@ jobs:
             etat=0
             git ls-remote --exit-code --heads origin "$BRANCHE" > /dev/null || etat=$?
             if [ "$etat" -eq 0 ]; then
-              git fetch --quiet --depth 1 origin "$BRANCHE"
+              # Panne passagère du réseau : nouvel essai, comme pour ls-remote et push.
+              if ! git fetch --quiet --depth 1 origin "$BRANCHE"; then
+                echo "Essai $essai : lecture de la branche impossible, nouvelle tentative."
+                sleep $((essai * 2))
+                continue
+              fi
               parent=$(git rev-parse FETCH_HEAD)
               git read-tree "$parent"
               git show "$parent:collectes/index.json" > "$RUNNER_TEMP/index-ancien.json" 2>/dev/null || rm -f "$RUNNER_TEMP/index-ancien.json"
@@ -285,9 +307,11 @@ jobs:
             echo "- Consultation : https://alexandra-guiderdoni.github.io/assistant-ia-newsletter-com-snum/archives.html"
           } >> "$GITHUB_STEP_SUMMARY"
 
+  # Après l'archivage, et seulement s'il a réussi ou n'avait pas lieu d'être : un paquet
+  # n'est jamais publié sans son archive, que la collecte suivante effacerait du site.
   deploiement:
-    needs: collecte
-    if: github.ref == 'refs/heads/main'
+    needs: [collecte, archivage]
+    if: always() && github.ref == 'refs/heads/main' && needs.collecte.result == 'success' && (needs.archivage.result == 'success' || needs.archivage.result == 'skipped')
     runs-on: ubuntu-latest
     permissions:
       pages: write

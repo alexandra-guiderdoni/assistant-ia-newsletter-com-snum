@@ -84,7 +84,7 @@
   const url = target.mode === 'archive' ? A.archiveUrl(target.id, name, bust || Date.now()) : `./${name}${bust ? `?v=${bust}` : ''}`;
   for (let attempt = 0; ; attempt++) {
    let r;
-   try { r = await fetch(url, {cache: 'no-store'}); } catch (_) { throw new Error('le site est injoignable'); }
+   try { r = await fetch(url, G.timed({cache: 'no-store'})); } catch (_) { throw new Error('le site est injoignable'); }
    if (r.status === 404) return {missing: true};
    if (r.ok) return {data: await r.json()};
    if (r.status < 500 || attempt) throw new Error(`le serveur a répondu ${r.status}`);
@@ -202,6 +202,8 @@
   byId(id).value = dates[id];
   byId(id).addEventListener('input', () => { if (byId(id).getAttribute('aria-invalid')) setFieldError(id, ''); });
  }
+ // Paquet publié sans article : le dire, avec quoi faire.
+ const emptyNote = () => (S.packet() && !S.packet().articles.length ? ' Ce paquet ne contient aucun article : repêchez un candidat écarté, ou lancez une collecte sur une période plus large.' : '');
  const busyReason = () => (L.isRunning() ? 'Une collecte ou une rédaction de résumés est en cours : attendez sa fin.'
   : E.isBusy() ? 'Un repêchage est en cours : attendez sa fin.' : '');
 
@@ -227,13 +229,13 @@
    duration: complete ? 'Une collecte complète dure de cinq à neuf minutes, selon le nombre d’articles trouvés.' : 'La recherche des titres dure trois à quatre minutes.',
    failed: text => ({reload: true, message: `La collecte n’a pas abouti (${text}) : la page affiche de nouveau ce qui était publié avant ce lancement. Vous pouvez relancer ; si l’échec se répète, réessayez plus tard.`}),
    done: view => (view === 'titres' ? 'Collecte terminée : la page affiche les titres trouvés ; gardez ceux à faire résumer par Albert.'
-    : 'Collecte terminée : la page affiche le nouveau paquet, le rapport et les candidats écartés.')});
+    : `Collecte terminée : la page affiche le nouveau paquet, le rapport et les candidats écartés.${emptyNote()}`)});
  });
 
  const fresh = () => String(Date.now());
  L.configure({load, readEtat: async bust => (await readEtat(bust)).etat});
  T.configure({hasToken, requireToken, isBusy: busyReason, readEtat: async () => (await readEtat(fresh())).etat, reload: () => load(fresh()),
-  launch: o => L.launch({...o, done: view => (view === 'paquet' ? 'Résumés rédigés : la page affiche le nouveau paquet, le rapport et les candidats écartés.'
+  launch: o => L.launch({...o, done: view => (view === 'paquet' ? `Résumés rédigés : la page affiche le nouveau paquet, le rapport et les candidats écartés.${emptyNote()}`
    : 'Rédaction terminée, mais la page publiée affiche encore les titres : rechargez-la dans quelques minutes.')})});
  E.configure({requireToken, isCollecting: L.isRunning});
  tokenHints();

@@ -91,7 +91,12 @@ jobs:
             etat=0
             git ls-remote --exit-code --heads origin "$BRANCHE" > /dev/null || etat=$?
             if [ "$etat" -eq 0 ]; then
-              git fetch --quiet --depth 1 origin "$BRANCHE"
+              # Panne passagère du réseau : nouvel essai, comme pour ls-remote et push.
+              if ! git fetch --quiet --depth 1 origin "$BRANCHE"; then
+                echo "Essai $essai : lecture de la branche impossible, nouvelle tentative."
+                sleep $((essai * 2))
+                continue
+              fi
               parent=$(git rev-parse FETCH_HEAD)
               git read-tree "$parent"
             elif [ "$etat" -ne 2 ]; then

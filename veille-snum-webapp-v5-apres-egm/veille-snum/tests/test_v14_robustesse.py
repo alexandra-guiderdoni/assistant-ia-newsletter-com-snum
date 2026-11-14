@@ -2,6 +2,7 @@
 
 import datetime as dt
 import io
+import json
 import tempfile
 import threading
 import unittest
@@ -24,9 +25,11 @@ from test_v13_deux_temps import (
     selection,
 )
 from test_veille_snum import good_summary
+from veille_snum import archiver
 from veille_snum.core import validate_packet_v519
 from veille_snum.repecher import repecher
 from veille_snum.resumer import lire_rapport, publier_resumes
+from veille_snum.resumer import main as resumer_main
 
 DEBUT, FIN = dt.date(2026, 11, 1), dt.date(2026, 11, 10)
 
@@ -201,6 +204,177 @@ class SelectionHostileTests(Cas):
         self.assertGreater(len(texte), 60_000)
         self.assertEqual(self.lancer(texte), 1)
         self.assertIn("absente des titres", self.sortie_erreur.getvalue())
+
+
+class RapportMalFormeTests(Cas):
+    """Audit du 14 novembre : un rapport en ligne mal formé plantait après les appels Albert."""
+
+    def test_limits_ou_excluded_mal_formes_refuses_avant_tout_appel(self):
+        for champ, valeur in (
+            ("limits", "aucune"),
+            ("limits", [1, 2]),
+            ("excluded", [{"url": URLS[0], "source": "X"}]),
+            ("excluded", ["texte"]),
+            ("excluded", [{"url": 3, "reason": "X"}]),
+        ):
+            with self.subTest(champ=champ, valeur=valeur):
+                albert = Albert()
+                client = Site(rapport={**PREMIER, champ: valeur})
+                code = self.lancer(selection((URLS[0], "")), client, albert)
+                self.assertEqual(code, 1)
+                self.assertEqual(albert.appels, [])
+                self.assertIn("Rapport des titres", self.sortie_erreur.getvalue())
+                self.assertFalse(self.dossier.exists() and fichiers(self.dossier))
+
+    def test_rapport_reel_du_premier_temps_toujours_accepte(self):
+        self.assertEqual(self.lancer(selection((URLS[0], ""))), 0)
+
+
+class DejaArchiveTests(Cas):
+    """Le cache de GitHub Pages peut servir un rapport périmé : l'index des archives, lu par git, fait foi."""
+
+    def archives(self, instant):
+        return {
+            "schema_version": "SNUM_ARCHIVES_V1",
+            "collectes": [
+                {
+                    "id": "2026-11-10_5",
+                    "titres_started_at": "2026-11-09T08:00:00+00:00",
+                },
+                {"id": "2026-11-11_8", "titres_started_at": instant},
+                {"id": "2026-11-01_2"},
+                "entrée illisible",
+            ],
+        }
+
+    def test_titres_deja_archives_refuses_sans_appel_albert(self):
+        albert = Albert()
+        code = self.lancer(
+            selection((URLS[0], "")),
+            albert=albert,
+            archives=self.archives(PREMIER["started_at_utc"]),
+        )
+        self.assertEqual(code, 1)
+        self.assertEqual(albert.appels, [])
+        self.assertIn("déjà été résumés", self.sortie_erreur.getvalue())
+        self.assertIn("2026-11-11_8", self.sortie_erreur.getvalue())
+        self.assertFalse(self.dossier.exists() and fichiers(self.dossier))
+
+    def test_autres_archives_ou_index_illisible_sans_effet(self):
+        for archives in (
+            self.archives("2026-11-10T08:00:00+00:00"),
+            None,
+            {},
+            {"collectes": "aucune"},
+            [],
+            "texte",
+        ):
+            with self.subTest(archives=str(archives)[:30]):
+                self.dossier = Path(tempfile.mkdtemp()) / "site"
+                code = self.lancer(selection((URLS[0], "")), archives=archives)
+                self.assertEqual(code, 0)
+
+    def test_l_archive_note_l_instant_de_la_collecte_des_titres(self):
+        self.assertEqual(self.lancer(selection((URLS[0], "")), run_id=8), 0)
+        entree = archiver.entree(self.dossier, 8, dt.datetime.now(dt.timezone.utc))
+        self.assertEqual(entree["titres_started_at"], PREMIER["started_at_utc"])
+        self.assertEqual(entree["id"], "2026-11-11_8")
+
+    def test_ligne_de_commande_index_lu_dans_un_fichier_absent_tolere(self):
+        index = Path(tempfile.mkdtemp()) / "archives.json"
+        environnement = {
+            "ALBERT_API_KEY": "JETON-FACTICE",
+            "ALBERT_MODEL": "modele-test",
+            "SELECTION": selection((URLS[0], "")),
+        }
+
+        def executer():
+            with (
+                mock.patch.dict("os.environ", environnement),
+                mock.patch("veille_snum.resumer.HttpClient", return_value=Site()),
+                mock.patch(
+                    "veille_snum.resumer.albert_summary",
+                    side_effect=lambda c, *a, **k: good_summary(c),
+                ) as appel,
+                mock.patch("sys.stdout"),
+                mock.patch("sys.stderr", self.sortie_erreur),
+            ):
+                code = resumer_main(
+                    ["--sortie", str(self.dossier), "--archives", str(index)]
+                )
+            return code, appel.call_count
+
+        self.assertEqual(executer(), (0, 1))
+        index.write_text(
+            json.dumps(self.archives(PREMIER["started_at_utc"])), encoding="utf-8"
+        )
+        self.assertEqual(executer(), (1, 0))
+
+
+class BudgetEnCoursDeTacheTests(Cas):
+    """Contrôle de logique : une tâche déjà lancée appelait Albert après la fin du budget."""
+
+    def test_page_relue_apres_l_echeance_aucun_appel_albert(self):
+        horloge = Horloge()
+
+        class Lent(Site):
+            def get(self, url, domain, max_bytes=600_000, timeout=7):
+                if url in URLS:
+                    horloge.instant += 40
+                return super().get(url, domain, max_bytes, timeout)
+
+        albert = Albert()
+        with (
+            mock.patch("time.monotonic", horloge.monotonic),
+            mock.patch("time.sleep", horloge.sleep),
+            mock.patch("veille_snum.resumer.MAX_ALBERT_SECONDS", 30),
+        ):
+            code = self.lancer(
+                selection((URLS[0], ""), (URLS[1], "ia")), Lent(), albert
+            )
+        self.assertEqual(code, 1)
+        self.assertEqual(albert.appels, [])
+        self.assertIn("Aucun paquet publiable", self.sortie_erreur.getvalue())
+
+
+class DoublonApresRelectureTests(Cas):
+    """Contrôle de logique : deux titres gardés relus vers la même adresse, l'un disparaissait sans trace."""
+
+    def test_second_titre_ecarte_avec_son_motif(self):
+        ancien = URLS[0].replace("/article/veille-snum", "/article/ancien-slug")
+        modele = next(c for c in PREMIER["candidates"] if c["url"] == URLS[0])
+        premier = {
+            **PREMIER,
+            "candidates": [
+                *PREMIER["candidates"],
+                {**modele, "url": ancien, "title": "Ancien titre du même article"},
+            ],
+        }
+
+        class Redirige(Site):
+            def get(self, url, domain, max_bytes=600_000, timeout=7):
+                if url == ancien:
+                    self.calls.append(url)
+                    return super().get(URLS[0], domain, max_bytes, timeout)
+                return super().get(url, domain, max_bytes, timeout)
+
+        code = self.lancer(
+            selection((URLS[0], ""), (ancien, "ia")), Redirige(rapport=premier)
+        )
+        self.assertEqual(code, 0)
+        paquet = lire(self.dossier, PAQUET)
+        self.assertEqual([a["url"] for a in paquet["articles"]], [URLS[0]])
+        motifs = {
+            c["url"]: c["reason"] for c in lire(self.dossier, ECARTES)["candidates"]
+        }
+        self.assertEqual(motifs[ancien], "DOUBLON_APRES_RELECTURE")
+        # Chaque candidat du rapport est dans le paquet ou dans les écartés, une seule fois.
+        rapport = lire(self.dossier, RAPPORT)
+        presents = [a["url"] for a in paquet["articles"]] + list(motifs)
+        self.assertEqual(
+            sorted(presents), sorted(c["url"] for c in rapport["candidates"])
+        )
+        self.assertEqual(len(rapport["candidates"]), 14)
 
 
 class AlbertSature(Albert):
