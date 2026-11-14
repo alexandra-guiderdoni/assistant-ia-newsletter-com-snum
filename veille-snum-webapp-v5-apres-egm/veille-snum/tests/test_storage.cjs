@@ -263,7 +263,7 @@ function keepBoxes(node,found={}){
 
 test('par défaut, seuls les deux premiers articles de chaque thématique sont gardés',async()=>{
  const a=await load();
- a.ctx.showResult(collectResult(['numerique','numerique','numerique','ia','bercy','bercy','bercy']));
+ a.ctx.showResult(collectResult(['administration','administration','administration','ia','bercy','bercy','bercy']));
  assert.equal(a.node('article-count').textContent,'5 article(s) gardé(s) sur 7, soumis à relecture.');
  assert.deepEqual(keepBoxes(a.node('article-list')),
   {'garder-0':true,'garder-1':true,'garder-2':false,'garder-3':true,'garder-4':true,'garder-5':true,'garder-6':false});
@@ -275,7 +275,7 @@ test('par défaut, seuls les deux premiers articles de chaque thématique sont g
 
 test('thématiques de deux articles au plus : tout reste gardé et le paquet reste téléchargeable',async()=>{
  const a=await load();
- a.ctx.showResult(collectResult(['numerique','numerique','ia']));
+ a.ctx.showResult(collectResult(['administration','administration','ia']));
  assert.equal(a.node('article-count').textContent,'3 article(s) gardé(s) sur 3, soumis à relecture.');
  assert.equal(a.node('download').disabled,false);
  assert.equal(a.node('update-packet').disabled,true);

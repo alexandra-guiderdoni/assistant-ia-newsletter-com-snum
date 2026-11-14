@@ -36,10 +36,12 @@ test('dates en toutes lettres comme date_long Python', () => {
  assert.equal(S.dateLong('2026-08-01'), '1 août 2026');
 });
 
+const absent = (...rubrics) => rubrics.map(r => ({title: `Rubrique sans article : ${r}`, summary: 'Aucun article admissible établi pour cette rubrique.'}));
+
 test('deux premiers articles de chaque thématique cochés par défaut', () => {
  const p = packet([
-  article('U01', 'numerique', '2026-11-13', 'a'), article('U02', 'numerique', '2026-11-13', 'b'),
-  article('U03', 'ia', '2026-11-13', 'c'), article('U04', 'numerique', '2026-11-12', 'd'),
+  article('U01', 'administration', '2026-11-13', 'a'), article('U02', 'administration', '2026-11-13', 'b'),
+  article('U03', 'ia', '2026-11-13', 'c'), article('U04', 'administration', '2026-11-12', 'd'),
   article('U05', 'rh', '2026-11-12', 'e'), article('U06', 'ia', '2026-11-11', 'f'), article('U07', 'ia', '2026-11-10', 'g'),
  ]);
  assert.deepEqual(plain(S.defaultKept(p.articles)), [true, true, true, false, true, true, false]);
@@ -47,16 +49,16 @@ test('deux premiers articles de chaque thématique cochés par défaut', () => {
 
 test('tri date décroissante, puis rubrique, puis URL ; renumérotation et essentiels', () => {
  const p = packet([
-  article('U01', 'rh', '2026-11-05', 'z'), article('U02', 'numerique', '2026-11-05', 'b'),
-  article('U03', 'numerique', '2026-11-05', 'a'), article('U04', 'bercy', '2026-11-13', 'y'),
+  article('U01', 'rh', '2026-11-05', 'z'), article('U02', 'administration', '2026-11-05', 'b'),
+  article('U03', 'administration', '2026-11-05', 'a'), article('U04', 'bercy', '2026-11-13', 'y'),
   article('U05', 'commande', '2026-11-10', 'w'), article('U06', 'ia', '2026-11-10', 'x'),
  ], OTHER_WATCH);
  const out = rebuild(p, sel(p));
  assert.deepEqual(out.articles.map(a => [a.id, a.url.slice(-1)]),
   [['U01', 'y'], ['U02', 'x'], ['U03', 'w'], ['U04', 'a'], ['U05', 'b'], ['U06', 'z']]);
  assert.deepEqual(out.articles.map(a => a.essential), [true, true, true, false, false, false]);
- // Toutes les rubriques présentes et au moins cinq articles : seules les alertes publiées restent.
- assert.deepEqual(plain(out.watch), OTHER_WATCH);
+ // Au moins cinq articles : les rubriques absentes, dans l'ordre du courriel, puis les alertes publiées.
+ assert.deepEqual(plain(out.watch), [...absent('dsi', 'economie', 'infrastructure', 'securite', 'applications', 'droit'), ...OTHER_WATCH]);
  // Frontière : quatre articles déclenchent « Collecte limitée », cinq non.
  assert.ok(rebuild(p, sel(p, (a, i) => i < 4)).watch.some(w => w.title === 'Collecte limitée'));
  assert.ok(!rebuild(p, sel(p, (a, i) => i < 5)).watch.some(w => w.title === 'Collecte limitée'));
@@ -64,41 +66,41 @@ test('tri date décroissante, puis rubrique, puis URL ; renumérotation et essen
 
 test('alertes recalculées : rubriques absentes, collecte limitée, puis alertes publiées', () => {
  const p = packet([
-  article('U01', 'numerique', '2026-11-13', 'a'), article('U02', 'ia', '2026-11-12', 'b'), article('U03', 'rh', '2026-11-11', 'c'),
+  article('U01', 'administration', '2026-11-13', 'a'), article('U02', 'ia', '2026-11-12', 'b'), article('U03', 'rh', '2026-11-11', 'c'),
  ], [{title: 'Rubrique sans article : commande', summary: 'Aucun article admissible établi pour cette rubrique.'},
   {title: 'Rubrique sans article : bercy', summary: 'Aucun article admissible établi pour cette rubrique.'},
   {title: 'Collecte limitée', summary: 'Moins de cinq articles admissibles ont été établis.'}, ...OTHER_WATCH]);
  const out = rebuild(p, sel(p, a => a.rubric !== 'ia'));
  assert.deepEqual(out.watch.map(w => w.title), [
-  'Rubrique sans article : ia', 'Rubrique sans article : commande', 'Rubrique sans article : bercy',
+  ...absent('ia', 'dsi', 'economie', 'infrastructure', 'securite', 'applications', 'droit', 'commande', 'bercy').map(w => w.title),
   'Collecte limitée', 'Sources protégées contre les robots', 'Découverte bornée']);
  assert.equal(out.watch[0].summary, 'Aucun article admissible établi pour cette rubrique.');
- assert.equal(out.watch[3].summary, 'Moins de cinq articles admissibles ont été établis.');
+ assert.equal(out.watch[9].summary, 'Moins de cinq articles admissibles ont été établis.');
  // Moins de trois articles : aucun essentiel.
  assert.deepEqual(out.articles.map(a => [a.id, a.essential]), [['U01', false], ['U02', false]]);
 });
 
 test('changement de thématique : rubrique exportée, ordre et alertes mis à jour', () => {
  const p = packet([
-  article('U01', 'numerique', '2026-11-13', 'b'), article('U02', 'numerique', '2026-11-13', 'a'),
+  article('U01', 'administration', '2026-11-13', 'b'), article('U02', 'administration', '2026-11-13', 'a'),
   article('U03', 'ia', '2026-11-12', 'c'), article('U04', 'commande', '2026-11-12', 'd'),
   article('U05', 'rh', '2026-11-11', 'e'), article('U06', 'bercy', '2026-11-10', 'f'),
  ], OTHER_WATCH);
  const s = sel(p);
  s[0].rubric = 'ia';
  const out = rebuild(p, s);
- assert.deepEqual(out.articles.slice(0, 2).map(a => [a.id, a.rubric, a.url.slice(-1)]), [['U01', 'numerique', 'a'], ['U02', 'ia', 'b']]);
+ assert.deepEqual(out.articles.slice(0, 2).map(a => [a.id, a.rubric, a.url.slice(-1)]), [['U01', 'ia', 'b'], ['U02', 'administration', 'a']]);
  s[1].rubric = 'ia';
  const out2 = rebuild(p, s);
- assert.equal(out2.watch[0].title, 'Rubrique sans article : numerique');
+ assert.equal(out2.watch[0].title, 'Rubrique sans article : administration');
  // Le paquet d'origine n'est pas modifié.
- assert.equal(p.articles[0].rubric, 'numerique');
+ assert.equal(p.articles[0].rubric, 'administration');
  assert.equal(p.articles[0].id, 'U01');
  assert.throws(() => S.rebuild(p, [{article: p.articles[0], keep: true, rubric: 'inconnue'}]), /RUBRIQUE_INVALIDE/);
 });
 
 test('paquet V519 : mêmes champs, aucun champ ajouté, autres champs conservés', () => {
- const p = packet([article('U01', 'numerique', '2026-11-13', 'a', {essential: true}), article('U02', 'ia', '2026-11-12', 'b')]);
+ const p = packet([article('U01', 'administration', '2026-11-13', 'a', {essential: true}), article('U02', 'ia', '2026-11-12', 'b')]);
  const out = rebuild(p, sel(p));
  assert.deepEqual(Object.keys(out), Object.keys(p));
  for (const [i, a] of out.articles.entries()) assert.deepEqual(Object.keys(a), Object.keys(p.articles[i]));
@@ -109,13 +111,23 @@ test('paquet V519 : mêmes champs, aucun champ ajouté, autres champs conservés
 });
 
 test('sélection vide : aucun article, toutes les rubriques et la collecte limitée en alerte', () => {
- const p = packet([article('U01', 'numerique', '2026-11-13', 'a')], OTHER_WATCH);
+ const p = packet([article('U01', 'administration', '2026-11-13', 'a')], OTHER_WATCH);
  const out = rebuild(p, sel(p, () => false));
  assert.equal(out.articles.length, 0);
  assert.deepEqual(out.watch.map(w => w.title), [
-  'Rubrique sans article : numerique', 'Rubrique sans article : ia', 'Rubrique sans article : commande',
-  'Rubrique sans article : rh', 'Rubrique sans article : bercy', 'Collecte limitée',
+  ...absent(...S.RUBRICS).map(w => w.title), 'Collecte limitée',
   'Sources protégées contre les robots', 'Découverte bornée']);
+});
+
+test('archive à cinq thématiques : « numerique » reconstruit après les onze rubriques, sans alerte propre', () => {
+ const p = packet([
+  article('U01', 'numerique', '2026-11-13', 'a'), article('U02', 'ia', '2026-11-13', 'b'), article('U03', 'bercy', '2026-11-13', 'c'),
+ ], OTHER_WATCH);
+ const out = rebuild(p, sel(p));
+ assert.deepEqual(out.articles.map(a => [a.rubric, a.url.slice(-1)]), [['ia', 'b'], ['bercy', 'c'], ['numerique', 'a']]);
+ assert.ok(!out.watch.some(w => w.title.endsWith(': numerique')));
+ assert.equal(S.RUBRIC_LABELS.numerique, 'Numérique');
+ assert.ok(!S.RUBRICS.includes('numerique'));
 });
 
 test('aucune écriture HTML ni stockage navigateur ni tiret cadratin dans la page', () => {

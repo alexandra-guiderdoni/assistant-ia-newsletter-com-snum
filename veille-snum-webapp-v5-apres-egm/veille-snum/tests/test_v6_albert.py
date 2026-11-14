@@ -17,7 +17,7 @@ PAYLOAD = {
 DAYS = [f"2026-11-0{d}" for d in range(3, 10)] + ["2026-11-10"]
 SUMMARY = {
     "relevant": True,
-    "rubric": "numerique",
+    "rubric": "administration",
     "fact": "Le service public présente une évolution de ses outils numériques.",
     "keywords": ["numérique", "service public", "administration"],
     "takeaway": "Une évolution des outils publics est décrite.",
@@ -104,7 +104,7 @@ class SecondeTentativeTests(TestCase):
 
         def flaky(item, feedback=None):
             feedbacks.append(feedback)
-            return SUMMARY if feedback else {**SUMMARY, "rubric": "economie"}
+            return SUMMARY if feedback else {**SUMMARY, "rubric": "culture"}
 
         with mock.patch.object(core, "sources", only_next):
             collect(PAYLOAD, client=eight_articles(), summarize=flaky)

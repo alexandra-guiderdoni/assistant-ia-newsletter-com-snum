@@ -22,7 +22,8 @@ from urllib.robotparser import RobotFileParser
 import xml.etree.ElementTree as ET
 
 ROOT = Path(__file__).parent
-RUBRICS = ("numerique", "ia", "commande", "rh", "bercy")
+# Rubriques de la revue de presse, dans l'ordre du courriel (#32).
+RUBRICS = ("ia", "administration", "dsi", "economie", "infrastructure", "securite", "applications", "droit", "commande", "rh", "bercy")
 MONTHS = ("janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre")
 USER_AGENT = "SNUMVeillePrototype/0.1 (+contact administratif; conservative crawl)"
 MAX_ARTICLES_PER_SITE = 15
@@ -750,19 +751,34 @@ def discover_source(source, window_start, window_end, client, deadline=None):
 
 ALBERT_PROMPT = (
     "Tu prépares la veille du Service du numérique (SNUM) des ministères économiques et financiers. "
-    "Produis uniquement un objet JSON : relevant (bool), rubric (numerique|ia|commande|rh|bercy), "
+    "Produis uniquement un objet JSON : relevant (bool), "
+    "rubric (ia|administration|dsi|economie|infrastructure|securite|applications|droit|commande|rh|bercy), "
     "fact (maximum 25 mots), keywords (3 à 5 chaînes), takeaway (maximum 15 mots), "
     "snum_interest (maximum 15 mots). Classe sans ajouter de faits, seulement depuis l'extrait. "
     "Rédige fact, takeaway, snum_interest et keywords en français, même si l'extrait est en anglais. "
     "N'utilise jamais de tiret cadratin : préfère la virgule ou les deux-points.\n"
-    "Rubriques : numerique = transformation numérique de l'État et des administrations, services publics "
-    "en ligne, données publiques, cybersécurité, souveraineté et infrastructures numériques ; "
-    "ia = intelligence artificielle, ses usages publics, sa régulation et ses grands acteurs ; les annonces de "
+    "Rubriques : ia = intelligence artificielle, ses usages publics, sa régulation et ses grands acteurs ; les annonces de "
     "modèles, d'outils ou de failles d'IA (OpenAI, Anthropic, Google, Mistral…) relèvent de ia, même grand public ; "
-    "commande = commande publique, achats publics et marchés de l'État, notamment numériques ; "
-    "rh = ressources humaines de la fonction publique : agents, recrutement, compétences, formation, "
-    "rémunération, dialogue social ; bercy = décisions et actions des ministères économiques et "
-    "financiers, de leurs ministres et de leurs directions.\n"
+    "administration = administration électronique : transformation numérique de l'État et des collectivités, services "
+    "publics en ligne, identité numérique, démarches, données publiques, pilotage du numérique public ; "
+    "dsi = DSI, méthode, métier : métiers, organisation et pratiques des directions du numérique, gouvernance et conduite "
+    "des projets, retours d'expérience ; "
+    "economie = économie numérique : marché et entreprises du numérique, levées de fonds, souveraineté numérique, "
+    "régulation économique des plateformes ; "
+    "infrastructure = infrastructure, réseaux : cloud, centres de données, hébergement, réseaux et télécommunications ; "
+    "securite = sécurité informatique : cyberattaques, fuites de données, vulnérabilités, cybercriminalité, réglementation "
+    "de la cybersécurité ; "
+    "applications = applications et développement : logiciels, messageries, bureautique, systèmes d'exploitation, "
+    "navigateurs, postes de travail, développement logiciel ; "
+    "droit = droit, informatique et libertés : protection des données personnelles, CNIL, droit du numérique et droits "
+    "des utilisateurs ; "
+    "commande = achat public : commande publique, achats publics et marchés de l'État, notamment numériques ; "
+    "rh = ressources humaines et nominations de la fonction publique : agents, recrutement, compétences, formation, "
+    "rémunération, dialogue social, nominations ; "
+    "bercy = vie de Bercy : décisions, actions et événements des ministères économiques et financiers, de leurs ministres "
+    "et de leurs directions.\n"
+    "Si plusieurs rubriques conviennent, choisis la plus précise : ia dès que l'intelligence artificielle est le sujet "
+    "principal, securite pour une attaque ou une faille, bercy pour une annonce des ministères économiques et financiers.\n"
     "relevant=false pour : commerce et distribution, consommation, faits divers, marchés financiers et "
     "banques centrales, emploi privé et chômage, entreprises privées sans lien avec l'action publique "
     "ou le numérique, produits grand public hors IA (voitures, smartphones, jeux), événements et salons sans "

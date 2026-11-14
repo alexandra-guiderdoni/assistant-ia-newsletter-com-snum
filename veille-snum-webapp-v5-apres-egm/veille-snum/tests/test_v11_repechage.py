@@ -41,7 +41,7 @@ def erreur_http(code, entetes=None):
 
 
 class RepechageTests(unittest.TestCase):
-    def lancer(self, url=URL, rubrique="numerique", client=None, resumer=None, **dates):
+    def lancer(self, url=URL, rubrique="administration", client=None, resumer=None, **dates):
         self.client = client or FakeHttp()
         self.resumer = resumer or Resumeur()
         return repecher(
@@ -170,7 +170,7 @@ class RepechageTests(unittest.TestCase):
             [a["feedback"] for a in self.resumer.appels], [None, "CHAMP_INVALIDE:fact"]
         )
         self.assertEqual(
-            [a["forced_rubric"] for a in self.resumer.appels], ["numerique"] * 2
+            [a["forced_rubric"] for a in self.resumer.appels], ["administration"] * 2
         )
 
     def test_deux_rejets(self):

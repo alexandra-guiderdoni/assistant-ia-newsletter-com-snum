@@ -15,7 +15,7 @@ const DATA = ['etat-collecte.json', 'rapport-collecte.json', 'paquet-v519.json',
 const TYPES = {'.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css', '.json': 'application/json',
  '.svg': 'image/svg+xml', '.png': 'image/png', '.woff2': 'font/woff2', '.woff': 'font/woff', '.ico': 'image/x-icon', '.webmanifest': 'application/manifest+json'};
 const WORKFLOWS = {'publier-paquet-snum.yml': {inputs: ['edition', 'debut', 'fin', 'mode', 'selection'], modes: ['titres', 'resumes', 'collecte', 'page seule']},
- 'repecher-candidat.yml': {inputs: ['url', 'rubrique', 'debut', 'fin'], required: ['url', 'rubrique', 'debut', 'fin'], rubriques: ['numerique', 'ia', 'commande', 'rh', 'bercy']}};
+ 'repecher-candidat.yml': {inputs: ['url', 'rubrique', 'debut', 'fin'], required: ['url', 'rubrique', 'debut', 'fin'], rubriques: ['ia', 'administration', 'dsi', 'economie', 'infrastructure', 'securite', 'applications', 'droit', 'commande', 'rh', 'bercy']}};
 const ETAPES = {titres: 'Collecte des titres, sans Albert', resumes: 'Résumés des titres gardés', collecte: 'Collecte et paquet V519', repechage: 'Repêchage par Albert'};
 
 function creerMonde(o) {

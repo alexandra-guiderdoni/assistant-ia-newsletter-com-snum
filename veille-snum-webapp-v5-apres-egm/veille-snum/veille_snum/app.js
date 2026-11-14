@@ -158,7 +158,8 @@ function localIso(d) { return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d
 const today = new Date(), start = new Date(today); start.setDate(start.getDate()-7);
 byId('edition').value = localIso(today); byId('end').value = localIso(today); byId('start').value = localIso(start);
 const KEPT_PER_RUBRIC = 2; // articles cochés « Garder » par défaut dans chaque thématique
-const RUBRIC_LABELS = {numerique:'Numérique',ia:'Intelligence artificielle',commande:'Commande publique',rh:'Ressources humaines',bercy:'Bercy'};
+// Rubriques de la revue de presse, dans l'ordre du courriel (#32).
+const RUBRIC_LABELS = {ia:'Intelligence artificielle (IA)',administration:'Administration électronique',dsi:'DSI, méthode, métier',economie:'Économie numérique',infrastructure:'Infrastructure, réseaux',securite:'Sécurité informatique',applications:'Applications et développement',droit:'Droit, informatique et libertés',commande:'Achat public',rh:'Ressources humaines et nominations',bercy:'Vie de Bercy'};
 const statusNames = {checked:'Découverte effectuée',partial:'Partielle / tronquée',skipped_budget:'Non traitée (temps)',skipped_internal:'Non traitée (source interne)',blocked:'Bloquée (robots.txt ou protection anti-robot)',error:'Échec technique',pending:'En attente'};
 function line(list, label, url) {
  const li=document.createElement('li');
