@@ -58,8 +58,8 @@
    <div class="fr-messages-group" id="gh-token-messages" aria-live="polite"></div>
   </div>
   <button class="fr-btn fr-btn--tertiary fr-btn--sm" id="gh-token-forget" type="button">Effacer le jeton</button>
-  <p class="fr-text--sm fr-mt-2w"><a class="fr-link" id="gh-token-doc" href="https://github.com/alexandra-guiderdoni/assistant-ia-newsletter-com-snum/blob/main/veille-snum-webapp-v5-apres-egm/veille-snum/docs/jeton-github.md" target="_blank" rel="noopener noreferrer">Créer ou renouveler un jeton GitHub : marche à suivre (nouvelle fenêtre)</a></p>
-  <p id="gh-token-status" class="fr-text--sm fr-mt-2w" role="status"></p>
+  <p class="fr-text--sm fr-mt-2w"><a class="fr-link" id="gh-token-doc" href="https://github.com/alexandra-guiderdoni/assistant-ia-newsletter-com-snum/blob/main/veille-snum-webapp-v5-apres-egm/veille-snum/docs/jeton-github.md" target="_blank" rel="noopener noreferrer">Jeton GitHub de l’équipe : marche à suivre (nouvelle fenêtre)</a></p>
+  <div id="gh-token-status" class="fr-text--sm fr-mt-2w" role="status"></div>
  </section>
 
  <section aria-labelledby="collect-heading" id="collect-section" class="fr-mb-6w">
@@ -107,13 +107,13 @@
    <ul class="fr-btns-group fr-btns-group--inline-md">
     <li><button class="fr-btn" id="collect" type="submit" aria-describedby="collect-hint">Lancer la collecte</button></li>
    </ul>
-   <p id="collect-hint" class="fr-text--sm"></p>
+   <div id="collect-hint" class="fr-text--sm"></div>
   </form>
   <div id="collect-error" class="fr-alert fr-alert--error fr-alert--sm fr-mb-2w" role="alert" hidden></div>
   <div class="fr-alert fr-alert--info fr-alert--sm">
    <p id="collect-status" role="status">Prêt à lancer une collecte.</p>
-   <p id="collect-elapsed"></p>
-   <p id="collect-run"></p>
+   <div id="collect-elapsed" class="fr-mb-1v"></div>
+   <div id="collect-run" class="fr-mb-1v"></div>
   </div>
  </section>
 
@@ -129,19 +129,19 @@
  <div id="selection-content" hidden>
   <section aria-labelledby="titres-heading" id="titres-section" class="fr-mb-6w" hidden>
    <h2 id="titres-heading">Titres trouvés</h2>
-   <p id="titres-intro"></p>
+   <div id="titres-intro" class="fr-mb-3w"></div>
    <p class="fr-text--sm">Cochez « Garder » pour chaque titre à faire résumer, ou « Tout garder » pour une source entière ; aucun n’est gardé par défaut. Laissez « Albert choisit » pour qu’Albert classe l’article, ou imposez une thématique. Les titres non gardés rejoignent les candidats écartés, où ils restent repêchables.</p>
-   <p id="titres-count" class="fr-text--sm" role="status"></p>
+   <div id="titres-count" class="fr-text--sm" role="status"></div>
    <div id="titres-list"></div>
    <ul class="fr-btns-group fr-btns-group--inline-md">
     <li><button class="fr-btn" id="resumes" type="button" aria-describedby="resumes-hint" disabled>Rédiger les résumés des articles gardés</button></li>
    </ul>
-   <p id="resumes-hint" class="fr-text--sm"></p>
+   <div id="resumes-hint" class="fr-text--sm"></div>
    <div id="titres-error" class="fr-alert fr-alert--error fr-alert--sm fr-mb-2w" role="alert" hidden></div>
    <div class="fr-alert fr-alert--info fr-alert--sm">
     <p id="titres-status" role="status">Aucune rédaction demandée.</p>
-    <p id="titres-elapsed"></p>
-    <p id="titres-run"></p>
+    <div id="titres-elapsed" class="fr-mb-1v"></div>
+    <div id="titres-run" class="fr-mb-1v"></div>
    </div>
   </section>
 
@@ -163,7 +163,7 @@
     <ul class="fr-btns-group fr-btns-group--inline-md">
      <li><button class="fr-btn fr-btn--secondary" id="report-download" type="button" disabled>Télécharger le rapport de collecte</button></li>
     </ul>
-    <p id="report-status" class="fr-text--sm" role="status"></p>
+    <div id="report-status" class="fr-text--sm" role="status"></div>
     <div class="fr-accordions-group">
      <section class="fr-accordion">
       <h3 class="fr-accordion__title"><button class="fr-accordion__btn" type="button" aria-expanded="true" aria-controls="acc-sources">État des 14 sources</button></h3>
@@ -195,7 +195,7 @@
   <section aria-labelledby="articles-heading" class="fr-mb-6w" data-paquet>
    <h2 id="articles-heading">Articles retenus</h2>
    <p class="fr-text--sm">Décochez « Garder » pour écarter un article de la newsletter, ou changez sa thématique. L’export tient compte de chaque modification.</p>
-   <p id="selection-status" class="fr-text--sm" role="status"></p>
+   <div id="selection-status" class="fr-text--sm" role="status"></div>
    <div id="article-list"></div>
   </section>
 
@@ -204,10 +204,10 @@
     <h2 class="fr-accordion__title"><button class="fr-accordion__btn" id="candidates-button" type="button" aria-expanded="false" aria-controls="acc-candidates">Candidats écartés</button></h2>
     <div class="fr-collapse" id="acc-candidates">
      <p id="candidates-intro" class="fr-text--sm">Chargement de la liste…</p>
-     <p id="repechage-hint" class="fr-text--sm"></p>
+     <div id="repechage-hint" class="fr-text--sm"></div>
      <div id="repechage-error" class="fr-alert fr-alert--error fr-alert--sm fr-mb-2w" role="alert" hidden></div>
-     <p id="repechage-status" class="fr-text--sm" role="status"></p>
-     <p id="repechage-elapsed" class="fr-text--sm"></p>
+     <div id="repechage-status" class="fr-text--sm" role="status"></div>
+     <div id="repechage-elapsed" class="fr-text--sm"></div>
      <ul id="candidates-list"></ul>
     </div>
    </section>
@@ -219,7 +219,7 @@
     <li><button class="fr-btn" id="download" type="button">Télécharger le JSON V519</button></li>
     <li><button class="fr-btn fr-btn--secondary" id="copy" type="button">Copier le JSON</button></li>
    </ul>
-   <p id="export-status" class="fr-text--sm" role="status"></p>
+   <div id="export-status" class="fr-text--sm" role="status"></div>
    <p>Ouvrez ensuite la <a class="fr-link" href="https://alexandra-guiderdoni.github.io/builder-mail-dsfr/snum.html" target="_blank" rel="noopener noreferrer">page SNUM de l’atelier (nouvelle fenêtre)</a>, puis collez-y le JSON copié ou le contenu du fichier téléchargé.</p>
   </section>
  </div>

@@ -98,9 +98,9 @@
 
  function httpError(status) {
   switch (status) {
-  case 401: return 'GitHub a refusé le jeton (erreur 401) : il est incomplet, expiré ou révoqué. Collez-le de nouveau en entier ou créez-en un nouveau, en suivant le lien « Créer ou renouveler un jeton GitHub » de la section « Connexion à GitHub ».';
-  case 403: return 'GitHub a refusé la demande (erreur 403) : ce jeton n’a pas le droit de lancer une tâche. Il lui faut la permission « Actions : Read and write » sur le dépôt (lien « Créer ou renouveler un jeton GitHub »). Si le jeton est correct, GitHub limite peut-être les appels : réessayez dans une heure.';
-  case 404: return `GitHub ne trouve pas le dépôt avec ce jeton (erreur 404) : le jeton ne donne pas accès au dépôt ${REPO}. Vérifiez le dépôt choisi à la création du jeton (lien « Créer ou renouveler un jeton GitHub »).`;
+  case 401: return 'GitHub a refusé le jeton (erreur 401) : il est incomplet, expiré ou révoqué. Collez-le de nouveau en entier ; s’il a été renouvelé, demandez le jeton à jour à la personne qui gère le dépôt (lien « Jeton GitHub de l’équipe : marche à suivre »).';
+  case 403: return 'GitHub a refusé la demande (erreur 403) : ce jeton n’a pas le droit de lancer une tâche, ou GitHub limite les appels. Réessayez dans une heure ; si l’erreur revient, signalez-la à la personne qui gère le dépôt (lien « Jeton GitHub de l’équipe : marche à suivre »).';
+  case 404: return `GitHub ne trouve pas le dépôt avec ce jeton (erreur 404) : le jeton ne donne pas accès au dépôt ${REPO}. Demandez le bon jeton à la personne qui gère le dépôt (lien « Jeton GitHub de l’équipe : marche à suivre »).`;
   case 422: return 'GitHub a refusé la demande (erreur 422) : les dates ou la sélection envoyées ne sont pas acceptées. Rechargez la page puis réessayez ; si l’erreur revient, signalez-la à la personne qui gère le dépôt.';
   case 429: return 'GitHub limite temporairement les appels (erreur 429) : réessayez dans quelques minutes.';
   default: return `GitHub a répondu par une erreur ${status} : réessayez dans quelques minutes.`;

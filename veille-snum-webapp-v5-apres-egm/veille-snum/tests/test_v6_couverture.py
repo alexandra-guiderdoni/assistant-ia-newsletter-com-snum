@@ -290,7 +290,7 @@ class NotesTests(TestCase):
     def test_notes_identiques_regroupees(self):
         entries = [(f"/article/ancien-{i}", "2025-01-15") for i in range(400)]
         _, _, state = discover_source(source(), START, END, SiteHttp(sitemap=urlset(entries)))
-        skipped = [n for n in state["notes"] if "plafond de liens sitemap" in n]
+        skipped = [n for n in state["notes"] if "plafond de liens du plan de site" in n]
         self.assertEqual(len(skipped), 1)
         self.assertIn("(×100)", skipped[0])
         self.assertEqual(state["sitemap_skipped"], 100)

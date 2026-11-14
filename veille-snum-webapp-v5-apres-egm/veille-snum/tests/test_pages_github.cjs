@@ -86,11 +86,11 @@ test('erreurs HTTP de GitHub en français, sans jeton', () => {
   assert.doesNotMatch(message, /github_pat|Bearer/);
  }
  assert.match(G.httpError(401), /jeton/i);
- assert.match(G.httpError(403), /Actions : Read and write/);
+ assert.match(G.httpError(403), /pas le droit de lancer une tâche/);
  assert.match(G.httpError(404), /ne donne pas accès au dépôt/);
  assert.match(G.httpError(422), /refusé/);
  // Chaque refus lié au jeton renvoie à la marche à suivre proposée par la page.
- for (const status of [401, 403, 404]) assert.match(G.httpError(status), /Créer ou renouveler un jeton GitHub/);
+ for (const status of [401, 403, 404]) assert.match(G.httpError(status), /Jeton GitHub de l’équipe : marche à suivre/);
  assert.doesNotMatch([401, 403, 404, 422, 429, 500].map(G.httpError).join(' '), /workflow|\brun\b|branche main/);
 });
 

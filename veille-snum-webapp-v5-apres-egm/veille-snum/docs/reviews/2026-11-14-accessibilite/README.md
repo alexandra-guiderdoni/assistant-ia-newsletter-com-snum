@@ -27,9 +27,9 @@ Cause 1, critère 8.7 (changement de langue), 11 signaux « à confirmer ». Qua
 - fondé pour les libellés anglais de GitHub cités dans l'aide du jeton (« fine-grained », « Actions : Read and write », « Contents : Read », « repo ») : corrigé, ils portent `lang="en"` ;
 - fondé pour « sitemaps » dans les lignes d'état des sources écrites par la page : corrigé, le texte dit « plans de site » ;
 - non retenu pour « newsletter » (mot d'usage courant en français), « GitHub » et « robots.txt » (noms propres ou techniques) ;
-- reste ouvert : les notes de collecte produites par le serveur contiennent encore « sitemap », et les messages d'erreur 403 citent « Actions : Read and write » sans indication de langue.
+- corrigé ensuite : les notes de collecte produites par le serveur disent « plan de site », et les messages d'erreur du jeton ne citent plus de libellé anglais. Les collectes archivées avant ce changement gardent leurs anciennes notes.
 
-Cause 2, critère 8.9 (balise utilisée à des fins de présentation), 3 signaux : un paragraphe vide servant de région d'état. Corrigé, c'est maintenant un `div`. Reste ouvert : d'autres paragraphes vides servent de régions d'état remplies par script (`collect-elapsed`, `collect-run`, `report-status`…) ; l'outil ne les signale pas, mais la même remarque s'y applique.
+Cause 2, critère 8.9 (balise utilisée à des fins de présentation), 3 signaux : un paragraphe vide servant de région d'état. Corrigé, c'est maintenant un `div`. Les quinze autres paragraphes vides servant de zones de messages ont été convertis de même ; la position et la taille de chaque élément de la page ont été comparées avant et après, zones vides puis remplies, à 1280 et 375 px : aucune différence, hors trois listes situées dans des accordéons repliés, dont la position relevée varie aussi d'un relevé à l'autre sans aucun changement.
 
 Les fichiers de l'outil sont dans `preaudit/`.
 
@@ -83,5 +83,5 @@ Consultation (thème 13)
 - Décider humainement les tests applicables parmi les 258, avec preuve.
 - Essayer avec un lecteur d'écran réel : annonces des régions d'état pendant une collecte, lecture des 48 titres, accordéons.
 - Essayer dans Firefox et Safari.
-- Arbitrer le champ du jeton (11.13) et les paragraphes vides servant de régions d'état (8.9).
+- Arbitrer le champ du jeton (11.13).
 - Rédiger la déclaration d'accessibilité, avec le moyen de signaler un problème, avant tout usage institutionnel.
