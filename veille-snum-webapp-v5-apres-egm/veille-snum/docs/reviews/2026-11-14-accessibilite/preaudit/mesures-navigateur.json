@@ -1,0 +1,233 @@
+{
+ "P01": {
+  "titrePage": "Veille SNUM · Collecte et sélection de la semaine",
+  "lang": "fr",
+  "doctype": "html",
+  "idsDupliques": [],
+  "images": 0,
+  "svg": 0,
+  "iframes": 0,
+  "medias": 0,
+  "tableaux": 0,
+  "h1": 1,
+  "titres": 42,
+  "sautsDeNiveau": 0,
+  "reperes": {
+   "header": 1,
+   "main": 1,
+   "footer": 1,
+   "nav": 1,
+   "navNommees": 1
+  },
+  "evitement": [
+   "#contenu:true",
+   "#footer:true"
+  ],
+  "liens": 92,
+  "liensSansNom": 0,
+  "liensMemeNomCiblesDifferentes": [
+   "Consulter la publication (nouvelle fenêtre) (43)"
+  ],
+  "nouvellesFenetres": 88,
+  "nouvellesFenetresSansMention": 0,
+  "boutons": 28,
+  "boutonsSansNom": 0,
+  "champs": 73,
+  "champsSansEtiquette": [],
+  "groupes": [
+   true,
+   true
+  ],
+  "autocomplete": [
+   "gh-token=off"
+  ],
+  "accordeons": [
+   true,
+   true,
+   true,
+   true,
+   true
+  ],
+  "statuts": 10,
+  "alertes": 4,
+  "ariaLive": 47,
+  "paragraphesVides": [
+   "gh-token-status",
+   "collect-elapsed",
+   "collect-run",
+   "reset-status",
+   "titres-intro",
+   "titres-count",
+   "resumes-hint",
+   "titres-elapsed",
+   "titres-run",
+   "report-status",
+   "selection-status",
+   "repechage-status",
+   "repechage-elapsed"
+  ],
+  "listes": 17,
+  "listesMalFormees": 0,
+  "stylesEnLigne": 5,
+  "tabindexPositifs": 0,
+  "motsAnglais": {
+   "fine-grained": 1,
+   "Read and write": 1,
+   "Contents": 1,
+   "sitemaps": 16,
+   "Sitemap": 7,
+   "sitemap": 5
+  },
+  "langMarquees": 0,
+  "espacementTexte": {
+   "defilementHorizontal": false,
+   "rognes": 0
+  },
+  "largeur640": true,
+  "largeur320": true
+ },
+ "P02": {
+  "titrePage": "Veille SNUM · Archives des collectes",
+  "lang": "fr",
+  "doctype": "html",
+  "idsDupliques": [],
+  "images": 0,
+  "svg": 0,
+  "iframes": 0,
+  "medias": 0,
+  "tableaux": 0,
+  "h1": 1,
+  "titres": 10,
+  "sautsDeNiveau": 0,
+  "reperes": {
+   "header": 1,
+   "main": 1,
+   "footer": 1,
+   "nav": 1,
+   "navNommees": 1
+  },
+  "evitement": [
+   "#contenu:true",
+   "#footer:true"
+  ],
+  "liens": 40,
+  "liensSansNom": 0,
+  "liensMemeNomCiblesDifferentes": [
+   "Paquet V519 de l’édition du 14 novembre 2026JSON (8)",
+   "Candidats écartés de l’édition du 14 novembre 2026 (8)",
+   "Rapport de collecte de l’édition du 14 novembre 20 (8)",
+   "Ouvrir dans la page de sélection : édition du 14 n (8)"
+  ],
+  "nouvellesFenetres": 0,
+  "nouvellesFenetresSansMention": 0,
+  "boutons": 0,
+  "boutonsSansNom": 0,
+  "champs": 0,
+  "champsSansEtiquette": [],
+  "groupes": [],
+  "autocomplete": [],
+  "accordeons": [],
+  "statuts": 2,
+  "alertes": 1,
+  "ariaLive": 0,
+  "paragraphesVides": [
+   "download-status"
+  ],
+  "listes": 39,
+  "listesMalFormees": 0,
+  "stylesEnLigne": 0,
+  "tabindexPositifs": 0,
+  "motsAnglais": {},
+  "langMarquees": 0,
+  "espacementTexte": {
+   "defilementHorizontal": false,
+   "rognes": 0
+  },
+  "largeur640": true,
+  "largeur320": true
+ },
+ "P03": {
+  "titrePage": "Veille SNUM · Collecte et sélection de la semaine",
+  "lang": "fr",
+  "doctype": "html",
+  "idsDupliques": [],
+  "images": 0,
+  "svg": 0,
+  "iframes": 0,
+  "medias": 0,
+  "tableaux": 0,
+  "h1": 1,
+  "titres": 65,
+  "sautsDeNiveau": 0,
+  "reperes": {
+   "header": 1,
+   "main": 1,
+   "footer": 1,
+   "nav": 1,
+   "navNommees": 1
+  },
+  "evitement": [
+   "#contenu:true",
+   "#footer:true"
+  ],
+  "liens": 101,
+  "liensSansNom": 0,
+  "liensMemeNomCiblesDifferentes": [
+   "Consulter la publication (nouvelle fenêtre) (48)"
+  ],
+  "nouvellesFenetres": 97,
+  "nouvellesFenetresSansMention": 0,
+  "boutons": 16,
+  "boutonsSansNom": 0,
+  "champs": 101,
+  "champsSansEtiquette": [],
+  "groupes": [
+   true,
+   true
+  ],
+  "autocomplete": [
+   "gh-token=off"
+  ],
+  "accordeons": [
+   true,
+   true,
+   true,
+   true
+  ],
+  "statuts": 10,
+  "alertes": 4,
+  "ariaLive": 4,
+  "paragraphesVides": [
+   "gh-token-status",
+   "collect-elapsed",
+   "collect-run",
+   "reset-status",
+   "titres-elapsed",
+   "titres-run",
+   "report-status",
+   "selection-status",
+   "repechage-status",
+   "repechage-elapsed",
+   "export-status"
+  ],
+  "listes": 18,
+  "listesMalFormees": 0,
+  "stylesEnLigne": 5,
+  "tabindexPositifs": 0,
+  "motsAnglais": {
+   "fine-grained": 1,
+   "Read and write": 1,
+   "Contents": 1,
+   "sitemaps": 16,
+   "Sitemap": 7,
+   "sitemap": 5
+  },
+  "langMarquees": 0,
+  "espacementTexte": {
+   "defilementHorizontal": false,
+   "rognes": 0
+  },
+  "largeur640": true,
+  "largeur320": true
+ }
+}

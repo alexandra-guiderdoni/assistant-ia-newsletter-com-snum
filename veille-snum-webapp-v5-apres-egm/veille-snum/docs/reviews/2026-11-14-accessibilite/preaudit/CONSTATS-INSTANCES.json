@@ -1,0 +1,487 @@
+{
+  "schema_version": 1,
+  "referential": "RGAA 4.1.2",
+  "claim": "Préqualification instrumentée ; aucun taux RGAA officiel.",
+  "signals": 14,
+  "confirmed_nonconformities": 0,
+  "root_causes": [
+    {
+      "rule_id": "RGAA-8-7-LANGUAGE-CHANGE-001",
+      "criterion": "8.7",
+      "test": "8.7.1",
+      "title": "Changement de langue non indiqué",
+      "severity": "Majeur",
+      "pages": [
+        "P01",
+        "P03",
+        "P04"
+      ],
+      "count": 11,
+      "confirmed": 0
+    },
+    {
+      "rule_id": "RGAA-8-9-EMPTY-PRESENTATION-001",
+      "criterion": "8.9",
+      "test": "8.9.1",
+      "title": "Paragraphe vide utilisé pour créer un espacement",
+      "severity": "Majeur",
+      "pages": [
+        "P01",
+        "P03",
+        "P04"
+      ],
+      "count": 3,
+      "confirmed": 0
+    }
+  ],
+  "findings": [
+    {
+      "id": "P01-RGAA-8-7-LANGUAGE-CHANGE-001-001",
+      "rule_id": "RGAA-8-7-LANGUAGE-CHANGE-001",
+      "criterion": "8.7",
+      "test": "8.7.1",
+      "component": "language",
+      "instance": 1,
+      "signal_status": "A_CONFIRMER",
+      "qualification_status": "NON_TESTE",
+      "severity": "Majeur",
+      "title": "Changement de langue non indiqué",
+      "selector": "body > main.fr-container.fr-my-4w > div.fr-grid-row.fr-grid-row--center > div.fr-col-12.fr-col-lg-10 > section.fr-mb-6w:nth-of-type(1) > p.fr-text--sm:nth-of-type(1)",
+      "observed": "Intitulé anglais sans lang=en : Un jeton GitHub personnel est nécessaire seulement pour lancer une collecte ou repêcher un article. Sans jeton, la sélection du paquet publié reste entièrement utilisable. Le jeton reste dans cette page : il n’est ni enregistré dans le navigateur, ni ajouté à l’adresse, ni inclus dans les exports, et disparaît à la fermeture ou au rechargement de la page. Le jeton Albert reste dans les secrets du dépôt et n’apparaît jamais ici.",
+      "observed_code": "<p class=\"fr-text--sm\">Un jeton GitHub personnel est nécessaire seulement pour lancer une collecte ou repêcher un article. Sans jeton, la sélection du paquet publié reste entièrement utilisable. Le jeton reste dans cette page : il n’est ni enregistré dans le navigateur, ni ajouté à l’adresse, ni inclus dans les exports, et disparaît à la fermeture ou au rechargement de la page. Le jeton Albert reste dans les secrets du dépôt et n’apparaît jamais ici.</p>",
+      "observed_origin": "RENDERED_DOM",
+      "expected": "Tout passage ou nom accessible dans une langue différente de la langue principale possède une indication de langue adaptée.",
+      "expected_code": "<div lang=\"en\" aria-label=\"English accessible name\">…</div>",
+      "failed_assertions": [
+        "Un changement de langue probable n’est pas indiqué dans le DOM rendu."
+      ],
+      "impact": "La synthèse vocale peut prononcer le passage avec les règles de la langue principale.",
+      "source": "https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/#8.7.1",
+      "recommendation": "Traduire l’intitulé ou déclarer la langue étrangère avec un attribut lang pertinent.",
+      "verification": "Contrôler le passage dans le DOM rendu puis écouter sa restitution avec un lecteur d’écran.",
+      "evidence": [
+        "rgaa/preuves/P01/attempt-001/raw-dom.json",
+        "rgaa/preuves/P01/attempt-001/desktop.png"
+      ],
+      "page": "P01",
+      "page_name": "Sélection du paquet (25 articles)",
+      "page_url": "https://alexandra-guiderdoni.github.io/assistant-ia-newsletter-com-snum/"
+    },
+    {
+      "id": "P01-RGAA-8-7-LANGUAGE-CHANGE-001-002",
+      "rule_id": "RGAA-8-7-LANGUAGE-CHANGE-001",
+      "criterion": "8.7",
+      "test": "8.7.1",
+      "component": "language",
+      "instance": 2,
+      "signal_status": "A_CONFIRMER",
+      "qualification_status": "NON_TESTE",
+      "severity": "Majeur",
+      "title": "Changement de langue non indiqué",
+      "selector": "body > main.fr-container.fr-my-4w > div.fr-grid-row.fr-grid-row--center > div.fr-col-12.fr-col-lg-10 > section.fr-mb-6w:nth-of-type(2) > p.fr-text--sm",
+      "observed": "Intitulé anglais sans lang=en : La collecte remplace ce que publie cette page pour toutes les personnes qui la consultent ; la collecte précédente reste consultable dans les archives. Par défaut, elle s’arrête aux titres trouvés (trois à quatre minutes) : vous choisissez ensuite les articles à faire résumer. Gardez cette page ouverte pendant la collecte : son avancement s’affiche ici, et le jeton disparaît si vous la rechargez.",
+      "observed_code": "<p class=\"fr-text--sm\">La collecte remplace ce que publie cette page pour toutes les personnes qui la consultent ; la collecte précédente reste consultable dans les archives. Par défaut, elle s’arrête aux titres trouvés (trois à quatre minutes) : vous choisissez ensuite les articles à faire résumer. Gardez cette page ouverte pendant la collecte : son avancement s’affiche ici, et le jeton disparaît si vous la rechargez.</p>",
+      "observed_origin": "RENDERED_DOM",
+      "expected": "Tout passage ou nom accessible dans une langue différente de la langue principale possède une indication de langue adaptée.",
+      "expected_code": "<div lang=\"en\" aria-label=\"English accessible name\">…</div>",
+      "failed_assertions": [
+        "Un changement de langue probable n’est pas indiqué dans le DOM rendu."
+      ],
+      "impact": "La synthèse vocale peut prononcer le passage avec les règles de la langue principale.",
+      "source": "https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/#8.7.1",
+      "recommendation": "Traduire l’intitulé ou déclarer la langue étrangère avec un attribut lang pertinent.",
+      "verification": "Contrôler le passage dans le DOM rendu puis écouter sa restitution avec un lecteur d’écran.",
+      "evidence": [
+        "rgaa/preuves/P01/attempt-001/raw-dom.json",
+        "rgaa/preuves/P01/attempt-001/desktop.png"
+      ],
+      "page": "P01",
+      "page_name": "Sélection du paquet (25 articles)",
+      "page_url": "https://alexandra-guiderdoni.github.io/assistant-ia-newsletter-com-snum/"
+    },
+    {
+      "id": "P01-RGAA-8-7-LANGUAGE-CHANGE-001-003",
+      "rule_id": "RGAA-8-7-LANGUAGE-CHANGE-001",
+      "criterion": "8.7",
+      "test": "8.7.1",
+      "component": "language",
+      "instance": 3,
+      "signal_status": "A_CONFIRMER",
+      "qualification_status": "NON_TESTE",
+      "severity": "Majeur",
+      "title": "Changement de langue non indiqué",
+      "selector": "div > div.fr-accordions-group > section.fr-accordion:nth-of-type(1) > div.fr-collapse.fr-collapse--expanded > ul > li:nth-of-type(3)",
+      "observed": "Intitulé anglais sans lang=en : Vie publique : Bloquée (robots.txt ou protection anti-robot) · 0 URL découvertes · 0 tentées · 0 pages reçues · 0 candidats · 0 erreurs d’articles · 0 erreurs de découverte · 0 URL/sitemaps ignorés · 0 non tentées. Protection anti-robot du site : accès automatisé refusé, aucune page lue (page de vérification JavaScript)",
+      "observed_code": "<li>Vie publique : Bloquée (robots.txt ou protection anti-robot) · 0 URL découvertes · 0 tentées · 0 pages reçues · 0 candidats · 0 erreurs d’articles · 0 erreurs de découverte · 0 URL/sitemaps ignorés · 0 non tentées. Protection anti-robot du site : accès automatisé refusé, aucune page lue (page de vérification JavaScript)</li>",
+      "observed_origin": "RENDERED_DOM",
+      "expected": "Tout passage ou nom accessible dans une langue différente de la langue principale possède une indication de langue adaptée.",
+      "expected_code": "<div lang=\"en\" aria-label=\"English accessible name\">…</div>",
+      "failed_assertions": [
+        "Un changement de langue probable n’est pas indiqué dans le DOM rendu."
+      ],
+      "impact": "La synthèse vocale peut prononcer le passage avec les règles de la langue principale.",
+      "source": "https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/#8.7.1",
+      "recommendation": "Traduire l’intitulé ou déclarer la langue étrangère avec un attribut lang pertinent.",
+      "verification": "Contrôler le passage dans le DOM rendu puis écouter sa restitution avec un lecteur d’écran.",
+      "evidence": [
+        "rgaa/preuves/P01/attempt-001/raw-dom.json",
+        "rgaa/preuves/P01/attempt-001/desktop.png"
+      ],
+      "page": "P01",
+      "page_name": "Sélection du paquet (25 articles)",
+      "page_url": "https://alexandra-guiderdoni.github.io/assistant-ia-newsletter-com-snum/"
+    },
+    {
+      "id": "P01-RGAA-8-7-LANGUAGE-CHANGE-001-004",
+      "rule_id": "RGAA-8-7-LANGUAGE-CHANGE-001",
+      "criterion": "8.7",
+      "test": "8.7.1",
+      "component": "language",
+      "instance": 4,
+      "signal_status": "A_CONFIRMER",
+      "qualification_status": "NON_TESTE",
+      "severity": "Majeur",
+      "title": "Changement de langue non indiqué",
+      "selector": "body > footer.fr-footer > div.fr-container > div.fr-footer__body:nth-of-type(1) > div.fr-footer__content:nth-of-type(2) > p.fr-footer__content-desc",
+      "observed": "Intitulé anglais sans lang=en : Page de collecte et de sélection de la newsletter du Service du numérique. Aucun courriel n’est envoyé depuis cette page et aucune donnée n’est enregistrée dans le navigateur.",
+      "observed_code": "<p class=\"fr-footer__content-desc\">Page de collecte et de sélection de la newsletter du Service du numérique. Aucun courriel n’est envoyé depuis cette page et aucune donnée n’est enregistrée dans le navigateur.</p>",
+      "observed_origin": "RENDERED_DOM",
+      "expected": "Tout passage ou nom accessible dans une langue différente de la langue principale possède une indication de langue adaptée.",
+      "expected_code": "<div lang=\"en\" aria-label=\"English accessible name\">…</div>",
+      "failed_assertions": [
+        "Un changement de langue probable n’est pas indiqué dans le DOM rendu."
+      ],
+      "impact": "La synthèse vocale peut prononcer le passage avec les règles de la langue principale.",
+      "source": "https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/#8.7.1",
+      "recommendation": "Traduire l’intitulé ou déclarer la langue étrangère avec un attribut lang pertinent.",
+      "verification": "Contrôler le passage dans le DOM rendu puis écouter sa restitution avec un lecteur d’écran.",
+      "evidence": [
+        "rgaa/preuves/P01/attempt-001/raw-dom.json",
+        "rgaa/preuves/P01/attempt-001/desktop.png"
+      ],
+      "page": "P01",
+      "page_name": "Sélection du paquet (25 articles)",
+      "page_url": "https://alexandra-guiderdoni.github.io/assistant-ia-newsletter-com-snum/"
+    },
+    {
+      "id": "P01-RGAA-8-9-EMPTY-PRESENTATION-001-005",
+      "rule_id": "RGAA-8-9-EMPTY-PRESENTATION-001",
+      "criterion": "8.9",
+      "test": "8.9.1",
+      "component": "html",
+      "instance": 1,
+      "signal_status": "FAIL_CANDIDATE",
+      "qualification_status": "NON_TESTE",
+      "severity": "Majeur",
+      "title": "Paragraphe vide utilisé pour créer un espacement",
+      "selector": "#reset-status",
+      "observed": "Paragraphe vide avec marge -1px",
+      "observed_code": "<p id=\"reset-status\" class=\"fr-sr-only\" role=\"status\"></p>",
+      "observed_origin": "MEASUREMENTS",
+      "expected": "Les éléments sémantiques ne sont pas utilisés uniquement pour produire une marge ou un espacement visuel.",
+      "expected_code": "<!-- Utiliser les marges CSS du conteneur plutôt qu’un paragraphe vide -->",
+      "failed_assertions": [
+        "Un paragraphe vide produit un espacement visible via ses styles calculés."
+      ],
+      "impact": "La structure restituée contient des éléments sans contenu et la présentation dépend d’un balisage non sémantique.",
+      "source": "https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/#8.9.1",
+      "recommendation": "Supprimer le paragraphe vide et reporter l’espacement sur le composant ou son contenu avec CSS.",
+      "verification": "Désactiver les styles puis contrôler que les éléments vides ne structurent plus artificiellement la présentation.",
+      "evidence": [
+        "rgaa/preuves/P01/attempt-001/raw-dom.json",
+        "rgaa/preuves/P01/attempt-001/desktop.png"
+      ],
+      "page": "P01",
+      "page_name": "Sélection du paquet (25 articles)",
+      "page_url": "https://alexandra-guiderdoni.github.io/assistant-ia-newsletter-com-snum/"
+    },
+    {
+      "id": "P03-RGAA-8-7-LANGUAGE-CHANGE-001-001",
+      "rule_id": "RGAA-8-7-LANGUAGE-CHANGE-001",
+      "criterion": "8.7",
+      "test": "8.7.1",
+      "component": "language",
+      "instance": 1,
+      "signal_status": "A_CONFIRMER",
+      "qualification_status": "NON_TESTE",
+      "severity": "Majeur",
+      "title": "Changement de langue non indiqué",
+      "selector": "body > main.fr-container.fr-my-4w > div.fr-grid-row.fr-grid-row--center > div.fr-col-12.fr-col-lg-10 > section.fr-mb-6w:nth-of-type(1) > p.fr-text--sm:nth-of-type(1)",
+      "observed": "Intitulé anglais sans lang=en : Un jeton GitHub personnel est nécessaire seulement pour lancer une collecte ou repêcher un article. Sans jeton, la sélection du paquet publié reste entièrement utilisable. Le jeton reste dans cette page : il n’est ni enregistré dans le navigateur, ni ajouté à l’adresse, ni inclus dans les exports, et disparaît à la fermeture ou au rechargement de la page. Le jeton Albert reste dans les secrets du dépôt et n’apparaît jamais ici.",
+      "observed_code": "<p class=\"fr-text--sm\">Un jeton GitHub personnel est nécessaire seulement pour lancer une collecte ou repêcher un article. Sans jeton, la sélection du paquet publié reste entièrement utilisable. Le jeton reste dans cette page : il n’est ni enregistré dans le navigateur, ni ajouté à l’adresse, ni inclus dans les exports, et disparaît à la fermeture ou au rechargement de la page. Le jeton Albert reste dans les secrets du dépôt et n’apparaît jamais ici.</p>",
+      "observed_origin": "RENDERED_DOM",
+      "expected": "Tout passage ou nom accessible dans une langue différente de la langue principale possède une indication de langue adaptée.",
+      "expected_code": "<div lang=\"en\" aria-label=\"English accessible name\">…</div>",
+      "failed_assertions": [
+        "Un changement de langue probable n’est pas indiqué dans le DOM rendu."
+      ],
+      "impact": "La synthèse vocale peut prononcer le passage avec les règles de la langue principale.",
+      "source": "https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/#8.7.1",
+      "recommendation": "Traduire l’intitulé ou déclarer la langue étrangère avec un attribut lang pertinent.",
+      "verification": "Contrôler le passage dans le DOM rendu puis écouter sa restitution avec un lecteur d’écran.",
+      "evidence": [
+        "rgaa/preuves/P03/attempt-001/raw-dom.json",
+        "rgaa/preuves/P03/attempt-001/desktop.png"
+      ],
+      "page": "P03",
+      "page_name": "Titres trouvés (48 titres)",
+      "page_url": "http://127.0.0.1/ (vue titres servie localement)"
+    },
+    {
+      "id": "P03-RGAA-8-7-LANGUAGE-CHANGE-001-002",
+      "rule_id": "RGAA-8-7-LANGUAGE-CHANGE-001",
+      "criterion": "8.7",
+      "test": "8.7.1",
+      "component": "language",
+      "instance": 2,
+      "signal_status": "A_CONFIRMER",
+      "qualification_status": "NON_TESTE",
+      "severity": "Majeur",
+      "title": "Changement de langue non indiqué",
+      "selector": "body > main.fr-container.fr-my-4w > div.fr-grid-row.fr-grid-row--center > div.fr-col-12.fr-col-lg-10 > section.fr-mb-6w:nth-of-type(2) > p.fr-text--sm",
+      "observed": "Intitulé anglais sans lang=en : La collecte remplace ce que publie cette page pour toutes les personnes qui la consultent ; la collecte précédente reste consultable dans les archives. Par défaut, elle s’arrête aux titres trouvés (trois à quatre minutes) : vous choisissez ensuite les articles à faire résumer. Gardez cette page ouverte pendant la collecte : son avancement s’affiche ici, et le jeton disparaît si vous la rechargez.",
+      "observed_code": "<p class=\"fr-text--sm\">La collecte remplace ce que publie cette page pour toutes les personnes qui la consultent ; la collecte précédente reste consultable dans les archives. Par défaut, elle s’arrête aux titres trouvés (trois à quatre minutes) : vous choisissez ensuite les articles à faire résumer. Gardez cette page ouverte pendant la collecte : son avancement s’affiche ici, et le jeton disparaît si vous la rechargez.</p>",
+      "observed_origin": "RENDERED_DOM",
+      "expected": "Tout passage ou nom accessible dans une langue différente de la langue principale possède une indication de langue adaptée.",
+      "expected_code": "<div lang=\"en\" aria-label=\"English accessible name\">…</div>",
+      "failed_assertions": [
+        "Un changement de langue probable n’est pas indiqué dans le DOM rendu."
+      ],
+      "impact": "La synthèse vocale peut prononcer le passage avec les règles de la langue principale.",
+      "source": "https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/#8.7.1",
+      "recommendation": "Traduire l’intitulé ou déclarer la langue étrangère avec un attribut lang pertinent.",
+      "verification": "Contrôler le passage dans le DOM rendu puis écouter sa restitution avec un lecteur d’écran.",
+      "evidence": [
+        "rgaa/preuves/P03/attempt-001/raw-dom.json",
+        "rgaa/preuves/P03/attempt-001/desktop.png"
+      ],
+      "page": "P03",
+      "page_name": "Titres trouvés (48 titres)",
+      "page_url": "http://127.0.0.1/ (vue titres servie localement)"
+    },
+    {
+      "id": "P03-RGAA-8-7-LANGUAGE-CHANGE-001-003",
+      "rule_id": "RGAA-8-7-LANGUAGE-CHANGE-001",
+      "criterion": "8.7",
+      "test": "8.7.1",
+      "component": "language",
+      "instance": 3,
+      "signal_status": "A_CONFIRMER",
+      "qualification_status": "NON_TESTE",
+      "severity": "Majeur",
+      "title": "Changement de langue non indiqué",
+      "selector": "div > div.fr-accordions-group > section.fr-accordion:nth-of-type(1) > div.fr-collapse.fr-collapse--expanded > ul > li:nth-of-type(3)",
+      "observed": "Intitulé anglais sans lang=en : Vie publique : Bloquée (robots.txt ou protection anti-robot) · 0 URL découvertes · 0 tentées · 0 pages reçues · 0 candidats · 0 erreurs d’articles · 0 erreurs de découverte · 0 URL/sitemaps ignorés · 0 non tentées. Protection anti-robot du site : accès automatisé refusé, aucune page lue (page de vérification JavaScript)",
+      "observed_code": "<li>Vie publique : Bloquée (robots.txt ou protection anti-robot) · 0 URL découvertes · 0 tentées · 0 pages reçues · 0 candidats · 0 erreurs d’articles · 0 erreurs de découverte · 0 URL/sitemaps ignorés · 0 non tentées. Protection anti-robot du site : accès automatisé refusé, aucune page lue (page de vérification JavaScript)</li>",
+      "observed_origin": "RENDERED_DOM",
+      "expected": "Tout passage ou nom accessible dans une langue différente de la langue principale possède une indication de langue adaptée.",
+      "expected_code": "<div lang=\"en\" aria-label=\"English accessible name\">…</div>",
+      "failed_assertions": [
+        "Un changement de langue probable n’est pas indiqué dans le DOM rendu."
+      ],
+      "impact": "La synthèse vocale peut prononcer le passage avec les règles de la langue principale.",
+      "source": "https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/#8.7.1",
+      "recommendation": "Traduire l’intitulé ou déclarer la langue étrangère avec un attribut lang pertinent.",
+      "verification": "Contrôler le passage dans le DOM rendu puis écouter sa restitution avec un lecteur d’écran.",
+      "evidence": [
+        "rgaa/preuves/P03/attempt-001/raw-dom.json",
+        "rgaa/preuves/P03/attempt-001/desktop.png"
+      ],
+      "page": "P03",
+      "page_name": "Titres trouvés (48 titres)",
+      "page_url": "http://127.0.0.1/ (vue titres servie localement)"
+    },
+    {
+      "id": "P03-RGAA-8-7-LANGUAGE-CHANGE-001-004",
+      "rule_id": "RGAA-8-7-LANGUAGE-CHANGE-001",
+      "criterion": "8.7",
+      "test": "8.7.1",
+      "component": "language",
+      "instance": 4,
+      "signal_status": "A_CONFIRMER",
+      "qualification_status": "NON_TESTE",
+      "severity": "Majeur",
+      "title": "Changement de langue non indiqué",
+      "selector": "body > footer.fr-footer > div.fr-container > div.fr-footer__body:nth-of-type(1) > div.fr-footer__content:nth-of-type(2) > p.fr-footer__content-desc",
+      "observed": "Intitulé anglais sans lang=en : Page de collecte et de sélection de la newsletter du Service du numérique. Aucun courriel n’est envoyé depuis cette page et aucune donnée n’est enregistrée dans le navigateur.",
+      "observed_code": "<p class=\"fr-footer__content-desc\">Page de collecte et de sélection de la newsletter du Service du numérique. Aucun courriel n’est envoyé depuis cette page et aucune donnée n’est enregistrée dans le navigateur.</p>",
+      "observed_origin": "RENDERED_DOM",
+      "expected": "Tout passage ou nom accessible dans une langue différente de la langue principale possède une indication de langue adaptée.",
+      "expected_code": "<div lang=\"en\" aria-label=\"English accessible name\">…</div>",
+      "failed_assertions": [
+        "Un changement de langue probable n’est pas indiqué dans le DOM rendu."
+      ],
+      "impact": "La synthèse vocale peut prononcer le passage avec les règles de la langue principale.",
+      "source": "https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/#8.7.1",
+      "recommendation": "Traduire l’intitulé ou déclarer la langue étrangère avec un attribut lang pertinent.",
+      "verification": "Contrôler le passage dans le DOM rendu puis écouter sa restitution avec un lecteur d’écran.",
+      "evidence": [
+        "rgaa/preuves/P03/attempt-001/raw-dom.json",
+        "rgaa/preuves/P03/attempt-001/desktop.png"
+      ],
+      "page": "P03",
+      "page_name": "Titres trouvés (48 titres)",
+      "page_url": "http://127.0.0.1/ (vue titres servie localement)"
+    },
+    {
+      "id": "P03-RGAA-8-9-EMPTY-PRESENTATION-001-005",
+      "rule_id": "RGAA-8-9-EMPTY-PRESENTATION-001",
+      "criterion": "8.9",
+      "test": "8.9.1",
+      "component": "html",
+      "instance": 1,
+      "signal_status": "FAIL_CANDIDATE",
+      "qualification_status": "NON_TESTE",
+      "severity": "Majeur",
+      "title": "Paragraphe vide utilisé pour créer un espacement",
+      "selector": "#reset-status",
+      "observed": "Paragraphe vide avec marge -1px",
+      "observed_code": "<p id=\"reset-status\" class=\"fr-sr-only\" role=\"status\"></p>",
+      "observed_origin": "MEASUREMENTS",
+      "expected": "Les éléments sémantiques ne sont pas utilisés uniquement pour produire une marge ou un espacement visuel.",
+      "expected_code": "<!-- Utiliser les marges CSS du conteneur plutôt qu’un paragraphe vide -->",
+      "failed_assertions": [
+        "Un paragraphe vide produit un espacement visible via ses styles calculés."
+      ],
+      "impact": "La structure restituée contient des éléments sans contenu et la présentation dépend d’un balisage non sémantique.",
+      "source": "https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/#8.9.1",
+      "recommendation": "Supprimer le paragraphe vide et reporter l’espacement sur le composant ou son contenu avec CSS.",
+      "verification": "Désactiver les styles puis contrôler que les éléments vides ne structurent plus artificiellement la présentation.",
+      "evidence": [
+        "rgaa/preuves/P03/attempt-001/raw-dom.json",
+        "rgaa/preuves/P03/attempt-001/desktop.png"
+      ],
+      "page": "P03",
+      "page_name": "Titres trouvés (48 titres)",
+      "page_url": "http://127.0.0.1/ (vue titres servie localement)"
+    },
+    {
+      "id": "P04-RGAA-8-7-LANGUAGE-CHANGE-001-001",
+      "rule_id": "RGAA-8-7-LANGUAGE-CHANGE-001",
+      "criterion": "8.7",
+      "test": "8.7.1",
+      "component": "language",
+      "instance": 1,
+      "signal_status": "A_CONFIRMER",
+      "qualification_status": "NON_TESTE",
+      "severity": "Majeur",
+      "title": "Changement de langue non indiqué",
+      "selector": "body > main.fr-container.fr-my-4w > div.fr-grid-row.fr-grid-row--center > div.fr-col-12.fr-col-lg-10 > section.fr-mb-6w:nth-of-type(1) > p.fr-text--sm:nth-of-type(1)",
+      "observed": "Intitulé anglais sans lang=en : Un jeton GitHub personnel est nécessaire seulement pour lancer une collecte ou repêcher un article. Sans jeton, la sélection du paquet publié reste entièrement utilisable. Le jeton reste dans cette page : il n’est ni enregistré dans le navigateur, ni ajouté à l’adresse, ni inclus dans les exports, et disparaît à la fermeture ou au rechargement de la page. Le jeton Albert reste dans les secrets du dépôt et n’apparaît jamais ici.",
+      "observed_code": "<p class=\"fr-text--sm\">Un jeton GitHub personnel est nécessaire seulement pour lancer une collecte ou repêcher un article. Sans jeton, la sélection du paquet publié reste entièrement utilisable. Le jeton reste dans cette page : il n’est ni enregistré dans le navigateur, ni ajouté à l’adresse, ni inclus dans les exports, et disparaît à la fermeture ou au rechargement de la page. Le jeton Albert reste dans les secrets du dépôt et n’apparaît jamais ici.</p>",
+      "observed_origin": "RENDERED_DOM",
+      "expected": "Tout passage ou nom accessible dans une langue différente de la langue principale possède une indication de langue adaptée.",
+      "expected_code": "<div lang=\"en\" aria-label=\"English accessible name\">…</div>",
+      "failed_assertions": [
+        "Un changement de langue probable n’est pas indiqué dans le DOM rendu."
+      ],
+      "impact": "La synthèse vocale peut prononcer le passage avec les règles de la langue principale.",
+      "source": "https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/#8.7.1",
+      "recommendation": "Traduire l’intitulé ou déclarer la langue étrangère avec un attribut lang pertinent.",
+      "verification": "Contrôler le passage dans le DOM rendu puis écouter sa restitution avec un lecteur d’écran.",
+      "evidence": [
+        "rgaa/preuves/P04/attempt-001/raw-dom.json",
+        "rgaa/preuves/P04/attempt-001/desktop.png"
+      ],
+      "page": "P04",
+      "page_name": "Collecte archivée rouverte",
+      "page_url": "https://alexandra-guiderdoni.github.io/assistant-ia-newsletter-com-snum/?collecte=2026-11-14_43544468492"
+    },
+    {
+      "id": "P04-RGAA-8-7-LANGUAGE-CHANGE-001-002",
+      "rule_id": "RGAA-8-7-LANGUAGE-CHANGE-001",
+      "criterion": "8.7",
+      "test": "8.7.1",
+      "component": "language",
+      "instance": 2,
+      "signal_status": "A_CONFIRMER",
+      "qualification_status": "NON_TESTE",
+      "severity": "Majeur",
+      "title": "Changement de langue non indiqué",
+      "selector": "div > div.fr-accordions-group > section.fr-accordion:nth-of-type(1) > div.fr-collapse.fr-collapse--expanded > ul > li:nth-of-type(3)",
+      "observed": "Intitulé anglais sans lang=en : Vie publique : Bloquée (robots.txt ou protection anti-robot) · 0 URL découvertes · 0 tentées · 0 pages reçues · 0 candidats · 0 erreurs d’articles · 0 erreurs de découverte · 0 URL/sitemaps ignorés · 0 non tentées. Protection anti-robot du site : accès automatisé refusé, aucune page lue (page de vérification JavaScript)",
+      "observed_code": "<li>Vie publique : Bloquée (robots.txt ou protection anti-robot) · 0 URL découvertes · 0 tentées · 0 pages reçues · 0 candidats · 0 erreurs d’articles · 0 erreurs de découverte · 0 URL/sitemaps ignorés · 0 non tentées. Protection anti-robot du site : accès automatisé refusé, aucune page lue (page de vérification JavaScript)</li>",
+      "observed_origin": "RENDERED_DOM",
+      "expected": "Tout passage ou nom accessible dans une langue différente de la langue principale possède une indication de langue adaptée.",
+      "expected_code": "<div lang=\"en\" aria-label=\"English accessible name\">…</div>",
+      "failed_assertions": [
+        "Un changement de langue probable n’est pas indiqué dans le DOM rendu."
+      ],
+      "impact": "La synthèse vocale peut prononcer le passage avec les règles de la langue principale.",
+      "source": "https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/#8.7.1",
+      "recommendation": "Traduire l’intitulé ou déclarer la langue étrangère avec un attribut lang pertinent.",
+      "verification": "Contrôler le passage dans le DOM rendu puis écouter sa restitution avec un lecteur d’écran.",
+      "evidence": [
+        "rgaa/preuves/P04/attempt-001/raw-dom.json",
+        "rgaa/preuves/P04/attempt-001/desktop.png"
+      ],
+      "page": "P04",
+      "page_name": "Collecte archivée rouverte",
+      "page_url": "https://alexandra-guiderdoni.github.io/assistant-ia-newsletter-com-snum/?collecte=2026-11-14_43544468492"
+    },
+    {
+      "id": "P04-RGAA-8-7-LANGUAGE-CHANGE-001-003",
+      "rule_id": "RGAA-8-7-LANGUAGE-CHANGE-001",
+      "criterion": "8.7",
+      "test": "8.7.1",
+      "component": "language",
+      "instance": 3,
+      "signal_status": "A_CONFIRMER",
+      "qualification_status": "NON_TESTE",
+      "severity": "Majeur",
+      "title": "Changement de langue non indiqué",
+      "selector": "body > footer.fr-footer > div.fr-container > div.fr-footer__body:nth-of-type(1) > div.fr-footer__content:nth-of-type(2) > p.fr-footer__content-desc",
+      "observed": "Intitulé anglais sans lang=en : Page de collecte et de sélection de la newsletter du Service du numérique. Aucun courriel n’est envoyé depuis cette page et aucune donnée n’est enregistrée dans le navigateur.",
+      "observed_code": "<p class=\"fr-footer__content-desc\">Page de collecte et de sélection de la newsletter du Service du numérique. Aucun courriel n’est envoyé depuis cette page et aucune donnée n’est enregistrée dans le navigateur.</p>",
+      "observed_origin": "RENDERED_DOM",
+      "expected": "Tout passage ou nom accessible dans une langue différente de la langue principale possède une indication de langue adaptée.",
+      "expected_code": "<div lang=\"en\" aria-label=\"English accessible name\">…</div>",
+      "failed_assertions": [
+        "Un changement de langue probable n’est pas indiqué dans le DOM rendu."
+      ],
+      "impact": "La synthèse vocale peut prononcer le passage avec les règles de la langue principale.",
+      "source": "https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/#8.7.1",
+      "recommendation": "Traduire l’intitulé ou déclarer la langue étrangère avec un attribut lang pertinent.",
+      "verification": "Contrôler le passage dans le DOM rendu puis écouter sa restitution avec un lecteur d’écran.",
+      "evidence": [
+        "rgaa/preuves/P04/attempt-001/raw-dom.json",
+        "rgaa/preuves/P04/attempt-001/desktop.png"
+      ],
+      "page": "P04",
+      "page_name": "Collecte archivée rouverte",
+      "page_url": "https://alexandra-guiderdoni.github.io/assistant-ia-newsletter-com-snum/?collecte=2026-11-14_43544468492"
+    },
+    {
+      "id": "P04-RGAA-8-9-EMPTY-PRESENTATION-001-004",
+      "rule_id": "RGAA-8-9-EMPTY-PRESENTATION-001",
+      "criterion": "8.9",
+      "test": "8.9.1",
+      "component": "html",
+      "instance": 1,
+      "signal_status": "FAIL_CANDIDATE",
+      "qualification_status": "NON_TESTE",
+      "severity": "Majeur",
+      "title": "Paragraphe vide utilisé pour créer un espacement",
+      "selector": "#reset-status",
+      "observed": "Paragraphe vide avec marge -1px",
+      "observed_code": "<p id=\"reset-status\" class=\"fr-sr-only\" role=\"status\"></p>",
+      "observed_origin": "MEASUREMENTS",
+      "expected": "Les éléments sémantiques ne sont pas utilisés uniquement pour produire une marge ou un espacement visuel.",
+      "expected_code": "<!-- Utiliser les marges CSS du conteneur plutôt qu’un paragraphe vide -->",
+      "failed_assertions": [
+        "Un paragraphe vide produit un espacement visible via ses styles calculés."
+      ],
+      "impact": "La structure restituée contient des éléments sans contenu et la présentation dépend d’un balisage non sémantique.",
+      "source": "https://accessibilite.numerique.gouv.fr/methode/criteres-et-tests/#8.9.1",
+      "recommendation": "Supprimer le paragraphe vide et reporter l’espacement sur le composant ou son contenu avec CSS.",
+      "verification": "Désactiver les styles puis contrôler que les éléments vides ne structurent plus artificiellement la présentation.",
+      "evidence": [
+        "rgaa/preuves/P04/attempt-001/raw-dom.json",
+        "rgaa/preuves/P04/attempt-001/desktop.png"
+      ],
+      "page": "P04",
+      "page_name": "Collecte archivée rouverte",
+      "page_url": "https://alexandra-guiderdoni.github.io/assistant-ia-newsletter-com-snum/?collecte=2026-11-14_43544468492"
+    }
+  ]
+}
