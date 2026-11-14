@@ -38,7 +38,7 @@ https://alexandra-guiderdoni.github.io/assistant-ia-newsletter-com-snum/ offre l
 La collecte se fait en deux temps :
 
 1. « Lancer la collecte » (mode `titres`) explore les treize sites publics sans Albert, puis publie les titres trouvés : trois à quatre minutes (estimation, ce mode n'a pas encore été mesuré en réel). La page se vide dès que GitHub accepte la demande ; la collecte précédente, si elle avait été résumée, reste dans les archives.
-2. La personne coche les titres à garder, impose une thématique ou laisse « Albert choisit », puis « Rédiger les résumés » (mode `resumes`). Albert ne résume que ces titres, deux à la fois : une à deux minutes pour dix articles, puis environ deux minutes de publication. Albert s'arrête après six minutes : au-delà d'une trentaine d'articles, les derniers peuvent rester sans résumé. Le paquet V519 est alors archivé puis publié : si l'archivage échoue, rien n'est publié et la page l'annonce. Un paquet sans article est publié sans être archivé.
+2. La personne coche les titres à garder (un par un, ou « Tout garder » pour une source), impose une thématique ou laisse « Albert choisit », puis « Rédiger les résumés » (mode `resumes`). Albert ne résume que ces titres, deux à la fois : une à deux minutes pour dix articles, puis environ deux minutes de publication. Albert s'arrête après six minutes : au-delà d'une trentaine d'articles, les derniers peuvent rester sans résumé. Le paquet V519 est alors archivé puis publié : si l'archivage échoue, rien n'est publié et la page l'annonce. Un paquet sans article est publié sans être archivé.
 3. Sélection fine habituelle : garder, écarter, changer de thématique, repêcher un candidat écarté, puis copier le JSON dans l'atelier de courriels.
 
 Les titres non gardés, jugés hors thématique, non résumés faute de temps ou en échec rejoignent l'accordéon « Candidats écartés », avec leur motif ; chacun reste repêchable. La case « Collecte complète en une fois » garde l'ancien déroulement (mode `collecte`, cinq à neuf minutes selon le nombre d'articles : mesuré sur quatre collectes du 13 novembre 2026). Le mode `page seule`, lancé depuis GitHub, republie la page avec les fichiers en ligne, sans Albert ni archive.
@@ -52,7 +52,7 @@ Ce que la page vérifie pour vous :
 
 Chaque collecte résumée est archivée sur la branche publique `donnees-veille` (`collectes/<édition>_<run>/` : paquet, candidats écartés, rapport ; index `collectes/index.json`), avec les résultats de repêchage (`repechages/`). Des titres jamais résumés ne sont pas archivés. La page [archives.html](https://alexandra-guiderdoni.github.io/assistant-ia-newsletter-com-snum/archives.html) liste les archives et rouvre une ancienne collecte dans la page de sélection, sans jeton ; une archive peut mettre jusqu'à cinq minutes à y apparaître (cache de raw.githubusercontent.com).
 
-Tests de la page : `node --test tests/test_pages_*.cjs`.
+Tests de la page : `node --test tests/test_pages_*.cjs`. Parcours de bout en bout dans Chromium, GitHub simulé et vrai code serveur : [tests/navigateur/](tests/navigateur/README.md). Rapports de l'audit du 14 novembre 2026 et points laissés ouverts : [docs/reviews/2026-11-14-audit-shipguard/](docs/reviews/2026-11-14-audit-shipguard/README.md).
 
 ## Démarrer
 
