@@ -6,7 +6,7 @@ import threading
 from pathlib import Path
 from urllib.error import HTTPError
 from urllib.parse import urlsplit
-from .core import collect, rebuild_packet, sources, summarize_selected
+from .core import albert_model, collect, rebuild_packet, sources, summarize_selected
 
 APP_HTML = (Path(__file__).parent / "index.html").read_bytes()
 APP_JS = (Path(__file__).parent / "app.js").read_bytes()
@@ -56,7 +56,8 @@ class Handler(BaseHTTPRequestHandler):
         if self.path == "/api/info":
             sanitized = [{"id": s["id"], "label": s["label"], "internal": s["internal"]} for s in sources()]
             return self._json(200, {"sources": sanitized,
-                                    "albert_configured": bool(os.environ.get("ALBERT_API_KEY") and os.environ.get("ALBERT_MODEL")),
+                                    "albert_configured": bool(os.environ.get("ALBERT_API_KEY")),
+                                    "albert_model": albert_model(),
                                     "secret_persistence_enabled": os.environ.get("SNUM_ALLOW_LOCALSTORAGE") == "1"})
         if self.path.startswith("/dsfr/"):
             return self._dsfr(self.path[len("/dsfr/"):])
@@ -117,7 +118,7 @@ class Handler(BaseHTTPRequestHandler):
         if not isinstance(payload, dict):
             return self._json(400, {"error": "Paramètres JSON requis"})
         key = str(payload.get("albert_api_key") or "").strip() or os.environ.get("ALBERT_API_KEY", "")
-        model = str(payload.get("albert_model") or "").strip() or os.environ.get("ALBERT_MODEL", "")
+        model = albert_model(str(payload.get("albert_model") or ""))
         try:
             if not LAST_CANDIDATES.get(payload.get("url")):
                 raise ValueError("Candidat inconnu : relancez la collecte avant de repêcher un article.")

@@ -32,6 +32,7 @@ MAX_ALBERT_SECONDS = 360  # budget distinct : ~45 candidats avec deux appels sim
 ALBERT_WORKERS = 2  # au-delà, Albert refuse (recette du 11/11/2026 : 30 échecs sur 43 à 4 appels)
 ALBERT_THROTTLE_RETRIES = 3
 ALBERT_TIMEOUT = 30
+DEFAULT_ALBERT_MODEL = "openweight-large"  # alias Albert de openai/gpt-oss-120b
 MAX_HOMEPAGE_BYTES = 2_500_000  # pages d'accueil de presse volumineuses (Le Monde ~1 Mo)
 MAX_SITEMAP_BYTES = 3_000_000
 MAX_SITEMAP_CHILDREN = 3
@@ -770,6 +771,11 @@ ALBERT_PROMPT = (
 )
 
 
+def albert_model(supplied=""):
+    """Modèle demandé : champ du formulaire, sinon ALBERT_MODEL du poste, sinon le modèle par défaut."""
+    return supplied.strip() or os.environ.get("ALBERT_MODEL", "").strip() or DEFAULT_ALBERT_MODEL
+
+
 def albert_summary(candidate, api_key, model, timeout=30, feedback=None, forced_rubric=None):
     """Albert reçoit uniquement un extrait public ; aucun contenu interne."""
     if not api_key or not model:
@@ -1003,8 +1009,8 @@ def collect(payload, client=None, summarize=None, progress=None, cache=None):
     if not isinstance(supplied_model, str) or len(supplied_model) > 200 or (supplied_model and not re.fullmatch(r"[A-Za-z0-9_.:/-]+", supplied_model)):
         raise ValueError("Identifiant du modèle Albert invalide")
     key = supplied_key.strip() or os.environ.get("ALBERT_API_KEY", "")
-    model = supplied_model.strip() or os.environ.get("ALBERT_MODEL", "")
-    configured = bool(key and model) or summarize is not None
+    model = albert_model(supplied_model)
+    configured = bool(key) or summarize is not None
     # Une page d'accueil seule n'établit pas la lecture d'articles. Aucun statut
     # "ready" lorsqu'absolument toutes les tentatives d'article ont échoué.
     explored = any(s["status"] in ("checked", "partial") for s in states)
