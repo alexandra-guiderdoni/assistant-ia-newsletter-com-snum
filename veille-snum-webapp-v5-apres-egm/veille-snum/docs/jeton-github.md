@@ -4,9 +4,9 @@ Page : https://alexandra-guiderdoni.github.io/assistant-ia-newsletter-com-snum/
 
 ## À quoi sert le jeton
 
-La page lance deux tâches GitHub Actions à votre place : « Publier le paquet Veille SNUM » (bouton « Lancer la collecte ») et « Repêcher un candidat Veille SNUM » (bouton « Repêcher avec Albert »). Pour cela, elle appelle l'API GitHub avec un jeton personnel.
+La page lance deux tâches GitHub Actions à votre place : « Publier le paquet Veille SNUM » (boutons « Lancer la collecte » et « Rédiger les résumés ») et « Repêcher un candidat Veille SNUM » (bouton « Repêcher avec Albert »). Pour cela, elle appelle l'API GitHub avec un jeton personnel.
 
-Sans jeton, la page reste utilisable pour tout le reste : relire le paquet publié, garder ou écarter, changer de thématique, consulter le rapport, télécharger ou copier le JSON V519.
+Sans jeton, la page reste utilisable pour tout le reste : lire les titres trouvés, relire le paquet publié, garder ou écarter, changer de thématique, consulter le rapport et les archives, télécharger ou copier le JSON V519.
 
 Le jeton Albert n'a rien à voir : il reste dans les secrets du dépôt (`ALBERT_API_KEY`) et n'apparaît jamais dans la page.
 
@@ -32,12 +32,15 @@ Connecté à GitHub avec le compte propriétaire :
 ## L'utiliser
 
 1. Ouvrir la page, section « Connexion à GitHub », coller le jeton.
-2. Section « Lancer une collecte » : vérifier les dates, puis « Lancer la collecte ». Laisser la page ouverte : une collecte dure environ huit minutes, la progression s'affiche, puis le paquet, le rapport et les candidats écartés se rechargent.
-3. Pour un candidat écarté : choisir la thématique, puis « Repêcher avec Albert » (une à deux minutes). L'article arrive coché dans la sélection.
+2. Section « Lancer une collecte » : vérifier les dates, puis « Lancer la collecte ». Laisser la page ouverte : la recherche des titres dure trois à quatre minutes, la progression s'affiche, puis les titres trouvés apparaissent.
+3. Section « Titres trouvés » : cocher « Garder » pour chaque titre utile, puis « Rédiger les résumés ». Comptez une à deux minutes pour dix articles, puis environ deux minutes de publication ; le paquet, le rapport et les candidats écartés s'affichent ensuite.
+4. Pour un candidat écarté : choisir la thématique, puis « Repêcher avec Albert » (une à deux minutes). L'article arrive coché dans la sélection.
 
-Le jeton reste seulement en mémoire de la page : il n'est enregistré ni dans le navigateur, ni dans l'adresse, ni dans la console, et n'est envoyé qu'à `api.github.com`. Après un rechargement, il faut le coller de nouveau. Le bouton « Effacer le jeton » le retire de la page.
+La case « Collecte complète en une fois » enchaîne les deux temps sans tri des titres : cinq à neuf minutes.
 
-Chaque collecte consomme environ 45 appels Albert sur le jeton du dépôt ; chaque repêchage, un ou deux.
+Le jeton reste seulement en mémoire de la page : il n'est enregistré ni dans le navigateur, ni dans l'adresse, ni dans la console, et n'est envoyé qu'à `api.github.com`. Après un rechargement, il faut le coller de nouveau : ne rechargez donc pas la page pendant une collecte. Le bouton « Effacer le jeton » le retire de la page.
+
+La recherche des titres n'appelle pas Albert. La rédaction consomme un à deux appels Albert par titre gardé sur le jeton du dépôt ; une collecte complète, environ 45 ; un repêchage, un ou deux.
 
 ## Révoquer
 
@@ -47,9 +50,14 @@ Effacer le jeton de la page ne le révoque pas. En fin d'usage, en cas de doute 
 
 Messages affichés par la page :
 
-- **Erreur 401** « GitHub a refusé le jeton » : jeton incomplet, expiré ou révoqué. Le recréer.
-- **Erreur 403** « GitHub a refusé l'accès » : la permission « Actions : Read and write » manque, ou la limite d'appels de l'API est atteinte. Vérifier les permissions du jeton.
-- **Erreur 404** « Dépôt ou workflow introuvable » : le jeton ne donne pas accès au dépôt (mauvais « Resource owner » ou dépôt non sélectionné), ou la tâche n'est pas sur `main`.
-- **Erreur 422** « GitHub a refusé le lancement » : dates invalides, ou déclenchement manuel absent sur `main`.
+- **Erreur 401** « GitHub a refusé le jeton » : jeton incomplet, expiré ou révoqué. Le coller de nouveau en entier, ou le recréer.
+- **Erreur 403** « GitHub a refusé la demande » : la permission « Actions : Read and write » manque, ou GitHub limite les appels. Vérifier les permissions du jeton, sinon réessayer une heure plus tard.
+- **Erreur 404** « GitHub ne trouve pas le dépôt avec ce jeton » : le jeton ne donne pas accès au dépôt (mauvais « Resource owner » ou dépôt non sélectionné).
+- **Erreur 422** « GitHub a refusé la demande » : dates ou sélection refusées. Recharger la page puis réessayer.
+- **« Une collecte ou une rédaction de résumés est déjà en cours »** : quelqu'un l'a lancée, ou vous-même avant un rechargement. Attendre sa fin, puis recharger la page. Activer de nouveau le bouton lance quand même : la demande attend son tour, puis remplace le résultat.
+- **« Suivi interrompu »** : la page a perdu le contact avec GitHub (jeton expiré, réseau), mais la tâche continue. Recharger la page quelques minutes plus tard, sans relancer.
+- **« Le site sert encore l'ancienne version »** : la tâche a réussi, GitHub Pages n'a pas encore mis la page à jour (dix minutes au plus). Recharger plus tard, sans relancer.
+- **« Un paquet a déjà été publié pendant votre tri »** ou **« Une nouvelle collecte a remplacé les titres »** : une autre personne a avancé entre-temps ; la page affiche ce qui est publié.
+- **« La rédaction des résumés n'a pas abouti »** : les titres gardés restent cochés, relancer. Si l'échec se répète, Albert est sans doute indisponible : réessayer plus tard.
 
-En dernier recours, les deux tâches se lancent aussi depuis l'onglet Actions du dépôt, avec « Run workflow ».
+En dernier recours, les deux tâches se lancent aussi depuis l'onglet Actions du dépôt, avec « Run workflow » ; le mode `resumes` exige la sélection que seule la page sait construire.
