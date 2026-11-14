@@ -195,24 +195,30 @@ class Site(FakeHttp):
 class Albert:
     """Albert factice : note chaque appel et le nombre d'appels simultanés."""
 
-    def __init__(self, hors=(), pannes=(), erreur=None, duree=0):
+    def __init__(self, hors=(), pannes=(), erreur=None, duree=0, refuse_toujours=()):
+        # hors : jugés hors thématique sans consigne de garder ; refuse_toujours : même avec la consigne.
         self.hors, self.pannes = set(hors), set(pannes)
+        self.refuse_toujours = set(refuse_toujours)
         self.erreur = erreur or HTTPError(ALBERT, 401, f"refus {TOKEN}", {}, None)
         self.duree = duree
         self.appels = []
         self.en_cours = self.maximum = 0
         self.verrou = threading.Lock()
 
-    def __call__(self, candidat, feedback=None, forced_rubric=None):
+    def __call__(self, candidat, feedback=None, forced_rubric=None, keep=False):
         with self.verrou:
-            self.appels.append({"candidat": candidat, "forced_rubric": forced_rubric})
+            self.appels.append(
+                {"candidat": candidat, "forced_rubric": forced_rubric, "keep": keep}
+            )
             self.en_cours += 1
             self.maximum = max(self.maximum, self.en_cours)
         try:
             time.sleep(self.duree)
             if candidat["url"] in self.pannes:
                 raise self.erreur
-            if candidat["url"] in self.hors:
+            if candidat["url"] in self.refuse_toujours or (
+                candidat["url"] in self.hors and not keep
+            ):
                 return {"relevant": False}
             return good_summary(candidat)
         finally:
@@ -312,17 +318,32 @@ class ResumesTests(unittest.TestCase):
         )
         self.assertLessEqual(len(candidat["content"]), 2400)
 
-    def test_hors_thematique_vers_les_ecartes(self):
+    def test_titre_coche_jamais_ecarte_comme_hors_thematique(self):
+        # Albert jugerait le second titre hors thématique : coché par l'éditeur, il est gardé et classé.
         choix = selection((URLS[0], ""), (URLS[1], ""))
         self.assertEqual(self.lancer(choix, albert=Albert(hors=[URLS[1]])), 0)
         self.assertEqual(
-            [a["url"] for a in lire(self.dossier, PAQUET)["articles"]], [URLS[0]]
+            {a["url"] for a in lire(self.dossier, PAQUET)["articles"]},
+            {URLS[0], URLS[1]},
         )
         motifs = {
             c["url"]: c["reason"] for c in lire(self.dossier, ECARTES)["candidates"]
         }
-        self.assertEqual(motifs[URLS[1]], "HORS_THEMATIQUE")
         self.assertNotIn(URLS[0], motifs)
+        self.assertNotIn(URLS[1], motifs)
+        self.assertTrue(all(appel["keep"] for appel in self.albert.appels))
+
+    def test_albert_qui_refuse_malgre_la_consigne_vers_les_echecs(self):
+        # Un refus malgré la consigne n'est pas un jugement hors thématique : échec repêchable.
+        choix = selection((URLS[0], ""), (URLS[1], ""))
+        self.assertEqual(
+            self.lancer(choix, albert=Albert(refuse_toujours=[URLS[1]])), 0
+        )
+        motifs = {
+            c["url"]: c["reason"] for c in lire(self.dossier, ECARTES)["candidates"]
+        }
+        self.assertEqual(motifs[URLS[1]], "ECHEC_ALBERT")
+        self.assertNotIn("HORS_THEMATIQUE", motifs.values())
 
     def test_titres_non_coches_ecartes_avec_leur_motif(self):
         self.lancer(selection((URLS[0], ""), (URLS[1], "rh")))

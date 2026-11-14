@@ -135,8 +135,9 @@ const sansDefilement = page => page.evaluate(() => document.documentElement.scro
   const imposee = await page.inputValue(`#${liste}`);
   check('A14 clavier : thématique imposée, focus conservé', imposee === 'ia' && await o.actif() === liste, imposee);
   const garde = await page.$$eval('#titres-list li', (l, ids) => l.filter(li => ids.includes((li.querySelector('input') || {}).id)).map(li => li.querySelector('a').href), cles);
-  // Albert : le 3e jugé hors thématique, le 4e en panne ; la page du 5e est protégée contre les robots.
-  m.albert = {hors: [garde[2]], pannes: [garde[3]], code: 500};
+  // Albert : le 3e serait jugé hors thématique et refuse même la consigne de le garder, le 4e est en panne ;
+  // la page du 5e est protégée contre les robots.
+  m.albert = {hors: [garde[2]], refuse_toujours: [garde[2]], pannes: [garde[3]], code: 500};
   m.illisibles = [garde[4]];
   await capture(page, 'a2-titres-gardes.png');
   await tabJusqua(page, 'resumes');
@@ -153,7 +154,7 @@ const sansDefilement = page => page.evaluate(() => document.documentElement.scro
   const paquet = lireEnLigne(m, 'paquet-v519.json'), ecartes = lireEnLigne(m, 'candidats-ecartes.json');
   const motifs = Object.fromEntries(ecartes.candidates.map(c => [c.url, c.reason]));
   check('A17 vrai paquet publié : 2 articles, rubrique imposée respectée', paquet.articles.length === 2 && paquet.articles.find(a => a.url === garde[1]).rubric === 'ia', paquet.articles.map(a => a.rubric).join());
-  check('A18 motifs publiés : hors thématique, échec Albert, page non relue, non gardés', motifs[garde[2]] === 'HORS_THEMATIQUE' && motifs[garde[3]] === 'ECHEC_ALBERT' && motifs[garde[4]] === 'PAGE_NON_RELUE'
+  check('A18 motifs publiés : titre coché jamais hors thématique, échecs Albert, page non relue, non gardés', motifs[garde[2]] === 'ECHEC_ALBERT' && motifs[garde[3]] === 'ECHEC_ALBERT' && motifs[garde[4]] === 'PAGE_NON_RELUE'
    && ecartes.candidates.filter(c => c.reason === 'NON_SELECTIONNE').length === 43, JSON.stringify([motifs[garde[2]], motifs[garde[3]], motifs[garde[4]]]));
   check('A19 aucun extrait d’article ni jeton dans les fichiers publiés', !fs.readdirSync(m.enLigne).some(f => /"content"|JETON-ALBERT|github_pat/.test(fs.readFileSync(path.join(m.enLigne, f), 'utf8'))));
   check('A20 page : paquet affiché, focus sur le résumé de l’édition, message de fin dans la zone de collecte', (await page.$$('#article-list input[type=checkbox]')).length === 2 && await o.actif() === 'summary-heading'
@@ -161,7 +162,7 @@ const sansDefilement = page => page.evaluate(() => document.documentElement.scro
   check('A21 alerte « Analyse partielle » visible dans les alertes à relire', /Analyse partielle/.test(await o.texte('#watch-list')), (await o.texte('#watch-list')).slice(0, 200));
   await page.click('#candidates-button');
   const textes = await page.$$eval('#candidates-list > li', l => l.map(x => x.textContent));
-  check('A22 écartés : 46 candidats, motifs en clair, tous repêchables', textes.length === 46 && textes.some(t => t.includes('non gardé au premier temps')) && textes.some(t => t.includes('jugé hors thématique par Albert'))
+  check('A22 écartés : 46 candidats, motifs en clair, tous repêchables', textes.length === 46 && textes.some(t => t.includes('non gardé au premier temps')) && !textes.some(t => t.includes('jugé hors thématique par Albert'))
    && textes.some(t => t.includes('échec du résumé Albert')) && textes.some(t => t.includes('page non relue au second temps')) && (await page.$$('#candidates-list button')).length === 46);
   await capture(page, 'a3-paquet-apres-resumes.png');
   // Repêchage d'un titre non gardé, au clavier.
@@ -436,16 +437,16 @@ const sansDefilement = page => page.evaluate(() => document.documentElement.scro
   const erreur = await o.texte('#titres-error');
   check('I1 archivage en échec : rien n’est publié, étape nommée, titres gardés toujours cochés, relance possible', (await page.$$('#article-list input[type=checkbox]')).length === 0
    && /« Archiver la collecte »/.test(erreur) && /Vos titres gardés restent cochés/.test(erreur) && lireEnLigne(m, 'etat-collecte.json').phase === 'titres', erreur);
-  // Paquet sans article : tout est jugé hors thématique ; la page le dit et propose quoi faire.
+  const arch = await p.onglet('archives.html');
+  check('I2 archives : aucune collecte, dit clairement', /Aucune collecte archivée/.test(await arch.textContent('#archives-status')));
+  // Titre coché que l'Albert simulé jugerait hors thématique : gardé quand même, Albert choisit seulement sa rubrique.
   m.echecApres = {}; m.delaiCdn = 0;
   const gardee = await page.$eval('#titres-list input:checked', i => i.closest('li').querySelector('a').href);
   m.albert = {hors: [gardee]};
   await page.click('#resumes');
   await fin(o);
-  check('I3 paquet sans article : annoncé avec la marche à suivre, candidats repêchables', (await page.$$('#article-list input[type=checkbox]')).length === 0 && /ne contient aucun article : repêchez un candidat écarté/.test(await o.texte('#collect-status'))
-   && (await page.$$('#candidates-list button')).length === 13, await o.texte('#collect-status'));
-  const arch = await p.onglet('archives.html');
-  check('I2 archives : aucune collecte, dit clairement', /Aucune collecte archivée/.test(await arch.textContent('#archives-status')));
+  check('I3 titre coché jugé hors thématique par Albert : gardé quand même, aucun motif « hors thématique »', (await page.$$('#article-list input[type=checkbox]')).length === 1
+   && lireEnLigne(m, 'paquet-v519.json').articles.length === 1 && !lireEnLigne(m, 'candidats-ecartes.json').candidates.some(c => c.reason === 'HORS_THEMATIQUE'), await o.texte('#collect-status'));
   // Indicateur de focus natif du bouton calendrier d'un champ date : capture pour contrôle visuel.
   await page.focus('#edition'); await page.keyboard.press('Tab'); await page.keyboard.press('Tab'); await page.keyboard.press('Tab');
   await page.locator('#edition-group').screenshot({path: path.join(sorties, 'i-focus-calendrier.png')});

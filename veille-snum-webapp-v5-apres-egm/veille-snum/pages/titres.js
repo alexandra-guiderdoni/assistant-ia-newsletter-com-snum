@@ -150,7 +150,7 @@
    : kept > MAX_SELECTION ? `Gardez au plus ${MAX_SELECTION} titres : Albert ne rédige pas davantage de résumés en une fois.`
     : !options.hasToken() ? 'Un jeton GitHub est nécessaire pour faire rédiger les résumés (section « Connexion à GitHub »).' : '';
   button.disabled = !!why;
-  byId('resumes-hint').textContent = why || `Albert rédige les résumés des titres gardés, dans la thématique choisie ou celle qu’il juge adaptée ; un titre jugé hors thématique rejoint les candidats écartés. ${durationText(kept)}`;
+  byId('resumes-hint').textContent = why || `Albert rédige les résumés des titres gardés, dans la thématique choisie ou celle qu’il juge la plus proche ; un titre que vous gardez n’est jamais écarté comme hors thématique. ${durationText(kept)}`;
  }
 
  function rubricField(e) {

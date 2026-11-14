@@ -49,7 +49,7 @@ class Horloge:
         self.instant += duree
 
 
-def sature(_candidat, feedback=None, forced_rubric=None):
+def sature(_candidat, feedback=None, forced_rubric=None, keep=False):
     raise HTTPError(ALBERT, 429, "Too Many Requests", {"Retry-After": "20"}, None)
 
 
@@ -93,7 +93,7 @@ class BudgetTests(Cas):
         appels = []
         horloge = Horloge()
 
-        def lent_et_rejete(candidat, feedback=None, forced_rubric=None):
+        def lent_et_rejete(candidat, feedback=None, forced_rubric=None, keep=False):
             appels.append(feedback)
             horloge.instant += 40
             return {"relevant": True}
@@ -493,7 +493,13 @@ class DelaiAlbertTests(unittest.TestCase):
         delais = []
 
         def albert(
-            candidat, cle, modele, timeout=30, feedback=None, forced_rubric=None
+            candidat,
+            cle,
+            modele,
+            timeout=30,
+            feedback=None,
+            forced_rubric=None,
+            keep=False,
         ):
             delais.append(timeout)
             return good_summary(candidat)
@@ -521,7 +527,7 @@ class AlbertSature(Albert):
         self.refus = 0
         self.places = 0
 
-    def __call__(self, candidat, feedback=None, forced_rubric=None):
+    def __call__(self, candidat, feedback=None, forced_rubric=None, keep=False):
         # Contrôle et réservation sous le même verrou : jamais trois appels admis ensemble.
         with self.verrou:
             if self.places >= 2:
@@ -529,7 +535,7 @@ class AlbertSature(Albert):
                 raise HTTPError(ALBERT, 429, "Too Many Requests", {}, None)
             self.places += 1
         try:
-            return super().__call__(candidat, feedback, forced_rubric)
+            return super().__call__(candidat, feedback, forced_rubric, keep)
         finally:
             with self.verrou:
                 self.places -= 1
@@ -548,7 +554,6 @@ class TroisAppelsSimultanesTests(Cas):
                 bilans.append(repecher(url, "ia", DEBUT, FIN, Site(), albert))
 
         with (
-            mock.patch("veille_snum.resumer._retry_delay", return_value=0.03),
             mock.patch("veille_snum.repecher._retry_delay", return_value=0.03),
         ):
             concurrent = threading.Thread(target=repecher_en_boucle)

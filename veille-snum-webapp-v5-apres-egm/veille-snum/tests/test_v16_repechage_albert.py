@@ -23,6 +23,7 @@ class AlbertChoisitTests(unittest.TestCase):
         self.assertEqual(resultat["status"], "ok")
         self.assertEqual(resultat["article"]["rubric"], "securite")
         self.assertIsNone(resumer.appels[0]["forced_rubric"])
+        self.assertTrue(resumer.appels[0]["keep"])
         self.assertIn("securite", resultat["message"])
 
     def test_rubrique_inconnue_d_albert_rejetee_puis_reprise(self):
