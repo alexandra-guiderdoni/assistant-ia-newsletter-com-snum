@@ -26,7 +26,7 @@
   return ` depuis ${Number(parts.hour)} h ${parts.minute}`;
  }
  const TEXT = {
-  active: since => `Une collecte ou une rédaction de résumés est déjà en cours sur GitHub${since} : elle a été lancée depuis une autre page, ou avant un rechargement de celle-ci. Attendez sa fin, puis rechargez cette page : son résultat s’y affichera. Pour lancer quand même, activez de nouveau le bouton : votre demande attendra son tour, puis remplacera ce résultat.`,
+  active: since => `Une collecte ou une rédaction de résumés est déjà en cours sur GitHub${since} : elle a été lancée depuis une autre page, ou avant un rechargement de celle-ci. Attendez sa fin, puis rechargez cette page : son résultat s’y affichera. Pour lancer quand même, activez de nouveau le bouton : votre demande attendra la fin de celle en cours, puis remplacera son résultat ; GitHub annule alors toute autre demande déjà en attente.`,
   notice: since => `Une collecte ou une rédaction de résumés est en cours sur GitHub${since}. Son résultat s’affichera ici après rechargement de la page : inutile de la relancer.`,
   lost: (subject, why) => `${why} Le suivi s’arrête ici, mais ${subject} continue peut-être sur GitHub : rechargez cette page dans quelques minutes pour voir le résultat, sans relancer.`,
   stale: name => `${name} terminée sur GitHub, mais le site sert encore l’ancienne version (cache de GitHub Pages, dix minutes au plus). Rechargez cette page dans quelques minutes : le résultat s’y affichera. Ne relancez pas.`,

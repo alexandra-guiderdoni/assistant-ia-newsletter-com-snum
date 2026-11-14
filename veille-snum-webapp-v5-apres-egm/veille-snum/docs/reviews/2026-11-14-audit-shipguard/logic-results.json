@@ -1,0 +1,1519 @@
+{
+  "schema_version": "1.0",
+  "repo": "assistant-ia-newsletter-com-snum",
+  "timestamp": "2026-11-14T01:29:46.624517+00:00",
+  "scope": {
+    "type": "diff",
+    "value": "dbabaa5",
+    "files": [
+      ".github/workflows/publier-paquet-snum.yml",
+      ".github/workflows/repecher-candidat.yml",
+      "veille-snum-webapp-v5-apres-egm/veille-snum/pages/github.js",
+      "veille-snum-webapp-v5-apres-egm/veille-snum/pages/lancement.js",
+      "veille-snum-webapp-v5-apres-egm/veille-snum/pages/page.js",
+      "veille-snum-webapp-v5-apres-egm/veille-snum/pages/titres.js",
+      "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/archiver.py",
+      "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/publier.py",
+      "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/repecher.py",
+      "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/resumer.py"
+    ]
+  },
+  "mode": "hybrid",
+  "depth": "standard",
+  "status": "completed",
+  "summary": {
+    "candidates_checked": 3,
+    "obligations_checked": 63,
+    "confirmed_violations": 6,
+    "risks": 10,
+    "contract_conflicts": 4,
+    "questions": 18,
+    "uncovered": 13,
+    "by_severity": {
+      "high": 1,
+      "medium": 9,
+      "low": 6
+    },
+    "evidence_mix": {
+      "measured": 6,
+      "reasoned": 10
+    }
+  },
+  "candidates": [
+    {
+      "id": "p01",
+      "kind": "procedure",
+      "name": "Lancement, suivi et vérification de publication (launch)",
+      "files": [
+        "veille-snum-webapp-v5-apres-egm/veille-snum/pages/lancement.js",
+        "veille-snum-webapp-v5-apres-egm/veille-snum/pages/github.js",
+        "veille-snum-webapp-v5-apres-egm/veille-snum/pages/page.js",
+        "veille-snum-webapp-v5-apres-egm/veille-snum/pages/titres.js"
+      ],
+      "model": {
+        "inputs": [
+          "o.inputs (launchInputs ou resumesInputs), o.token, o.button (collect ou resumes), o.ui (zone collecte ou zone titres)",
+          "o.before (titres : reloadIfMoved), o.onAccepted (collecte : reset), o.failed, o.done, o.restore",
+          "Réponses GitHub : findActive (run actif ou null), dispatch (200 avec workflow_run_id, 204 sans corps, erreur HTTP, réseau ou délai), follow (pending, success, failure avec failedJob, perte après trois échecs ou 45 min)",
+          "etat-collecte.json lu par readEtat : état à jour (run_id du run), état périmé (cache GitHub Pages jusqu'à dix minutes), absent, illisible, sans run_id",
+          "Variables globales : running, acknowledged ; drapeau E.isBusy (repêchage)"
+        ],
+        "states": [
+          "repos (running = false, bouton disponible)",
+          "vérification (findActive) ; sortie « déjà en cours » vers non lancée, acknowledged mémorisé",
+          "avant envoi (o.before) ; sortie par exception vers non lancée",
+          "envoi (dispatch) ; sorties : accepté, refusé (non lancée), suivi perdu (lost)",
+          "accepté (sent = true, page vidée si onAccepted)",
+          "suivi (follow) ; sorties : terminé success, terminé failure, suivi perdu",
+          "attente de la nouvelle version (au plus FRESH_TRIES x FRESH_WAIT_MS = 24 x 5 s = 2 min) si success ou failedJob = archivage",
+          "publié (outcome publie) puis rechargement",
+          "publié en échec (outcome publie-en-echec) puis rechargement",
+          "attente (succès non visible) : terminal sans rechargement",
+          "échec (outcome echec) : rechargement si failure.reload",
+          "suivi perdu : terminal, rechargement si accepté et onAccepted",
+          "non lancée / interrompue : terminal",
+          "finally : running = false, bouton restauré, focus déplacé si le bouton a disparu"
+        ],
+        "effects": [
+          "page vidée : reset() via onAccepted, après dispatch accepté (page.js L175-186)",
+          "rechargement : hooks.load(fresh()) relit etat-collecte.json puis rapport, paquet, écartés, chacun séparément",
+          "bouton : aria-disabled + libellé busy au début, retiré et libellé restore() dans finally",
+          "focus : keepFocus vers summary-heading, titres-heading, load-error ou collect",
+          "messages : say (statut), showError (erreur + lien), showRun (lien du run), conclude (reprise dans la zone collecte)",
+          "titres.js : lock(true) des cases pendant le lancement, lock(false) et refresh() après"
+        ]
+      },
+      "obligations": [
+        {
+          "id": "o01",
+          "statement": "Le site publie le résultat de ce run seulement si etat.run_id, comparé en texte, vaut le numéro du run ; état nul ou sans run_id : faux.",
+          "source": {
+            "file": "veille-snum-webapp-v5-apres-egm/veille-snum/tests/test_pages_lancement.cjs",
+            "line": 29
+          },
+          "source_kind": "observed-expectation",
+          "confidence": "high"
+        },
+        {
+          "id": "o02",
+          "statement": "Issue d'un run terminé : success + publié = publie ; success non publié = attente ; failure + publié = publie-en-echec ; failure non publié = echec.",
+          "source": {
+            "file": "veille-snum-webapp-v5-apres-egm/veille-snum/tests/test_pages_lancement.cjs",
+            "line": 36
+          },
+          "source_kind": "observed-expectation",
+          "confidence": "high"
+        },
+        {
+          "id": "o03",
+          "statement": "Le message de suivi perdu ne parle pas d'échec et invite à recharger ; le message de cache périmé interdit de relancer.",
+          "source": {
+            "file": "veille-snum-webapp-v5-apres-egm/veille-snum/tests/test_pages_lancement.cjs",
+            "line": 53
+          },
+          "source_kind": "observed-expectation",
+          "confidence": "high"
+        },
+        {
+          "id": "o04",
+          "statement": "follow : trois échecs de lecture d'affilée donnent une erreur lost, distincte d'un échec du run ; un run terminé en échec renvoie son issue.",
+          "source": {
+            "file": "veille-snum-webapp-v5-apres-egm/veille-snum/tests/test_pages_lancement.cjs",
+            "line": 103
+          },
+          "source_kind": "observed-expectation",
+          "confidence": "high"
+        },
+        {
+          "id": "o05",
+          "statement": "Lancement accepté sans numéro de run (réponse 204) puis liste illisible : suivi perdu (lost), pas un refus ; un refus HTTP du déclenchement (401) n'est pas lost.",
+          "source": {
+            "file": "veille-snum-webapp-v5-apres-egm/veille-snum/tests/test_pages_lancement.cjs",
+            "line": 115
+          },
+          "source_kind": "observed-expectation",
+          "confidence": "high"
+        },
+        {
+          "id": "o06",
+          "statement": "Réponse 204 : un run qui existait avant l'envoi n'est jamais pris pour le nôtre.",
+          "source": {
+            "file": "veille-snum-webapp-v5-apres-egm/veille-snum/tests/test_pages_constats.cjs",
+            "line": 24
+          },
+          "source_kind": "observed-expectation",
+          "confidence": "high"
+        },
+        {
+          "id": "o07",
+          "statement": "Les runs existants sont relevés avant l'envoi, puis écartés de la recherche ; avec un numéro dans la réponse, aucune recherche après l'envoi.",
+          "source": {
+            "file": "veille-snum-webapp-v5-apres-egm/veille-snum/tests/test_pages_constats.cjs",
+            "line": 32
+          },
+          "source_kind": "observed-expectation",
+          "confidence": "high"
+        },
+        {
+          "id": "o08",
+          "statement": "Chaque appel à GitHub et à raw porte un délai maximal ; un appel abandonné après le délai vaut injoignable et, dans le suivi, perte de suivi non bloquante.",
+          "source": {
+            "file": "veille-snum-webapp-v5-apres-egm/veille-snum/tests/test_pages_constats.cjs",
+            "line": 53
+          },
+          "source_kind": "observed-expectation",
+          "confidence": "high"
+        },
+        {
+          "id": "o09",
+          "statement": "moved : inchangé, paquet publié depuis, ou autres titres ; état absent d'un côté : inchangé.",
+          "source": {
+            "file": "veille-snum-webapp-v5-apres-egm/veille-snum/tests/test_pages_lancement.cjs",
+            "line": 123
+          },
+          "source_kind": "observed-expectation",
+          "confidence": "high"
+        },
+        {
+          "id": "o10",
+          "statement": "Après un lancement, la page attend que le site serve bien le numéro de l'exécution avant d'afficher le résultat.",
+          "source": {
+            "file": "veille-snum-webapp-v5-apres-egm/veille-snum/README.md",
+            "line": 48
+          },
+          "source_kind": "declared",
+          "confidence": "high"
+        },
+        {
+          "id": "o11",
+          "statement": "Une collecte déjà en cours est signalée à l'ouverture et avant tout nouvel envoi.",
+          "source": {
+            "file": "veille-snum-webapp-v5-apres-egm/veille-snum/README.md",
+            "line": 49
+          },
+          "source_kind": "declared",
+          "confidence": "high"
+        },
+        {
+          "id": "o12",
+          "statement": "Si le suivi se perd (jeton expiré, réseau), la tâche continue sur GitHub : recharger la page plus tard, sans relancer.",
+          "source": {
+            "file": "veille-snum-webapp-v5-apres-egm/veille-snum/README.md",
+            "line": 50
+          },
+          "source_kind": "declared",
+          "confidence": "high"
+        },
+        {
+          "id": "o13",
+          "statement": "Le second temps refuse des titres déjà résumés ou remplacés : la page se recharge et l'explique.",
+          "source": {
+            "file": "veille-snum-webapp-v5-apres-egm/veille-snum/README.md",
+            "line": 51
+          },
+          "source_kind": "declared",
+          "confidence": "high"
+        },
+        {
+          "id": "o14",
+          "statement": "Dès que le lancement est accepté, la page se vide et indique que la collecte précédente est dans les archives.",
+          "source": {
+            "file": "<espace-de-session>/contrat-deux-temps.md",
+            "line": 31
+          },
+          "source_kind": "declared",
+          "confidence": "high"
+        },
+        {
+          "id": "o15",
+          "statement": "Le bouton des résumés lance mode=resumes avec selection, edition, debut, fin tirés de etat-collecte.json.",
+          "source": {
+            "file": "<espace-de-session>/contrat-deux-temps.md",
+            "line": 29
+          },
+          "source_kind": "declared",
+          "confidence": "high"
+        },
+        {
+          "id": "o16",
+          "statement": "La page attend la nouvelle version au lieu de présenter l'ancienne comme le résultat.",
+          "source": {
+            "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/lancement.js",
+            "line": 6
+          },
+          "source_kind": "declared",
+          "confidence": "high"
+        },
+        {
+          "id": "o17",
+          "statement": "Archivage en échec : la publication, tâche séparée, a pu réussir ; la nouvelle version est attendue de même.",
+          "source": {
+            "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/lancement.js",
+            "line": 114
+          },
+          "source_kind": "declared",
+          "confidence": "medium"
+        },
+        {
+          "id": "o18",
+          "statement": "Une erreur d'affichage des fichiers relus ne doit pas passer pour une interruption du lancement.",
+          "source": {
+            "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/lancement.js",
+            "line": 86
+          },
+          "source_kind": "declared",
+          "confidence": "medium"
+        },
+        {
+          "id": "o19",
+          "statement": "Le bouton garde le focus pendant le lancement (aria-disabled plutôt que disabled) ; s'il a disparu avec l'ancienne vue, le focus passe au titre de la nouvelle.",
+          "source": {
+            "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/lancement.js",
+            "line": 90
+          },
+          "source_kind": "declared",
+          "confidence": "medium"
+        },
+        {
+          "id": "o20",
+          "statement": "Fin d'un lancement : message dans la zone du bouton utilisé, repris dans la zone de la collecte ; l'erreur y est reprise quand la première zone a disparu.",
+          "source": {
+            "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/lancement.js",
+            "line": 65
+          },
+          "source_kind": "declared",
+          "confidence": "medium"
+        },
+        {
+          "id": "o21",
+          "statement": "Sans délai maximal, une requête restée sans réponse bloquerait le suivi et le bouton (le délai est donc la garantie de déblocage).",
+          "source": {
+            "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/github.js",
+            "line": 15
+          },
+          "source_kind": "declared",
+          "confidence": "medium"
+        },
+        {
+          "id": "o22",
+          "statement": "Avant l'envoi, puis après un échec : si le site ne publie plus les titres affichés, la page se recharge et l'explique.",
+          "source": {
+            "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/titres.js",
+            "line": 225
+          },
+          "source_kind": "declared",
+          "confidence": "high"
+        },
+        {
+          "id": "o23",
+          "statement": "Le jeton n'apparaît jamais dans un message d'erreur.",
+          "source": {
+            "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/github.js",
+            "line": 3
+          },
+          "source_kind": "declared",
+          "confidence": "high"
+        },
+        {
+          "id": "o24",
+          "statement": "Un seul lancement à la fois : collecte refusée pendant un lancement ou un repêchage ; résumés refusés de même (busyReason).",
+          "source": {
+            "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/page.js",
+            "line": 205
+          },
+          "source_kind": "observed",
+          "confidence": "medium"
+        }
+      ],
+      "findings": [
+        {
+          "id": "logic-p01-001",
+          "kind": "postcondition-violation",
+          "severity": "high",
+          "status": "confirmed",
+          "obligation_id": "o05",
+          "evidence": "measured",
+          "confidence": "high",
+          "assumptions": [
+            "Une coupure réseau ou un délai dépassé (30 s) sur la lecture de la liste des runs après une réponse 204 est atteignable : c'est le cas que o08 prévoit pour tout appel."
+          ],
+          "counterexample": "dispatch : liste préalable 200, POST 204 (demande acceptée), puis lecture de la liste en échec réseau ou délai dépassé. call() lève une Error ordinaire « GitHub est injoignable », non marquée lost (mesuré : M1 lost = false, alors que le témoin 500 donne lost = true). launch voit sent = false et affiche « Collecte non lancée. » avec « vérifiez la connexion réseau puis réessayez », alors que GitHub exécute la collecte. La personne est invitée à relancer : doublon, et un run qui remplacera le résultat.",
+          "trace": [
+            "github.js L130-L134 : POST 204, pas d'exception",
+            "github.js L137 : call(runsListUrl) dans la boucle 204",
+            "github.js L113-L116 : catch réseau ou AbortSignal.timeout, Error sans lost",
+            "lancement.js L103-L104 : sent reste false",
+            "lancement.js L138 : conclude « non lancée », message de réessai"
+          ],
+          "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/github.js",
+          "line": 137,
+          "related_audit_bug_id": null
+        },
+        {
+          "id": "logic-p01-002",
+          "kind": "invalid-transition",
+          "severity": "medium",
+          "status": "confirmed",
+          "obligation_id": "o16",
+          "evidence": "reasoned",
+          "confidence": "medium",
+          "assumptions": [
+            "archivage et deploiement sont deux tâches parallèles qui dépendent toutes deux de collecte (publier-paquet-snum.yml L223-L225 et L302-L304) : l'archivage peut échouer alors que le déploiement réussit.",
+            "Le cache de GitHub Pages peut servir l'ancien etat-collecte.json jusqu'à dix minutes (lancement.js L4-L5), au-delà des deux minutes d'attente (24 x 5 s)."
+          ],
+          "counterexample": "Mode resumes ou collecte : archivage en échec, déploiement réussi, cache encore périmé après 2 min. expected est vrai, la boucle s'épuise, outcome('failure', état périmé) = 'echec' (mesuré M4). Collecte : failed() demande un rechargement et dit « la collecte n'a pas abouti : la page affiche de nouveau ce qui était publié avant ce lancement. Vous pouvez relancer ». Résumés : « n'a pas abouti... vous pouvez relancer ». La nouvelle version est pourtant publiée : l'ancienne est présentée comme le résultat et un relancement est conseillé, au lieu du message d'attente (TEXT.stale) que reçoit le cas success symétrique.",
+          "trace": [
+            "lancement.js L115 : expected = failedJob === 'archivage'",
+            "lancement.js L116-L120 : 24 lectures sans le bon run_id",
+            "lancement.js L121 : outcome = 'echec'",
+            "lancement.js L123-L126 : failed(), reload(), conclude « en échec »",
+            "page.js L228 ou titres.js L251 : message qui invite à relancer"
+          ],
+          "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/lancement.js",
+          "line": 121,
+          "related_audit_bug_id": null
+        },
+        {
+          "id": "logic-p01-003",
+          "kind": "postcondition-violation",
+          "severity": "medium",
+          "status": "risk",
+          "obligation_id": "o10",
+          "evidence": "reasoned",
+          "confidence": "low",
+          "assumptions": [
+            "Chaque fichier du site a sa propre entrée de cache, et deux lectures successives peuvent passer par des nœuds de cache différents ; non vérifié contre GitHub Pages."
+          ],
+          "counterexample": "outcome = 'publie' après une lecture où etat.run_id vaut le run. reload() relit etat-collecte.json puis rapport-collecte.json, paquet-v519.json et candidats-ecartes.json sans contrôler run_id ni la cohérence entre fichiers. Une relecture périmée d'etat donne l'ancienne vue ; un rapport-collecte.json périmé avec un etat neuf monte les nouveaux titres sur l'ancienne liste de candidats (titres.js L181-L207, seule l'édition est comparée). done(view) annonce alors « la page affiche les titres trouvés » ou « le nouveau paquet ».",
+          "trace": [
+            "lancement.js L116 : seule etat-collecte.json est vérifiée",
+            "lancement.js L129 : reload() sans contrôle du run",
+            "page.js L108-L113 et L115-L133 : lectures séparées",
+            "lancement.js L131 : o.done(view)"
+          ],
+          "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/lancement.js",
+          "line": 129,
+          "related_audit_bug_id": null
+        },
+        {
+          "id": "logic-p01-004",
+          "kind": "postcondition-violation",
+          "severity": "low",
+          "status": "risk",
+          "obligation_id": "o12",
+          "evidence": "reasoned",
+          "confidence": "medium",
+          "assumptions": [
+            "Le POST de déclenchement peut être reçu par GitHub alors que la réponse n'arrive pas avant le délai de 30 s ou que la connexion se coupe."
+          ],
+          "counterexample": "POST dispatches abandonné après 30 s (ou coupure pendant la réponse) : call() lève « GitHub est injoignable », non lost ; launch conclut « Collecte non lancée. » et invite à réessayer, alors que la demande a pu être acceptée. Le relancement est partiellement amorti par findActive au clic suivant (avertissement si le run est déjà visible).",
+          "trace": [
+            "github.js L130 : call(url, init) du POST",
+            "github.js L115 : Error sans lost",
+            "lancement.js L138 : « non lancée »"
+          ],
+          "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/github.js",
+          "line": 130,
+          "related_audit_bug_id": null
+        }
+      ]
+    },
+    {
+      "id": "p02",
+      "kind": "procedure",
+      "name": "Second temps de la collecte : sélection, verrou contre une seconde rédaction, reprises et budget, paquet publié",
+      "files": [
+        "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/resumer.py",
+        "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/repecher.py",
+        "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/publier.py",
+        "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/archiver.py"
+      ],
+      "model": {
+        "inputs": [
+          "SELECTION : texte JSON, liste de 1 à 60 objets {url, rubrique} (rubrique dans RUBRICS ou vide)",
+          "rapport-collecte.json lu en HTTP sur GitHub Pages (cache possible jusqu'à 10 min), 3 lectures au plus sur 5xx ou panne réseau",
+          "index des archives collectes/index.json lu par git sur donnees-veille (facultatif, illisible = aucun contrôle)",
+          "--edition, --debut, --fin facultatifs ; debut et fin contrôlés contre le rapport, edition libre",
+          "ALBERT_API_KEY, ALBERT_MODEL ; pages des articles relues en direct (redirections internes au domaine suivies)",
+          "MAX_ALBERT_SECONDS = 360, ALBERT_WORKERS = 2, ALBERT_THROTTLE_RETRIES = 3, ALBERT_TIMEOUT = 30 (fixe dans resumer.main)"
+        ],
+        "states": [
+          "REFUS_SELECTION (lire_selection lève Refus) : code 1, aucune lecture réseau",
+          "REFUS_RAPPORT (illisible, incomplet, statut différent de needs_albert) : code 1",
+          "REFUS_ARCHIVE (titres_started_at de l'index = started_at_utc du rapport) : code 1",
+          "REFUS_PERIODE / REFUS_ADRESSE (absente des candidats, doublon) : code 1",
+          "EN_COURS : pool de 2 fils, chaque tâche = lire_candidat puis resumer_valide ou classer_valide",
+          "ECHEANCE : boucle wait interrompue, pool.shutdown(wait=False, cancel_futures=True), tâches en cours non interrompues",
+          "AUCUN_PAQUET : incidents et aucun article : code 1, rien écrit",
+          "PAQUET : packet_for puis ecrire_site(resumes) : statut ready ou partial, code 0",
+          "ARCHIVE (hors Python, tâche archivage) : entrée d'index avec titres_started_at"
+        ],
+        "effects": [
+          "écriture dans sortie, dans l'ordre : rapport-collecte.json, etat-collecte.json, paquet-v519.json, candidats-ecartes.json",
+          "appels Albert (deux simultanés au plus par processus)",
+          "lectures HTTP : rapport en ligne, robots.txt et page de chaque titre gardé",
+          "messages stdout et stderr sans jeton",
+          "en aval (workflow) : déploiement Pages et archive sur donnees-veille avec titres_started_at"
+        ]
+      },
+      "obligations": [
+        {
+          "id": "o01",
+          "statement": "Une sélection refusée (illisible, vide, plus de 60 éléments, élément mal formé, rubrique inconnue, adresse en double ou absente des candidats, période différente) ne produit aucun fichier ni aucun appel Albert, et le code de sortie vaut 1.",
+          "source": {
+            "file": "tests/test_v13_deux_temps.py",
+            "line": 249
+          },
+          "source_kind": "observed-expectation",
+          "confidence": "high"
+        },
+        {
+          "id": "o02",
+          "statement": "Toute URL de la sélection absente de la liste des candidats du rapport en ligne est refusée, et seul le rapport a été lu.",
+          "source": {
+            "file": "tests/test_v13_deux_temps.py",
+            "line": 351
+          },
+          "source_kind": "observed-expectation",
+          "confidence": "high"
+        },
+        {
+          "id": "o03",
+          "statement": "La sélection compte de 1 à 60 éléments : 0 et 61 sont refusés.",
+          "source": {
+            "file": "veille_snum/resumer.py",
+            "line": 53
+          },
+          "source_kind": "declared",
+          "confidence": "high"
+        },
+        {
+          "id": "o04",
+          "statement": "Rien n'est écrit si la sélection est refusée ou si aucun résumé n'aboutit : le site reste en place.",
+          "source": {
+            "file": "veille_snum/resumer.py",
+            "line": 8
+          },
+          "source_kind": "declared",
+          "confidence": "medium"
+        },
+        {
+          "id": "o05",
+          "statement": "Deux appels Albert simultanés au plus.",
+          "source": {
+            "file": "tests/test_v13_deux_temps.py",
+            "line": 454
+          },
+          "source_kind": "observed-expectation",
+          "confidence": "high"
+        },
+        {
+          "id": "o06",
+          "statement": "Budget de durée comme collect : Albert s'arrête après six minutes ; aucune attente 429/503 ni seconde tentative au-delà de l'échéance.",
+          "source": {
+            "file": "README.md",
+            "line": 41
+          },
+          "source_kind": "declared",
+          "confidence": "high"
+        },
+        {
+          "id": "o07",
+          "statement": "Les attentes sur 429/503 sont bornées par le budget, rubrique imposée ou classement libre ; pas de seconde tentative après l'échéance.",
+          "source": {
+            "file": "tests/test_v14_robustesse.py",
+            "line": 81
+          },
+          "source_kind": "observed-expectation",
+          "confidence": "high"
+        },
+        {
+          "id": "o08",
+          "statement": "Chaque titre gardé finit résumé dans le paquet, ou écarté avec un motif lisible et repêchable ; les deux ensembles sont disjoints et couvrent la sélection.",
+          "source": {
+            "file": "tests/test_v14_robustesse.py",
+            "line": 352
+          },
+          "source_kind": "observed-expectation",
+          "confidence": "high"
+        },
+        {
+          "id": "o09",
+          "statement": "Les titres non gardés, hors thématique, non résumés faute de temps ou en échec rejoignent les candidats écartés avec leur motif (NON_SELECTIONNE, HORS_THEMATIQUE, BUDGET_DUREE_ALBERT, ECHEC_ALBERT, PAGE_NON_RELUE).",
+          "source": {
+            "file": "README.md",
+            "line": 44
+          },
+          "source_kind": "declared",
+          "confidence": "high"
+        },
+        {
+          "id": "o10",
+          "statement": "Un rapport en ligne dont le statut n'est pas needs_albert est refusé avant tout appel Albert ; le paquet déjà publié reste intact.",
+          "source": {
+            "file": "tests/test_v14_robustesse.py",
+            "line": 125
+          },
+          "source_kind": "observed-expectation",
+          "confidence": "high"
+        },
+        {
+          "id": "o11",
+          "statement": "Des titres déjà archivés (titres_started_at égal au started_at_utc du rapport) sont refusés sans appel Albert ; un index absent ou illisible ne refuse rien.",
+          "source": {
+            "file": "tests/test_v14_robustesse.py",
+            "line": 250
+          },
+          "source_kind": "observed-expectation",
+          "confidence": "high"
+        },
+        {
+          "id": "o12",
+          "statement": "Le second temps refuse des titres déjà résumés ou remplacés, en s'appuyant sur le rapport en ligne et sur l'index des archives lu par git.",
+          "source": {
+            "file": "README.md",
+            "line": 51
+          },
+          "source_kind": "declared",
+          "confidence": "medium"
+        },
+        {
+          "id": "o13",
+          "statement": "L'archive d'une collecte résumée porte titres_started_at, instant de la collecte des titres.",
+          "source": {
+            "file": "tests/test_v14_robustesse.py",
+            "line": 277
+          },
+          "source_kind": "observed-expectation",
+          "confidence": "high"
+        },
+        {
+          "id": "o14",
+          "statement": "Tous les résumés en échec, ou budget épuisé sans article : rien n'est écrit, code 1.",
+          "source": {
+            "file": "tests/test_v13_deux_temps.py",
+            "line": 437
+          },
+          "source_kind": "observed-expectation",
+          "confidence": "high"
+        },
+        {
+          "id": "o15",
+          "statement": "Après le premier temps (titres), seuls etat-collecte.json et rapport-collecte.json sont publiés : pas de paquet-v519.json ni de candidats-ecartes.json.",
+          "source": {
+            "file": "contrat-deux-temps.md",
+            "line": 17
+          },
+          "source_kind": "declared",
+          "confidence": "high"
+        },
+        {
+          "id": "o16",
+          "statement": "etat-collecte.json porte phase, période, run_id, nombre de candidats et nombre d'articles du rapport publié.",
+          "source": {
+            "file": "tests/test_v13_deux_temps.py",
+            "line": 261
+          },
+          "source_kind": "observed-expectation",
+          "confidence": "high"
+        },
+        {
+          "id": "o17",
+          "statement": "Aucun extrait d'article ni jeton dans les fichiers publiés ; les candidats du rapport ne portent que title, source, publication_date_iso, url.",
+          "source": {
+            "file": "tests/test_v13_deux_temps.py",
+            "line": 466
+          },
+          "source_kind": "observed-expectation",
+          "confidence": "high"
+        },
+        {
+          "id": "o18",
+          "statement": "La rubrique imposée par l'éditeur prime sur celle d'Albert dans le paquet.",
+          "source": {
+            "file": "tests/test_v13_deux_temps.py",
+            "line": 291
+          },
+          "source_kind": "observed-expectation",
+          "confidence": "high"
+        },
+        {
+          "id": "o19",
+          "statement": "Fusion de l'index : nouvelle collecte en tête, même identifiant remplacé une seule fois, aucune entrée perdue.",
+          "source": {
+            "file": "tests/test_v12_archives.py",
+            "line": 73
+          },
+          "source_kind": "observed-expectation",
+          "confidence": "high"
+        }
+      ],
+      "findings": [
+        {
+          "id": "logic-p02-001",
+          "kind": "termination-error",
+          "severity": "medium",
+          "status": "confirmed",
+          "obligation_id": "o06",
+          "evidence": "measured",
+          "confidence": "high",
+          "assumptions": [
+            "ThreadPoolExecutor rejoint ses fils non démons à la sortie de l'interpréteur (Python 3.9 et suivants, 3.12 dans la tâche).",
+            "En production, resumer.main fixe le délai d'un appel Albert à ALBERT_TIMEOUT (30 s) au lieu de le borner par le temps restant comme collect (core.py ligne 1033)."
+          ],
+          "counterexample": "MAX_ALBERT_SECONDS = 0,1 s, deux titres gardés dont la page met 0,3 s à se relire. publier_resumes rend 1 après 0,11 s sans rien écrire, avec deux fils encore vivants et 0 appel Albert ; après jointure de ces fils, Albert a reçu 2 appels. Les tâches engagées à l'échéance relisent la page sans échéance (lire_candidat n'en reçoit pas) puis appellent Albert pour la première fois après la fin du budget, résultat jeté et compté BUDGET_DUREE_ALBERT. En réel : jusqu'à deux appels de 30 s, plus les lectures de page, après les six minutes annoncées.",
+          "trace": [
+            "resumer.py:171 limite = monotonic + MAX_ALBERT_SECONDS",
+            "resumer.py:188-189 reste <= 0 : break",
+            "resumer.py:200 pool.shutdown(wait=False, cancel_futures=True) : les tâches en cours continuent",
+            "resumer.py:175 lire_candidat sans échéance ; repecher.py:152 / resumer.py:151 premier appel Albert sans contrôle de la limite",
+            "resumer.py:410 timeout=ALBERT_TIMEOUT fixe, à comparer à core.py:1033",
+            "mesure : scratchpad/qa/shipguard/mesure-p02.py, scénario s3"
+          ],
+          "file": "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/resumer.py",
+          "line": 200,
+          "related_audit_bug_id": null
+        },
+        {
+          "id": "logic-p02-002",
+          "kind": "conservation-error",
+          "severity": "medium",
+          "status": "confirmed",
+          "obligation_id": "o08",
+          "evidence": "measured",
+          "confidence": "high",
+          "assumptions": [
+            "Entre les deux temps, une source redirige l'adresse A d'un titre vers l'adresse B d'un autre titre de la même liste (changement de slug, lien court) ; lire_candidat suit la redirection interne au domaine et publie l'adresse relue (resumer.py:224)."
+          ],
+          "counterexample": "Rapport à 14 candidats, A (/article/ancien-slug) redirige vers B (/article/veille-snum). Sélection [A en ia, B en rh]. Résultat code 0 : deux appels Albert, paquet à 1 article (B, rubrique rh), la rubrique ia imposée pour A disparaît sans trace ; A n'apparaît plus ni dans le rapport (son entrée devient un doublon de B) ni dans les écartés ; etat-collecte.json annonce 14 candidats pour 1 article et 12 écartés (13). Même mécanisme si A se relit vers un candidat D non gardé : la ligne NON_SELECTIONNE de D disparaît des écartés car D est dans le paquet.",
+          "trace": [
+            "resumer.py:225 relus[url] = champs de la page relue (adresse finale)",
+            "resumer.py:235 deux articles de même adresse",
+            "core.py:919 packet_for garde le premier par url_key, le second est jeté sans motif",
+            "resumer.py:245 candidates remplacés par les relus : deux entrées B",
+            "publier.py:46-56 ecartes exclut toute entrée dont l'adresse est au paquet",
+            "mesure : scratchpad/qa/shipguard/mesure-p02.py, scénario s2"
+          ],
+          "file": "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/resumer.py",
+          "line": 225,
+          "related_audit_bug_id": null
+        },
+        {
+          "id": "logic-p02-003",
+          "kind": "postcondition-violation",
+          "severity": "medium",
+          "status": "confirmed",
+          "obligation_id": "o04",
+          "evidence": "measured",
+          "confidence": "medium",
+          "assumptions": [
+            "« Aucun résumé n'aboutit » couvre le cas où Albert juge tous les titres gardés hors thématique : aucun résumé n'est produit (voir question q01)."
+          ],
+          "counterexample": "Sélection de deux titres, Albert répond relevant=false pour les deux. publier_resumes rend 0 et écrit les quatre fichiers : paquet à 0 article, statut ready, écartés HORS_THEMATIQUE et NON_SELECTIONNE. Le site des titres est remplacé, la tâche archive ce paquet vide avec titres_started_at, et toute nouvelle sélection sur ces titres est ensuite refusée par deja_archive.",
+          "trace": [
+            "resumer.py:252 incidents = erreurs ou non analysés ou non relus : faux si tout est HORS_THEMATIQUE",
+            "resumer.py:253 la garde ne retourne sans paquet que s'il y a incident",
+            "resumer.py:255 packet_for avec articles vides accepté (alerte Collecte limitée)",
+            "resumer.py:278 statut ready",
+            "resumer.py:354 ecrire_site",
+            "mesure : scratchpad/qa/shipguard/mesure-p02.py, scénario s1"
+          ],
+          "file": "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/resumer.py",
+          "line": 253,
+          "related_audit_bug_id": null
+        },
+        {
+          "id": "logic-p02-004",
+          "kind": "idempotency-error",
+          "severity": "medium",
+          "status": "risk",
+          "obligation_id": "o12",
+          "evidence": "reasoned",
+          "confidence": "medium",
+          "assumptions": [
+            "Le cache de GitHub Pages sert l'ancien rapport-collecte.json jusqu'à dix minutes après un nouveau déploiement (README.md:48).",
+            "Les titres ne sont jamais archivés (contrat ligne 17) : l'index ne connaît pas l'instant d'une collecte de titres remplacée.",
+            "La page ne transmet au second temps aucun identifiant de la collecte de titres (ni run_id ni started_at), seulement selection, edition, debut, fin."
+          ],
+          "counterexample": "Titres T1 publiés, puis titres T2 publiés sur la même période. Une page encore ouverte sur T1 lance resumes. lire_rapport reçoit du cache le rapport T1 (needs_albert), deja_archive ne trouve rien, la période concorde : Albert résume T1 et le paquet écrase la phase titres T2, qui n'est archivée nulle part. Même avec un cache frais, une sélection faite sur T1 est acceptée sur T2 dès que les adresses se recoupent.",
+          "trace": [
+            "resumer.py:82-143 seul le statut du rapport en ligne est contrôlé",
+            "resumer.py:282-295 deja_archive ne connaît que les collectes résumées",
+            "resumer.py:298-335 aucun paramètre liant la sélection à une collecte de titres précise"
+          ],
+          "file": "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/resumer.py",
+          "line": 313,
+          "related_audit_bug_id": null
+        },
+        {
+          "id": "logic-p02-005",
+          "kind": "idempotency-error",
+          "severity": "low",
+          "status": "risk",
+          "obligation_id": "o12",
+          "evidence": "reasoned",
+          "confidence": "medium",
+          "assumptions": [
+            "La tâche archivage échoue (5 essais de push) alors que deploiement réussit : les deux tâches ne dépendent que de collecte.",
+            "Le cache sert encore le rapport needs_albert quand une seconde demande démarre (le groupe de concurrence pages sérialise les exécutions, mais pas le cache)."
+          ],
+          "counterexample": "Rédaction R1 publiée, archive en échec. Une seconde demande R2 sur les mêmes titres démarre dans les dix minutes : le rapport en ligne périmé dit needs_albert, l'index lu par git n'a pas d'entrée pour ces titres : R2 relance Albert et écrase le paquet de R1 (que la sélection fine ait commencé ou non).",
+          "trace": [
+            "resumer.py:288-295 aucune entrée correspondante : None",
+            "publier-paquet-snum.yml:223-225 archivage indépendant de deploiement",
+            "publier-paquet-snum.yml:87-89 repli déclaré sur le seul rapport en ligne"
+          ],
+          "file": "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/resumer.py",
+          "line": 288,
+          "related_audit_bug_id": null
+        },
+        {
+          "id": "logic-p02-006",
+          "kind": "postcondition-violation",
+          "severity": "low",
+          "status": "risk",
+          "obligation_id": "o15",
+          "evidence": "measured",
+          "confidence": "high",
+          "assumptions": [
+            "Atteignable seulement si le dossier de sortie existe déjà avec un paquet : la tâche GitHub part d'un checkout neuf où site/ n'est pas suivi (0 fichier suivi sous site/), usage local ou réutilisation du dossier seulement."
+          ],
+          "counterexample": "Dossier de sortie contenant paquet-v519.json et candidats-ecartes.json ; ecrire_site en phase titres y ajoute etat-collecte.json et rapport-collecte.json et laisse les deux anciens fichiers : quatre fichiers, dont un paquet incohérent avec la phase titres.",
+          "trace": [
+            "publier.py:98-119 ecrire_site écrit sans retirer les fichiers absents du rapport",
+            "publier.py:159 publier_titres",
+            "mesure : scratchpad/qa/shipguard/mesure-p02.py, scénario s4"
+          ],
+          "file": "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/publier.py",
+          "line": 116,
+          "related_audit_bug_id": null
+        }
+      ]
+    },
+    {
+      "id": "p03",
+      "kind": "procedure",
+      "name": "Publication, archivage et repêchage par GitHub Actions",
+      "files": [
+        ".github/workflows/publier-paquet-snum.yml",
+        ".github/workflows/repecher-candidat.yml",
+        "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/publier.py",
+        "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/resumer.py",
+        "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/repecher.py",
+        "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/archiver.py"
+      ],
+      "model": {
+        "inputs": [
+          "publier : mode (titres|resumes|collecte|page seule|vide), edition, debut, fin, selection ; github.ref",
+          "repêchage : url, rubrique, debut, fin ; github.ref",
+          "état distant : branche donnees-veille (absente ou présente, index lisible ou non), fichiers servis par Pages avec cache",
+          "secret ALBERT_API_KEY"
+        ],
+        "states": [
+          "titres ou vide : étape titres sans Albert ; site = etat (phase titres) + rapport + pages ; pas d'archive ; deploiement si main",
+          "resumes : lecture index par git puis resumer ; refus = échec de collecte, rien de déployé ; succès : site = etat, paquet, écartés, rapport + pages ; archive préparée ; archivage et deploiement en parallèle si main",
+          "collecte : idem resumes sans contrôle d'index (phase collecte)",
+          "page seule : curl de etat puis rapport (phase titres) ou paquet + écartés + rapport ; pas d'archive",
+          "hors de main : collecte seule, aucun effet durable (repêchage excepté)",
+          "repêchage : résultat ou placeholder écrit, puis boucle de cinq essais vers donnees-veille"
+        ],
+        "effects": [
+          "déploiement GitHub Pages (tâche deploiement)",
+          "commit collectes/<id>/ + collectes/index.json sur donnees-veille (tâche archivage)",
+          "commit repechages/<run_id>.json sur donnees-veille (repêchage, toute branche)",
+          "résumés de run (GITHUB_STEP_SUMMARY)"
+        ]
+      },
+      "obligations": [
+        {
+          "id": "o01",
+          "statement": "L'entrée mode est un choix parmi titres (défaut), resumes, collecte, page seule ; selection sert seulement en mode resumes.",
+          "source": {
+            "file": "<espace-de-session>/contrat-deux-temps.md",
+            "line": 13
+          },
+          "source_kind": "declared",
+          "confidence": "high"
+        },
+        {
+          "id": "o02",
+          "statement": "etat-collecte.json est toujours publié (titres, resumes, collecte).",
+          "source": {
+            "file": "<espace-de-session>/contrat-deux-temps.md",
+            "line": 16
+          },
+          "source_kind": "declared",
+          "confidence": "high"
+        },
+        {
+          "id": "o03",
+          "statement": "Après titres : etat-collecte.json et rapport-collecte.json seulement, ni paquet-v519.json ni candidats-ecartes.json, et pas d'archivage.",
+          "source": {
+            "file": "<espace-de-session>/contrat-deux-temps.md",
+            "line": 17
+          },
+          "source_kind": "declared",
+          "confidence": "high"
+        },
+        {
+          "id": "o04",
+          "statement": "Après resumes ou collecte : état, paquet, écartés et rapport publiés, et archivage sur donnees-veille.",
+          "source": {
+            "file": "<espace-de-session>/contrat-deux-temps.md",
+            "line": 18
+          },
+          "source_kind": "declared",
+          "confidence": "high"
+        },
+        {
+          "id": "o05",
+          "statement": "page seule republie la page avec les fichiers en ligne existants, sans appel Albert ni archivage.",
+          "source": {
+            "file": "<espace-de-session>/contrat-deux-temps.md",
+            "line": 19
+          },
+          "source_kind": "declared",
+          "confidence": "high"
+        },
+        {
+          "id": "o06",
+          "statement": "Quand un nouveau premier temps vide la page, la collecte précédente est déjà archivée sur donnees-veille au moment de sa publication.",
+          "source": {
+            "file": "<espace-de-session>/contrat-deux-temps.md",
+            "line": 5
+          },
+          "source_kind": "declared",
+          "confidence": "high"
+        },
+        {
+          "id": "o07",
+          "statement": "Le mode resumes refuse toute URL de selection absente des candidats du rapport en ligne et toute rubrique inconnue.",
+          "source": {
+            "file": "<espace-de-session>/contrat-deux-temps.md",
+            "line": 23
+          },
+          "source_kind": "declared",
+          "confidence": "high"
+        },
+        {
+          "id": "o08",
+          "statement": "Premier temps : ni jeton ni modèle Albert dans l'environnement de l'étape titres.",
+          "source": {
+            "file": ".github/workflows/publier-paquet-snum.yml",
+            "line": 54
+          },
+          "source_kind": "declared",
+          "confidence": "high"
+        },
+        {
+          "id": "o09",
+          "statement": "La sélection est lue dans la variable SELECTION, jamais recopiée dans le script.",
+          "source": {
+            "file": ".github/workflows/publier-paquet-snum.yml",
+            "line": 70
+          },
+          "source_kind": "declared",
+          "confidence": "high"
+        },
+        {
+          "id": "o10",
+          "statement": "La tâche archivage est la seule autorisée à écrire dans le dépôt, seulement sur donnees-veille (collectes/<id>/ et collectes/index.json), avec un index recalculé à chaque essai.",
+          "source": {
+            "file": ".github/workflows/publier-paquet-snum.yml",
+            "line": 221
+          },
+          "source_kind": "declared",
+          "confidence": "high"
+        },
+        {
+          "id": "o11",
+          "statement": "La fusion recalculée sur la version distante à chaque tentative garantit qu'aucune entrée d'index n'est perdue.",
+          "source": {
+            "file": "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/archiver.py",
+            "line": 5
+          },
+          "source_kind": "declared",
+          "confidence": "medium"
+        },
+        {
+          "id": "o12",
+          "statement": "Le mode resumes lit l'index des archives par git (jamais par un cache) ; sans index, seul le contrôle du rapport en ligne s'applique.",
+          "source": {
+            "file": ".github/workflows/publier-paquet-snum.yml",
+            "line": 87
+          },
+          "source_kind": "declared",
+          "confidence": "high"
+        },
+        {
+          "id": "o13",
+          "statement": "Le résultat du repêchage est publié même en cas de refus (code 1 absorbé), pour que la page affiche le motif.",
+          "source": {
+            "file": ".github/workflows/repecher-candidat.yml",
+            "line": 5
+          },
+          "source_kind": "declared",
+          "confidence": "high"
+        },
+        {
+          "id": "o14",
+          "statement": "La branche donnees-veille est créée orpheline au premier passage, jamais forcée ensuite.",
+          "source": {
+            "file": ".github/workflows/repecher-candidat.yml",
+            "line": 75
+          },
+          "source_kind": "declared",
+          "confidence": "high"
+        },
+        {
+          "id": "o15",
+          "statement": "Le repêchage n'écrit que sur la branche de résultats donnees-veille.",
+          "source": {
+            "file": ".github/workflows/repecher-candidat.yml",
+            "line": 33
+          },
+          "source_kind": "declared",
+          "confidence": "medium"
+        },
+        {
+          "id": "o16",
+          "statement": "Les envois simultanés vers donnees-veille sont réglés par les nouvelles tentatives de push, sans perte.",
+          "source": {
+            "file": ".github/workflows/repecher-candidat.yml",
+            "line": 38
+          },
+          "source_kind": "declared",
+          "confidence": "high"
+        },
+        {
+          "id": "o17",
+          "statement": "Un lancement sans entrée mode vaut titres.",
+          "source": {
+            "file": ".github/workflows/publier-paquet-snum.yml",
+            "line": 55
+          },
+          "source_kind": "declared",
+          "confidence": "high"
+        },
+        {
+          "id": "o18",
+          "statement": "Le second temps refuse des titres déjà résumés ou remplacés, en s'appuyant sur le rapport en ligne et sur l'index des archives lu par git.",
+          "source": {
+            "file": "veille-snum-webapp-v5-apres-egm/veille-snum/README.md",
+            "line": 51
+          },
+          "source_kind": "declared",
+          "confidence": "high"
+        },
+        {
+          "id": "o19",
+          "statement": "Chaque collecte résumée est archivée sur donnees-veille ; des titres jamais résumés ne le sont pas.",
+          "source": {
+            "file": "veille-snum-webapp-v5-apres-egm/veille-snum/README.md",
+            "line": 53
+          },
+          "source_kind": "declared",
+          "confidence": "high"
+        },
+        {
+          "id": "o20",
+          "statement": "Hors de main, les fichiers sont produits mais ni publiés ni archivés.",
+          "source": {
+            "file": ".github/workflows/publier-paquet-snum.yml",
+            "line": 191
+          },
+          "source_kind": "observed-expectation",
+          "confidence": "medium"
+        }
+      ],
+      "findings": [
+        {
+          "id": "logic-p03-001",
+          "kind": "ordering-error",
+          "severity": "medium",
+          "status": "confirmed",
+          "obligation_id": "o06",
+          "evidence": "reasoned",
+          "confidence": "high",
+          "assumptions": [
+            "deploiement et archivage ne dépendent que de collecte (needs: collecte), donc s'exécutent en parallèle et indépendamment",
+            "l'artefact archive-collecte n'est conservé qu'un jour (retention-days: 1)",
+            "la boucle d'archivage sort en code 1 après cinq refus de push : mesuré sur dépôt nu local (banc T6, <espace-de-session>/qa/shipguard/p03-banc)"
+          ],
+          "counterexample": "Run resumes sur main : collecte réussit ; deploiement publie paquet-v519.json ; archivage échoue (cinq push refusés, réseau, ou timeout de 10 min). Le run suivant en mode titres (défaut, lancé par la page) publie un site sans paquet et le résumé du run affirme que la collecte précédente reste dans archives.html : le paquet n'existe plus ni sur le site ni sur donnees-veille, sauf relance manuelle de la tâche archivage dans les 24 h.",
+          "trace": [
+            "publier-paquet-snum.yml:223-225 archivage needs collecte",
+            "publier-paquet-snum.yml:302-304 deploiement needs collecte seulement",
+            "publier-paquet-snum.yml:292-294 exit 1 après 5 essais",
+            "publier-paquet-snum.yml:187-188 message archives inconditionnel en mode titres",
+            "banc T6 : 5 essais refusés, exit=1"
+          ],
+          "file": ".github/workflows/publier-paquet-snum.yml",
+          "line": 303,
+          "related_audit_bug_id": null
+        },
+        {
+          "id": "logic-p03-002",
+          "kind": "idempotency-error",
+          "severity": "medium",
+          "status": "risk",
+          "obligation_id": "o18",
+          "evidence": "reasoned",
+          "confidence": "medium",
+          "assumptions": [
+            "le constat logic-p03-001 s'est produit (paquet déployé, archive absente)",
+            "GitHub Pages sert encore l'ancien rapport-collecte.json (statut needs_albert) pendant sa fenêtre de cache, jusqu'à dix minutes selon le README ligne 48"
+          ],
+          "counterexample": "Après un run resumes déployé mais non archivé, un second lancement resumes (double clic, autre onglet) dans la fenêtre de cache lit le rapport titres périmé (status needs_albert accepté) et un index des archives sans titres_started_at correspondant : les mêmes titres sont résumés une seconde fois et republiés sous un autre run_id.",
+          "trace": [
+            "resumer.py:282-295 deja_archive ne refuse que si une archive porte le même titres_started_at",
+            "resumer.py lire_rapport refuse seulement si status != needs_albert",
+            "publier-paquet-snum.yml:91 index lu par git"
+          ],
+          "file": "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/resumer.py",
+          "line": 313,
+          "related_audit_bug_id": null
+        },
+        {
+          "id": "logic-p03-003",
+          "kind": "invalid-transition",
+          "severity": "medium",
+          "status": "risk",
+          "obligation_id": "o05",
+          "evidence": "reasoned",
+          "confidence": "medium",
+          "assumptions": [
+            "curl lit le site public, servi avec un cache jusqu'à dix minutes (README ligne 48)",
+            "le groupe de concurrence pages sérialise les runs mais n'attend pas l'expiration du cache"
+          ],
+          "counterexample": "Un run resumes se termine et déploie (phase resumes) ; un run page seule en attente démarre aussitôt et reçoit l'ancien etat-collecte.json (phase titres) : il ne reprend que rapport-collecte.json, éventuellement déjà le nouveau (statut ready). Il redéploie un site en phase titres, sans paquet, voire un mélange état titres et rapport ready que le mode resumes refusera ensuite. Les fichiers repris ne sont pas les fichiers en ligne les plus récents.",
+          "trace": [
+            "publier-paquet-snum.yml:118-136 lecture par curl de etat puis rapport ou paquet, sans contrôle de cohérence run_id",
+            "publier-paquet-snum.yml:39-41 concurrency pages"
+          ],
+          "file": ".github/workflows/publier-paquet-snum.yml",
+          "line": 126,
+          "related_audit_bug_id": null
+        },
+        {
+          "id": "logic-p03-004",
+          "kind": "conservation-error",
+          "severity": "low",
+          "status": "risk",
+          "obligation_id": "o11",
+          "evidence": "measured",
+          "confidence": "high",
+          "assumptions": [
+            "précondition hors des deux tâches : collectes/index.json illisible sur donnees-veille (édition manuelle, écriture tierce) ; aucune des deux tâches n'écrit un index illisible"
+          ],
+          "counterexample": "Index distant tronqué ({\"collectes\": [) : la fusion traite l'ancien index comme absent et publie un index ne contenant que la nouvelle entrée ; les dossiers collectes/<id>/ antérieurs restent mais disparaissent de l'index, donc de archives.html.",
+          "trace": [
+            "archiver.py:85-89 OSError ou ValueError : ancien = None",
+            "archiver.py:46-56 entrées non conformes écartées",
+            "banc T7 : index ['2026-11-27_103'] alors que collectes/ contient 101, 102 et 103"
+          ],
+          "file": "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/archiver.py",
+          "line": 88,
+          "related_audit_bug_id": null
+        },
+        {
+          "id": "logic-p03-005",
+          "kind": "authorization-gap",
+          "severity": "low",
+          "status": "risk",
+          "obligation_id": "o15",
+          "evidence": "reasoned",
+          "confidence": "medium",
+          "assumptions": [
+            "actions/checkout conserve le jeton dans .git/config par défaut (persist-credentials)",
+            "aucune protection de branche connue sur main : non vérifiable hors GitHub"
+          ],
+          "counterexample": "Le jeton contents: write du repêchage n'est pas restreint à donnees-veille : il vaut pour toutes les branches et reste dans .git/config pendant l'étape Albert, qui lit des pages externes. La limite à donnees-veille ne tient qu'au script ; même remarque pour la tâche archivage (o10).",
+          "trace": [
+            "repecher-candidat.yml:33-35 permissions contents: write au niveau du workflow",
+            "repecher-candidat.yml:48 checkout sans persist-credentials: false",
+            "publier-paquet-snum.yml:228-229"
+          ],
+          "file": ".github/workflows/repecher-candidat.yml",
+          "line": 35,
+          "related_audit_bug_id": null
+        },
+        {
+          "id": "logic-p03-006",
+          "kind": "termination-error",
+          "severity": "low",
+          "status": "risk",
+          "obligation_id": "o13",
+          "evidence": "reasoned",
+          "confidence": "low",
+          "assumptions": [
+            "la durée cumulée de lecture de page et des appels Albert peut approcher timeout-minutes: 10 ; non mesurée"
+          ],
+          "counterexample": "Si l'étape Albert consomme les dix minutes de la tâche, GitHub l'annule avant l'étape de publication : aucun repechages/<run_id>.json n'est écrit, la page n'a pas de motif à afficher. Le code 1 est bien absorbé, mais l'arrêt par délai ne l'est pas.",
+          "trace": [
+            "repecher-candidat.yml:44 timeout-minutes: 10",
+            "repecher-candidat.yml:66-71 code absorbé seulement si le processus rend la main"
+          ],
+          "file": ".github/workflows/repecher-candidat.yml",
+          "line": 44,
+          "related_audit_bug_id": null
+        }
+      ]
+    }
+  ],
+  "contract_conflicts": [
+    {
+      "candidate_id": "p01",
+      "description": "o06 dit qu'un run existant avant l'envoi n'est « jamais » pris pour le nôtre (commentaire github.js L56-L57, titre du test). Le même test accepte l'ancien comportement sans relevé préalable, et dispatch remplace un relevé en échec par known = [] (github.js L127). Mesuré (M3) : pickRun([run 111 créé 20 s avant l'envoi], envoi, []) renvoie 111. Une liste préalable illisible fait donc suivre le run d'une autre personne. Il faut choisir : « jamais », ou « jamais quand le relevé a réussi ».",
+      "references": [
+        {
+          "file": "veille-snum-webapp-v5-apres-egm/veille-snum/tests/test_pages_constats.cjs",
+          "line": 24
+        },
+        {
+          "file": "veille-snum-webapp-v5-apres-egm/veille-snum/tests/test_pages_constats.cjs",
+          "line": 28
+        },
+        {
+          "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/github.js",
+          "line": 57
+        },
+        {
+          "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/github.js",
+          "line": 127
+        }
+      ]
+    },
+    {
+      "description": "Le contrat (section Fichiers publiés) liste quatre motifs pour les écartés du mode resumes ; le code et un test exécutable ajoutent PAGE_NON_RELUE. Le test, plus haut en autorité, fait foi ; le contrat est incomplet.",
+      "candidate_id": "p02",
+      "references": [
+        "contrat-deux-temps.md:18",
+        "tests/test_v13_deux_temps.py:450",
+        "veille_snum/resumer.py:49",
+        "README.md:44"
+      ]
+    },
+    {
+      "description": "Le docstring de resumer.py promet « rien n'est écrit si aucun résumé n'aboutit », alors que le contrat demande un budget et un classement « comme collect », et que collect publie un paquet vide quand tout est hors thématique sans incident (core.py:1095). Les deux sources ne peuvent pas être satisfaites ensemble pour le cas tout hors thématique.",
+      "candidate_id": "p02",
+      "references": [
+        "veille_snum/resumer.py:8",
+        "contrat-deux-temps.md:24",
+        "veille_snum/core.py:1095"
+      ]
+    },
+    {
+      "description": "Le résumé du run en mode titres affirme sans condition que la collecte précédente reste consultable dans archives.html, alors que le README la limite aux collectes résumées (et que l'archivage peut échouer, logic-p03-001).",
+      "candidate_id": "p03",
+      "references": [
+        ".github/workflows/publier-paquet-snum.yml:187-188",
+        "veille-snum-webapp-v5-apres-egm/veille-snum/README.md:40",
+        "veille-snum-webapp-v5-apres-egm/veille-snum/README.md:53"
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "candidate_id": "p01",
+      "description": "publie-en-echec : TEXT.publishedFailed affirme « la page les affiche » même quand reload() a renvoyé false (view ignoré en L130), alors que le cas success distingue view faux (L131). Le message doit-il dépendre de view ?",
+      "references": [
+        {
+          "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/lancement.js",
+          "line": 130
+        },
+        {
+          "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/lancement.js",
+          "line": 33
+        }
+      ]
+    },
+    {
+      "candidate_id": "p01",
+      "description": "Événement tardif : announceActive ne teste running qu'à l'arrivée de la réponse. Un lancement rapide terminé (refus 401, run déjà actif) avant cette réponse voit son statut de conclusion remplacé par TEXT.notice et son lien de run écrasé. Faut-il ignorer l'annonce dès qu'un lancement a commencé ?",
+      "references": [
+        {
+          "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/lancement.js",
+          "line": 148
+        },
+        {
+          "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/page.js",
+          "line": 244
+        }
+      ]
+    },
+    {
+      "candidate_id": "p01",
+      "description": "acknowledged est commun aux deux boutons : un avertissement accepté avec « Lancer la collecte » vaut accord pour « Rédiger les résumés » sur le même run actif, sans nouvel avertissement. Voulu ?",
+      "references": [
+        {
+          "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/lancement.js",
+          "line": 97
+        }
+      ]
+    },
+    {
+      "candidate_id": "p01",
+      "description": "o11 promet un signalement « avant tout nouvel envoi », mais findActive renvoie null sur toute erreur et l'envoi part sans avertissement. Ce silence est-il accepté pour l'envoi (il l'est explicitement pour l'ouverture, lancement.js L147) ?",
+      "references": [
+        {
+          "file": "veille-snum-webapp-v5-apres-egm/veille-snum/README.md",
+          "line": 49
+        },
+        {
+          "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/github.js",
+          "line": 150
+        }
+      ]
+    },
+    {
+      "candidate_id": "p01",
+      "description": "TEXT.active promet « votre demande attendra son tour ». Le workflow utilise concurrency group pages, cancel-in-progress false : selon la documentation GitHub, un nouveau run en attente annule le run déjà en attente du même groupe. Avec trois demandes, l'une serait annulée : à vérifier contre la documentation.",
+      "references": [
+        {
+          "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/lancement.js",
+          "line": 29
+        },
+        {
+          "file": ".github/workflows/publier-paquet-snum.yml",
+          "line": 39
+        }
+      ]
+    },
+    {
+      "candidate_id": "p01",
+      "description": "Issue « attente » : TEXT.stale dit « Ne relancez pas » mais le bouton redevient disponible aussitôt. Pour les résumés, le refus côté serveur (README L51) couvre le doublon ; pour la collecte, rien n'empêche côté page un relancement qui remplacera le résultat. Faut-il une garde côté page ?",
+      "references": [
+        {
+          "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/lancement.js",
+          "line": 122
+        },
+        {
+          "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/lancement.js",
+          "line": 141
+        }
+      ]
+    },
+    {
+      "candidate_id": "p01",
+      "description": "pickRun prend le run le plus récent créé après l'envoi : si une autre personne lance dans la même fenêtre, son run peut être suivi à la place du nôtre (known ne peut pas l'écarter). Risque accepté ?",
+      "references": [
+        {
+          "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/github.js",
+          "line": 58
+        }
+      ]
+    },
+    {
+      "id": "q01",
+      "description": "Un second temps dont tous les titres gardés sont jugés hors thématique doit-il publier et archiver un paquet vide (ce qui verrouille ces titres contre une nouvelle sélection), ou rendre 1 sans rien écrire ?",
+      "candidate_id": "p02",
+      "references": [
+        "logic-p02-003",
+        "veille_snum/resumer.py:252"
+      ]
+    },
+    {
+      "id": "q02",
+      "description": "Le paquet peut-il porter une adresse différente de celle du titre coché (redirection interne au domaine suivie à la relecture) ? Si oui, deux titres relus vers la même adresse doivent-ils être refusés, fusionnés avec motif, ou signalés ?",
+      "candidate_id": "p02",
+      "references": [
+        "logic-p02-002",
+        "veille_snum/resumer.py:224"
+      ]
+    },
+    {
+      "id": "q03",
+      "description": "La page devrait-elle transmettre l'identifiant de la collecte de titres (run_id ou started_at_utc de etat-collecte.json) pour que le serveur refuse une sélection faite sur des titres remplacés, comme le promet README.md:51 ?",
+      "candidate_id": "p02",
+      "references": [
+        "logic-p02-004",
+        "README.md:51"
+      ]
+    },
+    {
+      "id": "q04",
+      "description": "Une exception inattendue de lire_candidat (analyse de page, date) hors Refus et HTTPError est classée ECHEC_ALBERT au lieu de PAGE_NON_RELUE : est-ce voulu ? Déduction non mesurée.",
+      "candidate_id": "p02",
+      "references": [
+        "veille_snum/resumer.py:196-199",
+        "veille_snum/repecher.py:94-115"
+      ]
+    },
+    {
+      "id": "q05",
+      "description": "Le budget doit-il borner aussi le délai de chaque appel Albert et la relecture de page (comme collect borne le délai par le temps restant), ou le dépassement de quelques dizaines de secondes est-il accepté ?",
+      "candidate_id": "p02",
+      "references": [
+        "logic-p02-001",
+        "veille_snum/core.py:1033",
+        "veille_snum/resumer.py:410"
+      ]
+    },
+    {
+      "description": "Le groupe de concurrence pages est commun à toutes les références : un run lancé depuis une branche occupe le groupe ou remplace un run main en attente (GitHub ne garde qu'un run en attente). Faut-il inclure github.ref dans le groupe ou interdire les runs hors de main ?",
+      "candidate_id": "p03",
+      "references": [
+        ".github/workflows/publier-paquet-snum.yml:39-41"
+      ]
+    },
+    {
+      "description": "Un troisième lancement remplace le run en attente du groupe pages (par exemple un page seule lancé depuis GitHub annule un resumes en attente). Est-ce acceptable, sachant que repecher-candidat.yml:37-39 écarte ce mécanisme pour cette raison ?",
+      "candidate_id": "p03",
+      "references": [
+        ".github/workflows/publier-paquet-snum.yml:39-41",
+        ".github/workflows/repecher-candidat.yml:37-39"
+      ]
+    },
+    {
+      "description": "Le repêchage n'a pas de garde github.ref : un run hors de main écrit sur donnees-veille. Faut-il l'aligner sur la publication ?",
+      "candidate_id": "p03",
+      "references": [
+        ".github/workflows/repecher-candidat.yml:41-47",
+        ".github/workflows/publier-paquet-snum.yml:225"
+      ]
+    },
+    {
+      "description": "Si l'archivage réussit mais que le déploiement échoue, un nouveau resumes est refusé avec le message « recharger la page, qui affiche le paquet publié », alors que le site sert encore les titres. Quel parcours de reprise est attendu (archives.html ?)",
+      "candidate_id": "p03",
+      "references": [
+        "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/resumer.py:313-318",
+        ".github/workflows/publier-paquet-snum.yml:302-314"
+      ]
+    },
+    {
+      "description": "Le mode resumes ou collecte hors de main consomme Albert sans rien publier. Est-ce voulu ?",
+      "candidate_id": "p03",
+      "references": [
+        ".github/workflows/publier-paquet-snum.yml:72-112",
+        ".github/workflows/publier-paquet-snum.yml:191-192"
+      ]
+    },
+    {
+      "description": "Le message « la branche a avancé entre-temps » s'affiche pour tout échec de push (droits, protection), pas seulement un refus non fast-forward.",
+      "candidate_id": "p03",
+      "references": [
+        ".github/workflows/publier-paquet-snum.yml:289",
+        ".github/workflows/repecher-candidat.yml:114"
+      ]
+    }
+  ],
+  "uncovered": [
+    {
+      "candidate_id": "p01",
+      "description": "Partie interface de launch (conclude, keepFocus, ordre reset puis reload, restauration du bouton, lock des cases) : aucun test DOM ; analyse raisonnée seulement. L'ordre des effets observé dans finally (running = false, bouton restauré, focus) semble correct sur tous les chemins, y compris exception de before() après rechargement.",
+      "references": [
+        {
+          "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/lancement.js",
+          "line": 139
+        },
+        {
+          "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/titres.js",
+          "line": 253
+        }
+      ]
+    },
+    {
+      "candidate_id": "p01",
+      "description": "Refus côté serveur des titres déjà résumés (README L51, titres_started_at) : hors des fichiers du candidat, non contrôlé.",
+      "references": [
+        {
+          "file": "veille-snum-webapp-v5-apres-egm/veille-snum/README.md",
+          "line": 51
+        }
+      ]
+    },
+    {
+      "candidate_id": "p01",
+      "description": "Navigateur sans AbortSignal.timeout : timed() renvoie l'appel sans délai (github.js L111-L112), donc o21 (déblocage du bouton) n'est plus garanti ; choix documenté, non testé.",
+      "references": [
+        {
+          "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/github.js",
+          "line": 112
+        }
+      ]
+    },
+    {
+      "candidate_id": "p01",
+      "description": "Comportement réel du cache de GitHub Pages (une entrée par fichier, monotonie entre lectures) : hypothèse de logic-p01-002 et logic-p01-003, non mesurée.",
+      "references": [
+        {
+          "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/lancement.js",
+          "line": 4
+        }
+      ]
+    },
+    {
+      "description": "Le groupe de concurrence pages (cancel-in-progress: false) ne garde qu'une exécution en attente : une troisième demande annule silencieusement la seconde en attente (par exemple un resumes remplacé par un titres). Comportement GitHub Actions non exercé.",
+      "candidate_id": "p02",
+      "references": [
+        ".github/workflows/publier-paquet-snum.yml:39-41"
+      ]
+    },
+    {
+      "description": "Contrôles côté page (attente du run_id dans etat-collecte.json, collecte déjà en cours) non lus : hors périmètre Python.",
+      "candidate_id": "p02",
+      "references": [
+        "README.md:48-51"
+      ]
+    },
+    {
+      "description": "Comportement réel du cache GitHub Pages et de deploy-pages : durées non mesurées, les constats 004 et 005 en dépendent.",
+      "candidate_id": "p02",
+      "references": [
+        "logic-p02-004",
+        "logic-p02-005"
+      ]
+    },
+    {
+      "description": "Ordre d'écriture de ecrire_site en cas d'échec partiel : sans effet public dans la tâche (échec de l'étape, aucun artefact Pages téléversé), non exercé en local.",
+      "candidate_id": "p02",
+      "references": [
+        "veille_snum/publier.py:116-119"
+      ]
+    },
+    {
+      "description": "core.py hors périmètre : packet_for, validate_summary, robots_allowed et HttpClient lus pour le contexte seulement.",
+      "candidate_id": "p02",
+      "references": [
+        "veille_snum/core.py"
+      ]
+    },
+    {
+      "description": "Sémantique GitHub non exécutée : deploy-pages, file d'attente du groupe de concurrence, valeur de inputs.mode lors d'un appel API sans entrée, comportement de if: always() après expiration du délai de tâche.",
+      "candidate_id": "p03",
+      "references": [
+        ".github/workflows/publier-paquet-snum.yml",
+        ".github/workflows/repecher-candidat.yml"
+      ]
+    },
+    {
+      "description": "Comportement réel du cache GitHub Pages et de raw.githubusercontent.com (constats 002 et 003 raisonnés sur la durée déclarée dans le README).",
+      "candidate_id": "p03",
+      "references": [
+        "veille-snum-webapp-v5-apres-egm/veille-snum/README.md:48",
+        "veille-snum-webapp-v5-apres-egm/veille-snum/README.md:53"
+      ]
+    },
+    {
+      "description": "Protections de branche du dépôt distant, qui conditionnent la portée réelle du constat 005.",
+      "candidate_id": "p03",
+      "references": [
+        ".github/workflows/repecher-candidat.yml:33-35"
+      ]
+    },
+    {
+      "description": "Obligations tenues sur banc local (dépôt nu, <espace-de-session>/qa/shipguard/p03-banc) : conservation sous poussée concurrente archivage contre repêchage (T2), création orpheline concurrente sans forçage (T3), relance idempotente du même run_id (T4), lecture de l'index par git depuis un sous-dossier d'un clone peu profond et repli si la branche manque (T5). o07, o08, o09, o17 et o20 tenues par lecture, non exécutées.",
+      "candidate_id": "p03",
+      "references": [
+        ".github/workflows/publier-paquet-snum.yml:256-295",
+        ".github/workflows/repecher-candidat.yml:84-121",
+        ".github/workflows/publier-paquet-snum.yml:90-95"
+      ]
+    }
+  ],
+  "skipped": [],
+  "impacted_backend": [],
+  "impacted_ui_routes": [],
+  "notes": "Analysé sur d708965. Les constats confirmés ont été corrigés ensuite dans le commit suivant de fix/constats-shipguard ; les risques restent ouverts."
+}

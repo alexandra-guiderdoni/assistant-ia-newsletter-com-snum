@@ -119,8 +119,19 @@ def ecrire_site(rapport, sortie, phase, run_id):
         )
 
 
+def collecte_ou_refus(collecter, payload):
+    """Rapport de collecte, ou None après un refus lisible : période inversée ou de plus de 61 jours."""
+    try:
+        return collecter(payload)
+    except ValueError as exc:
+        print(f"Collecte refusée : {exc}.", file=sys.stderr)
+        return None
+
+
 def publier(payload, sortie, collecter=collect, run_id=0):
-    rapport = collecter(payload)
+    rapport = collecte_ou_refus(collecter, payload)
+    if rapport is None:
+        return 1
     paquet = rapport.get("packet")
     if rapport["status"] not in PUBLIABLES or not paquet:
         erreurs = len(rapport.get("errors") or [])
@@ -152,7 +163,9 @@ def sans_albert():
 def publier_titres(payload, sortie, collecter=collect, run_id=0):
     """Premier temps : « needs_albert » est le statut attendu, pas un échec."""
     with sans_albert():
-        rapport = collecter(payload)
+        rapport = collecte_ou_refus(collecter, payload)
+    if rapport is None:
+        return 1
     if rapport["status"] != "needs_albert":
         print(f"Aucun titre publiable : statut {rapport['status']}.", file=sys.stderr)
         return 1

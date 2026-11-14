@@ -24,10 +24,10 @@ on:
           - rh
           - bercy
       debut:
-        description: "Début de période JJ/MM/AAAA, par exemple 13/11/2026"
+        description: "Début de période, JJ/MM/AAAA ou AAAA-MM-JJ, par exemple 13/11/2026"
         required: true
       fin:
-        description: "Fin de période JJ/MM/AAAA, par exemple 20/11/2026"
+        description: "Fin de période, JJ/MM/AAAA ou AAAA-MM-JJ, par exemple 20/11/2026"
         required: true
 
 # Écriture limitée à la branche de résultats donnees-veille.
@@ -67,7 +67,9 @@ jobs:
           python -m veille_snum.repecher --url="$URL" --rubrique="$RUBRIQUE" \
             --debut="$DEBUT" --fin="$FIN" --sortie="$RESULTAT" || code=$?
           if [ ! -s "$RESULTAT" ]; then
-            printf '%s\n' '{"schema_version": "SNUM_REPECHAGE_V1", "url": "", "status": "erreur", "message": "Repêchage interrompu avant son résultat : consulter le journal de la tâche.", "article": null}' > "$RESULTAT"
+            # Résultat de repli : il porte l'adresse demandée, lue dans l'environnement et jamais
+            # recopiée dans le script, pour que la page affiche ce motif au bon candidat.
+            python -c 'import json, os, sys; json.dump({"schema_version": "SNUM_REPECHAGE_V1", "url": os.environ.get("URL", "")[:2048], "status": "erreur", "message": "Repêchage interrompu avant son résultat : consulter le journal de la tâche.", "article": None}, open(sys.argv[1], "w", encoding="utf-8"), ensure_ascii=False)' "$RESULTAT"
           fi
           echo "Code de sortie du repêchage : $code"
 
@@ -111,7 +113,7 @@ jobs:
               publie=oui
               break
             fi
-            echo "Essai $essai : la branche a avancé entre-temps, nouvelle tentative."
+            echo "Essai $essai : envoi refusé (branche avancée entre-temps, ou autre cause affichée ci-dessus), nouvelle tentative."
             sleep $((essai * 2))
           done
           if [ "$publie" != oui ]; then

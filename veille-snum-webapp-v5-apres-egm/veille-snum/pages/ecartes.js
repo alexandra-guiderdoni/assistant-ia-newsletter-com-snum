@@ -43,7 +43,11 @@
    candidates: candidates.filter(c => c.url !== article.url && c.url !== candidateUrl)};
  }
 
- global.VeilleEcartes = {REASONS, parseRepechage, merge};
+ // Un code interne (DATE_INVALIDE, RUBRIQUE_INVALIDE…) n'est jamais montré tel quel.
+ const CODES = {DATE_INVALIDE: 'La période de la collecte est illisible dans la liste des candidats écartés : rechargez la page avant de repêcher.'};
+ const readable = message => (/^[A-Z][A-Z_]+$/.test(message) ? CODES[message] || 'Repêchage impossible avec les données affichées. Rechargez la page, puis réessayez.' : message);
+
+ global.VeilleEcartes = {REASONS, parseRepechage, merge, readable};
 
  if (typeof document === 'undefined' || !document.getElementById('candidates-list')) return;
 
@@ -111,7 +115,7 @@
    status(`Article repêché et gardé en ${label} : ${parsed.article.title}. Il figure dans l’export.`);
    byId('repechage-elapsed').textContent = '';
   } catch (err) {
-   const why = String(err.message || err);
+   const why = readable(String(err.message || err));
    // Suivi perdu : le repêchage, lui, continue peut-être ; son résultat ne pourra plus être repris ici.
    status(err.lost ? 'Repêchage : suivi interrompu.' : 'Repêchage interrompu.');
    showError(err.lost ? `${why} Le suivi s’arrête ici, mais le repêchage continue peut-être sur GitHub. Attendez deux minutes avant de repêcher de nouveau cet article.` : why, runLink);
@@ -128,10 +132,10 @@
    document.createTextNode(` (${c.source || 'source inconnue'}, ${c.publication_date_long || S.dateLong(c.publication_date_iso)})`));
   const reason = el('p', 'fr-text--sm fr-mb-1v', `Motif : ${REASONS[c.reason] || c.reason || 'non précisé'}.`);
   li.append(title, reason);
-  if (c.url) {
+  if (/^https:\/\//.test(String(c.url || ''))) {
    const p = el('p', 'fr-mb-1w');
    const a = el('a', 'fr-link', 'Consulter la publication (nouvelle fenêtre)');
-   if (/^https:\/\//.test(String(c.url))) { a.href = c.url; a.target = '_blank'; a.rel = 'noopener noreferrer'; }
+   a.href = c.url; a.target = '_blank'; a.rel = 'noopener noreferrer';
    p.append(a);
    li.append(p);
   }

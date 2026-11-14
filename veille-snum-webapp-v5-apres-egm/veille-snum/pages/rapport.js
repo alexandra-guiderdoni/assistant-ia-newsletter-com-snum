@@ -39,7 +39,11 @@
 
  const sourceLine = s => `${s.label} : ${STATUS_NAMES[s.status] || s.status} · ${s.discovered || 0} URL découvertes · ${s.attempted || 0} tentées · ${s.opened || 0} pages reçues · ${s.eligible || 0} candidats · ${s.technical_errors || 0} erreurs d’articles · ${s.discovery_errors || 0} erreurs de découverte · ${s.sitemap_skipped || 0} URL/sitemaps ignorés · ${s.not_visited || 0} non tentées. ${(s.notes || []).join(' ; ')}`;
 
- global.VeilleRapport = {STATUS_NAMES, isReport, statusMessage, stats, sourceLine};
+ // Listes du rapport : seuls les objets sont affichés, un élément inattendu ne casse pas la page.
+ const rows = list => (Array.isArray(list) ? list : []).filter(x => x && typeof x === 'object');
+ const fileName = report => (/^\d{4}-\d{2}-\d{2}$/.test(String(report && report.edition_date)) ? `veille-snum-rapport-${report.edition_date}.json` : 'veille-snum-rapport.json');
+
+ global.VeilleRapport = {STATUS_NAMES, isReport, statusMessage, stats, sourceLine, rows, fileName};
 
  if (typeof document === 'undefined' || !document.getElementById('report-section')) return;
 
@@ -87,17 +91,17 @@
    li.append(number, caption);
    box.append(li);
   }
-  fill('source-list', current.sources, s => [sourceLine(s)], 'Aucune source dans le rapport.');
-  fill('found-list', current.candidates, c => [`${c.publication_date_iso} · ${c.title} (${c.source})`, c.url], 'Aucun candidat trouvé.');
-  fill('excluded-list', current.excluded, x => [`${x.source} : ${x.reason} (${x.url})`], 'Aucune exclusion.');
-  fill('error-list', current.errors || [], x => [`${x.reason} (${x.url})`], 'Aucune erreur d’analyse Albert.');
+  fill('source-list', rows(current.sources), s => [sourceLine(s)], 'Aucune source dans le rapport.');
+  fill('found-list', rows(current.candidates), c => [`${c.publication_date_iso} · ${c.title} (${c.source})`, c.url], 'Aucun candidat trouvé.');
+  fill('excluded-list', rows(current.excluded), x => [`${x.source} : ${x.reason} (${x.url})`], 'Aucune exclusion.');
+  fill('error-list', rows(current.errors), x => [`${x.reason} (${x.url})`], 'Aucune erreur d’analyse Albert.');
  }
 
  byId('report-download').addEventListener('click', () => {
   if (!current) return;
   const url = URL.createObjectURL(new Blob([JSON.stringify(current, null, 2) + '\n'], {type: 'application/json;charset=utf-8'}));
   const a = document.createElement('a');
-  a.href = url; a.download = `veille-snum-rapport-${current.edition_date}.json`;
+  a.href = url; a.download = fileName(current);
   document.body.append(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 2000);
   byId('report-status').textContent = 'Téléchargement du rapport proposé : vérifiez la présence du fichier.';

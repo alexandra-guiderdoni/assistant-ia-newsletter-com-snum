@@ -1,0 +1,1242 @@
+{
+  "schema_version": "1.0",
+  "run_id": "audit-20261114-010344424-01e42cb3",
+  "base_sha": "01e42cb3cf93839b15ca589faf3b077a4348d43c",
+  "timestamp": "2026-11-14T01:13:39.620209+00:00",
+  "mode": "quick",
+  "rounds": 1,
+  "scope_info": {
+    "mode": "diff",
+    "ref": "dbabaa5",
+    "focus": "veille-snum-webapp-v5-apres-egm/veille-snum + .github/workflows"
+  },
+  "summary": {
+    "total": 41,
+    "by_severity": {
+      "critical": 0,
+      "high": 0,
+      "medium": 11,
+      "low": 30
+    },
+    "by_category": {
+      "error-handling": 14,
+      "silent-exception": 1,
+      "logic-error": 5,
+      "race-condition": 3,
+      "security": 2,
+      "infra": 1,
+      "integration": 3,
+      "input-validation": 4,
+      "api-guard": 3,
+      "accessibility": 1,
+      "other": 1,
+      "performance": 1,
+      "dead-code": 1,
+      "type-mismatch": 1
+    },
+    "by_fix_tier": {
+      "test-first": 21,
+      "mechanical": 13,
+      "human-only": 7
+    }
+  },
+  "bugs": [
+    {
+      "id": "r1-z03-001",
+      "severity": "medium",
+      "category": "error-handling",
+      "subcategory": "retry-loop-unretried-fetch",
+      "file": ".github/workflows/publier-paquet-snum.yml",
+      "line": 255,
+      "title": "Archivage : un échec de git fetch interrompt la tâche sans nouvel essai",
+      "description": "Observation par lecture : la boucle de cinq essais (lignes 249 à 277) protège git ls-remote (code capturé par || etat=$?) et git push (dans un if), mais git fetch --depth 1 ligne 255, git rev-parse et git read-tree s'exécutent nus sous bash -eo pipefail. Condition : panne réseau passagère ou branche supprimée entre ls-remote et fetch. Impact : la tâche archivage échoue au premier incident au lieu de retenter, alors que la boucle est conçue pour ces incidents ; l'artefact archive-collecte n'est gardé qu'un jour (retention-days: 1), donc une relance tardive ne peut plus archiver. Vérification proposée, non exécutée : simuler un fetch en échec (remote invalide) et constater la sortie immédiate de l'étape sans message « Essai 2 ».",
+      "fix_tier": "test-first",
+      "fix_tier_reason": "Changer la gestion d'erreur du fetch modifie le flux de la boucle ; un test de script avec remote factice doit montrer l'échec avant et la nouvelle tentative après.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": {
+        "claim": "unchecked-exit",
+        "complete": true,
+        "scope": [
+          ".github/workflows/publier-paquet-snum.yml"
+        ],
+        "exclusions": [
+          ".git/",
+          "node_modules/",
+          "visual-tests/_results/"
+        ],
+        "searches": [
+          {
+            "query": "git fetch",
+            "mode": "literal",
+            "matches": [
+              ".github/workflows/publier-paquet-snum.yml:255"
+            ]
+          },
+          {
+            "query": "|| etat=$?",
+            "mode": "literal",
+            "matches": [
+              ".github/workflows/publier-paquet-snum.yml:253"
+            ]
+          }
+        ],
+        "inspected_files": [
+          ".github/workflows/publier-paquet-snum.yml"
+        ]
+      },
+      "confidence": "high",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z03-002",
+      "severity": "low",
+      "category": "error-handling",
+      "subcategory": "misleading-retry-message",
+      "file": ".github/workflows/publier-paquet-snum.yml",
+      "line": 275,
+      "title": "Archivage : tout refus de push est annoncé comme une branche qui a avancé",
+      "description": "Observation par lecture : quand git push échoue ligne 271, le message est toujours « la branche a avancé entre-temps », puis quatre nouveaux essais suivent. Un refus d'autorisation (jeton sans droit, règle de protection sur donnees-veille) ou une panne réseau produit le même message et cinq essais inutiles avant « Archive non publiée après 5 essais ». Impact : diagnostic trompeur dans le journal ; la tâche échoue bien au final, donc rien n'est masqué. Le message exact de git push est conservé sur stderr, ce qui limite l'impact.",
+      "fix_tier": "mechanical",
+      "fix_tier_reason": "Seul le texte du message change, sans effet sur le flux ; vérifiable par relecture du diff.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": null,
+      "confidence": "high",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z03-003",
+      "severity": "medium",
+      "category": "error-handling",
+      "subcategory": "retry-loop-unretried-fetch",
+      "file": ".github/workflows/repecher-candidat.yml",
+      "line": 94,
+      "title": "Repêchage : un échec de git fetch interrompt la publication sans nouvel essai",
+      "description": "Observation par lecture : même structure que l'archivage. Dans la boucle de cinq essais (lignes 88 à 111), git fetch --depth 1 ligne 94, git rev-parse et git read-tree s'exécutent sans garde sous bash -eo pipefail ; seuls ls-remote et push sont retentés. Condition : panne réseau passagère au moment du fetch. Impact : le résultat du repêchage, déjà payé en appel Albert, n'est pas publié ; la page de sélection voit un run en échec et l'article n'est pas repêché. Vérification proposée, non exécutée : remplacer origin par une adresse injoignable après ls-remote et constater l'arrêt immédiat de l'étape.",
+      "fix_tier": "test-first",
+      "fix_tier_reason": "Changer la gestion d'erreur du fetch modifie le flux de la boucle ; un test de script doit montrer l'arrêt avant et la nouvelle tentative après.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": {
+        "claim": "unchecked-exit",
+        "complete": true,
+        "scope": [
+          ".github/workflows/repecher-candidat.yml"
+        ],
+        "exclusions": [
+          ".git/",
+          "node_modules/",
+          "visual-tests/_results/"
+        ],
+        "searches": [
+          {
+            "query": "git fetch",
+            "mode": "literal",
+            "matches": [
+              ".github/workflows/repecher-candidat.yml:94"
+            ]
+          },
+          {
+            "query": "|| etat=$?",
+            "mode": "literal",
+            "matches": [
+              ".github/workflows/repecher-candidat.yml:92"
+            ]
+          }
+        ],
+        "inspected_files": [
+          ".github/workflows/repecher-candidat.yml"
+        ]
+      },
+      "confidence": "high",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z03-004",
+      "severity": "low",
+      "category": "error-handling",
+      "subcategory": "misleading-retry-message",
+      "file": ".github/workflows/repecher-candidat.yml",
+      "line": 109,
+      "title": "Repêchage : tout refus de push est annoncé comme une branche qui a avancé",
+      "description": "Observation par lecture : ligne 109, tout échec de git push (refus d'autorisation, protection de branche, réseau) est journalisé comme une concurrence, puis retenté quatre fois. Impact : diagnostic trompeur et attente inutile (2+4+6+8 secondes) ; l'échec final reste visible (exit 1).",
+      "fix_tier": "mechanical",
+      "fix_tier_reason": "Seul le texte du message change ; vérifiable par relecture du diff.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": null,
+      "confidence": "high",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z03-005",
+      "severity": "low",
+      "category": "silent-exception",
+      "subcategory": "exit-code-swallowed",
+      "file": ".github/workflows/repecher-candidat.yml",
+      "line": 68,
+      "title": "Repêchage : le run est vert même quand le script Python plante",
+      "description": "Observation par lecture : ligne 68, « || code=$? » neutralise tout code non nul, pas seulement le refus (code 1) visé par le commentaire ligne 54. Une exception non rattrapée dans repecher.py (sortie 1 aussi en Python) ou une erreur d'argparse (sortie 2) laisse l'étape et le run en succès ; seul le fichier de repli « erreur » et la ligne « Code de sortie » le signalent. Atténuation vérifiée par lecture de pages/ecartes.js : la page lit le fichier publié et affiche son motif, donc l'utilisateur voit l'échec. Impact : un plantage réel n'apparaît pas en rouge dans l'historique des runs GitHub, ce qui gêne la surveillance sans relecture humaine.",
+      "fix_tier": "human-only",
+      "fix_tier_reason": "Distinguer refus et plantage demande un contrat de codes de sortie entre repecher.py et la page, hors de cette zone.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": null,
+      "confidence": "high",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z03-006",
+      "severity": "low",
+      "category": "logic-error",
+      "subcategory": "fallback-drops-known-value",
+      "file": ".github/workflows/repecher-candidat.yml",
+      "line": 70,
+      "title": "Repêchage : le résultat de repli efface l'adresse demandée",
+      "description": "Observation par lecture : le JSON de repli ligne 70 écrit \"url\": \"\" alors que l'adresse est disponible dans la variable URL de la même étape. Conséquence : le résumé du run affiche « Adresse demandée : non relevée » et le fichier publié sur donnees-veille ne permet plus de relier l'échec à l'article demandé. Impact limité au diagnostic.",
+      "fix_tier": "test-first",
+      "fix_tier_reason": "Le repli doit sérialiser une adresse arbitraire en JSON valide (guillemets, barres obliques inverses) ; un test doit le vérifier avant et après.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": null,
+      "confidence": "high",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z03-007",
+      "severity": "low",
+      "category": "logic-error",
+      "subcategory": "unconditional-summary-claim",
+      "file": ".github/workflows/publier-paquet-snum.yml",
+      "line": 179,
+      "title": "Résumé du run : l'archivage de la collecte précédente est affirmé sans condition",
+      "description": "Observation par lecture : en mode titres, la ligne 179 affirme toujours que « la collecte précédente » reste consultable dans archives.html. Or seule la tâche archivage des modes resumes et collecte sur main écrit une archive (ligne 216). Cas faux : collecte précédente en mode titres ou page seule, archivage précédent en échec, ou run hors de main. Impact : information inexacte donnée à l'éditrice dans le résumé du run.",
+      "fix_tier": "test-first",
+      "fix_tier_reason": "Le message doit dépendre de l'état réel de l'archive, qui n'est pas lu par cette étape ; à couvrir par un test du résumé.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": null,
+      "confidence": "high",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z03-008",
+      "severity": "low",
+      "category": "race-condition",
+      "subcategory": "concurrency-pending-replaced",
+      "file": ".github/workflows/publier-paquet-snum.yml",
+      "line": 41,
+      "title": "Concurrence pages : un run en attente est annulé par un lancement suivant",
+      "description": "Observation par lecture : le groupe de concurrence pages (lignes 39 à 41) avec cancel-in-progress: false ne garde qu'un run en attente ; un troisième lancement pendant un run actif annule le run déjà en attente. Le fichier repecher-candidat.yml (lignes 37 à 39) documente justement ce comportement pour l'écarter. Atténuation vérifiée par lecture de pages/lancement.js ligne 96 : la page cherche un run actif (findActive) avant de lancer, ce qui réduit le risque depuis la page, pas depuis l'interface GitHub ou l'API. Impact : une sélection de titres envoyée en mode resumes peut être perdue sans message, selon l'ordre des lancements.",
+      "fix_tier": "human-only",
+      "fix_tier_reason": "Le choix entre file d'attente, annulation et refus relève d'une décision d'exploitation.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": null,
+      "confidence": "medium",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z03-009",
+      "severity": "low",
+      "category": "security",
+      "subcategory": "excess-permissions",
+      "file": ".github/workflows/repecher-candidat.yml",
+      "line": 35,
+      "title": "Repêchage : droit d'écriture accordé à tout le job, y compris l'étape Albert",
+      "description": "Observation par lecture : permissions: contents: write est posé au niveau du workflow (ligne 35) ; actions/checkout conserve par défaut le jeton dans .git/config (aucun persist-credentials: false trouvé). L'étape Albert, qui lit des pages web externes et appelle une API tierce, s'exécute donc avec un jeton capable d'écrire sur toutes les branches, main comprise, alors que seule l'étape de publication en a besoin. Le commentaire ligne 212 de publier-paquet-snum.yml (« Seule tâche autorisée à écrire dans le dépôt ») est par ailleurs inexact. Aucune voie d'exécution de code tiers n'a été identifiée : risque de moindre privilège, pas une faille démontrée.",
+      "fix_tier": "human-only",
+      "fix_tier_reason": "Séparer les permissions par job ou étape touche la politique de sécurité du dépôt.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": {
+        "claim": "missing-construct",
+        "complete": true,
+        "scope": [
+          ".github/workflows/"
+        ],
+        "exclusions": [
+          ".git/",
+          "node_modules/",
+          "visual-tests/_results/"
+        ],
+        "searches": [
+          {
+            "query": "persist-credentials",
+            "mode": "literal",
+            "matches": []
+          },
+          {
+            "query": "contents: write",
+            "mode": "literal",
+            "matches": [
+              ".github/workflows/repecher-candidat.yml:35",
+              ".github/workflows/publier-paquet-snum.yml:220"
+            ]
+          }
+        ],
+        "inspected_files": [
+          ".github/workflows/publier-paquet-snum.yml",
+          ".github/workflows/repecher-candidat.yml"
+        ]
+      },
+      "confidence": "high",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z03-010",
+      "severity": "low",
+      "category": "infra",
+      "subcategory": "missing-job-timeout",
+      "file": ".github/workflows/publier-paquet-snum.yml",
+      "line": 288,
+      "title": "Déploiement : aucune limite de durée sur la tâche deploiement",
+      "description": "Observation par lecture : les tâches collecte (30 min) et archivage (10 min) ont timeout-minutes, pas la tâche deploiement (ligne 288), qui hérite du défaut GitHub de 360 minutes. Impact : un déploiement Pages bloqué garde le groupe de concurrence pages et retarde tout lancement suivant ; la page abandonne son suivi après 45 minutes (FOLLOW_LIMIT_MS de pages/github.js).",
+      "fix_tier": "mechanical",
+      "fix_tier_reason": "Ajout d'une clé déclarative sans effet sur le cas nominal ; vérifiable par validation YAML.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": {
+        "claim": "missing-construct",
+        "complete": true,
+        "scope": [
+          ".github/workflows/"
+        ],
+        "exclusions": [
+          ".git/",
+          "node_modules/",
+          "visual-tests/_results/"
+        ],
+        "searches": [
+          {
+            "query": "timeout-minutes",
+            "mode": "literal",
+            "matches": [
+              ".github/workflows/publier-paquet-snum.yml:46",
+              ".github/workflows/publier-paquet-snum.yml:218",
+              ".github/workflows/repecher-candidat.yml:44"
+            ]
+          }
+        ],
+        "inspected_files": [
+          ".github/workflows/publier-paquet-snum.yml",
+          ".github/workflows/repecher-candidat.yml"
+        ]
+      },
+      "confidence": "high",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z03-011",
+      "severity": "medium",
+      "category": "integration",
+      "subcategory": "stale-cdn-read",
+      "file": ".github/workflows/publier-paquet-snum.yml",
+      "line": 72,
+      "title": "Modes resumes et page seule : site en ligne relu sans anti-cache",
+      "description": "Observation par lecture : le mode resumes relit rapport-collecte.json à une adresse fixe (resumer.py ligne 40, sans paramètre anti-cache) et le mode page seule relit les fichiers par curl (ligne 114) sans paramètre anti-cache, alors que la page ajoute ?v= ou ?t= à ses propres lectures. Hypothèse à vérifier, non exécutée : GitHub Pages sert ses fichiers via un cache CDN (de l'ordre de dix minutes). Condition : lancement juste après un déploiement. Impact possible : resumes lit l'ancien rapport et refuse la sélection (« Adresse absente » ou « déjà résumés »), ou page seule mélange un etat-collecte.json neuf et un fichier ancien. Vérification proposée : lancer page seule moins de deux minutes après un déploiement et comparer run_id de etat-collecte.json avec celui du site.",
+      "fix_tier": "test-first",
+      "fix_tier_reason": "Ajouter un paramètre anti-cache change les requêtes ; à couvrir par un test du client HTTP et de l'étape curl.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": null,
+      "confidence": "low",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z03-012",
+      "severity": "low",
+      "category": "input-validation",
+      "subcategory": "input-format-drift",
+      "file": ".github/workflows/repecher-candidat.yml",
+      "line": 27,
+      "title": "Repêchage : format de date annoncé JJ/MM/AAAA, la page envoie AAAA-MM-JJ",
+      "description": "Observation par lecture : les descriptions des entrées debut et fin (lignes 27 à 31) annoncent JJ/MM/AAAA, mais pages/github.js repechageInputs transmet window_start et window_end au format ISO. repecher.py accepte les deux formats via date_saisie, donc pas de panne constatée ; l'écart rend le contrat trompeur pour un lancement manuel ou une évolution du parseur.",
+      "fix_tier": "mechanical",
+      "fix_tier_reason": "Correction de texte de description, sans effet d'exécution.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": null,
+      "confidence": "high",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z01-001",
+      "severity": "medium",
+      "category": "race-condition",
+      "subcategory": "wrong-run-picked",
+      "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/github.js",
+      "line": 55,
+      "title": "pickRun peut suivre l’exécution d’une autre personne",
+      "description": "Observation (lecture et exécution) : quand GitHub répond 204 sans numéro de run, dispatch retient le run le plus récent créé après sentAt moins 30 secondes, sans exclure les runs qui existaient avant l’envoi ni filtrer par auteur. Exécuté avec node : pickRun([{id:111, created_at: 20 s avant l’envoi}], sentAt) renvoie le run 111. Condition : une autre personne ou un autre onglet lance le même workflow dans les 30 secondes qui précèdent, et notre run n’est pas encore listé à la première lecture (2 s). Impact : la page suit et annonce le résultat d’un autre run ; pour la collecte, publishedBy compare l’état publié au mauvais numéro ; pour le repêchage, le résultat lu est celui d’un autre candidat (parseRepechage le rejette alors avec un message trompeur). Fréquence inconnue : le chemin 200 avec workflow_run_id évite ce cas quand GitHub le fournit. Vérification proposée : relever les identifiants listés avant l’envoi, puis vérifier qu’un run préexistant n’est jamais choisi.",
+      "fix_tier": "test-first",
+      "fix_tier_reason": "Change la sélection du run : un test pickRun avec un run préexistant doit échouer avant correction et passer après.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": {
+        "claim": "missing-construct",
+        "complete": true,
+        "scope": [
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/github.js"
+        ],
+        "exclusions": [],
+        "searches": [
+          {
+            "query": "actor|triggering_actor",
+            "mode": "regex",
+            "matches": []
+          }
+        ],
+        "inspected_files": [
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/github.js"
+        ]
+      },
+      "confidence": "high",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z01-002",
+      "severity": "medium",
+      "category": "integration",
+      "subcategory": "error-misreported",
+      "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/ecartes.js",
+      "line": 21,
+      "title": "Résultat de repli du repêchage annoncé comme une autre adresse",
+      "description": "Observation (lecture du workflow et exécution) : .github/workflows/repecher-candidat.yml écrit, quand le script s’interrompt avant son résultat, un fichier avec url vide et status erreur. parseRepechage teste result.url !== expectedUrl avant le statut : exécuté avec node, ce fichier produit « Le résultat publié concerne une autre adresse que le candidat choisi. » au lieu du motif publié « Repêchage interrompu avant son résultat ». Impact : la personne reçoit un diagnostic faux et peut croire à un mélange de résultats. Vérification proposée : appeler parseRepechage avec ce fichier de repli et constater que le motif publié n’est pas affiché.",
+      "fix_tier": "test-first",
+      "fix_tier_reason": "Modifie l’ordre des contrôles d’un contrat publié : un test avec le fichier de repli exact du workflow doit précéder la correction.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": null,
+      "confidence": "high",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z01-003",
+      "severity": "medium",
+      "category": "integration",
+      "subcategory": "url-normalization-mismatch",
+      "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/ecartes.js",
+      "line": 26,
+      "title": "Article repêché rejeté si son adresse canonique diffère",
+      "description": "Observation (lecture de veille_snum/repecher.py, hors périmètre, et exécution) : l’article publié porte url = adresse canonique normalisée (lire_candidat renvoie canonique, normalized_url dans core.py change l’hôte, la requête et le chemin vide, et la comparaison url_key ignore www). parseRepechage exige a.url === expectedUrl, l’adresse du candidat. Exécuté avec node : un article valide dont l’url ajoute www est refusé avec « Article repêché incomplet : il n’a pas été ajouté. ». Condition : candidat dont l’adresse diffère de la canonique (www, redirection, paramètres utm retirés). Impact : appel Albert consommé, article non ajouté, message faux. Fréquence non mesurée, dépend des adresses stockées dans candidats-ecartes.json.",
+      "fix_tier": "human-only",
+      "fix_tier_reason": "Contrat entre la page et repecher.py (quelle adresse fait foi) : décision humaine requise.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": null,
+      "confidence": "medium",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z01-004",
+      "severity": "medium",
+      "category": "error-handling",
+      "subcategory": "fetch-no-timeout",
+      "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/github.js",
+      "line": 107,
+      "title": "Appels GitHub sans délai maximal : suivi bloqué possible",
+      "description": "Observation (lecture) : call() appelle fetch sans AbortSignal ; fetch n’a pas de délai par défaut côté page. Dans follow, une requête suspendue bloque la boucle avant le contrôle FOLLOW_LIMIT_MS (45 minutes) et avant le compteur de trois échecs. Impact : le bouton reste marqué indisponible (aria-disabled) et running reste vrai, ce qui bloque collecte, résumés et repêchage jusqu’à l’abandon par le navigateur, durée inconnue. Même motif dans dispatch (lignes 117 et 124). Non reproduit par exécution.",
+      "fix_tier": "test-first",
+      "fix_tier_reason": "Ajoute un comportement d’abandon : un test avec un fetch qui ne répond jamais doit prouver la sortie en erreur lost.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": {
+        "claim": "missing-construct",
+        "complete": true,
+        "scope": [
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/"
+        ],
+        "exclusions": [
+          ".git/",
+          "node_modules/",
+          "visual-tests/_results/",
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/dsfr/"
+        ],
+        "searches": [
+          {
+            "query": "AbortController|AbortSignal|signal:",
+            "mode": "regex",
+            "matches": []
+          },
+          {
+            "query": "fetch(",
+            "mode": "literal",
+            "matches": [
+              "veille-snum-webapp-v5-apres-egm/veille-snum/pages/github.js:107",
+              "veille-snum-webapp-v5-apres-egm/veille-snum/pages/github.js:135",
+              "veille-snum-webapp-v5-apres-egm/veille-snum/pages/github.js:169",
+              "veille-snum-webapp-v5-apres-egm/veille-snum/pages/archives.js:94",
+              "veille-snum-webapp-v5-apres-egm/veille-snum/pages/archives.js:137",
+              "veille-snum-webapp-v5-apres-egm/veille-snum/pages/page.js:87"
+            ]
+          }
+        ],
+        "inspected_files": [
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/github.js",
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/page.js",
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/archives.js",
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/lancement.js",
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/titres.js",
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/ecartes.js",
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/rapport.js",
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/index.html"
+        ]
+      },
+      "confidence": "medium",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z01-005",
+      "severity": "low",
+      "category": "error-handling",
+      "subcategory": "fetch-no-timeout",
+      "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/github.js",
+      "line": 169,
+      "title": "findActive et readRepechage sans délai maximal",
+      "description": "Observation (lecture) : findActive (ligne 135) et readRepechage (ligne 169) appellent fetch sans AbortSignal. findActive est attendu au début de launch : une réponse suspendue laisse « Vérification auprès de GitHub… » affiché et le bouton indisponible. readRepechage peut rester bloqué avant sa boucle de six essais. Impact limité au cas réseau dégradé ; non reproduit.",
+      "fix_tier": "test-first",
+      "fix_tier_reason": "Comportement d’abandon nouveau, à couvrir par un test avec fetch suspendu.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": {
+        "claim": "missing-construct",
+        "complete": true,
+        "scope": [
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/"
+        ],
+        "exclusions": [
+          ".git/",
+          "node_modules/",
+          "visual-tests/_results/",
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/dsfr/"
+        ],
+        "searches": [
+          {
+            "query": "AbortController|AbortSignal|signal:",
+            "mode": "regex",
+            "matches": []
+          },
+          {
+            "query": "fetch(",
+            "mode": "literal",
+            "matches": [
+              "veille-snum-webapp-v5-apres-egm/veille-snum/pages/github.js:107",
+              "veille-snum-webapp-v5-apres-egm/veille-snum/pages/github.js:135",
+              "veille-snum-webapp-v5-apres-egm/veille-snum/pages/github.js:169",
+              "veille-snum-webapp-v5-apres-egm/veille-snum/pages/archives.js:94",
+              "veille-snum-webapp-v5-apres-egm/veille-snum/pages/archives.js:137",
+              "veille-snum-webapp-v5-apres-egm/veille-snum/pages/page.js:87"
+            ]
+          }
+        ],
+        "inspected_files": [
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/github.js",
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/page.js",
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/archives.js",
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/lancement.js",
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/titres.js",
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/ecartes.js",
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/rapport.js",
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/index.html"
+        ]
+      },
+      "confidence": "medium",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z01-006",
+      "severity": "low",
+      "category": "error-handling",
+      "subcategory": "fetch-no-timeout",
+      "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/page.js",
+      "line": 87,
+      "title": "fetchJson sans délai maximal",
+      "description": "Observation (lecture) : fetchJson appelle fetch sans AbortSignal. Pendant la relecture après une collecte (hooks.readEtat dans launch), une réponse suspendue de GitHub Pages bloque la fin du lancement et laisse le bouton indisponible. Au chargement initial, la page reste sur « Chargement du rapport de collecte… ». Non reproduit.",
+      "fix_tier": "test-first",
+      "fix_tier_reason": "Ajoute un abandon de requête : test avec fetch suspendu requis.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": {
+        "claim": "missing-construct",
+        "complete": true,
+        "scope": [
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/"
+        ],
+        "exclusions": [
+          ".git/",
+          "node_modules/",
+          "visual-tests/_results/",
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/dsfr/"
+        ],
+        "searches": [
+          {
+            "query": "AbortController|AbortSignal|signal:",
+            "mode": "regex",
+            "matches": []
+          },
+          {
+            "query": "fetch(",
+            "mode": "literal",
+            "matches": [
+              "veille-snum-webapp-v5-apres-egm/veille-snum/pages/github.js:107",
+              "veille-snum-webapp-v5-apres-egm/veille-snum/pages/github.js:135",
+              "veille-snum-webapp-v5-apres-egm/veille-snum/pages/github.js:169",
+              "veille-snum-webapp-v5-apres-egm/veille-snum/pages/archives.js:94",
+              "veille-snum-webapp-v5-apres-egm/veille-snum/pages/archives.js:137",
+              "veille-snum-webapp-v5-apres-egm/veille-snum/pages/page.js:87"
+            ]
+          }
+        ],
+        "inspected_files": [
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/github.js",
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/page.js",
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/archives.js",
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/lancement.js",
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/titres.js",
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/ecartes.js",
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/rapport.js",
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/index.html"
+        ]
+      },
+      "confidence": "medium",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z01-007",
+      "severity": "low",
+      "category": "error-handling",
+      "subcategory": "fetch-no-timeout",
+      "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/archives.js",
+      "line": 137,
+      "title": "Lecture de l’index et téléchargements d’archives sans délai",
+      "description": "Observation (lecture) : load (ligne 137) et download (ligne 94) appellent fetch sans AbortSignal. Une réponse suspendue de raw.githubusercontent.com laisse la page des archives sans message ni liste. Impact faible, cas réseau dégradé ; non reproduit.",
+      "fix_tier": "test-first",
+      "fix_tier_reason": "Comportement d’abandon nouveau, à couvrir par un test.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": {
+        "claim": "missing-construct",
+        "complete": true,
+        "scope": [
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/"
+        ],
+        "exclusions": [
+          ".git/",
+          "node_modules/",
+          "visual-tests/_results/",
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/dsfr/"
+        ],
+        "searches": [
+          {
+            "query": "AbortController|AbortSignal|signal:",
+            "mode": "regex",
+            "matches": []
+          },
+          {
+            "query": "fetch(",
+            "mode": "literal",
+            "matches": [
+              "veille-snum-webapp-v5-apres-egm/veille-snum/pages/github.js:107",
+              "veille-snum-webapp-v5-apres-egm/veille-snum/pages/github.js:135",
+              "veille-snum-webapp-v5-apres-egm/veille-snum/pages/github.js:169",
+              "veille-snum-webapp-v5-apres-egm/veille-snum/pages/archives.js:94",
+              "veille-snum-webapp-v5-apres-egm/veille-snum/pages/archives.js:137",
+              "veille-snum-webapp-v5-apres-egm/veille-snum/pages/page.js:87"
+            ]
+          }
+        ],
+        "inspected_files": [
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/github.js",
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/page.js",
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/archives.js",
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/lancement.js",
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/titres.js",
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/ecartes.js",
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/rapport.js",
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/index.html"
+        ]
+      },
+      "confidence": "medium",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z01-008",
+      "severity": "low",
+      "category": "api-guard",
+      "subcategory": "null-element",
+      "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/github.js",
+      "line": 80,
+      "title": "progress lit status sur une tâche ou une étape nulle",
+      "description": "Observation (exécution) : progress({status:'in_progress'}, {jobs:[null]}) lève TypeError (lecture de status sur null) ; failedStep protège pourtant ses éléments avec j &&. Même motif ligne 83 pour les étapes (s.status). Dans follow, l’exception est comptée comme un échec réseau : après trois lectures, le suivi s’arrête en lost. Déclencheur improbable avec l’API GitHub réelle.",
+      "fix_tier": "mechanical",
+      "fix_tier_reason": "Garde locale identique à celle de failedStep, vérifiable par le test existant plus un cas null.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": null,
+      "confidence": "high",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z01-009",
+      "severity": "low",
+      "category": "error-handling",
+      "subcategory": "raw-parse-error",
+      "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/github.js",
+      "line": 170,
+      "title": "JSON de repêchage illisible : message technique anglais affiché",
+      "description": "Observation (lecture) : readRepechage renvoie r.json() sans capture ; un corps non JSON produit une SyntaxError dont le message anglais est affiché tel quel par repecher (ecartes.js ligne 112). Impact : message incompréhensible, pas de perte de données. Non reproduit.",
+      "fix_tier": "test-first",
+      "fix_tier_reason": "Change le message d’erreur visible : test avec réponse non JSON requis.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": null,
+      "confidence": "medium",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z01-010",
+      "severity": "low",
+      "category": "error-handling",
+      "subcategory": "unhandled-rejection",
+      "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/page.js",
+      "line": 244,
+      "title": "Chargement initial sans capture d’erreur",
+      "description": "Observation (lecture) : load('').then(...) n’a pas de catch. Dans loadTitres, T.mount et R.render sont hors try ; un rapport qui passe isReport mais contient un élément null dans sources, candidates ou excluded lève TypeError (rapport.js stats et fill). Impact : rejet non géré, section rapport partielle, announceActive non appelé. Déclencheur : fichier publié malformé, improbable avec le producteur actuel. Non reproduit.",
+      "fix_tier": "test-first",
+      "fix_tier_reason": "Ajoute un chemin d’erreur visible : test avec rapport malformé requis.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": null,
+      "confidence": "medium",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z01-011",
+      "severity": "low",
+      "category": "api-guard",
+      "subcategory": "null-element",
+      "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/rapport.js",
+      "line": 91,
+      "title": "Listes du rapport sans garde sur les éléments",
+      "description": "Observation (lecture) : isReport vérifie que sources, candidates et excluded sont des tableaux, pas leurs éléments. stats (ligne 29) et les fonctions de fill (lignes 90 à 93) lisent x.status, c.title ou x.reason sans garde : un élément null lève TypeError. groupBySource (titres.js) écarte pourtant ces éléments. Impact faible avec le producteur actuel.",
+      "fix_tier": "mechanical",
+      "fix_tier_reason": "Filtre local des éléments non objets, sans changement pour des données valides.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": null,
+      "confidence": "medium",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z01-012",
+      "severity": "low",
+      "category": "input-validation",
+      "subcategory": "missing-field",
+      "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/rapport.js",
+      "line": 100,
+      "title": "Nom de fichier du rapport « undefined » sans date d’édition",
+      "description": "Observation (lecture) : le nom du téléchargement utilise current.edition_date, que isReport ne vérifie pas. Rapport sans edition_date : fichier veille-snum-rapport-undefined.json. Impact cosmétique.",
+      "fix_tier": "mechanical",
+      "fix_tier_reason": "Valeur de repli locale dans le nom de fichier.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": null,
+      "confidence": "high",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z01-013",
+      "severity": "low",
+      "category": "api-guard",
+      "subcategory": "missing-field",
+      "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/ecartes.js",
+      "line": 83,
+      "title": "Période absente de la liste des écartés : code DATE_INVALIDE affiché",
+      "description": "Observation (lecture) : render n’accepte la liste que sur la présence de candidates ; repecher passe data.window_start et data.window_end à repechageInputs, qui lève DATE_INVALIDE si elles manquent. Le code brut est affiché à la personne après le clic. publier.py écrit ces champs pour les fichiers actuels ; un fichier ancien ou archivé sans eux reste possible, non vérifié.",
+      "fix_tier": "test-first",
+      "fix_tier_reason": "Change la validation et le message : test avec liste sans période requis.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": null,
+      "confidence": "low",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z01-014",
+      "severity": "low",
+      "category": "accessibility",
+      "subcategory": "anchor-without-href",
+      "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/ecartes.js",
+      "line": 128,
+      "title": "Lien « Consulter la publication » sans adresse pour une URL non HTTPS",
+      "description": "Observation (lecture) : quand c.url existe sans être HTTPS, un élément a sans href est créé avec le texte « Consulter la publication (nouvelle fenêtre) ». Il n’est ni un lien ni focalisable, et son texte promet une action impossible. Impact accessibilité et clarté, faible.",
+      "fix_tier": "mechanical",
+      "fix_tier_reason": "Ne pas créer l’élément, ou afficher un texte explicite, sans effet sur les autres cas.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": null,
+      "confidence": "high",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z01-015",
+      "severity": "low",
+      "category": "logic-error",
+      "subcategory": "misleading-message",
+      "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/lancement.js",
+      "line": 29,
+      "title": "Message de file d’attente inexact avec le groupe de concurrence",
+      "description": "Observation (lecture de publier-paquet-snum.yml) : le workflow utilise concurrency group pages avec cancel-in-progress false ; GitHub ne garde alors qu’un run en attente et annule le précédent en attente quand un nouveau arrive (le workflow de repêchage le documente lui-même). TEXT.active promet « votre demande attendra son tour ». Condition : deux lancements forcés pendant un run en cours. Impact : demande annulée alors que le message annonçait son exécution. Comportement GitHub non reproduit ici.",
+      "fix_tier": "human-only",
+      "fix_tier_reason": "Formulation et politique de concurrence à décider par la personne responsable du workflow.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": null,
+      "confidence": "medium",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z01-016",
+      "severity": "low",
+      "category": "other",
+      "subcategory": "missing-og-canonical",
+      "file": "veille-snum-webapp-v5-apres-egm/veille-snum/pages/index.html",
+      "line": 8,
+      "title": "Balises og et canonical absentes",
+      "description": "Observation (recherche dans index.html) : aucune balise meta property og ni link rel canonical. Impact limité : page d’outil interne, partage de lien sans aperçu. Signalé pour exhaustivité de la liste de contrôle.",
+      "fix_tier": "mechanical",
+      "fix_tier_reason": "Ajout de balises statiques sans effet sur le comportement.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": {
+        "claim": "missing-construct",
+        "complete": true,
+        "scope": [
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/index.html"
+        ],
+        "exclusions": [],
+        "searches": [
+          {
+            "query": "og:",
+            "mode": "literal",
+            "matches": []
+          },
+          {
+            "query": "canonical",
+            "mode": "literal",
+            "matches": []
+          }
+        ],
+        "inspected_files": [
+          "veille-snum-webapp-v5-apres-egm/veille-snum/pages/index.html"
+        ]
+      },
+      "confidence": "high",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z02-001",
+      "severity": "medium",
+      "category": "logic-error",
+      "subcategory": "stale-cdn-guard",
+      "file": "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/resumer.py",
+      "line": 85,
+      "title": "Rapport en ligne lu sans contourner le cache de GitHub Pages",
+      "description": "Observation (lecture du code) : lire_rapport lit RAPPORT_EN_LIGNE par HttpClient.get, sans paramètre anti-cache ni en-tête Cache-Control ; HttpClient n'envoie que User-Agent et Accept. Le seul garde-fou contre une seconde rédaction est le statut needs_albert de ce rapport (ligne 128). Condition : un second lancement du mode resumes dans la fenêtre de cache du CDN après la publication d'un premier paquet (la page elle-même lit l'état sur le même site, et le test test_pages_lancement.cjs documente que le site sert parfois l'état d'un autre run). Impact possible : le rapport périmé porte encore needs_albert, la seconde sélection est résumée, écrase le paquet publié et produit une seconde archive ; inversement, juste après un premier temps, un rapport périmé d'une collecte antérieure provoque un refus « déjà résumés » trompeur. Incertitude : la durée réelle du cache n'a pas été mesurée (aucun appel réseau autorisé). Vérification proposée : 1) publier un premier paquet ; 2) relire rapport-collecte.json dans la minute ; résultat qui confirmerait : status encore needs_albert.",
+      "fix_tier": "human-only",
+      "fix_tier_reason": "Le choix du mécanisme anti-cache (paramètre de requête, lecture sur la branche, verrou côté dépôt) relève de l'architecture de publication.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": {
+        "claim": "missing-construct",
+        "complete": true,
+        "scope": [
+          "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/",
+          "veille-snum-webapp-v5-apres-egm/veille-snum/tests/"
+        ],
+        "exclusions": [
+          ".git/",
+          "node_modules/",
+          "visual-tests/_results/"
+        ],
+        "searches": [
+          {
+            "query": "Cache-Control",
+            "mode": "literal",
+            "matches": [
+              "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/web.py:41",
+              "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/web.py:70",
+              "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/web.py:85",
+              "veille-snum-webapp-v5-apres-egm/veille-snum/tests/test_http_v4.py:49"
+            ]
+          },
+          {
+            "query": "no-cache",
+            "mode": "literal",
+            "matches": []
+          },
+          {
+            "query": "Pragma",
+            "mode": "literal",
+            "matches": []
+          },
+          {
+            "query": "?t=",
+            "mode": "literal",
+            "matches": []
+          },
+          {
+            "query": "RAPPORT_EN_LIGNE",
+            "mode": "literal",
+            "matches": [
+              "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/resumer.py:40",
+              "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/resumer.py:81"
+            ]
+          }
+        ],
+        "inspected_files": [
+          "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/resumer.py",
+          "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/core.py",
+          "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/web.py"
+        ]
+      },
+      "confidence": "medium",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z02-002",
+      "severity": "medium",
+      "category": "error-handling",
+      "subcategory": "unvalidated-field-crash",
+      "file": "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/resumer.py",
+      "line": 229,
+      "title": "Champ limits du rapport non contrôlé : TypeError après les appels Albert",
+      "description": "Observation (exécution) : avec un rapport en ligne dont limits vaut [1], publier_resumes lève « TypeError: cannot convert dictionary update sequence element #0 to a sequence » au lieu d'un refus lisible. lire_rapport valide sources, candidates et excluded mais pas limits ; dict(premier.get(\"limits\") or {}) est évalué après la relecture des pages et les appels Albert, donc le budget Albert est consommé avant le plantage. Condition : rapport en ligne mal formé ou d'un schéma antérieur. Impact : trace Python brute dans le journal, rien n'est publié. Probabilité faible car le rapport est produit par le premier temps du même code.",
+      "fix_tier": "test-first",
+      "fix_tier_reason": "Ajouter le contrôle de forme de limits dans lire_rapport change le comportement de refus : un test rouge d'abord.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": null,
+      "confidence": "high",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z02-003",
+      "severity": "medium",
+      "category": "input-validation",
+      "subcategory": "unvalidated-nested-items",
+      "file": "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/resumer.py",
+      "line": 109,
+      "title": "Éléments de excluded non validés : KeyError dans ecartes() après Albert",
+      "description": "Observation (exécution) : avec un rapport en ligne dont excluded vaut [{\"url\": \"https://x\"}], Albert est appelé (1 appel observé) puis publier.ecartes lève KeyError: 'reason' ; aucun fichier n'est écrit. lire_rapport ne vérifie que le type liste de excluded, pas la présence de url et reason dans chaque élément. Impact : appels Albert gaspillés et échec sans message lisible. Probabilité faible pour la même raison que le rapport est produit par le premier temps.",
+      "fix_tier": "test-first",
+      "fix_tier_reason": "Le contrôle ajoute un motif de refus nouveau : il doit être couvert par un test qui échoue avant.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": null,
+      "confidence": "high",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z02-004",
+      "severity": "low",
+      "category": "error-handling",
+      "subcategory": "misreported-failure-count",
+      "file": "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/resumer.py",
+      "line": 308,
+      "title": "Message d'échec qui compte 0 échec Albert quand aucune page n'a été relue",
+      "description": "Observation (exécution) : quand toutes les pages gardées sont illisibles, la sortie d'erreur est « Aucun paquet publiable : 0 échec(s) Albert sur 2 article(s) gardé(s). ». Le message ne compte que rapport['errors'] et ignore les pages non relues et le budget de durée épuisé. Impact : diagnostic trompeur dans le journal du run, l'éditeur ne sait pas que la cause est la relecture des pages ou le temps.",
+      "fix_tier": "mechanical",
+      "fix_tier_reason": "Changement local du seul texte du message, vérifiable par la sortie d'erreur d'un test existant.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": null,
+      "confidence": "high",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z02-005",
+      "severity": "low",
+      "category": "logic-error",
+      "subcategory": "silent-dedup",
+      "file": "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/resumer.py",
+      "line": 245,
+      "title": "Deux titres relus vers la même adresse : un article disparaît sans motif",
+      "description": "Observation (lecture du code) : la relecture remplace l'adresse du premier temps par l'adresse canonique du jour (ligne 215). Si deux titres gardés aboutissent à la même clé url_key (redirection d'un ancien lien vers la même page), packet_for écarte silencieusement le second ; aucun motif n'est ajouté à excluded et publier.ecartes considère les deux candidats comme retenus puisque leur adresse figure dans le paquet. Impact : un titre gardé ne figure ni dans le paquet ni dans les écartés. Non reproduit par exécution ; reproduction proposée : doublure réseau qui redirige deux adresses vers une même page, puis comparer le nombre de gardés au nombre d'articles plus écartés.",
+      "fix_tier": "test-first",
+      "fix_tier_reason": "Le traitement des doublons après relecture change la sortie publiée : test de caractérisation requis.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": null,
+      "confidence": "medium",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z02-006",
+      "severity": "low",
+      "category": "performance",
+      "subcategory": "unbounded-call-after-deadline",
+      "file": "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/resumer.py",
+      "line": 360,
+      "title": "Appel Albert du second temps non borné par le budget restant",
+      "description": "Observation (lecture du code) : main passe timeout=ALBERT_TIMEOUT (30 s) fixe, alors que collect dans core.py borne chaque appel au temps restant. Un appel lancé peu avant la limite continue après l'échéance ; la boucle principale classe alors l'article en BUDGET_DUREE_ALBERT et pool.shutdown(wait=False) n'interrompt pas le fil, que l'interpréteur attend à la sortie. Impact : jusqu'à environ 30 s de plus par fil et un résumé éventuellement obtenu puis jeté. Incertitude : durée non mesurée.",
+      "fix_tier": "test-first",
+      "fix_tier_reason": "Borner le délai modifie le comportement temporel ; un test à horloge factice doit le prouver.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": null,
+      "confidence": "medium",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z02-007",
+      "severity": "low",
+      "category": "error-handling",
+      "subcategory": "misleading-message",
+      "file": "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/resumer.py",
+      "line": 67,
+      "title": "Message de refus qui exige « rubrique » alors que ce champ est facultatif",
+      "description": "Observation (lecture du code) : lire_selection accepte un élément sans rubrique (element.get(\"rubrique\", \"\")), mais le refus indique que l'élément « doit porter « url » et « rubrique » ». Impact : message trompeur pour qui construit la sélection à la main dans le formulaire GitHub.",
+      "fix_tier": "mechanical",
+      "fix_tier_reason": "Changement du seul texte, sans effet sur la logique de validation.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": null,
+      "confidence": "high",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z02-008",
+      "severity": "low",
+      "category": "dead-code",
+      "subcategory": "no-op-timezone",
+      "file": "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/publier.py",
+      "line": 75,
+      "title": "Fuseau Europe/Paris appliqué puis aussitôt perdu par .date()",
+      "description": "Observation (lecture du code) : date_saisie construit ZoneInfo(\"Europe/Paris\") à chaque forme essayée, l'attache par replace(tzinfo=...) puis appelle .date(), qui ignore le fuseau. Le code laisse croire à une conversion qui n'a pas lieu. Aucun impact fonctionnel observé.",
+      "fix_tier": "mechanical",
+      "fix_tier_reason": "Suppression locale sans changement de valeur retournée, vérifiable par les tests de dates existants.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": null,
+      "confidence": "high",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z02-009",
+      "severity": "low",
+      "category": "error-handling",
+      "subcategory": "uncaught-validation-error",
+      "file": "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/publier.py",
+      "line": 201,
+      "title": "Période inversée ou trop longue : trace Python au lieu d'un refus en français",
+      "description": "Observation (exécution, réseau remplacé par une doublure qui interdit tout appel) : publier.main --mode titres --debut 10/11/2026 --fin 01/11/2026 se termine par « ValueError: Période invalide ou supérieure à 61 jours » avec trace complète. main ne contrôle pas debut <= fin ni l'écart maximal avant collect et ne capture pas l'erreur. Impact : l'étape GitHub échoue avec une trace au lieu d'un message lisible ; la page ne contrôle ces dates que de son côté.",
+      "fix_tier": "test-first",
+      "fix_tier_reason": "Ajouter un refus explicite modifie le code de sortie et la sortie d'erreur : test rouge d'abord.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": null,
+      "confidence": "high",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z02-010",
+      "severity": "low",
+      "category": "input-validation",
+      "subcategory": "missing-window-bound",
+      "file": "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/repecher.py",
+      "line": 186,
+      "title": "Repêchage sans plafond de 61 jours sur la période",
+      "description": "Observation (lecture du code) : repecher refuse debut > fin mais pas une période plus longue que 61 jours, contrairement à collect. Le workflow accepte des dates libres saisies dans le formulaire. Impact : un article très ancien peut être repêché dans un paquet dont la période est bornée ; la page le rejettera peut-être selon ses propres contrôles (non vérifié, hors périmètre).",
+      "fix_tier": "test-first",
+      "fix_tier_reason": "Nouveau motif de refus : comportement modifié, test requis.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": null,
+      "confidence": "medium",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z02-011",
+      "severity": "medium",
+      "category": "security",
+      "subcategory": "prompt-injection",
+      "file": "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/repecher.py",
+      "line": 140,
+      "title": "Texte de page tierce transmis à Albert, sortie publiée sans relecture",
+      "description": "Observation (lecture du code) : lire_candidat transmet titre et jusqu'à 2 400 caractères de texte de la page tierce à albert_summary ; la sortie n'est contrôlée que structurellement (longueur, langue, mots-clés, rubrique). Une page piégée peut orienter fait, à retenir et intérêt SNUM. Le rapport déclare lui-même fact_check NON_EFFECTUE_CONTROLE_HUMAIN_REQUIS ; une mise en service sans relecture humaine retire ce garde-fou. Le même flux existe dans resumer.py (resumer_gardes). Sévérité limitée car les sources sont 13 domaines publics fixés et les champs sont bornés en mots.",
+      "fix_tier": "human-only",
+      "fix_tier_reason": "Relève de la politique éditoriale et de sécurité : relecture humaine ou filtrage, décision hors code.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": null,
+      "confidence": "medium",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z02-012",
+      "severity": "low",
+      "category": "race-condition",
+      "subcategory": "toctou-test-double",
+      "file": "veille-snum-webapp-v5-apres-egm/veille-snum/tests/test_v14_robustesse.py",
+      "line": 214,
+      "title": "Doublure AlbertSature : contrôle et incrément hors du même verrou",
+      "description": "Observation (lecture du code) : AlbertSature.__call__ vérifie en_cours >= 2 sous le verrou, relâche le verrou, puis Albert.__call__ le reprend pour incrémenter. Trois fils (deux du pool, un de repêchage) peuvent passer le contrôle avec en_cours = 1 et porter maximum à 3, ce qui ferait échouer assertEqual(albert.maximum, 2) sans défaut du code testé. Exécution : 80 rejeux consécutifs de TroisAppelsSimultanesTests ont tous réussi ; la course reste donc théorique et rare.",
+      "fix_tier": "mechanical",
+      "fix_tier_reason": "Changement limité à la doublure de test : contrôle et incrément sous un même verrou.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": null,
+      "confidence": "medium",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    },
+    {
+      "id": "r1-z02-013",
+      "severity": "low",
+      "category": "type-mismatch",
+      "subcategory": "fixture-contract-drift",
+      "file": "veille-snum-webapp-v5-apres-egm/veille-snum/tests/test_pages_github.cjs",
+      "line": 99,
+      "title": "Article de test à deux mots-clés accepté alors que V519 en exige 3 à 5",
+      "description": "Observation (lecture du code) : la fixture ARTICLE porte keywords ['a', 'b'] et le test attend que parseRepechage l'accepte puis que rebuild l'exporte. validate_summary côté Python exige 3 à 5 mots-clés ; ecartes.js (hors périmètre) n'exige qu'une liste non vide. Le test fige donc un contrôle plus laxiste que le contrat V519 et ne détecterait pas un article exporté invalide.",
+      "fix_tier": "test-first",
+      "fix_tier_reason": "Aligner la fixture et le contrôle de la page change le comportement de ecartes.js : test rouge d'abord.",
+      "fix_applied": false,
+      "fix_commit": "",
+      "fix_evidence": null,
+      "negative_evidence": null,
+      "confidence": "medium",
+      "verification_score": null,
+      "verified": null,
+      "lifecycle": "new"
+    }
+  ],
+  "unverified_bugs": [],
+  "accepted_bugs": [],
+  "fixed_since_last_run": [],
+  "impacted_ui_routes": [],
+  "impacted_backend": [],
+  "notes": "Agrégation simplifiée : aucun constat critique ou élevé, donc aucune vérification indépendante lancée (phase 5.7) ; pas de traceur inter-zones (mode quick)."
+}

@@ -294,7 +294,7 @@ jobs:
               publie=oui
               break
             fi
-            echo "Essai $essai : la branche a avancé entre-temps, nouvelle tentative."
+            echo "Essai $essai : envoi refusé (branche avancée entre-temps, ou autre cause affichée ci-dessus), nouvelle tentative."
             sleep $((essai * 2))
           done
           if [ "$publie" != oui ]; then
@@ -311,6 +311,7 @@ jobs:
   # n'est jamais publié sans son archive, que la collecte suivante effacerait du site.
   deploiement:
     needs: [collecte, archivage]
+    timeout-minutes: 10
     if: always() && github.ref == 'refs/heads/main' && needs.collecte.result == 'success' && (needs.archivage.result == 'success' || needs.archivage.result == 'skipped')
     runs-on: ubuntu-latest
     permissions:

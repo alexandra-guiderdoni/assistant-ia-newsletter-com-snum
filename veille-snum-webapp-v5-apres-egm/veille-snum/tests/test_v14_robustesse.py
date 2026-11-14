@@ -377,6 +377,109 @@ class DoublonApresRelectureTests(Cas):
         self.assertEqual(len(rapport["candidates"]), 14)
 
 
+class MessagesEtRefusTests(Cas):
+    """Constats faibles de l'audit : messages inexacts, refus sans trace Python."""
+
+    def test_echec_total_par_pages_non_relues_message_exact(self):
+        code = self.lancer(
+            selection((URLS[0], ""), (URLS[1], "")), Site(illisibles=URLS)
+        )
+        self.assertEqual(code, 1)
+        message = self.sortie_erreur.getvalue()
+        self.assertIn("2 page(s) non relue(s)", message)
+        self.assertIn("0 échec(s) Albert", message)
+
+    def test_rubrique_facultative_dans_le_message_de_refus(self):
+        self.assertEqual(self.lancer(json.dumps([{"rubrique": "ia"}])), 1)
+        self.assertIn("« url »", self.sortie_erreur.getvalue())
+        self.assertIn("facultative", self.sortie_erreur.getvalue())
+
+    def test_periode_inversee_ou_trop_longue_refus_en_francais_sans_trace(self):
+        from veille_snum import publier
+
+        for mode in ("collecte", "titres"):
+            for dates in (
+                ["--debut", "10/11/2026", "--fin", "01/11/2026"],
+                ["--debut", "01/01/2026", "--fin", "10/11/2026"],
+            ):
+                with self.subTest(mode=mode, dates=dates):
+                    with (
+                        mock.patch("sys.stdout"),
+                        mock.patch("sys.stderr", self.sortie_erreur),
+                    ):
+                        code = publier.main(
+                            [
+                                "--mode",
+                                mode,
+                                "--edition",
+                                "11/11/2026",
+                                *dates,
+                                "--sortie",
+                                str(self.dossier),
+                            ]
+                        )
+                    self.assertEqual(code, 1)
+                    self.assertIn("Collecte refusée", self.sortie_erreur.getvalue())
+                    self.assertFalse(self.dossier.exists() and fichiers(self.dossier))
+
+    def test_repechage_periode_de_plus_de_61_jours_refusee(self):
+        bilan = repecher(URLS[0], "ia", dt.date(2026, 1, 1), FIN, Site(), Albert())
+        self.assertEqual(bilan["status"], "erreur")
+        self.assertIn("61 jours", bilan["message"])
+        self.assertEqual(
+            repecher(URLS[0], "ia", DEBUT, FIN, Site(), Albert())["status"], "ok"
+        )
+
+
+class IndexDesArchivesTests(unittest.TestCase):
+    """Contrôle de logique : un index distant tronqué faisait perdre toutes les entrées existantes."""
+
+    def test_index_present_mais_illisible_rien_n_est_ecrit(self):
+        dossier = Path(tempfile.mkdtemp())
+        (dossier / "ancien.json").write_text('{"collectes": [', encoding="utf-8")
+        (dossier / "entree.json").write_text(
+            json.dumps({"id": "2026-11-14_9"}), encoding="utf-8"
+        )
+        erreur = io.StringIO()
+        with mock.patch("sys.stderr", erreur):
+            code = archiver.main(
+                [
+                    "fusion",
+                    "--ancien",
+                    str(dossier / "ancien.json"),
+                    "--entree",
+                    str(dossier / "entree.json"),
+                    "--sortie",
+                    str(dossier / "index.json"),
+                ]
+            )
+        self.assertEqual(code, 1)
+        self.assertFalse((dossier / "index.json").exists())
+        self.assertIn("illisible", erreur.getvalue())
+
+    def test_index_absent_premiere_archive(self):
+        dossier = Path(tempfile.mkdtemp())
+        (dossier / "entree.json").write_text(
+            json.dumps({"id": "2026-11-14_9"}), encoding="utf-8"
+        )
+        code = archiver.main(
+            [
+                "fusion",
+                "--ancien",
+                str(dossier / "absent.json"),
+                "--entree",
+                str(dossier / "entree.json"),
+                "--sortie",
+                str(dossier / "index.json"),
+            ]
+        )
+        self.assertEqual(code, 0)
+        self.assertEqual(
+            json.loads((dossier / "index.json").read_text())["collectes"],
+            [{"id": "2026-11-14_9"}],
+        )
+
+
 class AlbertSature(Albert):
     """Albert refuse par un 429 tout appel au-delà de deux simultanés."""
 

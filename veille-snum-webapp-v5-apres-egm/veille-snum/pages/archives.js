@@ -91,7 +91,7 @@
  async function download(event, id, name) {
   event.preventDefault();
   try {
-   const r = await fetch(archiveUrl(id, name, Date.now()), {cache: 'no-store'});
+   const r = await fetch(archiveUrl(id, name, Date.now()), G.timed({cache: 'no-store'}));
    if (!r.ok) throw new Error(r.status === 404 ? 'fichier pas encore disponible, réessayez dans quelques minutes' : `erreur ${r.status}`);
    const url = URL.createObjectURL(new Blob([await r.text()], {type: 'application/json;charset=utf-8'}));
    const a = document.createElement('a');
@@ -134,7 +134,7 @@
 
  async function load() {
   let r;
-  try { r = await fetch(indexUrl(Date.now()), {cache: 'no-store'}); }
+  try { r = await fetch(indexUrl(Date.now()), G.timed({cache: 'no-store'})); }
   catch (_) { announce(''); showError('raw.githubusercontent.com est injoignable : vérifiez la connexion réseau puis rechargez la page.'); return; }
   if (r.status === 404) { announce('Aucune collecte archivée pour l’instant.'); return; }
   let got;
