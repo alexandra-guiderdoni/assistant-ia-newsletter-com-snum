@@ -173,8 +173,7 @@
   li.append(el('h4', 'fr-h6 fr-mb-1v', e.title));
   li.append(el('p', 'fr-text--sm fr-mb-1v', `${c.source || 'Source inconnue'} · ${S.dateLong(c.publication_date_iso)}`));
   if (!e.url) { li.append(el('p', 'fr-text--sm', 'Adresse non publique : ce titre ne peut pas être résumé.')); return li; }
-  const linkP = el('p', 'fr-mb-1w'), a = el('a', 'fr-link', 'Consulter la publication (nouvelle fenêtre)');
-  a.href = e.url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+  const linkP = el('p', 'fr-mb-1w'), a = S.publicationLink(e.url, e.title);
   linkP.append(a);
   const row = el('div', 'fr-grid-row fr-grid-row--gutters fr-grid-row--bottom');
   const keepCol = el('div', 'fr-col-12 fr-col-md-4'), keepGroup = el('div', 'fr-checkbox-group'), keep = el('input');

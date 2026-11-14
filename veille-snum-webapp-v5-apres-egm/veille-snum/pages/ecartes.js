@@ -134,8 +134,7 @@
   li.append(title, reason);
   if (/^https:\/\//.test(String(c.url || ''))) {
    const p = el('p', 'fr-mb-1w');
-   const a = el('a', 'fr-link', 'Consulter la publication (nouvelle fenêtre)');
-   a.href = c.url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+   const a = S.publicationLink(c.url, c.title || 'Titre inconnu');
    p.append(a);
    li.append(p);
   }

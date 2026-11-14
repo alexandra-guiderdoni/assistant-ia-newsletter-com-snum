@@ -53,7 +53,7 @@
   <h2 id="github-heading">Connexion à GitHub</h2>
   <p class="fr-text--sm">Un jeton GitHub personnel est nécessaire seulement pour lancer une collecte ou repêcher un article. Sans jeton, la sélection du paquet publié reste entièrement utilisable. Le jeton reste dans cette page : il n’est ni enregistré dans le navigateur, ni ajouté à l’adresse, ni inclus dans les exports, et disparaît à la fermeture ou au rechargement de la page. Le jeton Albert reste dans les secrets du dépôt et n’apparaît jamais ici.</p>
   <div class="fr-input-group" id="gh-token-group">
-   <label class="fr-label" for="gh-token">Jeton GitHub personnel (facultatif)<span class="fr-hint-text">Jeton « fine-grained » limité au dépôt alexandra-guiderdoni/assistant-ia-newsletter-com-snum, avec les permissions « Actions : Read and write » et « Contents : Read ». Un collaborateur d’un dépôt personnel doit utiliser un jeton classique de portée « repo », qui donne accès à tous ses dépôts : réservez-le à cet usage et donnez-lui une expiration courte.</span></label>
+   <label class="fr-label" for="gh-token">Jeton GitHub personnel (facultatif)<span class="fr-hint-text">Jeton « <span lang="en">fine-grained</span> » limité au dépôt alexandra-guiderdoni/assistant-ia-newsletter-com-snum, avec les permissions « <span lang="en">Actions : Read and write</span> » et « <span lang="en">Contents : Read</span> ». Un collaborateur d’un dépôt personnel doit utiliser un jeton classique de portée « <span lang="en">repo</span> », qui donne accès à tous ses dépôts : réservez-le à cet usage et donnez-lui une expiration courte.</span></label>
    <input class="fr-input" id="gh-token" name="gh_token" type="password" autocomplete="off" spellcheck="false" aria-describedby="gh-token-messages">
    <div class="fr-messages-group" id="gh-token-messages" aria-live="polite"></div>
   </div>
@@ -122,7 +122,7 @@
   <p id="reset-text">La collecte précédente est consultable dans les archives.</p>
   <p><a class="fr-link" href="archives.html">Consulter les archives des collectes</a></p>
  </div>
- <p id="reset-status" class="fr-sr-only" role="status"></p>
+ <div id="reset-status" class="fr-sr-only" role="status"></div>
 
  <div id="load-error" class="fr-alert fr-alert--error fr-mb-4w" role="alert" hidden></div>
 
@@ -236,7 +236,7 @@
   </div>
   <div class="fr-footer__bottom">
    <ul class="fr-footer__bottom-list">
-    <li class="fr-footer__bottom-item"><span class="fr-footer__bottom-link">Accessibilité : audit non réalisé</span></li>
+    <li class="fr-footer__bottom-item"><a class="fr-footer__bottom-link" href="https://github.com/alexandra-guiderdoni/assistant-ia-newsletter-com-snum/blob/main/veille-snum-webapp-v5-apres-egm/veille-snum/docs/reviews/2026-11-14-accessibilite/README.md" target="_blank" rel="noopener noreferrer">Accessibilité : non conforme (nouvelle fenêtre)</a></li>
     <li class="fr-footer__bottom-item"><span class="fr-footer__bottom-link">Mentions légales, données personnelles et plan du site : à rédiger avant tout usage institutionnel</span></li>
    </ul>
   </div>

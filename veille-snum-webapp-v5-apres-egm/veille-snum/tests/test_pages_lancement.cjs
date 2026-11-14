@@ -157,7 +157,7 @@ test('page : marche à suivre du jeton liée et présente dans le dépôt, annon
  assert.ok(doc, 'lien vers la marche à suivre du jeton');
  assert.match(doc[2], /nouvelle fenêtre/);
  assert.ok(fs.existsSync(path.join(__dirname, '../../..', doc[1])), doc[1]);
- assert.match(html, /<p id="reset-status" class="fr-sr-only" role="status"><\/p>/);
+ assert.match(html, /<div id="reset-status" class="fr-sr-only" role="status"><\/div>/);
  assert.match(html, />Candidats écartés<\/button>/);
  assert.doesNotMatch(html + fs.readFileSync(path.join(PAGES, 'ecartes.js'), 'utf8'), /écartés par Albert \(|écartés par Albert<|écartés par Albert'/);
  assert.match(html, /<script src="archives\.js" defer><\/script>\s*<script src="lancement\.js" defer><\/script>\s*<script src="page\.js" defer><\/script>/);
