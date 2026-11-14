@@ -66,18 +66,19 @@
  // « Lancer la collecte » : titres seuls par défaut, collecte complète sur demande.
  const launchInputs = (edition, start, end, complete) => ({...G.collectInputs(edition, start, end), mode: complete ? 'collecte' : 'titres'});
 
- // Groupes par source, dans l'ordre d'apparition ; titres les plus récents d'abord ; adresse en double ignorée.
- function groupBySource(candidates) {
-  const groups = new Map(), urls = new Set();
+ // Groupes par rubrique probable (rubriques-probables.js), dans l'ordre de la revue, puis les titres sans mot-clé
+ // reconnu ; titres les plus récents d'abord ; adresse en double ignorée. Indicatif : Albert range l'article après lecture.
+ const NON_RECONNUE = 'Rubrique non reconnue';
+ function groupByRubric(candidates) {
+  const groups = new Map([...S.RUBRICS, ''].map(r => [r, []])), urls = new Set();
   (candidates || []).forEach((candidate, index) => {
    if (!candidate || typeof candidate !== 'object' || (candidate.url && urls.has(candidate.url))) return;
    if (candidate.url) urls.add(candidate.url);
-   const source = String(candidate.source || '').trim() || 'Source inconnue';
-   if (!groups.has(source)) groups.set(source, []);
-   groups.get(source).push({candidate, index});
+   const hint = global.VeilleRubriquesProbables.probable(candidate.title);
+   groups.get(hint ? hint.rubric : '').push({candidate, index, keyword: hint ? hint.keyword : ''});
   });
   const date = item => String(item.candidate.publication_date_iso || '');
-  return [...groups].map(([source, items]) => ({source,
+  return [...groups].filter(([, items]) => items.length).map(([rubric, items]) => ({rubric, label: rubric ? S.RUBRIC_LABELS[rubric] : NON_RECONNUE,
    items: items.sort((a, b) => (date(a) < date(b) ? 1 : date(a) > date(b) ? -1 : a.index - b.index))}));
  }
 
@@ -95,13 +96,13 @@
  }
 
  global.VeilleTitres = {MAX_SELECTION, MAX_SELECTION_CHARS, SAFE_SELECTION, MOVED, parseEtat, view, isSelectable, buildSelection, resumesInputs, moved, launchInputs,
-  groupBySource, groupAction, resumesLabel, countText, durationText};
+  NON_RECONNUE, groupByRubric, groupAction, resumesLabel, countText, durationText};
 
  if (typeof document === 'undefined' || !document.getElementById('titres-section')) return;
 
  // ---------- Interface ----------
  const byId = id => document.getElementById(id);
- let etat = null, entries = [];
+ let etat = null, entries = [], labels = new Map();
  let options = {hasToken: () => false, requireToken: () => null, isBusy: () => '', launch: async () => {}, readEtat: async () => null, reload: async () => false};
 
  function el(tag, className, text) {
@@ -118,24 +119,24 @@
  }
  const running = () => byId('resumes').getAttribute('aria-disabled') === 'true';
  const keptCount = () => entries.filter(e => e.keep).length;
- function groupHeading(source) {
-  const items = entries.filter(e => e.source === source);
+ function groupHeading(group) {
+  const items = entries.filter(e => e.group === group);
   const kept = items.filter(e => e.keep).length;
-  return `${source} (${kept} gardé${kept > 1 ? 's' : ''} sur ${items.length})`;
+  return `${labels.get(group)} (${kept} gardé${kept > 1 ? 's' : ''} sur ${items.length})`;
  }
- // Titre et bouton du groupe après un changement ; le bouton nomme sa source pour les lecteurs d'écran.
- function updateGroup(group, source) {
-  const items = entries.filter(e => e.source === source);
-  byId(`titres-heading-${group}`).textContent = groupHeading(source);
+ // Titre et bouton du groupe après un changement ; le bouton nomme sa rubrique pour les lecteurs d'écran.
+ function updateGroup(group) {
+  const items = entries.filter(e => e.group === group);
+  byId(`titres-heading-${group}`).textContent = groupHeading(group);
   const button = byId(`titres-tout-${group}`);
-  if (button) button.replaceChildren(document.createTextNode(groupAction(items.filter(e => e.keep).length, items.length)), el('span', 'fr-sr-only', ` : ${source}`));
+  if (button) button.replaceChildren(document.createTextNode(groupAction(items.filter(e => e.keep).length, items.length)), el('span', 'fr-sr-only', ` : ${labels.get(group)}`));
  }
- function toggleGroup(group, source) {
-  const items = entries.filter(e => e.source === source);
+ function toggleGroup(group) {
+  const items = entries.filter(e => e.group === group);
   const keep = groupAction(items.filter(e => e.keep).length, items.length) === 'Tout garder';
   for (const e of items) { e.keep = keep; byId(`titre-garder-${e.key}`).checked = keep; }
-  updateGroup(group, source);
-  refresh(`${keep ? 'Tous les titres gardés' : 'Tous les titres retirés'} : ${source}`);
+  updateGroup(group);
+  refresh(`${keep ? 'Tous les titres gardés' : 'Tous les titres retirés'} : ${labels.get(group)}`);
  }
 
  // Compteur, libellé et état du bouton ; bouton bloqué sans titre gardé, au-delà de 60 ou sans jeton.
@@ -173,6 +174,7 @@
   li.append(el('h4', 'fr-h6 fr-mb-1v', e.title));
   e.li = li;
   li.append(el('p', 'fr-text--sm fr-mb-1v', `${c.source || 'Source inconnue'} · ${S.dateLong(c.publication_date_iso)}`));
+  if (e.keyword) li.append(el('p', 'fr-text--sm fr-mb-1v', `Mot-clé repéré : « ${e.keyword} »`));
   if (!e.url) { li.append(el('p', 'fr-text--sm', 'Adresse non publique : ce titre ne peut pas être résumé.')); return li; }
   const linkP = el('p', 'fr-mb-1w'), a = S.publicationLink(e.url, e.title);
   linkP.append(a);
@@ -181,7 +183,7 @@
   keep.type = 'checkbox'; keep.id = `titre-garder-${e.key}`; keep.checked = false;
   keep.addEventListener('change', () => {
    e.keep = keep.checked;
-   updateGroup(e.group, e.source);
+   updateGroup(e.group);
    refresh(`${e.keep ? 'Titre gardé' : 'Titre retiré'} : ${e.title}`);
   });
   keepGroup.append(keep, label(keep.id, 'Garder', e.title));
@@ -201,12 +203,13 @@
   etat = state;
   const box = byId('titres-list');
   box.replaceChildren();
-  entries = [];
-  const groups = groupBySource(report.candidates);
+  entries = []; labels = new Map();
+  const groups = groupByRubric(report.candidates);
   groups.forEach((g, gi) => {
    const section = el('section', 'fr-mb-4w'), list = el('ul', 'article-list');
-   const items = g.items.map(({candidate: c, index}) => {
-    const e = {key: String(index + 1), group: String(gi + 1), source: g.source, title: String(c.title || 'Titre inconnu'),
+   labels.set(String(gi + 1), g.label);
+   const items = g.items.map(({candidate: c, index, keyword}) => {
+    const e = {key: String(index + 1), group: String(gi + 1), keyword, title: String(c.title || 'Titre inconnu'),
      url: isSelectable(c) ? c.url : '', keep: false, rubric: ''};
     if (e.url) entries.push(e);
     return [e, c];
@@ -217,14 +220,15 @@
    for (const [e, c] of items) list.append(titreItem(e, c));
    const all = el('button', 'fr-btn fr-btn--tertiary fr-btn--sm fr-mb-2w');
    all.type = 'button'; all.id = `titres-tout-${gi + 1}`;
-   all.addEventListener('click', () => { if (!all.disabled) toggleGroup(String(gi + 1), g.source); });
+   all.addEventListener('click', () => { if (!all.disabled) toggleGroup(String(gi + 1)); });
    section.append(h, ...(items.some(([e]) => e.url) ? [all] : []), list);
    box.append(section);
-   updateGroup(String(gi + 1), g.source);
+   updateGroup(String(gi + 1));
   });
   entries.sort((a, b) => Number(a.key) - Number(b.key));
   if (!groups.length) box.append(el('p', '', 'Aucun titre trouvé pour cette période.'));
   let intro = `Édition du ${S.dateLong(etat.edition_date)}, période du ${S.dateLong(etat.window_start)} au ${S.dateLong(etat.window_end)} : ${entries.length} titre${entries.length > 1 ? 's' : ''} à trier.`;
+  if (groups.length) intro += ' Titres regroupés par rubrique probable, d’après un mot-clé du titre : regroupement indicatif, juste environ trois fois sur quatre. Albert range chaque article après l’avoir lu.';
   if (report.edition_date && report.edition_date !== etat.edition_date) intro += ` Attention : le rapport publié concerne l’édition du ${S.dateLong(report.edition_date)}.`;
   byId('titres-intro').textContent = intro;
   showError('');

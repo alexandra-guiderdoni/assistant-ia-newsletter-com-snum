@@ -8,7 +8,7 @@ const vm = require('node:vm');
 const PAGES = path.join(__dirname, '../pages');
 function load(fetchImpl) {
  const ctx = {window: {}, AbortSignal, setTimeout: fn => { fn(); }, fetch: async (url, init) => fetchImpl(url, init)};
- for (const name of ['selection.js', 'github.js', 'rapport.js', 'ecartes.js', 'titres.js', 'archives.js', 'lancement.js']) vm.runInNewContext(fs.readFileSync(path.join(PAGES, name), 'utf8'), ctx, {filename: name});
+ for (const name of ['selection.js', 'github.js', 'rapport.js', 'ecartes.js', 'rubriques-probables.js', 'titres.js', 'archives.js', 'lancement.js']) vm.runInNewContext(fs.readFileSync(path.join(PAGES, name), 'utf8'), ctx, {filename: name});
  return ctx.window;
 }
 const W = load(async () => ({ok: false, status: 404}));

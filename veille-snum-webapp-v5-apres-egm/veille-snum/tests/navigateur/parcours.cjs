@@ -109,15 +109,20 @@ const sansDefilement = page => page.evaluate(() => document.documentElement.scro
    && /titres trouvés/.test(await o.texte('#collect-status')), await o.texte('#collect-status'));
   const rapport = lireEnLigne(m, 'rapport-collecte.json');
   const premier = await page.$eval('#titres-list li h4', h => h.textContent);
-  check('A10 titres du vrai rapport publié, par source, dates en toutes lettres', rapport.candidates.some(c => c.title === premier) && /novembre 2026/.test(await page.$eval('#titres-list li', l => l.textContent))
-   && (await page.$$('#titres-list h3')).length === new Set(rapport.candidates.map(c => c.source)).size, premier);
+  // Un groupe par rubrique probable, dans l'ordre de la revue, « Rubrique non reconnue » à la fin ; mot-clé repéré affiché.
+  const groupes = await page.$$eval('#titres-list h3', l => l.map(h => h.textContent.replace(/ \(\d+ gardés? sur \d+\)$/, '')));
+  const attendus = await page.evaluate(cs => { const P = window.VeilleRubriquesProbables, S = window.VeilleSelection;
+   const vus = new Set(cs.map(c => (P.probable(c.title) || {rubric: ''}).rubric));
+   return [...S.RUBRICS, ''].filter(r => vus.has(r)).map(r => (r ? S.RUBRIC_LABELS[r] : 'Rubrique non reconnue')); }, rapport.candidates);
+  check('A10 titres du vrai rapport publié, par rubrique probable, mot-clé affiché, dates en toutes lettres', rapport.candidates.some(c => c.title === premier) && /novembre 2026/.test(await page.$eval('#titres-list li', l => l.textContent))
+   && JSON.stringify(groupes) === JSON.stringify(attendus) && /Mot-clé repéré : « /.test(await o.texte('#titres-list')) && /regroupement indicatif/.test(await o.texte('#titres-intro')), groupes.join(' | '));
   check('A11 rapport affiché en phase titres, pas de paquet', (await o.texte('#report-intro')).includes('Titres trouvés, sans résumé') && !(await o.visible('#download')) && await o.visible('#report-stats'));
   check('A12 bouton de rédaction bloqué tant que rien n’est gardé, raison affichée', await page.$eval('#resumes', b => b.disabled) && /Gardez au moins un titre/.test(await o.texte('#resumes-hint')));
-  // « Tout garder » pour une source entière, au clavier, puis « Tout retirer ».
+  // « Tout garder » pour une rubrique entière, au clavier, puis « Tout retirer ».
   const groupe = await page.$eval('#titres-list section', s => ({n: s.querySelectorAll('input[type=checkbox]').length, bouton: s.querySelector('button').id}));
   await tabJusqua(page, groupe.bouton); await page.keyboard.press('Enter');
   const tous = await page.$eval('#titres-list section', s => [...s.querySelectorAll('input[type=checkbox]')].filter(i => i.checked).length);
-  check('A12b « Tout garder » d’une source au clavier : tous cochés, compteur annoncé, focus conservé', tous === groupe.n && (await o.texte(`#${groupe.bouton}`)).startsWith('Tout retirer') && await o.actif() === groupe.bouton
+  check('A12b « Tout garder » d’une rubrique au clavier : tous cochés, compteur annoncé, focus conservé', tous === groupe.n && (await o.texte(`#${groupe.bouton}`)).startsWith('Tout retirer') && await o.actif() === groupe.bouton
    && new RegExp(`Tous les titres gardés : .*${groupe.n} titres? gardés? sur 48`).test(await o.texte('#titres-count')), await o.texte('#titres-count'));
   await page.keyboard.press('Enter');
   check('A12c « Tout retirer » : plus aucun titre gardé, bouton de rédaction de nouveau bloqué', (await o.texte('#titres-count')).endsWith('0 titre gardé sur 48.') && await page.$eval('#resumes', b => b.disabled) && (await o.texte(`#${groupe.bouton}`)).startsWith('Tout garder'));
@@ -141,7 +146,9 @@ const sansDefilement = page => page.evaluate(() => document.documentElement.scro
    && await page.$eval(`#${cles[0]}`, i => i.disabled) && /5 articles demandés\. Comptez une à deux minutes/.test(await o.texte('#titres-elapsed')), await o.texte('#titres-elapsed'));
   await fin(o);
   const envoi = JSON.parse(m.appels.filter(c => c.method === 'POST').pop().body).inputs;
-  const attendu = garde.map((url, i) => ({url, rubrique: i === 1 ? 'ia' : ''}));
+  // La page envoie les titres gardés dans l'ordre du rapport, quel que soit leur groupe d'affichage.
+  const rang = url => rapport.candidates.findIndex(c => c.url === url);
+  const attendu = garde.map((url, i) => ({url, rubrique: i === 1 ? 'ia' : ''})).sort((a, b) => rang(a.url) - rang(b.url));
   check('A16 sélection envoyée exacte, dates de l’état', envoi.mode === 'resumes' && envoi.selection === JSON.stringify(attendu) && envoi.edition === '14/11/2026' && envoi.debut === '09/11/2026', envoi.selection.slice(0, 160));
   const paquet = lireEnLigne(m, 'paquet-v519.json'), ecartes = lireEnLigne(m, 'candidats-ecartes.json');
   const motifs = Object.fromEntries(ecartes.candidates.map(c => [c.url, c.reason]));
