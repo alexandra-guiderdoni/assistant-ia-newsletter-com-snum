@@ -3,6 +3,8 @@
 # est déposé sur la branche donnees-veille, que la page relit sans jeton :
 # https://raw.githubusercontent.com/alexandra-guiderdoni/assistant-ia-newsletter-com-snum/donnees-veille/repechages/<run_id>.json
 # Le résultat est publié même en cas de refus : la page affiche alors le motif.
+# Deux tâches : « repechage » appelle Albert sans pouvoir écrire dans le dépôt ;
+# « publication » dépose le résultat, sans le jeton Albert.
 name: Repêcher un candidat Veille SNUM
 
 run-name: "Repêchage ${{ inputs.rubrique }} : ${{ inputs.url }}"
@@ -30,20 +32,22 @@ on:
         description: "Fin de période, JJ/MM/AAAA ou AAAA-MM-JJ, par exemple 20/11/2026"
         required: true
 
-# Écriture limitée à la branche de résultats donnees-veille.
+# Lecture seule par défaut : seule la tâche « publication » peut écrire dans le dépôt.
 permissions:
-  contents: write
+  contents: read
 
 # Pas de groupe de concurrence : GitHub n'y garde qu'un run en attente et
 # annulerait un repêchage lancé juste après un autre. Les envois simultanés
 # vers donnees-veille sont réglés par les nouvelles tentatives de push.
 
 jobs:
+  # Lit la page et appelle Albert, sans aucun droit d'écriture sur le dépôt : le résultat
+  # est transmis à la tâche suivante.
   repechage:
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    env:
-      BRANCHE: donnees-veille
+    outputs:
+      interrompu: ${{ steps.albert.outputs.interrompu }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -76,6 +80,45 @@ jobs:
             python -c 'import json, os, sys; json.dump({"schema_version": "SNUM_REPECHAGE_V1", "url": os.environ.get("URL", "")[:2048], "status": "erreur", "message": "Repêchage interrompu avant son résultat : consulter le journal de la tâche.", "article": None}, open(sys.argv[1], "w", encoding="utf-8"), ensure_ascii=False)' "$RESULTAT"
           fi
           echo "Code de sortie du repêchage : $code"
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: resultat-repechage
+          path: ${{ runner.temp }}/repechage.json
+          retention-days: 1
+
+  # Seule tâche autorisée à écrire dans le dépôt, et seulement sur donnees-veille. Elle
+  # n'a ni le jeton Albert ni le code du prototype à exécuter : elle dépose le résultat.
+  publication:
+    needs: repechage
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    env:
+      BRANCHE: donnees-veille
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        continue-on-error: true
+        with:
+          name: resultat-repechage
+          path: ${{ runner.temp }}
+
+      # Tâche précédente arrêtée avant de transmettre quoi que ce soit (délai dépassé, panne) :
+      # un résultat de repli est publié quand même, avec l'adresse demandée, lue dans l'environnement.
+      - name: Résultat de repli si rien n'a été transmis
+        id: repli
+        env:
+          URL: ${{ inputs.url }}
+        run: |
+          RESULTAT="$RUNNER_TEMP/repechage.json"
+          if [ ! -s "$RESULTAT" ]; then
+            echo "sans_resultat=oui" >> "$GITHUB_OUTPUT"
+            python3 -c 'import json, os, sys; json.dump({"schema_version": "SNUM_REPECHAGE_V1", "url": os.environ.get("URL", "")[:2048], "status": "erreur", "message": "Repêchage interrompu avant son résultat : consulter le journal de la tâche.", "article": None}, open(sys.argv[1], "w", encoding="utf-8"), ensure_ascii=False)' "$RESULTAT"
+          fi
 
       # Le fichier est ajouté par un commit construit hors de l'arbre de travail :
       # la branche est créée orpheline au premier passage, jamais forcée ensuite.
@@ -128,16 +171,16 @@ jobs:
 
       # Un refus motivé (code 1) laisse la tâche verte ; un script arrêté sans résultat la rend rouge.
       - name: Signaler un repêchage interrompu
-        if: steps.albert.outputs.interrompu == 'oui'
+        if: needs.repechage.outputs.interrompu == 'oui' || steps.repli.outputs.sans_resultat == 'oui'
         run: |
-          echo "Le repêchage s'est arrêté avant d'écrire son résultat : voir l'étape « Repêchage par Albert »." >&2
+          echo "Le repêchage s'est arrêté avant d'écrire son résultat : voir la tâche « repechage »." >&2
           exit 1
 
       # Résumé affiché en tête de la page du run : où lire le résultat.
       - name: Résumé du repêchage
         if: always()
         run: |
-          python - <<'PY'
+          python3 - <<'PY'
           import json, os
 
           lecture = (
