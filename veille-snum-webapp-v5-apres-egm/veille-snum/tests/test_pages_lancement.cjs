@@ -150,13 +150,15 @@ test('durée annoncée : prudente, et limite d’Albert signalée au-delà d’u
  assert.match(T.durationText(60), /restent repêchables/);
 });
 
-test('page : marche à suivre du jeton liée et présente dans le dépôt, annonce de remise à zéro', () => {
+test('page : marche à suivre du jeton liée et présente dans le dépôt, annonce de remise à zéro, libellé des écartés', () => {
  const html = fs.readFileSync(path.join(PAGES, 'index.html'), 'utf8');
  const doc = /id="gh-token-doc" href="https:\/\/github\.com\/alexandra-guiderdoni\/assistant-ia-newsletter-com-snum\/blob\/main\/([^"]+)" target="_blank" rel="noopener noreferrer">([^<]+)</.exec(html);
  assert.ok(doc, 'lien vers la marche à suivre du jeton');
  assert.match(doc[2], /nouvelle fenêtre/);
  assert.ok(fs.existsSync(path.join(__dirname, '../../..', doc[1])), doc[1]);
  assert.match(html, /<p id="reset-status" class="fr-sr-only" role="status"><\/p>/);
+ assert.match(html, />Candidats écartés<\/button>/);
+ assert.doesNotMatch(html + fs.readFileSync(path.join(PAGES, 'ecartes.js'), 'utf8'), /écartés par Albert \(|écartés par Albert<|écartés par Albert'/);
  assert.match(html, /<script src="archives\.js" defer><\/script>\s*<script src="lancement\.js" defer><\/script>\s*<script src="page\.js" defer><\/script>/);
  // Les durées annoncées par la page sont celles du code.
  assert.match(html, /trois à quatre minutes/);

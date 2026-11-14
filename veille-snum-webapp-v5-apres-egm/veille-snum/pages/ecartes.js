@@ -150,7 +150,7 @@
  function renderList() {
   const intro = byId('candidates-intro'), list = byId('candidates-list');
   list.replaceChildren();
-  byId('candidates-button').textContent = `Candidats écartés par Albert (${candidates.length})`;
+  byId('candidates-button').textContent = `Candidats écartés (${candidates.length})`;
   intro.textContent = candidates.length
    ? 'Ces publications ont été trouvées pendant la collecte mais ne figurent pas dans le paquet ; le motif est indiqué pour chacune. Choisissez une thématique puis « Repêcher avec Albert » : Albert rédige alors le résumé de l’article dans cette thématique et l’article est ajouté à la sélection.'
    : 'Aucun candidat écarté pour cette édition.';
@@ -168,7 +168,7 @@
   showError('');
   if (!data) {
    byId('candidates-list').replaceChildren();
-   byId('candidates-button').textContent = 'Candidats écartés par Albert';
+   byId('candidates-button').textContent = 'Candidats écartés';
    byId('candidates-intro').textContent = message || 'La liste des candidats écartés n’a pas pu être chargée.';
    return;
   }
