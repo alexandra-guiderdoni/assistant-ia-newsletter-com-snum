@@ -30,7 +30,7 @@
   notice: since => `Une collecte ou une rédaction de résumés est en cours sur GitHub${since}. Son résultat s’affichera ici après rechargement de la page : inutile de la relancer.`,
   lost: (subject, why) => `${why} Le suivi s’arrête ici, mais ${subject} continue peut-être sur GitHub : rechargez cette page dans quelques minutes pour voir le résultat, sans relancer.`,
   stale: name => `${name} terminée sur GitHub, mais le site sert encore l’ancienne version (cache de GitHub Pages, dix minutes au plus). Rechargez cette page dans quelques minutes : le résultat s’y affichera. Ne relancez pas.`,
-  publishedFailed: text => `Les fichiers ont été publiés et la page les affiche, mais l’exécution s’est terminée en échec (${text}). L’archive de cette collecte peut manquer : vérifiez la page des archives.`,
+  publishedFailed: text => `Les fichiers ont été publiés et la page les affiche, mais l’exécution s’est ensuite terminée en échec (${text}). Rien n’est à relancer : le détail de l’exécution dit ce qui a manqué.`,
  };
 
  global.VeilleLancement = {FRESH_TRIES, FRESH_WAIT_MS, publishedBy, outcome, sinceText, TEXT};
@@ -111,8 +111,8 @@
    });
    say(ui, `${o.name} terminée sur GitHub : lecture des fichiers publiés…`);
    let etat = await hooks.readEtat(fresh());
-   // Archivage en échec : la publication, tâche séparée, a pu réussir ; la nouvelle version est attendue de même.
-   const expected = end.state === 'success' || end.failedJob === 'archivage';
+   // L'archivage précède la publication : après un échec, rien de neuf n'est attendu sur le site.
+   const expected = end.state === 'success';
    for (let i = 0; expected && !publishedBy(etat, run.id) && i < FRESH_TRIES; i++) {
     say(ui, `${o.name} terminée sur GitHub : la page publiée se met à jour, nouvelle lecture dans quelques secondes…`);
     await G.sleep(FRESH_WAIT_MS);

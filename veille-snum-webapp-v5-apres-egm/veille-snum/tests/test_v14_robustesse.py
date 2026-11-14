@@ -311,6 +311,72 @@ class DejaArchiveTests(Cas):
         self.assertEqual(executer(), (1, 0))
 
 
+class BudgetEnCoursDeTacheTests(Cas):
+    """Contrôle de logique : une tâche déjà lancée appelait Albert après la fin du budget."""
+
+    def test_page_relue_apres_l_echeance_aucun_appel_albert(self):
+        horloge = Horloge()
+
+        class Lent(Site):
+            def get(self, url, domain, max_bytes=600_000, timeout=7):
+                if url in URLS:
+                    horloge.instant += 40
+                return super().get(url, domain, max_bytes, timeout)
+
+        albert = Albert()
+        with (
+            mock.patch("time.monotonic", horloge.monotonic),
+            mock.patch("time.sleep", horloge.sleep),
+            mock.patch("veille_snum.resumer.MAX_ALBERT_SECONDS", 30),
+        ):
+            code = self.lancer(
+                selection((URLS[0], ""), (URLS[1], "ia")), Lent(), albert
+            )
+        self.assertEqual(code, 1)
+        self.assertEqual(albert.appels, [])
+        self.assertIn("Aucun paquet publiable", self.sortie_erreur.getvalue())
+
+
+class DoublonApresRelectureTests(Cas):
+    """Contrôle de logique : deux titres gardés relus vers la même adresse, l'un disparaissait sans trace."""
+
+    def test_second_titre_ecarte_avec_son_motif(self):
+        ancien = URLS[0].replace("/article/veille-snum", "/article/ancien-slug")
+        modele = next(c for c in PREMIER["candidates"] if c["url"] == URLS[0])
+        premier = {
+            **PREMIER,
+            "candidates": [
+                *PREMIER["candidates"],
+                {**modele, "url": ancien, "title": "Ancien titre du même article"},
+            ],
+        }
+
+        class Redirige(Site):
+            def get(self, url, domain, max_bytes=600_000, timeout=7):
+                if url == ancien:
+                    self.calls.append(url)
+                    return super().get(URLS[0], domain, max_bytes, timeout)
+                return super().get(url, domain, max_bytes, timeout)
+
+        code = self.lancer(
+            selection((URLS[0], ""), (ancien, "ia")), Redirige(rapport=premier)
+        )
+        self.assertEqual(code, 0)
+        paquet = lire(self.dossier, PAQUET)
+        self.assertEqual([a["url"] for a in paquet["articles"]], [URLS[0]])
+        motifs = {
+            c["url"]: c["reason"] for c in lire(self.dossier, ECARTES)["candidates"]
+        }
+        self.assertEqual(motifs[ancien], "DOUBLON_APRES_RELECTURE")
+        # Chaque candidat du rapport est dans le paquet ou dans les écartés, une seule fois.
+        rapport = lire(self.dossier, RAPPORT)
+        presents = [a["url"] for a in paquet["articles"]] + list(motifs)
+        self.assertEqual(
+            sorted(presents), sorted(c["url"] for c in rapport["candidates"])
+        )
+        self.assertEqual(len(rapport["candidates"]), 14)
+
+
 class AlbertSature(Albert):
     """Albert refuse par un 429 tout appel au-delà de deux simultanés."""
 

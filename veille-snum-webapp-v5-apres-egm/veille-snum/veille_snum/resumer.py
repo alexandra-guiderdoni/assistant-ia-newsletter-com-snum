@@ -31,6 +31,7 @@ from .core import (
     albert_summary,
     iso_date,
     packet_for,
+    url_key,
     validate_packet_v519,
     validate_summary,
 )
@@ -46,6 +47,7 @@ STATUT_TITRES = "needs_albert"
 LECTURES_RAPPORT = 3
 ATTENTE_RAPPORT = 5
 NON_SELECTIONNE = "NON_SELECTIONNE"
+DOUBLON = "DOUBLON_APRES_RELECTURE"
 PAGE_NON_RELUE = "PAGE_NON_RELUE"
 
 
@@ -143,6 +145,10 @@ def lire_rapport(client, adresse=RAPPORT_EN_LIGNE):
     return rapport
 
 
+class HorsBudget(Exception):
+    """Échéance atteinte avant l'appel Albert : le titre reste « non résumé faute de temps »."""
+
+
 def classer_valide(candidat, resumer, limite):
     """Classement libre, comme analyze de la collecte : None signifie hors thématique."""
     feedback, repris, attentes = None, False, 0
@@ -171,8 +177,13 @@ def resumer_gardes(choix, premier, edition, client, resumer):
     limite = time.monotonic() + MAX_ALBERT_SECONDS
 
     def traiter(element):
+        # Une tâche déjà lancée ne relit pas de page ni n'appelle Albert une fois le budget épuisé.
+        if time.monotonic() >= limite:
+            raise HorsBudget
         source, adresse = source_publique(element["url"])
         candidat = lire_candidat(adresse, source, debut, fin, client)
+        if time.monotonic() >= limite:
+            raise HorsBudget
         if element["rubrique"]:
             return candidat, resumer_valide(
                 candidat, element["rubrique"], resumer, limite
@@ -193,6 +204,8 @@ def resumer_gardes(choix, premier, edition, client, resumer):
         for tache in finies:
             try:
                 issues[taches[tache]] = ("ok", tache.result())
+            except HorsBudget:
+                continue
             except Refus:
                 issues[taches[tache]] = ("page", None)
             except Exception as exc:  # noqa: BLE001 -- dernier recours, aucun détail exposé
@@ -200,6 +213,7 @@ def resumer_gardes(choix, premier, edition, client, resumer):
     pool.shutdown(wait=False, cancel_futures=True)
 
     articles, relus, exclus, erreurs = [], {}, [], []
+    adresses_relues = set()
     gardes = {element["url"] for element in choix}
     for candidat in premier["candidates"]:
         url = candidat["url"]
@@ -221,6 +235,12 @@ def resumer_gardes(choix, premier, edition, client, resumer):
             erreurs.append({"url": url, "reason": f"Albert : {code}"})
         else:
             relu, resume = valeur
+            # Deux titres gardés relus vers la même adresse (redirection) : le second est
+            # écarté avec son motif, sous son adresse d'origine, au lieu de disparaître.
+            if url_key(relu["url"]) in adresses_relues:
+                exclus.append({**ecart, "reason": DOUBLON})
+                continue
+            adresses_relues.add(url_key(relu["url"]))
             # La page relue fait foi : titre, date et adresse du jour remplacent ceux du premier temps.
             relus[url] = {champ: relu[champ] for champ in CHAMPS_CANDIDAT}
             if resume is None:

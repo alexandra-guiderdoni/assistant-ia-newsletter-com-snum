@@ -119,12 +119,14 @@
 
  // Envoie le déclenchement et renvoie {id, htmlUrl} du run créé.
  async function dispatch(workflow, inputs, token) {
-  // Runs déjà présents, relevés avant l'envoi : sans numéro dans la réponse, ils sont écartés de la recherche.
-  let known = [];
+  // Runs déjà présents, relevés avant l'envoi : sans numéro dans la réponse, ils sont écartés de la
+  // recherche. Relevé impossible (null) : aucun run ne sera deviné.
+  let known = null;
   try {
    const b = await call(runsListUrl(workflow), read(token));
-   if (b.ok) known = ((((await b.json().catch(() => null)) || {}).workflow_runs) || []).filter(Boolean).map(x => x.id);
-  } catch (_) { known = []; }
+   const list = b.ok ? ((await b.json().catch(() => null)) || {}).workflow_runs : null;
+   if (Array.isArray(list)) known = list.filter(Boolean).map(x => x.id);
+  } catch (_) { known = null; }
   const sentAt = Date.now();
   const {url, init} = dispatchRequest(workflow, inputs, token);
   const r = await call(url, init);
@@ -132,14 +134,18 @@
    const x = await r.json().catch(() => null);
    if (x && x.workflow_run_id) return {id: runId(x.workflow_run_id), htmlUrl: githubLink(x.html_url)};
   } else if (r.status !== 204) throw new Error(httpError(r.status));
+  // À partir d'ici la demande est acceptée : toute erreur est une perte de suivi, jamais un refus.
+  const unknown = 'La demande est partie, mais GitHub n’a pas indiqué quelle exécution lui correspond.';
+  if (!known) throw lost(unknown);
   for (let attempt = 0; attempt < 8; attempt++) {
    await sleep(attempt ? 3000 : 2000);
-   const l = await call(runsListUrl(workflow), read(token));
+   let l;
+   try { l = await call(runsListUrl(workflow), read(token)); } catch (err) { throw lost(String(err.message || err)); }
    if (!l.ok) throw lost(httpError(l.status));
    const run = pickRun(((await l.json().catch(() => null)) || {}).workflow_runs, sentAt, known);
    if (run) return {id: runId(run.id), htmlUrl: githubLink(run.html_url)};
   }
-  throw lost('La demande est partie, mais GitHub n’a pas indiqué quelle exécution lui correspond.');
+  throw lost(unknown);
  }
 
  // Lecture facultative du run en cours, avec jeton ou sans (dépôt public) : toute erreur vaut « inconnu ».

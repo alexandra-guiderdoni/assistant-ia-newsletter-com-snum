@@ -9,6 +9,7 @@
   BUDGET_DUREE_ALBERT: 'non résumé faute de temps',
   ECHEC_ALBERT: 'échec du résumé Albert',
   NON_SELECTIONNE: 'non gardé au premier temps',
+  DOUBLON_APRES_RELECTURE: 'même article qu’un autre titre gardé',
   PAGE_NON_RELUE: 'page non relue au second temps : introuvable, hors période ou protégée',
  };
  // Ordre des champs d'un article V519 ; id et essential sont recalculés à l'export.

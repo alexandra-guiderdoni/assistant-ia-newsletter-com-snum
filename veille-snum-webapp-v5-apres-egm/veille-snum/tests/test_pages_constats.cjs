@@ -99,3 +99,27 @@ test('fusion : le candidat demandé quitte les écartés même si l’article po
  assert.equal(merged.selection[0].article.url, article.url);
  assert.throws(() => E.merge(merged.selection, candidates, article, 'r2', ARTICLE.url), /DEJA_SELECTIONNE/);
 });
+
+test('demande acceptée sans numéro, puis réseau coupé pendant la recherche : suivi perdu, jamais « non lancée »', async () => {
+ let n = 0;
+ const w = load(async (url, init) => {
+  n += 1;
+  if (n === 1) return reply(200, {workflow_runs: []});
+  if (init.method === 'POST') return reply(204);
+  throw new TypeError('Failed to fetch');
+ });
+ await assert.rejects(w.VeilleGithub.dispatch('collecte', {mode: 'titres'}, FAKE), err => err.lost === true && /injoignable/.test(err.message));
+});
+
+test('relevé préalable impossible et réponse sans numéro : aucun run n’est deviné, le suivi est déclaré perdu', async () => {
+ const autre = run(111, new Date(Date.now() - 5000).toISOString());
+ let n = 0;
+ const w = load(async (url, init) => {
+  n += 1;
+  if (n === 1) return reply(500);
+  if (init.method === 'POST') return reply(204);
+  return reply(200, {workflow_runs: [autre]});
+ });
+ await assert.rejects(w.VeilleGithub.dispatch('collecte', {mode: 'titres'}, FAKE), err => err.lost === true);
+ assert.equal(w.calls.length, 2, 'aucune recherche dans la liste sans relevé préalable');
+});

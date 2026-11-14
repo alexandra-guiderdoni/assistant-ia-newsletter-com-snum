@@ -38,7 +38,7 @@ test('issue d’un run : publié, pas encore visible, publié malgré un échec,
  // Cache de GitHub Pages : le run a réussi mais le site sert encore l'état d'un autre run.
  assert.equal(L.outcome('success', {...ETAT, run_id: 1}, ETAT.run_id), 'attente');
  assert.equal(L.outcome('success', null, ETAT.run_id), 'attente');
- // Archivage en échec après le déploiement : les fichiers sont bien ceux de ce run.
+ // Échec survenu après la publication : les fichiers sont bien ceux de ce run.
  assert.equal(L.outcome('failure', ETAT, ETAT.run_id), 'publie-en-echec');
  assert.equal(L.outcome('failure', {...ETAT, run_id: 1}, ETAT.run_id), 'echec');
  assert.equal(L.outcome('failure', null, ETAT.run_id), 'echec');
@@ -60,7 +60,7 @@ test('messages : le suivi perdu ne parle pas d’échec, le cache périmé inter
  assert.match(L.TEXT.active(' depuis 14 h 05'), /déjà en cours sur GitHub depuis 14 h 05/);
  assert.match(L.TEXT.active(''), /activez de nouveau le bouton/);
  assert.match(L.TEXT.notice(''), /inutile de la relancer/);
- assert.match(L.TEXT.publishedFailed('échec'), /L’archive de cette collecte peut manquer/);
+ assert.match(L.TEXT.publishedFailed('échec'), /Rien n’est à relancer/);
  assert.doesNotMatch(Object.values(L.TEXT).map(f => f('x', 'y')).join(' '), /\u2014|workflow|\brun\b/);
 });
 

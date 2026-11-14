@@ -185,7 +185,7 @@ jobs:
                   "- Étape suivante : sur la page de sélection, cocher les titres à garder, puis « Rédiger les résumés »",
               ]
           if mode == "titres":
-              lignes.append(f"- La collecte précédente n'est plus sur la page : elle reste consultable dans {site}archives.html")
+              lignes.append(f"- La collecte précédente n'est plus sur la page : si elle avait été résumée, elle reste consultable dans {site}archives.html")
           if mode == "page seule":
               lignes.append("- Fichiers en ligne repris tels quels : aucun appel Albert, aucune archive")
           if os.environ.get("GITHUB_REF") != "refs/heads/main":
@@ -253,6 +253,14 @@ jobs:
         run: |
           A="$RUNNER_TEMP/archive"
           id=$(python -c 'import json, sys; print(json.load(open(sys.argv[1]))["id"])' "$A/entree.json")
+          # Un paquet sans article (tout jugé hors thématique, aucun candidat) est publié,
+          # pour que ses candidats restent repêchables, mais n'encombre pas les archives.
+          articles=$(python -c 'import json, sys; print(json.load(open(sys.argv[1]))["articles"])' "$A/entree.json")
+          if [ "$articles" -eq 0 ]; then
+            echo "Paquet sans article : collecte $id non archivée."
+            { echo "### Archive"; echo "- Paquet sans article : collecte non archivée"; } >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
           export GIT_INDEX_FILE="$RUNNER_TEMP/index-archive"
           publie=non
           for essai in 1 2 3 4 5; do
@@ -299,9 +307,11 @@ jobs:
             echo "- Consultation : https://alexandra-guiderdoni.github.io/assistant-ia-newsletter-com-snum/archives.html"
           } >> "$GITHUB_STEP_SUMMARY"
 
+  # Après l'archivage, et seulement s'il a réussi ou n'avait pas lieu d'être : un paquet
+  # n'est jamais publié sans son archive, que la collecte suivante effacerait du site.
   deploiement:
-    needs: collecte
-    if: github.ref == 'refs/heads/main'
+    needs: [collecte, archivage]
+    if: always() && github.ref == 'refs/heads/main' && needs.collecte.result == 'success' && (needs.archivage.result == 'success' || needs.archivage.result == 'skipped')
     runs-on: ubuntu-latest
     permissions:
       pages: write
