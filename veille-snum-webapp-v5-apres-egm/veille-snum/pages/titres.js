@@ -171,6 +171,7 @@
  function titreItem(e, c) {
   const li = el('li', 'fr-mb-3w');
   li.append(el('h4', 'fr-h6 fr-mb-1v', e.title));
+  e.li = li;
   li.append(el('p', 'fr-text--sm fr-mb-1v', `${c.source || 'Source inconnue'} · ${S.dateLong(c.publication_date_iso)}`));
   if (!e.url) { li.append(el('p', 'fr-text--sm', 'Adresse non publique : ce titre ne peut pas être résumé.')); return li; }
   const linkP = el('p', 'fr-mb-1w'), a = S.publicationLink(e.url, e.title);
@@ -191,6 +192,9 @@
   li.append(linkP, row);
   return li;
  }
+
+ // Articles déjà publiés (publies.js), lus après l'affichage : mention sur place, sans reconstruire la liste.
+ const markPublished = () => entries.filter(e => global.VeillePublies.decorate(e.li, e.url)).length;
 
  // Phase « titres » : liste reconstruite à partir du rapport publié, aucun titre gardé.
  function mount(state, report) {
@@ -274,5 +278,5 @@
   }
  });
 
- Object.assign(global.VeilleTitres, {mount, refresh, configure: o => { options = {...options, ...o}; }});
+ Object.assign(global.VeilleTitres, {mount, markPublished, refresh, configure: o => { options = {...options, ...o}; }});
 })(typeof window !== 'undefined' ? window : globalThis);

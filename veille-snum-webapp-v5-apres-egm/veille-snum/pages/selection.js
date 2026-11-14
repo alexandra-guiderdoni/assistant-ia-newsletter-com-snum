@@ -66,7 +66,7 @@
  // Montée par page.js après chargement du paquet publié (mount), complétée par
  // ecartes.js lors d'un repêchage (entries, setEntries).
  const byId = id => document.getElementById(id);
- let packet = null, selection = [];
+ let packet = null, selection = [], touched = false;
 
  function el(tag, className, text) {
   const node = document.createElement(tag);
@@ -173,6 +173,7 @@
   const linkP = el('p', 'fr-mb-1w');
   linkP.append(publicationLink(a.url, a.title));
   content.append(linkP);
+  if (global.VeillePublies) global.VeillePublies.decorate(content, a.url);
 
   const row = el('div', 'fr-grid-row fr-grid-row--gutters fr-grid-row--bottom');
   const keepCol = el('div', 'fr-col-12 fr-col-md-4');
@@ -234,7 +235,7 @@
   byId('export-status').textContent = kept === 0
    ? 'Aucun article gardé : gardez au moins un article pour télécharger ou copier le JSON.'
    : `Le JSON V519 exporté contiendra ${kept} article${kept > 1 ? 's' : ''} ; numérotation, tri, essentiels et alertes sont recalculés.`;
-  if (message) announce(message);
+  if (message) { touched = true; announce(message); }
  }
 
  const exported = () => JSON.stringify(rebuild(packet, selection), null, 2) + '\n';
@@ -264,11 +265,22 @@
   packet = data;
   const kept = defaultKept(packet.articles);
   selection = packet.articles.map((a, i) => ({article: a, keep: kept[i], rubric: a.rubric, key: String(i + 1)}));
+  touched = false;
   byId('load-error').hidden = true;
   byId('selection-content').hidden = false;
   renderWatch();
   renderArticles();
   refresh();
+ }
+ // Articles déjà publiés (publies.js) : mention sur place, sans reconstruire la liste ni déplacer le
+ // focus ; non gardés tant que rien n'a été modifié. Renvoie leur nombre.
+ function markPublished() {
+  const found = selection.filter(s => global.VeillePublies.decorate(byId('article-list').querySelector(`li[data-key="${s.key}"]`), s.article.url));
+  if (touched || !found.length) return found.length;
+  for (const s of found) { s.keep = false; byId(`garder-${s.key}`).checked = false; byId(`garder-${s.key}`).closest('li').classList.add('unselected'); }
+  for (const r of new Set(found.map(s => s.rubric))) byId(`heading-${r}`).textContent = groupHeading(r);
+  refresh();
+  return found.length;
  }
  function setEntries(entries, message) {
   selection = entries;
@@ -276,6 +288,6 @@
   refresh(message);
  }
 
- Object.assign(global.VeilleSelection, {mount, showLoadError, rubricSelect, publicationLink, setEntries,
+ Object.assign(global.VeilleSelection, {mount, markPublished, showLoadError, rubricSelect, publicationLink, setEntries,
   entries: () => selection, packet: () => packet});
 })(typeof window !== 'undefined' ? window : globalThis);

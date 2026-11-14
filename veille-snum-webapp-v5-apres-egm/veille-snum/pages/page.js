@@ -112,6 +112,17 @@
   return T.view(etat) === 'titres' ? loadTitres(etat, bust) : loadPaquet(bust, unread, etat);
  }
 
+ // Articles déjà publiés dans les éditions précédentes archivées (publies.js), lus après
+ // l'affichage ; une réponse arrivée après un nouveau chargement est ignorée.
+ let publishedTicket = 0;
+ async function checkPublished(edition, mark) {
+  const ticket = ++publishedTicket, D = global.VeillePublies;
+  byId('publies-status').textContent = 'Recherche des articles déjà publiés dans les éditions précédentes…';
+  const result = await D.check(edition);
+  if (ticket !== publishedTicket) return;
+  byId('publies-status').textContent = D.summary({...result, found: result.error ? 0 : mark()});
+ }
+
  async function loadTitres(etat, bust) {
   let report = null, why = 'le fichier ne suit pas le format du rapport de collecte';
   try {
@@ -130,6 +141,7 @@
   showParts('titres');
   T.mount(etat, report);
   R.render(report, null, '', 'titres');
+  checkPublished(etat.edition_date, T.markPublished);
   return 'titres';
  }
 
@@ -158,6 +170,7 @@
   showParts('paquet');
   S.mount(packet);
   if (target.mode === 'archive') showArchive(packet);
+  checkPublished(packet.edition_date, S.markPublished);
   try {
    const got = await fetchJson('rapport-collecte.json', bust);
    R.render(got.missing ? null : got.data, packet, got.missing ? 'Le rapport de collecte n’est pas publié pour cette édition (paquet publié avant son ajout).' : '');
