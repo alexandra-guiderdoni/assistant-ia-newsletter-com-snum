@@ -60,3 +60,10 @@ test('messages d’erreur du jeton : en français, sans libellé anglais, adapt�
  }
  assert.match(lire('index.html'), /id="gh-token-doc"[^>]*>Jeton GitHub de l’équipe : marche à suivre \(nouvelle fenêtre\)</);
 });
+
+test('accordéons fermés au chargement, « État des 14 sources » compris', () => {
+ const html = lire('index.html');
+ const boutons = [...html.matchAll(/<button class="fr-accordion__btn"[^>]*>/g)].map(m => m[0]);
+ assert.ok(boutons.length >= 5, `${boutons.length} accordéons`);
+ for (const b of boutons) assert.match(b, /aria-expanded="false"/, b);
+});
