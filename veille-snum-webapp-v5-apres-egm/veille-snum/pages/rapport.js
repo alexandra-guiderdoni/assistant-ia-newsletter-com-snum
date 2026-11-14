@@ -37,7 +37,7 @@
   ];
  }
 
- const sourceLine = s => `${s.label} : ${STATUS_NAMES[s.status] || s.status} · ${s.discovered || 0} URL découvertes · ${s.attempted || 0} tentées · ${s.opened || 0} pages reçues · ${s.eligible || 0} candidats · ${s.technical_errors || 0} erreurs d’articles · ${s.discovery_errors || 0} erreurs de découverte · ${s.sitemap_skipped || 0} URL/sitemaps ignorés · ${s.not_visited || 0} non tentées. ${(s.notes || []).join(' ; ')}`;
+ const sourceLine = s => `${s.label} : ${STATUS_NAMES[s.status] || s.status} · ${s.discovered || 0} URL découvertes · ${s.attempted || 0} tentées · ${s.opened || 0} pages reçues · ${s.eligible || 0} candidats · ${s.technical_errors || 0} erreurs d’articles · ${s.discovery_errors || 0} erreurs de découverte · ${s.sitemap_skipped || 0} URL ou plans de site ignorés · ${s.not_visited || 0} non tentées. ${(s.notes || []).join(' ; ')}`;
 
  // Listes du rapport : seuls les objets sont affichés, un élément inattendu ne casse pas la page.
  const rows = list => (Array.isArray(list) ? list : []).filter(x => x && typeof x === 'object');

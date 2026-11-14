@@ -79,6 +79,12 @@
   if (/^https:\/\//.test(String(url))) { a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer'; }
   return a;
  }
+ // Lien vers la publication : son nom porte le titre de l'article, pour le distinguer des liens voisins.
+ function publicationLink(url, title) {
+  const a = externalLink(url, 'Consulter la publication');
+  a.append(el('span', 'fr-sr-only', ` « ${title} »`), document.createTextNode(' (nouvelle fenêtre)'));
+  return a;
+ }
  // Étiquette visible, complétée du titre de l'article pour les lecteurs d'écran.
  function label(forId, visible, context) {
   const l = el('label', 'fr-label');
@@ -165,7 +171,7 @@
    content.append(p);
   }
   const linkP = el('p', 'fr-mb-1w');
-  linkP.append(externalLink(a.url, 'Consulter la publication (nouvelle fenêtre)'));
+  linkP.append(publicationLink(a.url, a.title));
   content.append(linkP);
 
   const row = el('div', 'fr-grid-row fr-grid-row--gutters fr-grid-row--bottom');
@@ -270,6 +276,6 @@
   refresh(message);
  }
 
- Object.assign(global.VeilleSelection, {mount, showLoadError, rubricSelect, setEntries,
+ Object.assign(global.VeilleSelection, {mount, showLoadError, rubricSelect, publicationLink, setEntries,
   entries: () => selection, packet: () => packet});
 })(typeof window !== 'undefined' ? window : globalThis);
