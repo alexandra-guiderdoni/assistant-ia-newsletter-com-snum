@@ -10,11 +10,16 @@
  const pad = n => String(n).padStart(2, '0');
  const localIso = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 
- // Mêmes valeurs par défaut que la page locale : aujourd'hui, et sept jours avant.
+ // Mêmes valeurs par défaut que publier.py et la page locale : la revue part le
+ // mardi et le vendredi ; édition au prochain envoi, à partir d'aujourd'hui, et
+ // période depuis l'envoi précédent, bornes incluses.
+ const SEND_DAYS = [2, 5]; // getDay() : dimanche = 0
  function defaultDates(now) {
-  const start = new Date(now);
-  start.setDate(start.getDate() - 7);
-  return {edition: localIso(now), start: localIso(start), end: localIso(now)};
+  const edition = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  while (!SEND_DAYS.includes(edition.getDay())) edition.setDate(edition.getDate() + 1);
+  const start = new Date(edition);
+  do start.setDate(start.getDate() - 1); while (!SEND_DAYS.includes(start.getDay()));
+  return {edition: localIso(edition), start: localIso(start), end: localIso(edition)};
  }
  // Mêmes contrôles que validateDates (veille_snum/app.js) : {champ: message}.
  function dateErrors(edition, start, end) {

@@ -11,11 +11,11 @@ on:
   workflow_dispatch:
     inputs:
       edition:
-        description: "Date d'édition JJ/MM/AAAA, par exemple 20/11/2026 (vide : aujourd'hui, heure de Paris)"
+        description: "Date d'édition JJ/MM/AAAA, par exemple 20/11/2026 (vide : prochain mardi ou vendredi, heure de Paris)"
         required: false
         default: ""
       debut:
-        description: "Début de période JJ/MM/AAAA (vide : sept jours avant l'édition)"
+        description: "Début de période JJ/MM/AAAA (vide : jour d'envoi précédent l'édition, mardi ou vendredi)"
         required: false
         default: ""
       fin:

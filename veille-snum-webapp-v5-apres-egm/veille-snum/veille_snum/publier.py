@@ -57,13 +57,34 @@ def ecartes(rapport):
     ]
 
 
-def fenetre(aujourdhui, jours=7):
-    """Même période par défaut que la page : les sept jours précédant l'édition."""
-    debut = aujourdhui - dt.timedelta(days=jours)
+JOURS_ENVOI = (1, 4)  # la revue part le mardi et le vendredi (lundi = 0)
+
+
+def aujourdhui():
+    return dt.datetime.now(ZoneInfo("Europe/Paris")).date()
+
+
+def prochaine_edition(jour):
+    """Prochain jour d'envoi, mardi ou vendredi, à partir de jour inclus."""
+    while jour.weekday() not in JOURS_ENVOI:
+        jour += dt.timedelta(days=1)
+    return jour
+
+
+def envoi_precedent(edition):
+    """Jour d'envoi qui précède l'édition : vendredi pour un mardi, mardi pour un vendredi."""
+    jour = edition - dt.timedelta(days=1)
+    while jour.weekday() not in JOURS_ENVOI:
+        jour -= dt.timedelta(days=1)
+    return jour
+
+
+def fenetre(edition):
+    """Même période par défaut que la page : de l'envoi précédent à l'édition, bornes incluses."""
     return {
-        "edition_date": aujourdhui.isoformat(),
-        "window_start": debut.isoformat(),
-        "window_end": aujourdhui.isoformat(),
+        "edition_date": edition.isoformat(),
+        "window_start": envoi_precedent(edition).isoformat(),
+        "window_end": edition.isoformat(),
     }
 
 
@@ -192,19 +213,19 @@ def main(argv=None):
     parser.add_argument(
         "--edition",
         type=date_saisie,
-        help="JJ/MM/AAAA ; aujourd'hui, heure de Paris, par défaut",
+        help="JJ/MM/AAAA ; prochain mardi ou vendredi, heure de Paris, par défaut",
     )
     parser.add_argument(
         "--debut",
         type=date_saisie,
-        help="JJ/MM/AAAA ; sept jours avant l'édition par défaut",
+        help="JJ/MM/AAAA ; jour d'envoi précédent l'édition par défaut",
     )
     parser.add_argument(
         "--fin", type=date_saisie, help="JJ/MM/AAAA ; date d'édition par défaut"
     )
     parser.add_argument("--sortie", default="site")
     args = parser.parse_args(argv)
-    edition = args.edition or dt.datetime.now(ZoneInfo("Europe/Paris")).date()
+    edition = args.edition or prochaine_edition(aujourdhui())
     payload = fenetre(edition)
     if args.debut:
         payload["window_start"] = args.debut.isoformat()

@@ -73,14 +73,14 @@
      <div class="fr-grid-row fr-grid-row--gutters">
       <div class="fr-col-12 fr-col-md-4">
        <div class="fr-input-group" id="edition-group">
-        <label class="fr-label" for="edition">Date d’édition<span class="fr-hint-text">Date figurant sur la newsletter</span></label>
+        <label class="fr-label" for="edition">Date d’édition<span class="fr-hint-text">Date figurant sur la newsletter ; par défaut, le prochain mardi ou vendredi</span></label>
         <input class="fr-input" id="edition" name="edition_date" type="date" aria-describedby="edition-messages">
         <div class="fr-messages-group" id="edition-messages" aria-live="polite"></div>
        </div>
       </div>
       <div class="fr-col-12 fr-col-md-4">
        <div class="fr-input-group" id="start-group">
-        <label class="fr-label" for="start">Début de période<span class="fr-hint-text">Date incluse</span></label>
+        <label class="fr-label" for="start">Début de période<span class="fr-hint-text">Date incluse ; par défaut, le jour de l’envoi précédent. Si cette édition n’a pas eu lieu, avancez le début.</span></label>
         <input class="fr-input" id="start" name="window_start" type="date" aria-describedby="start-messages">
         <div class="fr-messages-group" id="start-messages" aria-live="polite"></div>
        </div>
