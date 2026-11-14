@@ -9,6 +9,10 @@
  const ETAT_SCHEMA = 'SNUM_ETAT_V1';
  const PHASES = ['titres', 'resumes', 'collecte'];
  const MAX_SELECTION = 60;
+ // GitHub refuse des entrées de plus de 65 535 caractères : marge gardée pour les dates et le mode.
+ const MAX_SELECTION_CHARS = 60000;
+ // Albert s'arrête après six minutes : au rythme observé, une trentaine d'articles tiennent sans risque.
+ const SAFE_SELECTION = 30;
  const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
  const HTTPS_URL = /^https:\/\/[^\s]+$/;
 
@@ -44,8 +48,21 @@
   if (!etat) throw new Error('ETAT_ABSENT');
   if (etat.phase !== 'titres') throw new Error('PHASE_INVALIDE');
   if (!Array.isArray(selection) || !selection.length) throw new Error('SELECTION_VIDE');
-  return {mode: 'resumes', ...G.collectInputs(etat.edition_date, etat.window_start, etat.window_end), selection: JSON.stringify(selection)};
+  const text = JSON.stringify(selection);
+  if (text.length > MAX_SELECTION_CHARS) throw new Error('SELECTION_TROP_VOLUMINEUSE');
+  return {mode: 'resumes', ...G.collectInputs(etat.edition_date, etat.window_start, etat.window_end), selection: text};
  }
+ // Ce que le site publie a-t-il changé depuis l'affichage des titres ? '' : non, ou état illisible ;
+ // 'paquet' : un paquet a été publié depuis ; 'titres' : d'autres titres ont remplacé ceux affichés.
+ function moved(shown, online) {
+  if (!shown || !online) return '';
+  if (online.phase !== 'titres') return 'paquet';
+  return ['run_id', 'edition_date', 'window_start', 'window_end'].some(k => String(online[k]) !== String(shown[k])) ? 'titres' : '';
+ }
+ const MOVED = {
+  paquet: 'Un paquet a déjà été publié pendant votre tri (résumés demandés depuis une autre page, ou collecte complète) : la page l’affiche maintenant. Les titres qui n’y figurent pas sont dans les candidats écartés, où ils restent repêchables.',
+  titres: 'Une nouvelle collecte a remplacé les titres que vous aviez sous les yeux : la liste a été rechargée, refaites votre sélection.',
+ };
  // « Lancer la collecte » : titres seuls par défaut, collecte complète sur demande.
  const launchInputs = (edition, start, end, complete) => ({...G.collectInputs(edition, start, end), mode: complete ? 'collecte' : 'titres'});
 
@@ -69,15 +86,21 @@
   return n > 1 ? `Rédiger les résumés des ${n} articles gardés` : 'Rédiger les résumés des articles gardés';
  }
  const countText = (kept, total) => `${kept} titre${kept > 1 ? 's' : ''} gardé${kept > 1 ? 's' : ''} sur ${total}`;
+ // Durée annoncée : estimée d'après quatre collectes publiques du 13 novembre 2026, non mesurée pour ce mode.
+ function durationText(kept) {
+  const base = 'Comptez une à deux minutes pour dix articles, puis environ deux minutes de publication.';
+  return kept > SAFE_SELECTION ? `${base} Albert s’arrête après six minutes de rédaction : au-delà d’une trentaine d’articles, les derniers peuvent ne pas être résumés ; ils rejoignent alors les candidats écartés, où ils restent repêchables.` : base;
+ }
 
- global.VeilleTitres = {MAX_SELECTION, parseEtat, view, isSelectable, buildSelection, resumesInputs, launchInputs, groupBySource, resumesLabel, countText};
+ global.VeilleTitres = {MAX_SELECTION, MAX_SELECTION_CHARS, SAFE_SELECTION, MOVED, parseEtat, view, isSelectable, buildSelection, resumesInputs, moved, launchInputs,
+  groupBySource, resumesLabel, countText, durationText};
 
  if (typeof document === 'undefined' || !document.getElementById('titres-section')) return;
 
  // ---------- Interface ----------
  const byId = id => document.getElementById(id);
  let etat = null, entries = [];
- let options = {hasToken: () => false, requireToken: () => null, isBusy: () => '', launch: async () => {}};
+ let options = {hasToken: () => false, requireToken: () => null, isBusy: () => '', launch: async () => {}, readEtat: async () => null, reload: async () => false};
 
  function el(tag, className, text) {
   const node = document.createElement(tag);
@@ -110,7 +133,7 @@
    : kept > MAX_SELECTION ? `Gardez au plus ${MAX_SELECTION} titres : Albert ne rédige pas davantage de résumés en une fois.`
     : !options.hasToken() ? 'Un jeton GitHub est nécessaire pour faire rédiger les résumés (section « Connexion à GitHub »).' : '';
   button.disabled = !!why;
-  byId('resumes-hint').textContent = why || `Albert rédige les résumés des titres gardés, dans la thématique choisie ou celle qu’il juge adaptée ; un titre jugé hors thématique rejoint les candidats écartés. Comptez environ une minute pour dix articles, plus la publication.`;
+  byId('resumes-hint').textContent = why || `Albert rédige les résumés des titres gardés, dans la thématique choisie ou celle qu’il juge adaptée ; un titre jugé hors thématique rejoint les candidats écartés. ${durationText(kept)}`;
  }
 
  function rubricField(e) {
@@ -192,12 +215,19 @@
   box.replaceChildren();
   if (!message) return;
   box.append(el('p', '', message));
-  if (url) { const a = el('a', 'fr-link', 'Consulter le run sur GitHub (nouvelle fenêtre)'); a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer'; box.append(a); }
+  if (url) { const a = el('a', 'fr-link', 'Voir le détail de l’exécution sur GitHub (nouvelle fenêtre)'); a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer'; box.append(a); }
  }
  function lock(on) {
   for (const field of byId('titres-list').querySelectorAll('input, select')) field.disabled = on;
  }
- const SELECTION_ERRORS = {SELECTION_VIDE: 'Gardez au moins un titre.', SELECTION_TROP_LONGUE: `Gardez au plus ${MAX_SELECTION} titres.`};
+ const SELECTION_ERRORS = {SELECTION_VIDE: 'Gardez au moins un titre.', SELECTION_TROP_LONGUE: `Gardez au plus ${MAX_SELECTION} titres.`,
+  SELECTION_TROP_VOLUMINEUSE: 'La sélection dépasse la taille acceptée par GitHub : gardez moins de titres, puis repêchez les autres ensuite.'};
+ // Avant l'envoi, puis après un échec : si le site ne publie plus les titres affichés, la page se recharge et l'explique.
+ async function reloadIfMoved(online) {
+  const change = moved(etat, online);
+  if (change) await options.reload();
+  return change ? MOVED[change] : '';
+ }
 
  byId('resumes').addEventListener('click', async () => {
   const button = byId('resumes');
@@ -214,8 +244,12 @@
   try {
    await options.launch({inputs, token, button, busy: 'Rédaction des résumés en cours…', restore: () => resumesLabel(keptCount()),
     ui: {status: 'titres-status', error: 'titres-error', elapsed: 'titres-elapsed', run: 'titres-run'},
-    name: 'Rédaction des résumés', duration: `Comptez environ une minute pour dix articles (${n} demandé${n > 1 ? 's' : ''}), plus la publication.`,
-    failed: text => `La rédaction des résumés n’a pas abouti (${text}) : les titres restent affichés, vous pouvez relancer.`});
+    name: 'Rédaction des résumés', subject: 'la rédaction des résumés', duration: `${n} article${n > 1 ? 's' : ''} demandé${n > 1 ? 's' : ''}. ${durationText(n)}`,
+    before: async () => { const message = await reloadIfMoved(await options.readEtat()); if (message) throw new Error(message); },
+    failed: (text, online) => {
+     const changed = MOVED[moved(etat, online)] || '';
+     return {reload: !!changed, message: changed || `La rédaction des résumés n’a pas abouti (${text}). Vos titres gardés restent cochés : vous pouvez relancer. Si l’échec se répète, Albert est peut-être indisponible : réessayez plus tard.`};
+    }});
   } finally {
    lock(false);
    if (button.isConnected) refresh();

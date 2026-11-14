@@ -23,8 +23,9 @@
   if (!FILES.some(f => f.name === name)) throw new Error('FICHIER_INVALIDE');
   return `${G.RAW_BASE}collectes/${checkId(id)}/${name}`;
  }
- // raw.githubusercontent.com garde quelques minutes un fichier en cache : le
- // paramètre t force une lecture fraîche, en plus de cache: 'no-store'.
+ // raw.githubusercontent.com garde cinq minutes un fichier en cache, et le paramètre t ne
+ // contourne pas ce cache (constat du 13 novembre 2026) : avec cache: 'no-store', il écarte
+ // seulement celui du navigateur. Une archive peut donc apparaître avec quelques minutes de retard.
  const archiveUrl = (id, name, bust) => `${fileUrl(id, name)}?t=${encodeURIComponent(bust)}`;
  const selectionHref = id => `./?collecte=${encodeURIComponent(checkId(id))}`;
 

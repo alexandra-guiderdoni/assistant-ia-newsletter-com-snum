@@ -1,10 +1,10 @@
 'use strict';
 // Page Veille SNUM sur GitHub Pages : chargement des fichiers publiés, connexion
-// à GitHub et lancement de la collecte par GitHub Actions, qui joue le rôle du
-// serveur local (collecte, Albert, publication). etat-collecte.json indique la
-// phase publiée : « titres » affiche les titres à trier (titres.js), sinon le
-// paquet V519. Avec ?collecte=<id>, la page rouvre une collecte archivée
-// (archives.js) au lieu des fichiers du site.
+// à GitHub et formulaire de collecte ; GitHub Actions joue le rôle du serveur
+// local (collecte, Albert, publication) et lancement.js suit son exécution.
+// etat-collecte.json indique la phase publiée : « titres » affiche les titres à
+// trier (titres.js), sinon le paquet V519. Avec ?collecte=<id>, la page rouvre
+// une collecte archivée (archives.js) au lieu des fichiers du site.
 (function (global) {
  const DATE_FIELDS = [['edition', 'la date d’édition'], ['start', 'la date de début de période'], ['end', 'la date de fin de période']];
  const pad = n => String(n).padStart(2, '0');
@@ -33,10 +33,10 @@
 
  // ---------- Interface ----------
  const S = global.VeilleSelection, G = global.VeilleGithub, R = global.VeilleRapport, E = global.VeilleEcartes, A = global.VeilleArchives, T = global.VeilleTitres;
+ const L = global.VeilleLancement, COLLECT_UI = L.COLLECT_UI, showError = L.showError;
  const byId = id => document.getElementById(id);
  const target = A.requested(global.location.search);
- const COLLECT_UI = {status: 'collect-status', error: 'collect-error', elapsed: 'collect-elapsed', run: 'collect-run'};
- let collecting = false, shownView = '';
+ let shownView = '';
 
  function setFieldError(id, message) {
   const group = byId(`${id}-group`), box = byId(`${id}-messages`), field = byId(id);
@@ -77,32 +77,19 @@
   byId('gh-token-status').textContent = 'Jeton effacé de la page.';
  });
 
- const say = (ui, text) => { byId(ui.status).textContent = text; };
- function runLink(text, url) {
-  const a = document.createElement('a');
-  a.className = 'fr-link'; a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.textContent = text;
-  return a;
- }
- function showError(ui, message, url) {
-  const box = byId(ui.error);
-  box.hidden = !message;
-  box.replaceChildren();
-  if (!message) return;
-  const p = document.createElement('p'); p.textContent = message; box.append(p);
-  if (url) box.append(runLink('Consulter le run sur GitHub (nouvelle fenêtre)', url));
- }
- function showRun(ui, url) {
-  byId(ui.run).replaceChildren();
-  if (url) byId(ui.run).append(runLink('Suivre le run sur GitHub (nouvelle fenêtre)', url));
- }
-
- // Collecte en cours : fichiers du site. Archive : branche donnees-veille, toujours relue fraîche.
+ // Collecte en cours : fichiers du site. Archive : branche donnees-veille. cache: 'no-store'
+ // écarte le cache du navigateur, pas celui de GitHub (dix minutes pour le site, cinq pour
+ // les archives). GitHub Pages répond parfois 503 un court instant : une seconde lecture suit.
  async function fetchJson(name, bust) {
   const url = target.mode === 'archive' ? A.archiveUrl(target.id, name, bust || Date.now()) : `./${name}${bust ? `?v=${bust}` : ''}`;
-  const r = await fetch(url, {cache: 'no-store'});
-  if (r.status === 404) return {missing: true};
-  if (!r.ok) throw new Error(`le serveur a répondu ${r.status}`);
-  return {data: await r.json()};
+  for (let attempt = 0; ; attempt++) {
+   let r;
+   try { r = await fetch(url, {cache: 'no-store'}); } catch (_) { throw new Error('le site est injoignable'); }
+   if (r.status === 404) return {missing: true};
+   if (r.ok) return {data: await r.json()};
+   if (r.status < 500 || attempt) throw new Error(`le serveur a répondu ${r.status}`);
+   await G.sleep(1500);
+  }
  }
  function showParts(view) {
   byId('titres-section').hidden = view !== 'titres';
@@ -110,15 +97,19 @@
   shownView = view;
  }
 
- // Lit l'état publié (absent sur un site antérieur, jamais en mode archive), puis la vue qui lui correspond.
+ // État publié : absent d'un site antérieur, jamais lu en mode archive ; unread : lecture en échec.
+ async function readEtat(bust) {
+  if (target.mode !== 'current') return {etat: null, unread: false};
+  try { const got = await fetchJson('etat-collecte.json', bust); return {etat: got.missing ? null : T.parseEtat(got.data), unread: false}; }
+  catch (_) { return {etat: null, unread: true}; }
+ }
+ // Lit l'état publié, puis la vue qui lui correspond.
  // Renvoie 'titres', 'paquet', ou false si les fichiers n'ont pas pu être chargés.
  async function load(bust) {
-  let etat = null;
-  if (target.mode === 'current') {
-   try { const got = await fetchJson('etat-collecte.json', bust); etat = got.missing ? null : T.parseEtat(got.data); } catch (_) { etat = null; }
-  }
+  const {etat, unread} = await readEtat(bust);
   byId('reset-notice').hidden = true;
-  return T.view(etat) === 'titres' ? loadTitres(etat, bust) : loadPaquet(bust);
+  byId('reset-status').textContent = '';
+  return T.view(etat) === 'titres' ? loadTitres(etat, bust) : loadPaquet(bust, unread);
  }
 
  async function loadTitres(etat, bust) {
@@ -129,7 +120,7 @@
    else if (R.isReport(got.data)) report = got.data;
   } catch (err) { why = String(err.message || err); }
   if (!report) {
-   S.showLoadError(`Les titres trouvés n’ont pas pu être chargés (${why}). Réessayez dans quelques minutes.`);
+   S.showLoadError(`Les titres trouvés n’ont pas pu être chargés (${why}). Rechargez la page dans une minute ; ne lancez une nouvelle collecte que si le problème persiste.`);
    byId('load-error').firstChild.textContent = 'Titres indisponibles';
    shownView = '';
    return false;
@@ -142,8 +133,9 @@
   return 'titres';
  }
 
- // Charge le paquet, puis le rapport et les candidats ; bust force une lecture fraîche après un lancement.
- async function loadPaquet(bust) {
+ // Charge le paquet, puis le rapport et les candidats. unread : l'état publié n'a pas pu être lu,
+ // la page ignore donc si des titres attendent d'être triés et ne conseille pas de relancer.
+ async function loadPaquet(bust, unread) {
   let packet;
   try {
    const got = await fetchJson('paquet-v519.json', bust);
@@ -154,7 +146,9 @@
    const why = String(err.message || err);
    S.showLoadError(target.mode === 'archive'
     ? `Le paquet de la collecte archivée ${target.id} n’a pas pu être chargé (${why}). Une archive récente peut mettre quelques minutes à être lisible : réessayez plus tard.`
-    : `Le paquet de la semaine n’a pas pu être chargé (${why}). Lancez une collecte ou réessayez plus tard.`);
+    : unread ? `Les fichiers publiés n’ont pas pu être lus (${why}) : GitHub Pages est peut-être indisponible un instant. Rechargez la page dans une minute ; ne lancez une nouvelle collecte que si le problème persiste.`
+     : `Le paquet de la semaine n’a pas pu être chargé (${why}). Lancez une collecte ou réessayez plus tard.`);
+   if (unread) byId('load-error').firstChild.textContent = 'Page momentanément illisible';
    if (target.mode === 'archive') byId('archive-text').textContent = 'Collecte archivée indisponible.';
    shownView = '';
    return false;
@@ -186,54 +180,9 @@
   byId('selection-content').hidden = true;
   byId('load-error').hidden = true;
   byId('reset-notice').hidden = false;
+  // Annonce propre, que la progression de la collecte ne remplace pas.
+  byId('reset-status').textContent = `La page repart de zéro. ${byId('reset-text').textContent}`;
   shownView = '';
- }
-
- // Si le bouton utilisé a disparu avec l'ancienne vue, le focus passe au titre de la nouvelle.
- const visible = node => !!node && node.getClientRects().length > 0;
- function keepFocus(button) {
-  if (visible(button)) return;
-  const next = ['summary-heading', 'titres-heading', 'load-error'].map(byId).find(visible) || byId('collect');
-  if (next.tagName !== 'BUTTON') next.setAttribute('tabindex', '-1');
-  next.focus();
- }
-
- // Lance publier-paquet-snum.yml, suit le run, puis relit les fichiers publiés.
- // o : {inputs, token, button, ui, busy, restore, name, duration, failed, done, onAccepted}.
- async function launch(o) {
-  const {ui, button} = o;
-  collecting = true;
-  showError(ui, ''); showRun(ui, '');
-  // Le bouton garde le focus : il est marqué indisponible au lieu d'être désactivé.
-  button.setAttribute('aria-disabled', 'true'); button.textContent = o.busy;
-  const startedAt = Date.now();
-  let link = '', accepted = false;
-  try {
-   say(ui, 'Envoi de la demande à GitHub…');
-   const run = await G.dispatch('collecte', o.inputs, o.token);
-   accepted = true; link = run.htmlUrl; showRun(ui, link);
-   if (o.onAccepted) { o.onAccepted(); say(ui, `${o.name} acceptée par GitHub : la page repart de zéro, la collecte précédente est dans les archives.`); }
-   const end = await G.follow(run.id, o.token, startedAt, p => {
-    if (p.htmlUrl && p.htmlUrl !== link) { link = p.htmlUrl; showRun(ui, link); }
-    say(ui, `${o.name} : ${p.text}.`);
-    byId(ui.elapsed).textContent = `Temps écoulé : ${G.elapsed(p.elapsed)}. ${o.duration}`;
-   });
-   if (end.state !== 'success') throw new Error(o.failed(end.text));
-   say(ui, `${o.name} terminée : rechargement de la page…`);
-   const view = await load(String(Date.now()));
-   const text = view ? o.done(view) : `${o.name} terminée, mais les fichiers publiés n’ont pas pu être relus.`;
-   say(ui, text);
-   if (ui !== COLLECT_UI) say(COLLECT_UI, text);
-  } catch (err) {
-   say(ui, `${o.name} interrompue.`);
-   showError(ui, String(err.message || err), link);
-   // Page vidée mais rien de nouveau publié : la collecte en ligne est réaffichée.
-   if (accepted && o.onAccepted) await load(String(Date.now()));
-  } finally {
-   collecting = false;
-   button.removeAttribute('aria-disabled'); button.textContent = o.restore();
-   keepFocus(button);
-  }
  }
 
  // Mode archive : bandeau explicite, lancement de collecte retiré ; le repêchage reste possible.
@@ -253,14 +202,14 @@
   byId(id).value = dates[id];
   byId(id).addEventListener('input', () => { if (byId(id).getAttribute('aria-invalid')) setFieldError(id, ''); });
  }
- const busyReason = () => (collecting ? 'Une collecte ou une rédaction de résumés est en cours : attendez sa fin.'
+ const busyReason = () => (L.isRunning() ? 'Une collecte ou une rédaction de résumés est en cours : attendez sa fin.'
   : E.isBusy() ? 'Un repêchage est en cours : attendez sa fin.' : '');
 
  byId('collect-form').addEventListener('submit', async event => {
   event.preventDefault();
   const button = byId('collect');
   if (target.mode !== 'current' || button.getAttribute('aria-disabled') === 'true') return;
-  if (collecting) { showError(COLLECT_UI, busyReason()); return; }
+  if (L.isRunning()) { showError(COLLECT_UI, busyReason()); return; }
   const values = Object.fromEntries(DATE_FIELDS.map(([id]) => [id, byId(id).value]));
   const errors = dateErrors(values.edition, values.start, values.end);
   for (const [id] of DATE_FIELDS) {
@@ -273,22 +222,24 @@
   const token = requireToken();
   if (!token) { showError(COLLECT_UI, 'Un jeton GitHub est nécessaire pour lancer la collecte.'); return; }
   const complete = byId('complete').checked;
-  await launch({inputs: T.launchInputs(values.edition, values.start, values.end, complete), token, button, ui: COLLECT_UI,
-   busy: 'Collecte en cours…', restore: () => 'Lancer la collecte', name: 'Collecte', onAccepted: reset,
-   duration: complete ? 'Une collecte complète dure environ huit minutes.' : 'La recherche des titres dure environ trois minutes.',
-   failed: text => `La collecte n’a pas abouti (${text}) : la page affiche de nouveau la collecte publiée précédemment.`,
+  await L.launch({inputs: T.launchInputs(values.edition, values.start, values.end, complete), token, button, ui: COLLECT_UI,
+   busy: 'Collecte en cours…', restore: () => 'Lancer la collecte', name: 'Collecte', subject: 'la collecte', onAccepted: reset,
+   duration: complete ? 'Une collecte complète dure de cinq à neuf minutes, selon le nombre d’articles trouvés.' : 'La recherche des titres dure trois à quatre minutes.',
+   failed: text => ({reload: true, message: `La collecte n’a pas abouti (${text}) : la page affiche de nouveau ce qui était publié avant ce lancement. Vous pouvez relancer ; si l’échec se répète, réessayez plus tard.`}),
    done: view => (view === 'titres' ? 'Collecte terminée : la page affiche les titres trouvés ; gardez ceux à faire résumer par Albert.'
     : 'Collecte terminée : la page affiche le nouveau paquet, le rapport et les candidats écartés.')});
  });
 
- T.configure({hasToken, requireToken, isBusy: busyReason,
-  launch: o => launch({...o, done: view => (view === 'paquet' ? 'Résumés rédigés : la page affiche le nouveau paquet, le rapport et les candidats écartés.'
+ const fresh = () => String(Date.now());
+ L.configure({load, readEtat: async bust => (await readEtat(bust)).etat});
+ T.configure({hasToken, requireToken, isBusy: busyReason, readEtat: async () => (await readEtat(fresh())).etat, reload: () => load(fresh()),
+  launch: o => L.launch({...o, done: view => (view === 'paquet' ? 'Résumés rédigés : la page affiche le nouveau paquet, le rapport et les candidats écartés.'
    : 'Rédaction terminée, mais la page publiée affiche encore les titres : rechargez-la dans quelques minutes.')})});
- E.configure({requireToken, isCollecting: () => collecting});
+ E.configure({requireToken, isCollecting: L.isRunning});
  tokenHints();
  if (target.mode === 'invalid') {
   byId('archive-title').textContent = 'Collecte archivée introuvable';
   byId('archive-text').textContent = 'Identifiant de collecte invalide.';
   S.showLoadError(`L’identifiant de collecte « ${target.value} » n’est pas valide : rouvrez la collecte depuis la page des archives.`);
- } else load('');
+ } else load('').then(() => { if (target.mode === 'current') L.announceActive(); });
 })(typeof window !== 'undefined' ? window : globalThis);

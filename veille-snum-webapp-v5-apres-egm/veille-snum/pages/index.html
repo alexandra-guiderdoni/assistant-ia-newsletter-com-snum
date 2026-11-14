@@ -58,12 +58,13 @@
    <div class="fr-messages-group" id="gh-token-messages" aria-live="polite"></div>
   </div>
   <button class="fr-btn fr-btn--tertiary fr-btn--sm" id="gh-token-forget" type="button">Effacer le jeton</button>
+  <p class="fr-text--sm fr-mt-2w"><a class="fr-link" id="gh-token-doc" href="https://github.com/alexandra-guiderdoni/assistant-ia-newsletter-com-snum/blob/main/veille-snum-webapp-v5-apres-egm/veille-snum/docs/jeton-github.md" target="_blank" rel="noopener noreferrer">Créer ou renouveler un jeton GitHub : marche à suivre (nouvelle fenêtre)</a></p>
   <p id="gh-token-status" class="fr-text--sm fr-mt-2w" role="status"></p>
  </section>
 
  <section aria-labelledby="collect-heading" id="collect-section" class="fr-mb-6w">
   <h2 id="collect-heading">Lancer une collecte</h2>
-  <p class="fr-text--sm">La collecte remplace ce que publie cette page pour toutes les personnes qui la consultent ; la collecte précédente reste consultable dans les archives. Par défaut, elle s’arrête aux titres trouvés (environ trois minutes) : vous choisissez ensuite les articles à faire résumer. Vous pouvez suivre son avancement ici ou sur GitHub.</p>
+  <p class="fr-text--sm">La collecte remplace ce que publie cette page pour toutes les personnes qui la consultent ; la collecte précédente reste consultable dans les archives. Par défaut, elle s’arrête aux titres trouvés (trois à quatre minutes) : vous choisissez ensuite les articles à faire résumer. Gardez cette page ouverte pendant la collecte : son avancement s’affiche ici, et le jeton disparaît si vous la rechargez.</p>
   <form id="collect-form" novalidate>
    <p class="fr-text--sm">Sauf mention contraire, tous les champs sont obligatoires.</p>
    <fieldset class="fr-fieldset" aria-labelledby="dates-legend">
@@ -99,7 +100,7 @@
     <div class="fr-fieldset__element">
      <div class="fr-checkbox-group">
       <input type="checkbox" id="complete" name="complete">
-      <label class="fr-label" for="complete">Collecte complète en une fois (plus longue)<span class="fr-hint-text">Facultatif. Albert résume alors tous les candidats trouvés, sans tri préalable des titres ; comptez environ huit minutes.</span></label>
+      <label class="fr-label" for="complete">Collecte complète en une fois (plus longue)<span class="fr-hint-text">Facultatif. Albert résume alors tous les candidats trouvés, sans tri préalable des titres ; comptez de cinq à neuf minutes, selon le nombre d’articles trouvés.</span></label>
      </div>
     </div>
    </fieldset>
@@ -121,6 +122,7 @@
   <p id="reset-text">La collecte précédente est consultable dans les archives.</p>
   <p><a class="fr-link" href="archives.html">Consulter les archives des collectes</a></p>
  </div>
+ <p id="reset-status" class="fr-sr-only" role="status"></p>
 
  <div id="load-error" class="fr-alert fr-alert--error fr-mb-4w" role="alert" hidden></div>
 
@@ -248,6 +250,7 @@
 <script src="ecartes.js" defer></script>
 <script src="titres.js" defer></script>
 <script src="archives.js" defer></script>
+<script src="lancement.js" defer></script>
 <script src="page.js" defer></script>
 </body>
 </html>

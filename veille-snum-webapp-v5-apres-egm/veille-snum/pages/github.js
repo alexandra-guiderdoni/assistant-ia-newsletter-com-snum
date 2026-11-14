@@ -14,6 +14,7 @@
  const POLL_MS = 10000;
  const FOLLOW_LIMIT_MS = 45 * 60000;
  const WAITING = ['queued', 'waiting', 'pending', 'requested'];
+ const FAILED = ['failure', 'timed_out', 'cancelled', 'startup_failure'];
  const CONCLUSIONS = {failure: 'échec', cancelled: 'annulé', timed_out: 'délai dépassé', action_required: 'action requise',
   startup_failure: 'échec au démarrage', skipped: 'ignoré', neutral: 'sans conclusion', stale: 'périmé'};
 
@@ -40,6 +41,11 @@
   init: {method: 'POST', headers: {...headers(token), 'Content-Type': 'application/json'}, body: JSON.stringify({ref: 'main', inputs}), cache: 'no-store'},
  });
  const runsListUrl = workflow => `${API}/actions/workflows/${WORKFLOWS[workflow]}/runs?event=workflow_dispatch&per_page=5`;
+ // Run le plus récent qui n'est pas terminé, pour prévenir avant un doublon ; null sinon.
+ function activeRun(runs) {
+  const run = (Array.isArray(runs) ? runs : []).find(r => r && typeof r.status === 'string' && r.status !== 'completed' && /^\d+$/.test(String(r.id)));
+  return run ? {id: String(run.id), htmlUrl: githubLink(run.html_url), since: String(run.created_at || '')} : null;
+ }
  const runUrl = id => `${API}/actions/runs/${runId(id)}`;
  const jobsUrl = id => `${API}/actions/runs/${runId(id)}/jobs`;
  const repechageResultUrl = (id, bust) => `${RAW}${runId(id)}.json?t=${encodeURIComponent(bust)}`;
@@ -52,12 +58,22 @@
   return recent[0] || null;
  }
 
+ // Première étape en échec d'un run terminé : {job, step}, ou null si GitHub ne la donne pas.
+ function failedStep(jobs) {
+  const job = (jobs && Array.isArray(jobs.jobs) ? jobs.jobs : []).find(j => j && FAILED.includes(j.conclusion));
+  if (!job) return null;
+  const step = (job.steps || []).find(s => s && FAILED.includes(s.conclusion));
+  return {job: String(job.name || ''), step: String((step || job).name || '')};
+ }
+
  // Libellé de progression à partir du run et de ses tâches.
  function progress(run, jobs) {
   if (!run || typeof run !== 'object') return {state: 'pending', text: 'Lancement demandé, en attente de GitHub Actions'};
   if (run.status === 'completed') {
    if (run.conclusion === 'success') return {state: 'success', text: 'Terminé avec succès'};
-   return {state: 'failure', text: `Terminé sans succès : ${CONCLUSIONS[run.conclusion] || 'issue inconnue'}`};
+   const failed = failedStep(jobs);
+   const where = failed && failed.step ? ` à l’étape « ${failed.step} »` : '';
+   return {state: 'failure', text: `Terminé sans succès : ${CONCLUSIONS[run.conclusion] || 'issue inconnue'}${where}`, failedJob: failed ? failed.job : ''};
   }
   if (WAITING.includes(run.status)) return {state: 'pending', text: 'En file d’attente sur GitHub Actions'};
   const list = jobs && Array.isArray(jobs.jobs) ? jobs.jobs : [];
@@ -76,15 +92,17 @@
 
  function httpError(status) {
   switch (status) {
-  case 401: return 'GitHub a refusé le jeton (erreur 401) : vérifiez qu’il est complet et qu’il n’a pas expiré.';
-  case 403: return 'GitHub a refusé l’accès (erreur 403) : le jeton doit avoir la permission « Actions : Read and write » sur le dépôt, ou la limite d’appels de l’API est atteinte.';
-  case 404: return 'Dépôt ou workflow introuvable (erreur 404) : le jeton ne donne pas accès au dépôt, ou le workflow n’existe pas sur la branche main.';
-  case 422: return 'GitHub a refusé le lancement (erreur 422) : entrées invalides ou déclenchement manuel absent sur la branche main.';
-  default: return `GitHub a répondu par une erreur ${status}. Réessayez dans quelques minutes.`;
+  case 401: return 'GitHub a refusé le jeton (erreur 401) : il est incomplet, expiré ou révoqué. Collez-le de nouveau en entier ou créez-en un nouveau, en suivant le lien « Créer ou renouveler un jeton GitHub » de la section « Connexion à GitHub ».';
+  case 403: return 'GitHub a refusé la demande (erreur 403) : ce jeton n’a pas le droit de lancer une tâche. Il lui faut la permission « Actions : Read and write » sur le dépôt (lien « Créer ou renouveler un jeton GitHub »). Si le jeton est correct, GitHub limite peut-être les appels : réessayez dans une heure.';
+  case 404: return `GitHub ne trouve pas le dépôt avec ce jeton (erreur 404) : le jeton ne donne pas accès au dépôt ${REPO}. Vérifiez le dépôt choisi à la création du jeton (lien « Créer ou renouveler un jeton GitHub »).`;
+  case 422: return 'GitHub a refusé la demande (erreur 422) : les dates ou la sélection envoyées ne sont pas acceptées. Rechargez la page puis réessayez ; si l’erreur revient, signalez-la à la personne qui gère le dépôt.';
+  case 429: return 'GitHub limite temporairement les appels (erreur 429) : réessayez dans quelques minutes.';
+  default: return `GitHub a répondu par une erreur ${status} : réessayez dans quelques minutes.`;
   }
  }
 
  const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+ const lost = message => Object.assign(new Error(message), {lost: true});
  async function call(url, init) {
   try { return await fetch(url, init); }
   catch (_) { throw new Error('GitHub est injoignable : vérifiez la connexion réseau puis réessayez.'); }
@@ -104,15 +122,24 @@
   for (let attempt = 0; attempt < 8; attempt++) {
    await sleep(attempt ? 3000 : 2000);
    const l = await call(runsListUrl(workflow), read(token));
-   if (!l.ok) throw new Error(httpError(l.status));
+   if (!l.ok) throw lost(httpError(l.status));
    const run = pickRun(((await l.json().catch(() => null)) || {}).workflow_runs, sentAt);
    if (run) return {id: runId(run.id), htmlUrl: githubLink(run.html_url)};
   }
-  throw new Error('Lancement envoyé, mais le run n’a pas été retrouvé : consultez l’onglet Actions du dépôt.');
+  throw lost('La demande est partie, mais GitHub n’a pas indiqué quelle exécution lui correspond.');
+ }
+
+ // Lecture facultative du run en cours, avec jeton ou sans (dépôt public) : toute erreur vaut « inconnu ».
+ async function findActive(workflow, token) {
+  try {
+   const r = await fetch(runsListUrl(workflow), token ? read(token) : {headers: {Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': API_VERSION}, cache: 'no-store'});
+   return r.ok ? activeRun(((await r.json()) || {}).workflow_runs) : null;
+  } catch (_) { return null; }
  }
 
  // Interroge le run toutes les 10 secondes jusqu'à sa fin ; onUpdate reçoit
- // {state, text, elapsed, htmlUrl}. Trois échecs réseau d'affilée arrêtent le suivi.
+ // {state, text, elapsed, htmlUrl}. Trois échecs d'affilée arrêtent le suivi, pas le run :
+ // l'erreur porte alors lost = true, pour que la page ne parle pas d'un échec.
  async function follow(id, token, startedAt, onUpdate) {
   let failures = 0;
   for (;;) {
@@ -126,9 +153,9 @@
     onUpdate(p);
     if (p.state !== 'pending') return p;
    } catch (err) {
-    if (++failures >= 3) throw err;
+    if (++failures >= 3) throw lost(String(err.message || err));
    }
-   if (Date.now() - startedAt > FOLLOW_LIMIT_MS) throw new Error('Suivi interrompu après 45 minutes : consultez le run sur GitHub.');
+   if (Date.now() - startedAt > FOLLOW_LIMIT_MS) throw lost('Le suivi s’arrête après 45 minutes.');
    await sleep(POLL_MS);
   }
  }
@@ -147,5 +174,5 @@
  }
 
  global.VeilleGithub = {REPO, RAW_BASE, WORKFLOWS, POLL_MS, isoToFr, tokenLooksValid, collectInputs, repechageInputs, dispatchRequest,
-  runsListUrl, runUrl, jobsUrl, repechageResultUrl, pickRun, progress, elapsed, httpError, dispatch, follow, readRepechage};
+  runsListUrl, runUrl, jobsUrl, repechageResultUrl, pickRun, activeRun, failedStep, progress, elapsed, httpError, sleep, dispatch, findActive, follow, readRepechage};
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -7,7 +7,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 
 const PAGES = path.join(__dirname, '../pages');
-const MODULES = ['selection.js', 'github.js', 'rapport.js', 'ecartes.js', 'page.js'];
+const MODULES = ['selection.js', 'github.js', 'rapport.js', 'ecartes.js', 'lancement.js', 'page.js'];
 function load() {
  const ctx = {window: {}};
  for (const name of MODULES) vm.runInNewContext(fs.readFileSync(path.join(PAGES, name), 'utf8'), ctx, {filename: name});
@@ -87,8 +87,11 @@ test('erreurs HTTP de GitHub en français, sans jeton', () => {
  }
  assert.match(G.httpError(401), /jeton/i);
  assert.match(G.httpError(403), /Actions : Read and write/);
- assert.match(G.httpError(404), /introuvable/);
+ assert.match(G.httpError(404), /ne donne pas accès au dépôt/);
  assert.match(G.httpError(422), /refusé/);
+ // Chaque refus lié au jeton renvoie à la marche à suivre proposée par la page.
+ for (const status of [401, 403, 404]) assert.match(G.httpError(status), /Créer ou renouveler un jeton GitHub/);
+ assert.doesNotMatch([401, 403, 404, 422, 429, 500].map(G.httpError).join(' '), /workflow|\brun\b|branche main/);
 });
 
 const ARTICLE = {rubric: 'ia', title: 'Titre repêché', source: 'DINUM', publication_date_iso: '2026-11-10',

@@ -1,6 +1,8 @@
 'use strict';
-// Candidats écartés par Albert (candidats-ecartes.json) et repêchage d'un
-// candidat par le workflow repecher-candidat.yml, comme « Ajouter » en local.
+// Candidats écartés (candidats-ecartes.json) : jugés hors thématique par Albert, non
+// résumés faute de temps ou après un échec, non gardés au premier temps, ou page non
+// relue. Repêchage d'un candidat par le workflow repecher-candidat.yml, comme
+// « Ajouter » en local.
 (function (global) {
  const REASONS = {
   HORS_THEMATIQUE: 'jugé hors thématique par Albert',
@@ -59,7 +61,7 @@
   box.replaceChildren();
   if (!message) return;
   box.append(el('p', '', message));
-  if (url) { const a = el('a', 'fr-link', 'Consulter le run sur GitHub (nouvelle fenêtre)'); a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer'; box.append(a); }
+  if (url) { const a = el('a', 'fr-link', 'Voir le détail de l’exécution sur GitHub (nouvelle fenêtre)'); a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer'; box.append(a); }
  }
  function buttonLabel(button, text, title) {
   button.replaceChildren(document.createTextNode(text), el('span', 'fr-sr-only', ` « ${title} »`));
@@ -104,8 +106,10 @@
    status(`Article repêché et gardé en ${label} : ${parsed.article.title}. Il figure dans l’export.`);
    byId('repechage-elapsed').textContent = '';
   } catch (err) {
-   status('Repêchage interrompu.');
-   showError(String(err.message || err), runLink);
+   const why = String(err.message || err);
+   // Suivi perdu : le repêchage, lui, continue peut-être ; son résultat ne pourra plus être repris ici.
+   status(err.lost ? 'Repêchage : suivi interrompu.' : 'Repêchage interrompu.');
+   showError(err.lost ? `${why} Le suivi s’arrête ici, mais le repêchage continue peut-être sur GitHub. Attendez deux minutes avant de repêcher de nouveau cet article.` : why, runLink);
   } finally {
    busy = false;
    if (button.isConnected) { button.removeAttribute('aria-disabled'); buttonLabel(button, 'Repêcher avec Albert', c.title); }
@@ -148,7 +152,7 @@
   list.replaceChildren();
   byId('candidates-button').textContent = `Candidats écartés par Albert (${candidates.length})`;
   intro.textContent = candidates.length
-   ? 'Ces publications ont été trouvées pendant la collecte mais ne figurent pas dans le paquet. Choisissez une thématique puis « Repêcher avec Albert » : Albert rédige alors le résumé de l’article dans cette thématique et l’article est ajouté à la sélection.'
+   ? 'Ces publications ont été trouvées pendant la collecte mais ne figurent pas dans le paquet ; le motif est indiqué pour chacune. Choisissez une thématique puis « Repêcher avec Albert » : Albert rédige alors le résumé de l’article dans cette thématique et l’article est ajouté à la sélection.'
    : 'Aucun candidat écarté pour cette édition.';
   const packet = S.packet();
   if (data && data.edition_date && packet && data.edition_date !== packet.edition_date) {
