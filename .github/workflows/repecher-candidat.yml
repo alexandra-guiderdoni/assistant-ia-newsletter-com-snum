@@ -1,5 +1,6 @@
 # Repêchage d'un candidat écarté, lancé par la page de sélection (workflow_dispatch) :
-# Albert résume l'article dans la rubrique choisie par l'éditeur, puis le résultat
+# Albert résume l'article dans la rubrique choisie par l'éditeur, ou dans la plus
+# proche s'il n'en impose pas (« albert »), puis le résultat
 # est déposé sur la branche donnees-veille, que la page relit sans jeton :
 # https://raw.githubusercontent.com/alexandra-guiderdoni/assistant-ia-newsletter-com-snum/donnees-veille/repechages/<run_id>.json
 # Le résultat est publié même en cas de refus : la page affiche alors le motif.
@@ -16,10 +17,12 @@ on:
         description: "Adresse HTTPS de l'article, parmi les 13 sources publiques"
         required: true
       rubrique:
-        description: "Rubrique choisie par l'éditeur"
+        description: "Rubrique choisie par l'éditeur ; albert : Albert choisit la plus proche"
         required: true
+        default: albert
         type: choice
         options:
+          - albert
           - ia
           - administration
           - dsi

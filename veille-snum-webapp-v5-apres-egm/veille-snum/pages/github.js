@@ -32,8 +32,10 @@
  const runId = id => { if (!/^\d+$/.test(String(id))) throw new Error('RUN_INVALIDE'); return String(id); };
 
  const collectInputs = (edition, start, end) => ({edition: isoToFr(edition), debut: isoToFr(start), fin: isoToFr(end)});
- function repechageInputs(url, rubric, start, end) {
-  if (!global.VeilleSelection.RUBRICS.includes(rubric)) throw new Error('RUBRIQUE_INVALIDE');
+ // Sans thématique choisie (« albert » ou vide), Albert garde l'article et choisit la rubrique la plus proche.
+ function repechageInputs(url, choice, start, end) {
+  const rubric = choice || 'albert';
+  if (rubric !== 'albert' && !global.VeilleSelection.RUBRICS.includes(rubric)) throw new Error('RUBRIQUE_INVALIDE');
   if (!/^https:\/\/[^\s]+$/.test(String(url))) throw new Error('URL_INVALIDE');
   isoToFr(start); isoToFr(end);
   return {url, rubrique: rubric, debut: start, fin: end};

@@ -9,7 +9,7 @@ const vm = require('node:vm');
 const PAGES = path.join(__dirname, '../pages');
 function load() {
  const ctx = {window: {}};
- for (const name of ['selection.js', 'github.js', 'rapport.js', 'ecartes.js', 'titres.js']) vm.runInNewContext(fs.readFileSync(path.join(PAGES, name), 'utf8'), ctx, {filename: name});
+ for (const name of ['selection.js', 'github.js', 'rapport.js', 'ecartes.js', 'rubriques-probables.js', 'titres.js']) vm.runInNewContext(fs.readFileSync(path.join(PAGES, name), 'utf8'), ctx, {filename: name});
  return ctx.window;
 }
 const W = load();
@@ -82,13 +82,15 @@ test('lancement : « titres » par défaut, « collecte » si la collecte compl�
  assert.throws(() => T.launchInputs('20/11/2026', '2026-11-13', '2026-11-20', false), /DATE_INVALIDE/);
 });
 
-test('titres groupés par source, plus récents d’abord, doublons retirés', () => {
- const c = (title, source, date, url) => ({title, source, publication_date_iso: date, url});
- const groups = plain(T.groupBySource([
-  c('A1', 'DINUM', '2026-11-14', 'https://a/1'), c('B1', 'CNIL', '2026-11-19', 'https://b/1'),
-  c('A2', 'DINUM', '2026-11-18', 'https://a/2'), c('A1 bis', 'DINUM', '2026-11-20', 'https://a/1'), c('X', '', '2026-11-15', 'http://x')]));
- assert.deepEqual(groups.map(g => [g.source, g.items.map(i => [i.index, i.candidate.title])]), [
-  ['DINUM', [[2, 'A2'], [0, 'A1']]], ['CNIL', [[1, 'B1']]], ['Source inconnue', [[4, 'X']]]]);
+test('titres groupés par rubrique probable, dans l’ordre de la revue, non reconnus à la fin, plus récents d’abord, doublons retirés', () => {
+ const c = (title, date, url) => ({title, source: 'Source', publication_date_iso: date, url});
+ const groups = plain(T.groupByRubric([
+  c('La CNIL sanctionne un service fictif', '2026-11-14', 'https://a/1'), c('Une cyberattaque imaginaire', '2026-11-19', 'https://b/1'),
+  c('Un titre sans indice', '2026-11-15', 'http://x'), c('Une faille inventée', '2026-11-20', 'https://a/2'),
+  c('La CNIL encore, même adresse', '2026-11-21', 'https://a/1')]));
+ assert.deepEqual(groups.map(g => [g.rubric, g.label, g.items.map(i => [i.index, i.keyword])]), [
+  ['securite', 'Sécurité informatique', [[3, 'faille'], [1, 'cyberattaque']]], ['droit', 'Droit, informatique et libertés', [[0, 'CNIL']]],
+  ['', T.NON_RECONNUE, [[2, '']]]]);
  assert.equal(T.isSelectable({url: 'https://a/1'}), true);
  assert.equal(T.isSelectable({url: 'http://x'}), false);
 });
@@ -106,7 +108,7 @@ test('libellés : bouton, compteur et statut du rapport en phase « titres »', 
 
 test('page : section des titres, case de collecte complète, avis de remise à zéro, régions annoncées', () => {
  const html = fs.readFileSync(path.join(PAGES, 'index.html'), 'utf8');
- assert.match(html, /<script src="ecartes\.js" defer><\/script>\s*<script src="titres\.js" defer><\/script>\s*<script src="archives\.js" defer><\/script>/);
+ assert.match(html, /<script src="ecartes\.js" defer><\/script>\s*<script src="rubriques-probables\.js" defer><\/script>\s*<script src="titres\.js" defer><\/script>\s*<script src="archives\.js" defer><\/script>/);
  assert.match(html, /<h2 id="titres-heading">Titres trouvés<\/h2>/);
  assert.match(html, /<input type="checkbox" id="complete"[^>]*>\s*<label class="fr-label" for="complete">Collecte complète en une fois \(plus longue\)/);
  assert.match(html, /id="reset-notice"[\s\S]*?href="archives\.html"/);

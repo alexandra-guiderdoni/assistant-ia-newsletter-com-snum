@@ -74,14 +74,16 @@ class SiteEnLigne(FakeHttp):
         return super().get(url, domain, max_bytes, timeout)
 
 
-def albert(candidat, cle, modele, timeout=30, feedback=None, forced_rubric=None):
+def albert(
+    candidat, cle, modele, timeout=30, feedback=None, forced_rubric=None, keep=False
+):
     assert cle == JETON_ALBERT, "jeton Albert inattendu"
     url = candidat["url"]
     if albert_cfg.get("panne") == "tout" or url in albert_cfg.get("pannes", []):
         raise HTTPError(
             ALBERT, albert_cfg.get("code", 401), f"refus {JETON_ALBERT}", {}, None
         )
-    if url in albert_cfg.get("hors", []) and not forced_rubric:
+    if url in albert_cfg.get("hors", []) and not forced_rubric and not keep:
         return {"relevant": False}
     resume = good_summary(candidat)
     rubriques = albert_cfg.get("rubriques", {})

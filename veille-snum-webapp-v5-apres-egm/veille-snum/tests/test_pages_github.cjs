@@ -36,6 +36,8 @@ test('repêchage : entrées du workflow, rubrique et adresse contrôlées', () =
  assert.equal(req.url, `${API}/actions/workflows/repecher-candidat.yml/dispatches`);
  assert.deepEqual(JSON.parse(req.init.body), {ref: 'main', inputs: {url: 'https://www.numerique.gouv.fr/a', rubrique: 'ia', debut: '2026-11-03', fin: '2026-11-13'}});
  assert.throws(() => G.repechageInputs('https://x.fr/a', 'inconnue', '2026-11-03', '2026-11-13'), /RUBRIQUE_INVALIDE/);
+ // « albert », ou aucun choix : Albert garde l'article et choisit la rubrique la plus proche.
+ for (const rubric of ['albert', '']) assert.equal(G.repechageInputs('https://www.numerique.gouv.fr/a', rubric, '2026-11-03', '2026-11-13').rubrique, 'albert');
  assert.throws(() => G.repechageInputs('http://x.fr/a', 'ia', '2026-11-03', '2026-11-13'), /URL_INVALIDE/);
 });
 

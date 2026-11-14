@@ -16,7 +16,7 @@ function load(replies = []) {
   if (!next || next.fail) throw new TypeError('Failed to fetch');
   return {ok: next.status >= 200 && next.status < 300, status: next.status, json: async () => next.body};
  }};
- for (const name of ['selection.js', 'github.js', 'rapport.js', 'ecartes.js', 'titres.js', 'lancement.js']) vm.runInNewContext(fs.readFileSync(path.join(PAGES, name), 'utf8'), ctx, {filename: name});
+ for (const name of ['selection.js', 'github.js', 'rapport.js', 'ecartes.js', 'rubriques-probables.js', 'titres.js', 'lancement.js']) vm.runInNewContext(fs.readFileSync(path.join(PAGES, name), 'utf8'), ctx, {filename: name});
  return {...ctx.window, calls};
 }
 const W = load();

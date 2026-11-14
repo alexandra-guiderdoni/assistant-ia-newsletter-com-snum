@@ -76,10 +76,9 @@
   button.replaceChildren(document.createTextNode(text), el('span', 'fr-sr-only', ` « ${title} »`));
  }
 
- async function repecher(c, select, field, button) {
+ async function repecher(c, select, button) {
   if (busy) { showError('Un repêchage est déjà en cours : attendez sa fin.'); return; }
   if (options.isCollecting()) { showError('Une collecte est en cours : attendez sa fin avant de repêcher un article.'); return; }
-  if (!select.value) { field.setError('Choisissez la thématique de cet article avant de le repêcher.'); select.focus(); return; }
   const token = options.requireToken();
   if (!token) return;
   busy = true; showError('');
@@ -140,12 +139,14 @@
   }
   if (!/^https:\/\//.test(String(c.url || ''))) return li;
   const field = S.rubricSelect(`repecher-${index}`, '', c.title || '');
+  // Choix par défaut : Albert lit l'article et choisit la thématique la plus proche.
+  Object.assign(field.select.options[0], {textContent: 'Laisser Albert choisir', disabled: false});
   const button = el('button', 'fr-btn fr-btn--secondary fr-btn--sm');
   button.type = 'button';
   button.setAttribute('aria-describedby', 'repechage-hint');
   buttonLabel(button, 'Repêcher avec Albert', c.title || '');
   button.addEventListener('click', () => {
-   if (button.getAttribute('aria-disabled') !== 'true') repecher(c, field.select, field, button);
+   if (button.getAttribute('aria-disabled') !== 'true') repecher(c, field.select, button);
   });
   const row = el('div', 'fr-grid-row fr-grid-row--gutters fr-grid-row--bottom');
   const selectCol = el('div', 'fr-col-12 fr-col-md-6'); selectCol.append(field.group);
@@ -160,7 +161,7 @@
   list.replaceChildren();
   byId('candidates-button').textContent = `Candidats écartés (${candidates.length})`;
   intro.textContent = candidates.length
-   ? 'Ces publications ont été trouvées pendant la collecte mais ne figurent pas dans le paquet ; le motif est indiqué pour chacune. Choisissez une thématique puis « Repêcher avec Albert » : Albert rédige alors le résumé de l’article dans cette thématique et l’article est ajouté à la sélection.'
+   ? 'Ces publications ont été trouvées pendant la collecte mais ne figurent pas dans le paquet ; le motif est indiqué pour chacune. « Repêcher avec Albert » : Albert lit l’article, le range dans la thématique la plus proche, ou dans celle que vous imposez, puis rédige son résumé ; l’article est ajouté à la sélection.'
    : 'Aucun candidat écarté pour cette édition.';
   const packet = S.packet();
   if (data && data.edition_date && packet && data.edition_date !== packet.edition_date) {
