@@ -96,7 +96,7 @@ test('erreurs HTTP de GitHub en français, sans jeton', () => {
 
 const ARTICLE = {rubric: 'ia', title: 'Titre repêché', source: 'DINUM', publication_date_iso: '2026-11-10',
  publication_date_long: '10 novembre 2026', url: 'https://www.numerique.gouv.fr/r', fact: 'Fait.',
- keywords: ['a', 'b'], takeaway: 'À retenir.', snum_interest: 'Intérêt.'};
+ keywords: ['a', 'b', 'c'], takeaway: 'À retenir.', snum_interest: 'Intérêt.'};
 const result = (extra = {}) => ({schema_version: 'SNUM_REPECHAGE_V1', url: ARTICLE.url, status: 'ok', message: '', article: {...ARTICLE}, ...extra});
 
 test('résultat de repêchage : article V519 dans l’ordre du paquet, refus lisibles', () => {

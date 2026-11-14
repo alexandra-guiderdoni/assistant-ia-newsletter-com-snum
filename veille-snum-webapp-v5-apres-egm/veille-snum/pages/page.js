@@ -109,7 +109,7 @@
   const {etat, unread} = await readEtat(bust);
   byId('reset-notice').hidden = true;
   byId('reset-status').textContent = '';
-  return T.view(etat) === 'titres' ? loadTitres(etat, bust) : loadPaquet(bust, unread);
+  return T.view(etat) === 'titres' ? loadTitres(etat, bust) : loadPaquet(bust, unread, etat);
  }
 
  async function loadTitres(etat, bust) {
@@ -135,13 +135,15 @@
 
  // Charge le paquet, puis le rapport et les candidats. unread : l'état publié n'a pas pu être lu,
  // la page ignore donc si des titres attendent d'être triés et ne conseille pas de relancer.
- async function loadPaquet(bust, unread) {
+ async function loadPaquet(bust, unread, etat) {
   let packet;
   try {
    const got = await fetchJson('paquet-v519.json', bust);
    if (got.missing) throw new Error('le serveur a répondu 404');
    if (!S.isPacket(got.data)) throw new Error('le fichier ne suit pas le schéma SNUM_PAQUET_RENDU_V519');
    packet = got.data;
+   // Pendant une mise à jour du site, l'état et le paquet peuvent venir de deux publications différentes.
+   if (!L.sameEdition(etat, packet)) { unread = true; throw new Error('l’état et le paquet publiés ne sont pas de la même édition, une mise à jour est sans doute en cours'); }
   } catch (err) {
    const why = String(err.message || err);
    S.showLoadError(target.mode === 'archive'

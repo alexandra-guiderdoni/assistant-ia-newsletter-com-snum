@@ -23,7 +23,7 @@ Pour la démonstration du 21 octobre 2026, trois projets SNUM restent visibles d
 
 Depuis le 10 novembre 2026, la Collecte interroge séparément quatorze sites prioritaires avant ses recherches générales ; l’outil DSFR et le Projet Rendu HTML trient les articles par date ; l’outil signale aussi les liens à paramètres. Recettes, diagnostic et limites : [rapport des domaines prioritaires](_documentation/recette-collecte-domaines/RAPPORT.md).
 
-Depuis le 13 novembre 2026, le dépôt contient aussi **Veille SNUM**, un prototype local expérimental qui produit le même paquet V519 hors de l’Assistant. Il ne remplace aucun Projet : voir [Prototype Veille SNUM](#prototype-veille-snum).
+Depuis le 13 novembre 2026, le dépôt contient aussi **Veille SNUM**, un prototype expérimental qui produit le même paquet V519 hors de l’Assistant, en local ou depuis une page en ligne. Il ne remplace aucun Projet : voir [Prototype Veille SNUM](#prototype-veille-snum).
 
 Les pièces de départ sont conservées dans [_documentation/reference-mail-dsfr/](_documentation/reference-mail-dsfr/) : l’entrée du 14 octobre, le modèle de mail adapté et l’édition HTML correspondante. Ce sont des instantanés de référence ; la source de maintenance du mail est `_source/30-BLOCS-MAIL-DSFR.md`.
 
@@ -205,7 +205,9 @@ L’interface utilise les composants DSFR 1.15.4 embarqués, sans appel à un CD
 > l’un indiquait 11 millions au lieu de 11 milliards. Aucune conformité DSFR ou
 > RGAA n’est revendiquée.
 
-Installation, sécurité de la clé et tests : [README du prototype](veille-snum-webapp-v5-apres-egm/veille-snum/README.md).
+Depuis le 14 novembre 2026, le même prototype s’utilise aussi sans Python, depuis la page https://alexandra-guiderdoni.github.io/assistant-ia-newsletter-com-snum/ : la collecte et Albert passent par GitHub Actions, en deux temps (les titres d’abord, puis les résumés des seuls titres gardés), et la sélection se fait dans le navigateur. Le lancement demande le jeton GitHub partagé par l’équipe.
+
+Installation, usage sans Python, sécurité de la clé et tests : [README du prototype](veille-snum-webapp-v5-apres-egm/veille-snum/README.md).
 État et travaux restants : [reprise de session](veille-snum-webapp-v5-apres-egm/veille-snum/reprise-session.md).
 
 ## Maintenance

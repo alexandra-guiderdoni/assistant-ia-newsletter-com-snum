@@ -172,10 +172,15 @@ def classer_valide(candidat, resumer, limite):
             feedback = motif(exc)
 
 
-def resumer_gardes(choix, premier, edition, client, resumer):
-    """Rapport du second temps, de même forme que celui de collect, paquet compris s'il existe."""
+def resumer_gardes(choix, premier, edition, client, resumer, sur_echeance=None):
+    """Rapport du second temps, de même forme que celui de collect, paquet compris s'il existe.
+
+    `sur_echeance` reçoit l'échéance du budget (horloge monotone), pour borner chaque appel Albert.
+    """
     debut, fin = iso_date(premier["window_start"]), iso_date(premier["window_end"])
     limite = time.monotonic() + MAX_ALBERT_SECONDS
+    if sur_echeance:
+        sur_echeance(limite)
 
     def traiter(element):
         # Une tâche déjà lancée ne relit pas de page ni n'appelle Albert une fois le budget épuisé.
@@ -326,6 +331,7 @@ def publier_resumes(
     fin=None,
     run_id=0,
     archives=None,
+    sur_echeance=None,
 ):
     """Code de sortie 0 si le paquet est écrit ; `edition`, `debut` et `fin` sont des dates ou None."""
     try:
@@ -363,6 +369,7 @@ def publier_resumes(
         edition or iso_date(premier["edition_date"]),
         client,
         resumer,
+        sur_echeance,
     )
     paquet = rapport["packet"]
     if not paquet:
@@ -425,12 +432,16 @@ def main(argv=None):
         os.environ.get("SELECTION", "") if args.selection is None else args.selection
     )
 
+    echeance = {}
+
     def resumer(candidat, feedback=None, forced_rubric=None):
+        # Comme la collecte complète : le délai d'un appel ne dépasse pas le temps restant.
+        reste = echeance.get("limite", float("inf")) - time.monotonic()
         return albert_summary(
             candidat,
             cle,
             modele,
-            timeout=ALBERT_TIMEOUT,
+            timeout=max(1, min(ALBERT_TIMEOUT, reste)),
             feedback=feedback,
             forced_rubric=forced_rubric,
         )
@@ -445,6 +456,7 @@ def main(argv=None):
         fin=args.fin,
         run_id=args.run_id,
         archives=archives,
+        sur_echeance=lambda limite: echeance.update(limite=limite),
     )
 
 
