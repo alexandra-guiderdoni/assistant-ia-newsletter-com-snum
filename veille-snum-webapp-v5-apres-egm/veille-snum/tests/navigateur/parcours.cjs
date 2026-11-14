@@ -171,6 +171,13 @@ const sansDefilement = page => page.evaluate(() => document.documentElement.scro
   await page.click('#copy');
   const copie = JSON.parse(await page.evaluate(() => navigator.clipboard.readText()));
   check('A25 copie du JSON identique au téléchargement', JSON.stringify(copie) === JSON.stringify(exporte) && /copié/.test(await o.texte('#selection-status')));
+  // Repêchage sans thématique choisie : « Laisser Albert choisir » par défaut, Albert range l'article lui-même.
+  const parDefaut = await page.$eval('#repecher-0', s => s.options[s.selectedIndex].textContent);
+  await page.focus('#repecher-0'); await page.keyboard.press('Tab'); await page.keyboard.press('Enter');
+  await o.attendreTexte('#repechage-status', 'Article repêché et gardé|interrompu', 60000);
+  const demande = JSON.parse(m.appels.filter(c => c.method === 'POST').pop().body).inputs;
+  check('A25b repêchage sans thématique choisie : Albert range l’article', parDefaut === 'Laisser Albert choisir' && demande.rubrique === 'albert'
+   && (await page.$$('#article-list input[type=checkbox]')).length === 4 && /gardé en Administration électronique/.test(await o.texte('#repechage-status')), await o.texte('#repechage-status'));
   // Archives : la collecte résumée y figure, et se rouvre.
   const archives = await p.onglet('archives.html');
   const cartes = await archives.$$eval('#archives-list h2', l => l.map(h => h.textContent));

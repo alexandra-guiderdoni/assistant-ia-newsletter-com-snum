@@ -55,7 +55,8 @@ class RubriquesTests(unittest.TestCase):
             for ligne in bloc.splitlines()
             if ligne.strip().startswith("- ")
         ]
-        self.assertEqual(tuple(options), ONZE)
+        # « albert » en premier : Albert choisit la rubrique quand l'éditeur n'en impose pas.
+        self.assertEqual(tuple(options), ("albert", *ONZE))
 
     def test_page_et_application_locale_partagent_la_liste(self):
         page = (RACINE / "pages/selection.js").read_text(encoding="utf-8")

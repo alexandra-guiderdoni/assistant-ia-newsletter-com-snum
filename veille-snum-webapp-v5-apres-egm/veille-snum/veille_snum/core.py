@@ -796,8 +796,10 @@ def albert_model(supplied=""):
     return supplied.strip() or os.environ.get("ALBERT_MODEL", "").strip() or DEFAULT_ALBERT_MODEL
 
 
-def albert_summary(candidate, api_key, model, timeout=30, feedback=None, forced_rubric=None):
-    """Albert reçoit uniquement un extrait public ; aucun contenu interne."""
+def albert_summary(candidate, api_key, model, timeout=30, feedback=None, forced_rubric=None, keep=False):
+    """Albert reçoit uniquement un extrait public ; aucun contenu interne.
+
+    `keep` (repêchage) : l'article est gardé ; sans rubrique imposée, Albert choisit la plus proche."""
     if not api_key or not model:
         raise ValueError("Albert non configuré")
     messages = [{"role": "system", "content": ALBERT_PROMPT},
@@ -805,6 +807,9 @@ def albert_summary(candidate, api_key, model, timeout=30, feedback=None, forced_
     if forced_rubric:
         messages.append({"role": "user", "content": "L'éditeur a retenu cet article dans la rubrique "
                          f"{forced_rubric} : réponds avec relevant=true et rubric={forced_rubric}."})
+    elif keep:
+        messages.append({"role": "user", "content": "L'éditeur a repêché cet article : réponds avec relevant=true "
+                         "et la rubrique la plus proche de son contenu."})
     if feedback:
         messages.append({"role": "user", "content": f"Ta réponse précédente a été rejetée ({feedback}). "
                          "Réponds de nouveau en respectant strictement le format et les limites de mots."})

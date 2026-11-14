@@ -1,7 +1,7 @@
 """Repêchage d'un candidat écarté, lancé par la page de sélection via GitHub Actions.
 
 La page relue est un article public d'une des 13 sources ; Albert le résume
-dans la rubrique choisie par l'éditeur. Le jeton et le modèle Albert viennent
+dans la rubrique choisie par l'éditeur, ou dans la plus proche s'il n'en impose pas. Le jeton et le modèle Albert viennent
 de l'environnement (ALBERT_API_KEY, ALBERT_MODEL). Le fichier de résultat est
 écrit que le repêchage réussisse ou non : la page le lit ensuite sans jeton.
 """
@@ -38,6 +38,8 @@ from .core import (
 from .publier import date_saisie
 
 SCHEMA = "SNUM_REPECHAGE_V1"
+# Rubrique non imposée : Albert garde l'article repêché et choisit la rubrique la plus proche.
+ALBERT_CHOISIT = "albert"
 CHAMPS_ARTICLE = (
     "rubric",
     "title",
@@ -149,10 +151,12 @@ def resumer_valide(candidat, rubrique, resumer, limite=None):
     feedback, repris, attentes = None, False, 0
     while True:
         try:
-            reponse = resumer(candidat, feedback=feedback, forced_rubric=rubrique)
+            imposee = None if rubrique == ALBERT_CHOISIT else rubrique
+            reponse = resumer(candidat, feedback=feedback, forced_rubric=imposee)
             if not isinstance(reponse, dict):
                 raise ValueError("SORTIE_ALBERT_INVALIDE")  # noqa: TRY004 -- ValueError déclenche la seconde tentative
-            return validate_summary({**reponse, "relevant": True, "rubric": rubrique})
+            impose = {"rubric": imposee} if imposee else {}
+            return validate_summary({**reponse, "relevant": True, **impose})
         except HTTPError as exc:
             if exc.code in (429, 503) and attentes < ALBERT_THROTTLE_RETRIES:
                 delai = _retry_delay(exc, attentes)
@@ -181,8 +185,12 @@ def resultat(url, message, article=None):
 def repecher(url, rubrique, debut, fin, client, resumer):
     """Résultat SNUM_REPECHAGE_V1 ; `debut` et `fin` sont des dates, `resumer` appelle Albert."""
     try:
-        if not isinstance(rubrique, str) or rubrique not in RUBRICS:
-            raise Refus("Rubrique inconnue : attendu " + ", ".join(RUBRICS) + ".")
+        if not isinstance(rubrique, str) or rubrique not in (ALBERT_CHOISIT, *RUBRICS):
+            raise Refus(
+                "Rubrique inconnue : attendu "
+                + ", ".join((ALBERT_CHOISIT, *RUBRICS))
+                + "."
+            )
         if debut > fin:
             raise Refus("Période invalide : le début suit la fin.")
         if (fin - debut).days > 60:
@@ -204,14 +212,15 @@ def repecher(url, rubrique, debut, fin, client, resumer):
     }
     return resultat(
         url,
-        f"Article repêché dans la rubrique {rubrique}.",
+        f"Article repêché dans la rubrique {resume['rubric']}.",
         {champ: article[champ] for champ in CHAMPS_ARTICLE},
     )
 
 
 def main(argv=None):
     parser = argparse.ArgumentParser(
-        description="Repêchage d'un candidat écarté : résumé Albert dans la rubrique choisie."
+        description="Repêchage d'un candidat écarté : résumé Albert dans la rubrique choisie, "
+        "ou dans la plus proche avec « albert »."
     )
     parser.add_argument("--url", required=True)
     parser.add_argument("--rubrique", required=True)
@@ -230,6 +239,7 @@ def main(argv=None):
             timeout=ALBERT_TIMEOUT,
             feedback=feedback,
             forced_rubric=forced_rubric,
+            keep=True,
         )
 
     try:

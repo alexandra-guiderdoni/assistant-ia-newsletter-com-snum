@@ -41,7 +41,7 @@ Connecté à GitHub avec le compte propriétaire :
 1. Ouvrir la page, section « Connexion à GitHub », coller le jeton partagé.
 2. Section « Lancer une collecte » : vérifier les dates, puis « Lancer la collecte ». Laisser la page ouverte : la recherche des titres dure trois à quatre minutes, la progression s'affiche, puis les titres trouvés apparaissent.
 3. Section « Titres trouvés » : cocher « Garder » pour chaque titre utile, puis « Rédiger les résumés ». Comptez une à deux minutes pour dix articles, puis environ deux minutes de publication ; le paquet, le rapport et les candidats écartés s'affichent ensuite.
-4. Pour un candidat écarté : choisir la thématique, puis « Repêcher avec Albert » (une à deux minutes). L'article arrive coché dans la sélection.
+4. Pour un candidat écarté : « Repêcher avec Albert » (une à deux minutes). Par défaut, Albert lit l'article et le range dans la thématique la plus proche ; choisir une thématique l'impose. L'article arrive coché dans la sélection.
 
 La case « Collecte complète en une fois » enchaîne les deux temps sans tri des titres : cinq à neuf minutes.
 
