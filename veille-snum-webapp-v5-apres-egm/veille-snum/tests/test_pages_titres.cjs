@@ -126,3 +126,12 @@ test('motifs des écartés propres aux deux temps, affichés en clair', () => {
  assert.equal(E.REASONS.PAGE_NON_RELUE, 'page non relue au second temps : introuvable, hors période ou protégée');
  for (const k of ['HORS_THEMATIQUE', 'BUDGET_DUREE_ALBERT', 'ECHEC_ALBERT']) assert.ok(E.REASONS[k], k);
 });
+
+test('bouton de groupe : « Tout garder » tant qu’un titre ne l’est pas, « Tout retirer » ensuite', () => {
+ assert.equal(T.groupAction(0, 4), 'Tout garder');
+ assert.equal(T.groupAction(3, 4), 'Tout garder');
+ assert.equal(T.groupAction(4, 4), 'Tout retirer');
+ assert.equal(T.groupAction(1, 1), 'Tout retirer');
+ const html = fs.readFileSync(path.join(PAGES, 'index.html'), 'utf8');
+ assert.match(html, /« Tout garder »/);
+});
