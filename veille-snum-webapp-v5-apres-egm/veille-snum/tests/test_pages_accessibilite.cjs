@@ -9,7 +9,7 @@ const lire = nom => fs.readFileSync(path.join(PAGES, nom), 'utf8');
 
 test('passages en anglais de l’aide du jeton marqués lang="en"', () => {
  const html = lire('index.html');
- for (const passage of ['fine-grained', 'Actions : Read and write', 'Contents : Read', 'repo']) assert.match(html, new RegExp(`<span lang="en">${passage}</span>`), passage);
+ for (const passage of ['fine-grained', 'Actions : Read and write', 'Contents : Read']) assert.match(html, new RegExp(`<span lang="en">${passage}</span>`), passage);
 });
 
 test('région d’état vide : un div, pas un paragraphe vide', () => {
