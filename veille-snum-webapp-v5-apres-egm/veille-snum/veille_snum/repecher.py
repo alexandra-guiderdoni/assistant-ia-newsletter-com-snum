@@ -141,8 +141,11 @@ def lire_candidat(url, source, debut, fin, client):
     }
 
 
-def resumer_valide(candidat, rubrique, resumer):
-    """Comme analyze de la collecte : attente sur 429/503, une seconde tentative après un rejet."""
+def resumer_valide(candidat, rubrique, resumer, limite=None):
+    """Comme analyze de la collecte : attente sur 429/503, une seconde tentative après un rejet.
+
+    `limite` (horloge monotone) borne les attentes et la seconde tentative ; None : sans budget.
+    """
     feedback, repris, attentes = None, False, 0
     while True:
         try:
@@ -152,12 +155,14 @@ def resumer_valide(candidat, rubrique, resumer):
             return validate_summary({**reponse, "relevant": True, "rubric": rubrique})
         except HTTPError as exc:
             if exc.code in (429, 503) and attentes < ALBERT_THROTTLE_RETRIES:
-                time.sleep(_retry_delay(exc, attentes))
-                attentes += 1
-                continue
+                delai = _retry_delay(exc, attentes)
+                if limite is None or time.monotonic() + delai < limite:
+                    attentes += 1
+                    time.sleep(delai)
+                    continue
             raise
         except Exception as exc:
-            if repris:
+            if repris or (limite is not None and time.monotonic() >= limite):
                 raise
             repris = True
             feedback = motif(exc)

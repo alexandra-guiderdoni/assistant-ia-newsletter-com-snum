@@ -85,7 +85,7 @@ test('page d’archives : mêmes ressources et même politique que la page de s�
  assert.doesNotMatch(html, /(href|src)="\/(?!\/)/);
  assert.doesNotMatch(html, /<(script|link)[^>]+(src|href)="https?:/);
  assert.match(index, /<a class="fr-link" href="archives\.html">Archives des collectes<\/a>/);
- assert.match(index, /<script src="archives\.js" defer><\/script>\s*<script src="page\.js" defer><\/script>/);
+ assert.match(index, /<script src="archives\.js" defer><\/script>\s*<script src="lancement\.js" defer><\/script>\s*<script src="page\.js" defer><\/script>/);
  for (const source of [html, fs.readFileSync(path.join(PAGES, 'archives.js'), 'utf8')]) {
   assert.doesNotMatch(source, /innerHTML|outerHTML|insertAdjacentHTML|localStorage|sessionStorage|indexedDB|console\./);
   assert.doesNotMatch(source, /\u2014/);
