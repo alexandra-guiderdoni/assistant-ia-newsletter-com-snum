@@ -66,3 +66,13 @@ test('page : chargement initial protégé, lien absent pour une adresse non http
  const ecartes = fs.readFileSync(path.join(PAGES, 'ecartes.js'), 'utf8');
  assert.doesNotMatch(ecartes, /if \(c\.url\) \{\s*const p = el\('p', 'fr-mb-1w'\);/);
 });
+
+test('progression : les étapes techniques de GitHub ne sont pas montrées telles quelles', () => {
+ const run = {status: 'in_progress'};
+ const job = name => ({jobs: [{name: 'collecte', status: 'in_progress', steps: [{name, status: 'in_progress'}]}]});
+ for (const name of ['Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1', 'Set up job', 'Post Run actions/checkout@3d3c', 'Complete job']) {
+  assert.equal(G.progress(run, job(name)).text, 'Préparation de la tâche', name);
+ }
+ assert.equal(G.progress(run, job('Collecte et paquet V519')).text, 'Étape en cours : Collecte et paquet V519');
+ assert.equal(G.progress(run, {jobs: [{name: 'archivage', status: 'in_progress', steps: [{name: 'Archiver la collecte', status: 'in_progress'}]}]}).text, 'Étape en cours : Archiver la collecte');
+});

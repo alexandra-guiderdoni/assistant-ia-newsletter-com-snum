@@ -85,6 +85,8 @@
   if (!job) return {state: 'pending', text: 'Exécution en cours'};
   if (job.name === 'deploiement') return {state: 'pending', text: 'Déploiement de la page sur GitHub Pages'};
   const step = (job.steps || []).filter(Boolean).find(s => s.status === 'in_progress');
+  // Étapes ajoutées par GitHub (mise en place, actions sans nom) : un libellé simple plutôt que leur nom technique.
+  if (step && /^(Run |Set up |Post |Complete )/.test(String(step.name))) return {state: 'pending', text: 'Préparation de la tâche'};
   if (step) return {state: 'pending', text: `Étape en cours : ${step.name}`};
   return {state: 'pending', text: job.status === 'in_progress' ? 'Passage à l’étape suivante' : 'Tâche en attente d’un exécuteur'};
  }
