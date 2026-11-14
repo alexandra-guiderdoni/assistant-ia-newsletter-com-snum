@@ -2,6 +2,19 @@
   "schema_version": "SNUM_ARCHIVES_V1",
   "collectes": [
     {
+      "titres_started_at": "2026-11-14T22:01:19.551975+00:00",
+      "id": "2026-11-17_43646072320",
+      "run_id": 43646072320,
+      "edition_date": "2026-11-17",
+      "window_start": "2026-11-13",
+      "window_end": "2026-11-17",
+      "status": "partial",
+      "articles": 3,
+      "candidats": 22,
+      "ecartes": 19,
+      "archived_at": "2026-11-14T22:05:18Z"
+    },
+    {
       "titres_started_at": "2026-11-14T19:15:31.700884+00:00",
       "id": "2026-11-17_43631413833",
       "run_id": 43631413833,
