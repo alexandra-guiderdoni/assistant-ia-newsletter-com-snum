@@ -1,0 +1,240 @@
+{
+  "schema_version": "SNUM_CANDIDATS_ECARTES_V1",
+  "edition_date": "2026-11-14",
+  "window_start": "2026-11-12",
+  "window_end": "2026-11-14",
+  "candidates": [
+    {
+      "title": "Les salariés des magasins Leclerc peuvent réclamer leur part des résultats même sans signature de leur employeur",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-14",
+      "url": "https://www.journaldunet.com/patrimoine/finances-personnelles/1557939-e-leclerc-salaries/",
+      "publication_date_long": "14 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Campagne présidentielle : les hauts fonctionnaires engagés dans les écuries sous vigilance déontologique",
+      "source": "Acteurs publics",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://acteurspublics.fr/articles/campagne-presidentielle-les-hauts-fonctionnaires-engages-dans-les-ecuries-sous-vigilance-deontologique/",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Mathilde, data scientist - Direction du numérique pour l'Éducation",
+      "source": "DINUM",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://numerique.gouv.fr/rejoignez-nous/les-visages-de-numeriquegouv/mathilde-da-cruz-data-scientist-direction-du-numerique-pour-leducation/",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Le Gouvernement propose des mesures pour augmenter le pouvoir d'achat de 1,3 million d'agents publics et ouvre cinq chantiers structurels en faveur de la fonction publique",
+      "source": "Presse Bercy",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://presse.economie.gouv.fr/le-gouvernement-propose-des-mesures-pour-augmenter-le-pouvoir-dachat-de-13-million-dagents-publics-et-ouvre-cinq-chantiers-structurels-en-faveur-de-la-fonction-publique/",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Les réserves nettes de change",
+      "source": "Presse Bercy",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://presse.economie.gouv.fr/les-reserves-nettes-de-change-186829/",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "55 000 € pour une batterie d’occasion : Mercedes propose de remplacer un pack défectueux avec 300 000 km",
+      "source": "01net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.01net.com/actualites/55-000-euros-batterie-occasion-mercedes-propose-remplacer-pack-defectueux-modele-300-000-km.html",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "6 millions d'identifiants volés ont été récupérés par la police : comment savoir si vous êtes concerné ?",
+      "source": "01net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.01net.com/actualites/6-millions-identifiants-voles-recuperes-police-verifiez-si-vous-etes-concerne.html",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Après le scandale Nvidia, Washington envisage de nouvelles restrictions contre la Chine",
+      "source": "01net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.01net.com/actualites/apres-le-scandale-nvidia-washington-envisage-de-nouvelles-restrictions-contre-la-chine.html",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Hugging Face perd son meilleur allié pour l'IA open source chez Nvidia, deux mois après le rachat",
+      "source": "01net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.01net.com/actualites/hugging-face-perd-son-meilleur-allie-pour-lia-open-source-chez-nvidia-deux-mois-apres-le-rachat.html",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "BYD a trouvé la solution pour simplifier à l'extrême la charge de votre voiture électrique : vous n'aurez même plus à sortir",
+      "source": "01net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.01net.com/actualites/la-solution-ultime-pour-simplifier-la-charge-de-votre-voiture-electrique-vous-naurez-meme-plus-a-sortir.html",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Outlook, Hotmail, Live, MSN : des mails ont été bloqué pendant 4 jours, Microsoft annonce une mauvaise nouvelle",
+      "source": "01net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.01net.com/actualites/outlook-hotmail-live-msn-des-mails-ont-ete-bloque-pendant-4-jours-microsoft-annonce-une-mauvaise-nouvelle.html",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    },
+    {
+      "title": "Vincent Franceschini (Biomemory) : « Une fois dans l’ADN, l’information numérique ne peut plus être modifiée »",
+      "source": "IT for Business",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.itforbusiness.fr/biomemory-dna-shield-stockage-adn-109764",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Alice Huang était proche du plus important concurrent chinois de Nvidia",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.journaldunet.com/business/1557957-alice-huang-a-detenu-des-participations-dans-des-entreprises-ayant-beneficie-a-huawei/",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Lutte anti-cybercriminalité : Europol annonce 354 arrestations dans l'opération TorNado",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.journaldunet.com/business/1557959-europol-annonce-354-arrestations-dans-l-operation-tornado/",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Distribution : L'Autorité de la concurrence soupçonne l'alliance Aura de pratiques anticoncurrentielles",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.journaldunet.com/business/1557965-l-autorite-de-la-concurrence-soupconne-l-alliance-aura-de-pratiques-anticoncurrentielles/",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    },
+    {
+      "title": "Une panne de Microsoft 365 paralyse les entreprises dans de nombreux pays",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.journaldunet.com/business/1557967-une-panne-de-microsoft-365-paralyse-des-organisations-dans-de-nombreux-pays/",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "L'ancien gouverneur de la Banque de France estime que la France peut rétablir la confiance des marchés",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.journaldunet.com/business/action-publique/1557961-christian-noyer-estime-que-la-france-peut-retablir-la-confiance-des-marches/",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "SpaceX va essayer de rattraper les deux étages de Starship",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.journaldunet.com/economie/industrie/1557963-spacex-va-essayer-de-rattraper-les-deux-etages-de-starship/",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "À la Justice, une nouvelle gouvernance numérique à plusieurs étages",
+      "source": "Acteurs publics",
+      "publication_date_iso": "2026-11-12",
+      "url": "https://acteurspublics.fr/articles/a-la-justice-une-nouvelle-gouvernance-numerique-a-plusieurs-etages/",
+      "publication_date_long": "12 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Données de santé : de la migration vers un cloud souverain à la préparation du cadre européen",
+      "source": "DINUM",
+      "publication_date_iso": "2026-11-12",
+      "url": "https://numerique.gouv.fr/actualites/donnees-de-sante-de-la-migration-vers-un-cloud-souverain-a-la-preparation-du-cadre-europeen/",
+      "publication_date_long": "12 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "NAR - Déplacement de Sébastien Martin à la 14e édition du MIF Expo, le salon du Made in France, samedi 14 novembre 2026",
+      "source": "Presse Bercy",
+      "publication_date_iso": "2026-11-12",
+      "url": "https://presse.economie.gouv.fr/nar-deplacement-de-sebastien-martin-a-la-14e-edition-du-mif-expo-le-salon-du-made-in-france-samedi-14-novembre-2026/",
+      "publication_date_long": "12 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "NAR - Semaine de l'Industrie - Déplacement de Sébastien Martin dans le Tarn, vendredi 13 novembre 2026",
+      "source": "Presse Bercy",
+      "publication_date_iso": "2026-11-12",
+      "url": "https://presse.economie.gouv.fr/nar-semaine-de-lindustrie-deplacement-de-sebastien-martin-dans-le-tarn-vendredi-13-novembre-2026/",
+      "publication_date_long": "12 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Plan de relance européen : versement de la dernière subvention pour la France",
+      "source": "Presse Bercy",
+      "publication_date_iso": "2026-11-12",
+      "url": "https://presse.economie.gouv.fr/plan-de-relance-europeen-versement-de-la-derniere-subvention-pour-la-france/",
+      "publication_date_long": "12 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Actualité du CEPD : adéquation de la Corée du Sud, versions finales des BCR-ST, et action coordonnée sur le recrutement via IA",
+      "source": "CNIL",
+      "publication_date_iso": "2026-11-12",
+      "url": "https://www.cnil.fr/fr/actualite-du-cepd-adequation-de-la-coree-du-sud-versions-finales-des-bcr-st-et-action-coordonnee-sur",
+      "publication_date_long": "12 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Yandex : près de 3% de données définitivement perdues après les frappes ukrainiennes",
+      "source": "IT for Business",
+      "publication_date_iso": "2026-11-12",
+      "url": "https://www.itforbusiness.fr/yandex-cloud-perte-de-donnees-frappes-drones-109759",
+      "publication_date_long": "12 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "La crise climatique pourrait représenter un tiers de l'inflation alimentaire en 2027, selon Oxfam",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-12",
+      "url": "https://www.journaldunet.com/business/1557883-la-crise-climatique-pourrait-representer-un-tiers-de-l-inflation-alimentaire-en-2027-selon-oxfam/",
+      "publication_date_long": "12 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Ce que l'on sait de Megaspeed et sa fondatrice Alice Huang, à l'origine de la chute du patron de Nvidia",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-12",
+      "url": "https://www.journaldunet.com/business/1557889-ce-que-l-on-sait-de-megaspeed-et-sa-fondatrice-alice-huang-a-l-origine-de-la-chute-du-patron-de-nvidia/",
+      "publication_date_long": "12 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Face à l'impuissance de l'Etat, deux hauts fonctionnaires appellent à transformer l'action publique",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-12",
+      "url": "https://www.journaldunet.com/business/action-publique/1557887-face-a-l-impuissance-de-l-etat-deux-hauts-fonctionnaires-proposent-de-transformer-l-action-publique/",
+      "publication_date_long": "12 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    },
+    {
+      "title": "A Douvrin, la gigafactory ACC espère fabriquer 300 000 modules de batteries automobiles en 2026",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-12",
+      "url": "https://www.journaldunet.com/economie/industrie/1557885-acc-espere-fabriquer-300-000-modules-de-batteries-en-2026/",
+      "publication_date_long": "12 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    }
+  ]
+}

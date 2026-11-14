@@ -1,0 +1,127 @@
+{
+  "schema_version": "SNUM_PAQUET_RENDU_V519",
+  "edition_date": "2026-11-14",
+  "edition_date_long": "14 novembre 2026",
+  "window_start": "2026-11-12",
+  "window_end": "2026-11-14",
+  "articles": [
+    {
+      "id": "U01",
+      "rubric": "numerique",
+      "title": "Rémi, chef de projet de la plateforme d'apprentissage Éléa - Direction du numérique pour l'Éducation",
+      "source": "DINUM",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://numerique.gouv.fr/rejoignez-nous/les-visages-de-numeriquegouv/remi-chef-de-projet-de-la-plateforme-dapprentissage-elea-direction-du-numerique-pour-leducation/",
+      "fact": "Rémi Lefeuvre pilote la plateforme d’apprentissage Éléa, développée par la DNE, pour les personnels de l’Éducation nationale.",
+      "keywords": [
+        "plateforme Éléa",
+        "transformation numérique",
+        "éducation nationale",
+        "e‑learning"
+      ],
+      "takeaway": "Déployer une plateforme e‑learning nationale renforce la mission éducative du service public numérique.",
+      "snum_interest": "Intérêt SNUM : soutenir la digitalisation des services éducatifs et l’innovation pédagogique.",
+      "essential": true
+    },
+    {
+      "id": "U02",
+      "rubric": "ia",
+      "title": "Panne Microsoft : ChatGPT et Claude également touchés, et ils ne sont pas les seuls",
+      "source": "01net",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://www.01net.com/actualites/panne-microsoft-chatgpt-et-claude-egalement-touches-et-ils-ne-sont-pas-les-seuls.html",
+      "fact": "Une panne d’Exchange Online empêche les connecteurs Microsoft 365 de ChatGPT et Claude d’accéder aux e‑mails, agendas et SharePoint.",
+      "keywords": [
+        "panne Microsoft",
+        "connecteurs IA",
+        "Microsoft 365",
+        "ChatGPT",
+        "Claude"
+      ],
+      "takeaway": "Les IA dépendantes de Microsoft 365 sont vulnérables aux pannes de l’infrastructure.",
+      "snum_interest": "Surveiller la résilience des services IA intégrés aux plateformes Microsoft pour les administrations.",
+      "essential": true
+    },
+    {
+      "id": "U03",
+      "rubric": "bercy",
+      "title": "Budget 2027 : le Sénat rabote le supplément familial de traitement et le temps partiel thérapeutique des fonctionnaires",
+      "source": "Acteurs publics",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://acteurspublics.fr/articles/budget-2027-le-senat-rabote-le-supplement-familial-de-traitement-et-le-temps-partiel-therapeutique-des-fonctionnaires/",
+      "fact": "Le Sénat propose de forfaitiser le supplément familial de traitement, visant une économie d’environ 250 M€ dans le budget 2027.",
+      "keywords": [
+        "supplément familial de traitement",
+        "budget 2027",
+        "réduction dépenses publiques"
+      ],
+      "takeaway": "La forfaitisation du SFT pourrait alléger les finances publiques tout en redistribuant les revenus.",
+      "snum_interest": "Intérêt SNUM : suivre l’impact budgétaire sur la fonction publique et la gestion des ressources.",
+      "essential": true
+    },
+    {
+      "id": "U04",
+      "rubric": "rh",
+      "title": "À Bercy, des hauts fonctionnaires critiquent le manque de transparence autour de l’individualisation de leurs primes",
+      "source": "Acteurs publics",
+      "publication_date_iso": "2026-11-12",
+      "publication_date_long": "12 novembre 2026",
+      "url": "https://acteurspublics.fr/articles/a-bercy-des-hauts-fonctionnaires-critiquent-le-manque-de-transparence-autour-de-lindividualisation-de-leurs-primes/",
+      "fact": "L’individualisation de l’IFSE, mise en place depuis 2024, suscite des critiques pour son manque de transparence et de communication.",
+      "keywords": [
+        "IFSE",
+        "transparence",
+        "primes publiques",
+        "Bercy",
+        "haute fonction publique"
+      ],
+      "takeaway": "Améliorer la communication sur les critères d’IFSE renforcerait la confiance des agents.",
+      "snum_interest": "Le SNUM peut soutenir la digitalisation de la diffusion des critères d’indemnisation.",
+      "essential": false
+    },
+    {
+      "id": "U05",
+      "rubric": "bercy",
+      "title": "Presse - Ministère des Finances",
+      "source": "Presse Bercy",
+      "publication_date_iso": "2026-11-12",
+      "publication_date_long": "12 novembre 2026",
+      "url": "https://presse.economie.gouv.fr/",
+      "fact": "Le ministre David Amiel a présenté le bilan de l’opération COLBERT, mobilisation du 7‑15 octobre 2026 contre la contrebande de tabac.",
+      "keywords": [
+        "COLBERT",
+        "contre‑bande de tabac",
+        "David Amiel",
+        "ministère des Finances"
+      ],
+      "takeaway": "Opération nationale visant à freiner la contrebande de tabac.",
+      "snum_interest": "Intérêt pour la coordination inter‑services et la lutte contre la fraude.",
+      "essential": false
+    }
+  ],
+  "watch": [
+    {
+      "title": "Rubrique sans article : commande",
+      "summary": "Aucun article admissible établi pour cette rubrique."
+    },
+    {
+      "title": "Sources non couvertes",
+      "summary": "Sources en échec technique ou non traitées faute de temps : Vie publique."
+    },
+    {
+      "title": "Sources protégées contre les robots",
+      "summary": "Accès automatisé refusé, à couvrir autrement : Ministères économiques et financiers, Légifrance, Le Monde."
+    },
+    {
+      "title": "Source interne non traitée",
+      "summary": "La source métier interne exige une configuration privée : à compléter manuellement."
+    },
+    {
+      "title": "Découverte bornée",
+      "summary": "9293 URL découvertes n'ont pas été analysées (plafond ou budget temporel)."
+    }
+  ]
+}
