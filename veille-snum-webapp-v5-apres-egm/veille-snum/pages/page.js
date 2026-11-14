@@ -84,7 +84,7 @@
   const url = target.mode === 'archive' ? A.archiveUrl(target.id, name, bust || Date.now()) : `./${name}${bust ? `?v=${bust}` : ''}`;
   for (let attempt = 0; ; attempt++) {
    let r;
-   try { r = await fetch(url, {cache: 'no-store'}); } catch (_) { throw new Error('le site est injoignable'); }
+   try { r = await fetch(url, G.timed({cache: 'no-store'})); } catch (_) { throw new Error('le site est injoignable'); }
    if (r.status === 404) return {missing: true};
    if (r.ok) return {data: await r.json()};
    if (r.status < 500 || attempt) throw new Error(`le serveur a répondu ${r.status}`);

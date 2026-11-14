@@ -113,7 +113,8 @@ test('suivi perdu (jeton expiré, réseau coupé) : erreur marquée, distincte d
 });
 
 test('lancement accepté sans numéro de run (réponse 204) puis liste illisible : suivi perdu, pas un refus', async () => {
- const w = load([{status: 204}, {status: 500}]);
+ // Liste relevée avant l'envoi, envoi accepté sans numéro, puis liste illisible.
+ const w = load([{status: 200, body: {workflow_runs: []}}, {status: 204}, {status: 500}]);
  await assert.rejects(w.VeilleGithub.dispatch('collecte', {mode: 'titres'}, FAKE), err => err.lost === true);
  const refuse = load([{status: 401}]);
  await assert.rejects(refuse.VeilleGithub.dispatch('collecte', {mode: 'titres'}, FAKE), err => !err.lost && /erreur 401/.test(err.message));

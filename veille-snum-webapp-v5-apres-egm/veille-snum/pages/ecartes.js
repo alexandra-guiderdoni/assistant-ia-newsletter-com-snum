@@ -18,12 +18,15 @@
  // Résultat SNUM_REPECHAGE_V1 : {ok: true, article} ou {ok: false, message}.
  function parseRepechage(result, expectedUrl) {
   if (!result || typeof result !== 'object' || result.schema_version !== 'SNUM_REPECHAGE_V1') throw new Error('Résultat du repêchage illisible.');
-  if (result.url !== expectedUrl) throw new Error('Le résultat publié concerne une autre adresse que le candidat choisi.');
-  if (result.status === 'erreur') return {ok: false, message: filled(result.message) ? result.message : 'Repêchage refusé sans motif précisé.'};
+  const refused = result.status === 'erreur';
+  // Repêchage interrompu avant son résultat : la tâche publie un refus sans adresse, dont le motif doit s'afficher.
+  if (result.url !== expectedUrl && !(refused && result.url === '')) throw new Error('Le résultat publié concerne une autre adresse que le candidat choisi.');
+  if (refused) return {ok: false, message: filled(result.message) ? result.message : 'Repêchage refusé sans motif précisé.'};
   const a = result.article;
   const valid = result.status === 'ok' && a && typeof a === 'object'
    && global.VeilleSelection.RUBRICS.includes(a.rubric) && TEXT_FIELDS.every(f => filled(a[f]))
-   && a.url === expectedUrl && /^\d{4}-\d{2}-\d{2}$/.test(a.publication_date_iso)
+   // L'article porte son adresse canonique (www, paramètres retirés) : elle peut différer de celle du candidat.
+   && /^https:\/\/[^\s]+$/.test(a.url) && /^\d{4}-\d{2}-\d{2}$/.test(a.publication_date_iso)
    && Array.isArray(a.keywords) && a.keywords.length > 0 && a.keywords.every(filled);
   if (!valid) throw new Error('Article repêché incomplet : il n’a pas été ajouté.');
   return {ok: true, article: {id: '', rubric: a.rubric, title: a.title, source: a.source, publication_date_iso: a.publication_date_iso,
@@ -31,11 +34,12 @@
    snum_interest: a.snum_interest, essential: false}};
  }
 
- // Ajoute l'article gardé à la sélection et le retire des candidats, sans modifier les listes reçues.
- function merge(selection, candidates, article, key) {
+ // Ajoute l'article gardé à la sélection et retire le candidat demandé (candidateUrl, ou l'adresse
+ // de l'article à défaut) des candidats, sans modifier les listes reçues.
+ function merge(selection, candidates, article, key, candidateUrl) {
   if (selection.some(s => s.article.url === article.url)) throw new Error('DEJA_SELECTIONNE');
   return {selection: [...selection, {article, keep: true, rubric: article.rubric, key}],
-   candidates: candidates.filter(c => c.url !== article.url)};
+   candidates: candidates.filter(c => c.url !== article.url && c.url !== candidateUrl)};
  }
 
  global.VeilleEcartes = {REASONS, parseRepechage, merge};
@@ -94,7 +98,7 @@
    if (!parsed.ok) throw new Error(`Albert n’a pas pu repêcher « ${c.title} » : ${parsed.message}`);
    const key = `r${++added}`;
    let merged;
-   try { merged = merge(S.entries(), candidates, parsed.article, key); }
+   try { merged = merge(S.entries(), candidates, parsed.article, key, c.url); }
    catch (_) { throw new Error(`« ${c.title} » figure déjà dans la sélection.`); }
    candidates = merged.candidates;
    const label = S.RUBRIC_LABELS[parsed.article.rubric];
