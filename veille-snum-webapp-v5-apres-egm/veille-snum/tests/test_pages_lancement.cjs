@@ -166,3 +166,12 @@ test('page : marche à suivre du jeton liée et présente dans le dépôt, annon
  assert.match(html, /de cinq à neuf minutes/);
  assert.doesNotMatch(html + fs.readFileSync(path.join(PAGES, 'page.js'), 'utf8'), /environ huit minutes|environ trois minutes/);
 });
+
+test('paquet et état publiés : même édition et même période, sinon versions mélangées', () => {
+ const paquet = {edition_date: '2026-11-20', window_start: '2026-11-13', window_end: '2026-11-20'};
+ assert.equal(L.sameEdition({...ETAT, phase: 'resumes'}, paquet), true);
+ assert.equal(L.sameEdition(null, paquet), true, 'site antérieur sans état : rien à comparer');
+ assert.equal(L.sameEdition({...ETAT, phase: 'resumes', edition_date: '2026-11-21'}, paquet), false);
+ assert.equal(L.sameEdition({...ETAT, phase: 'collecte', window_start: '2026-11-12'}, paquet), false);
+ assert.match(fs.readFileSync(path.join(PAGES, 'page.js'), 'utf8'), /L\.sameEdition\(etat, packet\)/);
+});

@@ -53,6 +53,7 @@ jobs:
 
       # Un refus (code 1) n'arrête pas la tâche : son motif doit être publié.
       - name: Repêchage par Albert
+        id: albert
         working-directory: veille-snum-webapp-v5-apres-egm/veille-snum
         env:
           ALBERT_API_KEY: ${{ secrets.ALBERT_API_KEY }}
@@ -67,6 +68,9 @@ jobs:
           python -m veille_snum.repecher --url="$URL" --rubrique="$RUBRIQUE" \
             --debut="$DEBUT" --fin="$FIN" --sortie="$RESULTAT" || code=$?
           if [ ! -s "$RESULTAT" ]; then
+            # Le script s'est arrêté sans écrire son résultat : ce n'est pas un refus, la tâche
+            # finira en échec une fois ce résultat de repli publié.
+            echo "interrompu=oui" >> "$GITHUB_OUTPUT"
             # Résultat de repli : il porte l'adresse demandée, lue dans l'environnement et jamais
             # recopiée dans le script, pour que la page affiche ce motif au bon candidat.
             python -c 'import json, os, sys; json.dump({"schema_version": "SNUM_REPECHAGE_V1", "url": os.environ.get("URL", "")[:2048], "status": "erreur", "message": "Repêchage interrompu avant son résultat : consulter le journal de la tâche.", "article": None}, open(sys.argv[1], "w", encoding="utf-8"), ensure_ascii=False)' "$RESULTAT"
@@ -121,6 +125,13 @@ jobs:
             exit 1
           fi
           echo "Résultat publié : $fichier ($commit)"
+
+      # Un refus motivé (code 1) laisse la tâche verte ; un script arrêté sans résultat la rend rouge.
+      - name: Signaler un repêchage interrompu
+        if: steps.albert.outputs.interrompu == 'oui'
+        run: |
+          echo "Le repêchage s'est arrêté avant d'écrire son résultat : voir l'étape « Repêchage par Albert »." >&2
+          exit 1
 
       # Résumé affiché en tête de la page du run : où lire le résultat.
       - name: Résumé du repêchage

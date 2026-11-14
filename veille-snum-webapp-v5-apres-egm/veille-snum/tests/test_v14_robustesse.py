@@ -480,19 +480,59 @@ class IndexDesArchivesTests(unittest.TestCase):
         )
 
 
+class DelaiAlbertTests(unittest.TestCase):
+    """Audit : le délai de chaque appel Albert du second temps restait de 30 s, quel que soit le temps restant."""
+
+    def test_delai_reduit_au_temps_restant(self):
+        dossier = Path(tempfile.mkdtemp()) / "site"
+        environnement = {
+            "ALBERT_API_KEY": "JETON-FACTICE",
+            "ALBERT_MODEL": "modele-test",
+            "SELECTION": selection((URLS[0], ""), (URLS[1], "ia")),
+        }
+        delais = []
+
+        def albert(
+            candidat, cle, modele, timeout=30, feedback=None, forced_rubric=None
+        ):
+            delais.append(timeout)
+            return good_summary(candidat)
+
+        for budget, attendu in ((360, lambda d: d == 30), (12, lambda d: 1 <= d <= 12)):
+            delais.clear()
+            with (
+                mock.patch.dict("os.environ", environnement),
+                mock.patch("veille_snum.resumer.HttpClient", return_value=Site()),
+                mock.patch("veille_snum.resumer.albert_summary", side_effect=albert),
+                mock.patch("veille_snum.resumer.MAX_ALBERT_SECONDS", budget),
+                mock.patch("sys.stdout"),
+                mock.patch("sys.stderr"),
+            ):
+                self.assertEqual(resumer_main(["--sortie", str(dossier)]), 0)
+            self.assertEqual(len(delais), 2)
+            self.assertTrue(all(attendu(d) for d in delais), (budget, delais))
+
+
 class AlbertSature(Albert):
     """Albert refuse par un 429 tout appel au-delà de deux simultanés."""
 
     def __init__(self, duree):
         super().__init__(duree=duree)
         self.refus = 0
+        self.places = 0
 
     def __call__(self, candidat, feedback=None, forced_rubric=None):
+        # Contrôle et réservation sous le même verrou : jamais trois appels admis ensemble.
         with self.verrou:
-            if self.en_cours >= 2:
+            if self.places >= 2:
                 self.refus += 1
                 raise HTTPError(ALBERT, 429, "Too Many Requests", {}, None)
-        return super().__call__(candidat, feedback, forced_rubric)
+            self.places += 1
+        try:
+            return super().__call__(candidat, feedback, forced_rubric)
+        finally:
+            with self.verrou:
+                self.places -= 1
 
 
 class TroisAppelsSimultanesTests(Cas):

@@ -33,7 +33,10 @@
   publishedFailed: text => `Les fichiers ont été publiés et la page les affiche, mais l’exécution s’est ensuite terminée en échec (${text}). Rien n’est à relancer : le détail de l’exécution dit ce qui a manqué.`,
  };
 
- global.VeilleLancement = {FRESH_TRIES, FRESH_WAIT_MS, publishedBy, outcome, sinceText, TEXT};
+ // Le paquet lu est-il celui que décrit l'état publié ? Sans état (site antérieur), rien à comparer.
+ const sameEdition = (etat, packet) => !etat || ['edition_date', 'window_start', 'window_end'].every(k => String(etat[k]) === String(packet[k]));
+
+ global.VeilleLancement = {FRESH_TRIES, FRESH_WAIT_MS, publishedBy, outcome, sameEdition, sinceText, TEXT};
 
  if (typeof document === 'undefined' || !document.getElementById('collect-form')) return;
 
