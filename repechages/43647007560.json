@@ -1,0 +1,24 @@
+{
+  "schema_version": "SNUM_REPECHAGE_V1",
+  "url": "https://acteurspublics.fr/articles/budget-2027-le-senat-rabote-le-supplement-familial-de-traitement-et-le-temps-partiel-therapeutique-des-fonctionnaires/",
+  "status": "ok",
+  "message": "Article repêché dans la rubrique administration.",
+  "article": {
+    "rubric": "administration",
+    "title": "Budget 2027 : le Sénat rabote le supplément familial de traitement et le temps partiel thérapeutique des fonctionnaires",
+    "source": "Acteurs publics",
+    "publication_date_iso": "2026-11-13",
+    "publication_date_long": "13 novembre 2026",
+    "url": "https://acteurspublics.fr/articles/budget-2027-le-senat-rabote-le-supplement-familial-de-traitement-et-le-temps-partiel-therapeutique-des-fonctionnaires/",
+    "fact": "Le Sénat propose de forfaitiser le supplément familial de traitement, visant à économiser environ 250 M€ d’ici 2027.",
+    "keywords": [
+      "budget 2027",
+      "supplément familial de traitement",
+      "fonction publique",
+      "forfaitisation",
+      "économies"
+    ],
+    "takeaway": "Réduction du SFT pour alléger les dépenses publiques.",
+    "snum_interest": "Impact sur la masse salariale des agents publics."
+  }
+}
