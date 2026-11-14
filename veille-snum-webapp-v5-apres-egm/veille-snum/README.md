@@ -35,6 +35,8 @@ Tests : 130 Python et 19 Node réussis hors réseau. Recette avec une vraie clé
 
 https://alexandra-guiderdoni.github.io/assistant-ia-newsletter-com-snum/ offre le même usage sans serveur local : la collecte et Albert passent par GitHub Actions (tâches « Publier le paquet Veille SNUM » et « Repêcher un candidat Veille SNUM »), la sélection et l'export JSON V519 se font dans le navigateur. Lancer une collecte, une rédaction de résumés ou un repêchage depuis la page demande le jeton GitHub partagé par l'équipe : procédure, permissions, sécurité et dépannage dans [docs/jeton-github.md](docs/jeton-github.md), liée depuis la page.
 
+Les dates proposées suivent le calendrier de la revue, qui part le mardi et le vendredi : édition au prochain envoi, à partir du jour même, et période depuis l'envoi précédent, bornes incluses (du vendredi au mardi, du mardi au vendredi). Si une édition n'a pas eu lieu, avancer le début de période. La tâche GitHub applique la même règle quand ses dates sont laissées vides.
+
 La collecte se fait en deux temps :
 
 1. « Lancer la collecte » (mode `titres`) explore les treize sites publics sans Albert, puis publie les titres trouvés : trois à quatre minutes (estimation, ce mode n'a pas encore été mesuré en réel). La page se vide dès que GitHub accepte la demande ; la collecte précédente, si elle avait été résumée, reste dans les archives.
@@ -76,7 +78,7 @@ Ne jamais copier la clé dans un fichier HTML, commit GitHub, log ou copie d'éc
 
 ## Utilisation
 
-1. Saisir date d'édition et période (bornes incluses).
+1. Saisir date d'édition et période (bornes incluses) ; par défaut, le prochain mardi ou vendredi et la période depuis l'envoi précédent.
 2. Cliquer sur « Lancer la collecte » ; consulter l'état de chaque source et les exclusions.
 3. Si Albert est configuré, relire les fiches et télécharger le JSON V519.
 4. Ouvrir `builder-mail-dsfr/app/distribution/snum.html`, coller le paquet puis exporter la composition vers le builder.

@@ -16,7 +16,20 @@ from veille_snum.publier import (
     ecartes,
     fenetre,
     main,
+    prochaine_edition,
     publier,
+)
+
+# Jour de lancement -> (édition, début de période) : envois le mardi et le vendredi.
+CALENDRIER = (
+    (dt.date(2026, 11, 16), dt.date(2026, 11, 17), dt.date(2026, 11, 13)),
+    (dt.date(2026, 11, 17), dt.date(2026, 11, 17), dt.date(2026, 11, 13)),
+    (dt.date(2026, 11, 18), dt.date(2026, 11, 20), dt.date(2026, 11, 17)),
+    (dt.date(2026, 11, 19), dt.date(2026, 11, 20), dt.date(2026, 11, 17)),
+    (dt.date(2026, 11, 20), dt.date(2026, 11, 20), dt.date(2026, 11, 17)),
+    (dt.date(2026, 11, 21), dt.date(2026, 11, 24), dt.date(2026, 11, 20)),
+    (dt.date(2026, 11, 22), dt.date(2026, 11, 24), dt.date(2026, 11, 20)),
+    (dt.date(2026, 12, 30), dt.date(2027, 1, 1), dt.date(2026, 12, 29)),
 )
 
 TOKEN = "JETON-FACTICE-NE-PAS-PUBLIER"
@@ -32,27 +45,47 @@ def fake_collect(payload):
 
 
 class FenetreTests(unittest.TestCase):
-    def test_sept_jours_jusqua_la_date_d_edition(self):
-        self.assertEqual(
-            fenetre(dt.date(2026, 11, 13)),
-            {
-                "edition_date": "2026-11-13",
-                "window_start": "2026-11-06",
-                "window_end": "2026-11-13",
-            },
-        )
+    def test_prochain_envoi_mardi_ou_vendredi(self):
+        for jour, edition, _ in CALENDRIER:
+            with self.subTest(jour=jour):
+                self.assertEqual(prochaine_edition(jour), edition)
+
+    def test_periode_depuis_l_envoi_precedent(self):
+        for _, edition, debut in CALENDRIER:
+            with self.subTest(edition=edition):
+                self.assertEqual(
+                    fenetre(edition),
+                    {
+                        "edition_date": edition.isoformat(),
+                        "window_start": debut.isoformat(),
+                        "window_end": edition.isoformat(),
+                    },
+                )
 
     def periode(self, *argv):
         with mock.patch("veille_snum.publier.publier", return_value=0) as appel:
             main(["--sortie", "x", *argv])
         return appel.call_args.args[0]
 
+    def test_sans_date_saisie_prochain_envoi(self):
+        with mock.patch(
+            "veille_snum.publier.aujourdhui", return_value=dt.date(2026, 11, 14)
+        ):
+            self.assertEqual(
+                self.periode(),
+                {
+                    "edition_date": "2026-11-17",
+                    "window_start": "2026-11-13",
+                    "window_end": "2026-11-17",
+                },
+            )
+
     def test_periode_calculee_depuis_l_edition_saisie(self):
         self.assertEqual(
             self.periode("--edition", "2026-11-20"),
             {
                 "edition_date": "2026-11-20",
-                "window_start": "2026-11-13",
+                "window_start": "2026-11-17",
                 "window_end": "2026-11-20",
             },
         )
@@ -83,7 +116,7 @@ class FenetreTests(unittest.TestCase):
 
     def test_edition_francaise_seule(self):
         payload = self.periode("--edition", " 20/11/2026 ")
-        self.assertEqual(payload["window_start"], "2026-11-13")
+        self.assertEqual(payload["window_start"], "2026-11-17")
         self.assertEqual(payload["window_end"], "2026-11-20")
 
     def test_date_impossible_refusee_avant_la_collecte(self):

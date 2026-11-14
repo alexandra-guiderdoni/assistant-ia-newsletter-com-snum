@@ -155,8 +155,14 @@ byId('remember-albert').disabled = true;
 let currentPacket = null, currentReport = null;
 const pad = n => String(n).padStart(2, '0');
 function localIso(d) { return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; }
-const today = new Date(), start = new Date(today); start.setDate(start.getDate()-7);
-byId('edition').value = localIso(today); byId('end').value = localIso(today); byId('start').value = localIso(start);
+// Même calendrier que la page en ligne et publier.py : envois le mardi et le vendredi,
+// édition au prochain envoi, période depuis l'envoi précédent, bornes incluses.
+const SEND_DAYS = [2, 5];
+const edition = new Date(); edition.setHours(0, 0, 0, 0);
+while (!SEND_DAYS.includes(edition.getDay())) edition.setDate(edition.getDate()+1);
+const start = new Date(edition);
+do start.setDate(start.getDate()-1); while (!SEND_DAYS.includes(start.getDay()));
+byId('edition').value = localIso(edition); byId('end').value = localIso(edition); byId('start').value = localIso(start);
 const KEPT_PER_RUBRIC = 2; // articles cochés « Garder » par défaut dans chaque thématique
 const RUBRIC_LABELS = {numerique:'Numérique',ia:'Intelligence artificielle',commande:'Commande publique',rh:'Ressources humaines',bercy:'Bercy'};
 const statusNames = {checked:'Découverte effectuée',partial:'Partielle / tronquée',skipped_budget:'Non traitée (temps)',skipped_internal:'Non traitée (source interne)',blocked:'Bloquée (robots.txt ou protection anti-robot)',error:'Échec technique',pending:'En attente'};

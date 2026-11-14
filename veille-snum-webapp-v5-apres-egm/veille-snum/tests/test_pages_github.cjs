@@ -154,7 +154,20 @@ test('formulaire : mêmes contrôles de dates que la page locale', () => {
  assert.deepEqual(Object.keys(P.dateErrors('', '', '')), ['edition', 'start', 'end']);
  assert.match(P.dateErrors('2026-11-13', '2026-11-14', '2026-11-13').end, /postérieure/);
  assert.match(P.dateErrors('2026-11-13', '2026-09-01', '2026-11-13').end, /61 jours/);
- assert.deepEqual(plain(P.defaultDates(new Date(2026, 10, 13, 9))), {edition: '2026-11-13', start: '2026-11-06', end: '2026-11-13'});
+});
+
+test('dates par défaut : prochain mardi ou vendredi, période depuis l’envoi précédent (mêmes cas que publier.py)', () => {
+ // [jour de lancement, édition, début] ; mois comptés à partir de 0 dans Date.
+ const cas = [
+  [[2026, 10, 16], '2026-11-17', '2026-11-13'], [[2026, 10, 17], '2026-11-17', '2026-11-13'],
+  [[2026, 10, 18], '2026-11-20', '2026-11-17'], [[2026, 10, 19], '2026-11-20', '2026-11-17'],
+  [[2026, 10, 20], '2026-11-20', '2026-11-17'], [[2026, 10, 21], '2026-11-24', '2026-11-20'],
+  [[2026, 10, 22], '2026-11-24', '2026-11-20'], [[2026, 11, 30], '2027-01-01', '2026-12-29'],
+ ];
+ for (const [[y, m, d], edition, start] of cas) {
+  // 23 h : un lancement tardif reste sur le jour local, sans glisser au lendemain.
+  assert.deepEqual(plain(P.defaultDates(new Date(y, m, d, 23, 30))), {edition, start, end: edition}, `${y}-${m + 1}-${d}`);
+ }
 });
 
 test('aucune écriture HTML, aucun stockage, aucun tiret cadratin, CSP limitée à GitHub', () => {
