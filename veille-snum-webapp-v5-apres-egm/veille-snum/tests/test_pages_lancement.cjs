@@ -61,7 +61,7 @@ test('messages : le suivi perdu ne parle pas d’échec, le cache périmé inter
  assert.match(L.TEXT.active(''), /activez de nouveau le bouton/);
  assert.match(L.TEXT.notice(''), /inutile de la relancer/);
  assert.match(L.TEXT.publishedFailed('échec'), /L’archive de cette collecte peut manquer/);
- assert.doesNotMatch(Object.values(L.TEXT).map(f => f('x', 'y')).join(' '), /—|workflow|\brun\b/);
+ assert.doesNotMatch(Object.values(L.TEXT).map(f => f('x', 'y')).join(' '), /\u2014|workflow|\brun\b/);
 });
 
 test('étape en échec nommée dans le libellé de fin', () => {

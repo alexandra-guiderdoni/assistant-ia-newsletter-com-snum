@@ -24,7 +24,6 @@ from test_v13_deux_temps import (
     selection,
 )
 from test_veille_snum import good_summary
-
 from veille_snum.core import validate_packet_v519
 from veille_snum.repecher import repecher
 from veille_snum.resumer import lire_rapport, publier_resumes
