@@ -1,0 +1,24 @@
+{
+  "schema_version": "SNUM_REPECHAGE_V1",
+  "url": "https://www.01net.com/actualites/6-000-euros-320-km-autonomie-petite-electrique-voiture-avons-tous-besoin.html",
+  "status": "ok",
+  "message": "Article repêché dans la rubrique administration.",
+  "article": {
+    "rubric": "administration",
+    "title": "6 000 € et 320 km d’autonomie : cette petite électrique est-elle la voiture dont nous avons tous besoin ?",
+    "source": "01net",
+    "publication_date_iso": "2026-11-14",
+    "publication_date_long": "14 novembre 2026",
+    "url": "https://www.01net.com/actualites/6-000-euros-320-km-autonomie-petite-electrique-voiture-avons-tous-besoin.html",
+    "fact": "FAW lance en Chine la Bestune Pony, citadine électrique à 6 000 €, autonomie 222‑328 km, 4 places.",
+    "keywords": [
+      "voiture électrique",
+      "FAW",
+      "Bestune Pony",
+      "autonomie",
+      "prix bas"
+    ],
+    "takeaway": "Voiture très bon marché, autonomie limitée, peu d'impact pour le secteur public.",
+    "snum_interest": "Intérêt limité pour le SNUM, hors du périmètre administratif."
+  }
+}
