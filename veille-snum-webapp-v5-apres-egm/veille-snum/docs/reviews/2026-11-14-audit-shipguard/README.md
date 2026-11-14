@@ -33,14 +33,19 @@ Ce relevé n'est pas un audit. Trois signalements sur la page de sélection, un 
 - liens jugés indistincts du texte et contraste de 1 pour 1 sur des liens : non confirmés par la mesure directe dans le navigateur (liens soulignés, 5,7 pour 1 au moins) ;
 - contraste de 4,23 pour 1 sur le texte « Archivée le… » des archives : non confirmé non plus. Sa couleur a été changée par précaution ; la mesure directe donne 11 pour 1 et l'outil affiche toujours 4,23. Le message du commit `f12abc1` présente ce changement comme la correction d'un défaut : c'est plus que ce qui est prouvé.
 
+## Corrigé en dernier lieu
+
+- Après confirmation du numéro de run, la page vérifie que le paquet lu est bien celui que décrit l'état publié ; sinon elle invite à recharger.
+- Chaque appel Albert du second temps est borné par le temps restant du budget, comme pour la collecte complète.
+- Un repêchage dont le script s'arrête sans résultat rend la tâche rouge, une fois son motif publié ; un refus motivé la laisse verte.
+
 ## Restent ouverts, par choix
 
 - Texte de pages tierces résumé par Albert puis publié sans relecture préalable : décision éditoriale. La page demande de vérifier chaque source avant diffusion.
-- Après confirmation du numéro de run, rapport, paquet et candidats écartés sont relus sans contrôle croisé de version.
+- Jeton partagé par l'équipe (choix du 14 novembre 2026) : les lancements ne sont pas nominatifs.
 - Une page restée ouverte sur d'anciens titres peut demander leur rédaction si le cache du site sert encore leur rapport ; la page relit l'état avant l'envoi, le serveur n'a pas d'autre moyen de le savoir.
 - « Page seule » lancée juste après une publication peut republier d'anciens fichiers si le cache du site les sert encore.
-- Repêchage : la tâche reste verte quand le script échoue (le refus doit pouvoir être publié) ; son jeton d'écriture couvre tout le dépôt ; au-delà de dix minutes, aucun résultat n'est publié.
+- Repêchage : son jeton d'écriture couvre tout le dépôt pendant la tâche ; au-delà de dix minutes, aucun résultat n'est publié.
 - Groupe de concurrence `pages` : GitHub ne garde qu'une demande en attente et annule la précédente. La page prévient avant tout second envoi.
-- Appel Albert du second temps : délai fixe de 30 secondes, non réduit au temps restant.
 - Balises `og` et `canonical` absentes : sans objet pour un outil interne.
-- Accessibilité : aucun audit n'a été réalisé ; le pied de page le dit.
+- Accessibilité : préaudit du 14 novembre dans `../2026-11-14-accessibilite/` ; aucun audit RGAA n'a été réalisé.

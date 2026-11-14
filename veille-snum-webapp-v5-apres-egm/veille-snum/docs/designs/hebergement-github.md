@@ -67,3 +67,17 @@ Témoins négatifs exécutés en local avant l'envoi : sans secret, la tâche s'
 2. Réécriture en JavaScript de la reconstruction du paquet après sélection, aujourd'hui côté serveur (`/api/packet`, `rebuild_packet`).
 3. Repêchage (`/api/summarize`) remplacé par un déclenchement manuel, ou abandonné.
 4. Retrait de la tâche de test et archivage de la branche `config/test-albert-github`.
+
+## Suite au 14 novembre 2026
+
+Les sections « Décisions restantes » et « Travail restant » ci-dessus décrivent l'état du 13 novembre. Depuis :
+
+- **Sélection** : faite dans une page autonome du dépôt, publiée avec le paquet (`pages/`), et non dans la page SNUM de l'atelier. La reconstruction du paquet après sélection est en JavaScript (`pages/selection.js`).
+- **Repêchage** : conservé, par la tâche « Repêcher un candidat Veille SNUM », lancée depuis la page.
+- **Collecte en deux temps** : les titres d'abord, sans Albert, puis les résumés des seuls titres gardés. La collecte complète en une fois reste possible.
+- **Archives** : chaque collecte résumée est archivée sur la branche `donnees-veille`, avant sa publication.
+- **Lancement** : depuis la page, avec un jeton GitHub partagé par l'équipe ([jeton-github.md](../jeton-github.md)). Toujours pas de calendrier : la tâche ne part qu'à la demande.
+- **Tâche de test** `test-acces-albert-github.yml` : conservée dans `main`, lancement manuel seulement ; la branche `config/test-albert-github` est supprimée.
+- **Sécurité** : le secret `ALBERT_API_KEY` reste dans le dépôt ; le point de l'issue #6 est inchangé.
+
+Mode d'emploi : section « Sans Python » du [README](../../README.md). État et reste à faire : [reprise-session.md](../../reprise-session.md).
