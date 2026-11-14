@@ -1,0 +1,597 @@
+{
+  "repo": "assistant-ia-newsletter-com-snum",
+  "timestamp": "2026-11-14T01:30:47.410453+00:00",
+  "mode": "hybrid",
+  "base_ref": "dbabaa5",
+  "head_ref": "a13adfa",
+  "summary": {
+    "units_checked": 8,
+    "behavior_changes": 7,
+    "new_errors": 0,
+    "surprises": 0,
+    "evidence_mix": {
+      "reasoned": 4,
+      "measured": 10
+    },
+    "by_verdict": {
+      "unchanged": 1,
+      "behavior-changed": 7,
+      "new-error": 0
+    }
+  },
+  "units": [
+    {
+      "id": "u01",
+      "kind": "function",
+      "ref": "publier.main sans --mode",
+      "file": "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/publier.py",
+      "actions": [
+        {
+          "seed": 1,
+          "input_summary": "nominal",
+          "evidence": "measured",
+          "confidence": "high",
+          "assumptions": [
+            "sources et Albert factices des tests du dépôt"
+          ],
+          "before": {
+            "articles": 13,
+            "code": 0,
+            "ecartes": [],
+            "fichiers": [
+              "candidats-ecartes.json",
+              "paquet-v519.json",
+              "rapport-collecte.json"
+            ],
+            "issue": "ok",
+            "statut": "ready"
+          },
+          "after": {
+            "articles": 13,
+            "code": 0,
+            "ecartes": [],
+            "fichiers": [
+              "candidats-ecartes.json",
+              "etat-collecte.json",
+              "paquet-v519.json",
+              "rapport-collecte.json"
+            ],
+            "issue": "ok",
+            "phase": "collecte",
+            "statut": "ready"
+          },
+          "delta": "output-changed",
+          "surprise": false,
+          "observation": "Le mode par défaut de publier.main écrit en plus etat-collecte.json (phase collecte) ; paquet, écartés et rapport inchangés."
+        },
+        {
+          "seed": 2,
+          "input_summary": "tout hors thématique",
+          "evidence": "measured",
+          "confidence": "high",
+          "assumptions": [
+            "sources et Albert factices des tests du dépôt"
+          ],
+          "before": {
+            "articles": 0,
+            "code": 0,
+            "ecartes": [
+              "HORS_THEMATIQUE"
+            ],
+            "fichiers": [
+              "candidats-ecartes.json",
+              "paquet-v519.json",
+              "rapport-collecte.json"
+            ],
+            "issue": "ok",
+            "statut": "ready"
+          },
+          "after": {
+            "articles": 0,
+            "code": 0,
+            "ecartes": [
+              "HORS_THEMATIQUE"
+            ],
+            "fichiers": [
+              "candidats-ecartes.json",
+              "etat-collecte.json",
+              "paquet-v519.json",
+              "rapport-collecte.json"
+            ],
+            "issue": "ok",
+            "phase": "collecte",
+            "statut": "ready"
+          },
+          "delta": "output-changed",
+          "surprise": false,
+          "observation": "Le mode par défaut de publier.main écrit en plus etat-collecte.json (phase collecte) ; paquet, écartés et rapport inchangés."
+        },
+        {
+          "seed": 3,
+          "input_summary": "aucune source lue",
+          "evidence": "measured",
+          "confidence": "high",
+          "assumptions": [
+            "sources et Albert factices des tests du dépôt"
+          ],
+          "before": {
+            "code": 1,
+            "fichiers": [],
+            "issue": "ok"
+          },
+          "after": {
+            "code": 1,
+            "fichiers": [],
+            "issue": "ok"
+          },
+          "delta": "identical",
+          "surprise": false,
+          "observation": "Le mode par défaut de publier.main écrit en plus etat-collecte.json (phase collecte) ; paquet, écartés et rapport inchangés."
+        }
+      ],
+      "verdict": "behavior-changed",
+      "impacted_backend": {
+        "endpoint": "publier.main sans --mode",
+        "reason": "Le mode par défaut de publier.main écrit en plus etat-collecte.json (phase collecte) ; paquet, écartés et rapport inchan",
+        "severity": "medium"
+      }
+    },
+    {
+      "id": "u01b",
+      "kind": "function",
+      "ref": "publier.main --mode titres",
+      "file": "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/publier.py",
+      "actions": [
+        {
+          "seed": 1,
+          "input_summary": "nominal",
+          "evidence": "measured",
+          "confidence": "high",
+          "assumptions": [
+            "sources et Albert factices des tests du dépôt"
+          ],
+          "before": {
+            "issue": "SystemExit 2",
+            "journal": "usage: sonde.py [-h] [--edition EDITION] [--debut DEBUT] [--fin FIN]\n                [--sortie SORTIE]\nsonde.py: error: unrecognized arguments: --mode titres"
+          },
+          "after": {
+            "code": 0,
+            "fichiers": [
+              "etat-collecte.json",
+              "rapport-collecte.json"
+            ],
+            "issue": "ok",
+            "phase": "titres",
+            "statut": "needs_albert"
+          },
+          "delta": "now-recovers",
+          "surprise": false,
+          "observation": "Nouveau mode titres : état et rapport seulement, sans paquet. L'ancienne version refusait l'option."
+        }
+      ],
+      "verdict": "behavior-changed",
+      "impacted_backend": {
+        "endpoint": "publier.main --mode titres",
+        "reason": "Nouveau mode titres : état et rapport seulement, sans paquet. L'ancienne version refusait l'option.",
+        "severity": "medium"
+      }
+    },
+    {
+      "id": "u02",
+      "kind": "function",
+      "ref": "repecher.repecher",
+      "file": "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/repecher.py",
+      "actions": [
+        {
+          "seed": 1,
+          "input_summary": "nominal",
+          "evidence": "measured",
+          "confidence": "high",
+          "assumptions": [
+            "sources et Albert factices des tests du dépôt"
+          ],
+          "before": {
+            "attentes": [],
+            "issue": "ok",
+            "message": "Article repêché dans la rubrique ia.",
+            "rubrique": "ia",
+            "statut": "ok"
+          },
+          "after": {
+            "attentes": [],
+            "issue": "ok",
+            "message": "Article repêché dans la rubrique ia.",
+            "rubrique": "ia",
+            "statut": "ok"
+          },
+          "delta": "identical",
+          "surprise": false,
+          "observation": "Repêchage inchangé : mêmes attentes (trois fois 20 s sur 429), même seconde tentative."
+        },
+        {
+          "seed": 2,
+          "input_summary": "Albert sature (429)",
+          "evidence": "measured",
+          "confidence": "high",
+          "assumptions": [
+            "sources et Albert factices des tests du dépôt"
+          ],
+          "before": {
+            "attentes": [
+              20.0,
+              20.0,
+              20.0
+            ],
+            "issue": "ok",
+            "message": "Albert : HTTP 429",
+            "rubrique": null,
+            "statut": "erreur"
+          },
+          "after": {
+            "attentes": [
+              20.0,
+              20.0,
+              20.0
+            ],
+            "issue": "ok",
+            "message": "Albert : HTTP 429",
+            "rubrique": null,
+            "statut": "erreur"
+          },
+          "delta": "identical",
+          "surprise": false,
+          "observation": "Repêchage inchangé : mêmes attentes (trois fois 20 s sur 429), même seconde tentative."
+        },
+        {
+          "seed": 3,
+          "input_summary": "rejet puis réponse valide",
+          "evidence": "measured",
+          "confidence": "high",
+          "assumptions": [
+            "sources et Albert factices des tests du dépôt"
+          ],
+          "before": {
+            "attentes": [],
+            "issue": "ok",
+            "message": "Article repêché dans la rubrique ia.",
+            "rubrique": "ia",
+            "statut": "ok"
+          },
+          "after": {
+            "attentes": [],
+            "issue": "ok",
+            "message": "Article repêché dans la rubrique ia.",
+            "rubrique": "ia",
+            "statut": "ok"
+          },
+          "delta": "identical",
+          "surprise": false,
+          "observation": "Repêchage inchangé : mêmes attentes (trois fois 20 s sur 429), même seconde tentative."
+        }
+      ],
+      "verdict": "unchanged",
+      "impacted_backend": {
+        "endpoint": "repecher.repecher",
+        "reason": "Repêchage inchangé : mêmes attentes (trois fois 20 s sur 429), même seconde tentative.",
+        "severity": "low"
+      }
+    },
+    {
+      "id": "u03",
+      "kind": "function",
+      "ref": "archiver.entree",
+      "file": "veille-snum-webapp-v5-apres-egm/veille-snum/veille_snum/archiver.py",
+      "actions": [
+        {
+          "seed": 1,
+          "input_summary": "rapport avec started_at_utc",
+          "evidence": "measured",
+          "confidence": "high",
+          "assumptions": [
+            "sources et Albert factices des tests du dépôt"
+          ],
+          "before": {
+            "entree": {
+              "archived_at": "2026-11-13T22:00:45Z",
+              "articles": 3,
+              "candidats": 5,
+              "ecartes": 2,
+              "edition_date": "2026-11-13",
+              "id": "2026-11-13_7",
+              "run_id": 7,
+              "status": "partial",
+              "window_end": "2026-11-13",
+              "window_start": "2026-11-03"
+            },
+            "issue": "ok"
+          },
+          "after": {
+            "entree": {
+              "archived_at": "2026-11-13T22:00:45Z",
+              "articles": 3,
+              "candidats": 5,
+              "ecartes": 2,
+              "edition_date": "2026-11-13",
+              "id": "2026-11-13_7",
+              "run_id": 7,
+              "status": "partial",
+              "titres_started_at": "2026-11-13T22:00:00+00:00",
+              "window_end": "2026-11-13",
+              "window_start": "2026-11-03"
+            },
+            "issue": "ok"
+          },
+          "delta": "output-changed",
+          "surprise": false,
+          "observation": "L'entrée d'archive porte en plus titres_started_at quand le rapport a started_at_utc ; inchangée sinon."
+        },
+        {
+          "seed": 2,
+          "input_summary": "rapport sans started_at_utc",
+          "evidence": "measured",
+          "confidence": "high",
+          "assumptions": [
+            "sources et Albert factices des tests du dépôt"
+          ],
+          "before": {
+            "entree": {
+              "archived_at": "2026-11-13T22:00:45Z",
+              "articles": 3,
+              "candidats": 5,
+              "ecartes": 2,
+              "edition_date": "2026-11-13",
+              "id": "2026-11-13_7",
+              "run_id": 7,
+              "status": "partial",
+              "window_end": "2026-11-13",
+              "window_start": "2026-11-03"
+            },
+            "issue": "ok"
+          },
+          "after": {
+            "entree": {
+              "archived_at": "2026-11-13T22:00:45Z",
+              "articles": 3,
+              "candidats": 5,
+              "ecartes": 2,
+              "edition_date": "2026-11-13",
+              "id": "2026-11-13_7",
+              "run_id": 7,
+              "status": "partial",
+              "window_end": "2026-11-13",
+              "window_start": "2026-11-03"
+            },
+            "issue": "ok"
+          },
+          "delta": "identical",
+          "surprise": false,
+          "observation": "L'entrée d'archive porte en plus titres_started_at quand le rapport a started_at_utc ; inchangée sinon."
+        },
+        {
+          "seed": 3,
+          "input_summary": "dossier vide",
+          "evidence": "measured",
+          "confidence": "high",
+          "assumptions": [
+            "sources et Albert factices des tests du dépôt"
+          ],
+          "before": {
+            "detail": "[Errno 2] No such file or directory: '<tmp>/paquet-v519.json'",
+            "issue": "FileNotFoundError"
+          },
+          "after": {
+            "detail": "[Errno 2] No such file or directory: '<tmp>/paquet-v519.json'",
+            "issue": "FileNotFoundError"
+          },
+          "delta": "identical",
+          "surprise": false,
+          "observation": "L'entrée d'archive porte en plus titres_started_at quand le rapport a started_at_utc ; inchangée sinon."
+        }
+      ],
+      "verdict": "behavior-changed",
+      "impacted_backend": {
+        "endpoint": "archiver.entree",
+        "reason": "L'entrée d'archive porte en plus titres_started_at quand le rapport a started_at_utc ; inchangée sinon.",
+        "severity": "medium"
+      }
+    },
+    {
+      "id": "u04",
+      "kind": "pipeline-stage",
+      "ref": "tâche publier-paquet-snum.yml, lancement sans entrée mode",
+      "file": ".github/workflows/publier-paquet-snum.yml",
+      "actions": [
+        {
+          "seed": 1,
+          "input_summary": "tâche publier-paquet-snum.yml, lancement sans entrée mode",
+          "evidence": "reasoned",
+          "confidence": "medium",
+          "assumptions": [
+            "GitHub substitue la valeur par défaut d'une entrée absente (non vérifié sur le vrai GitHub)"
+          ],
+          "before": {
+            "outcome": "ok",
+            "output": "collecte complète avec Albert, paquet publié et archivé."
+          },
+          "after": {
+            "outcome": "ok",
+            "output": "mode titres, sans Albert, état et rapport seulement ; l'ancien paquet quitte le site."
+          },
+          "delta": "output-changed",
+          "surprise": false,
+          "observation": "Changement voulu par le contrat ; une page restée ouverte avec l'ancien script lance donc des titres sans savoir les afficher, jusqu'au rechargement."
+        }
+      ],
+      "verdict": "behavior-changed",
+      "impacted_backend": {
+        "endpoint": "tâche publier-paquet-snum.yml, lancement sans entrée mode",
+        "reason": "Changement voulu par le contrat ; une page restée ouverte avec l'ancien script lance donc des titres sans savoir les aff",
+        "severity": "medium"
+      }
+    },
+    {
+      "id": "u05",
+      "kind": "pipeline-stage",
+      "ref": "tâche publier-paquet-snum.yml, mode collecte",
+      "file": ".github/workflows/publier-paquet-snum.yml",
+      "actions": [
+        {
+          "seed": 1,
+          "input_summary": "tâche publier-paquet-snum.yml, mode collecte",
+          "evidence": "reasoned",
+          "confidence": "high",
+          "assumptions": [
+            "lecture du YAML ; fragments joués localement, pas sur GitHub"
+          ],
+          "before": {
+            "outcome": "ok",
+            "output": "archivage et déploiement en parallèle après la collecte."
+          },
+          "after": {
+            "outcome": "ok",
+            "output": "archivage, puis déploiement seulement si l'archivage a réussi ; paquet sans article publié sans archive."
+          },
+          "delta": "output-changed",
+          "surprise": false,
+          "observation": "Un archivage en échec empêche désormais la publication : la page l'annonce comme un échec, à relancer. La publication arrive plus tard d'environ la durée de l'archivage."
+        }
+      ],
+      "verdict": "behavior-changed",
+      "impacted_backend": {
+        "endpoint": "tâche publier-paquet-snum.yml, mode collecte",
+        "reason": "Un archivage en échec empêche désormais la publication : la page l'annonce comme un échec, à relancer. La publication ar",
+        "severity": "medium"
+      }
+    },
+    {
+      "id": "u06",
+      "kind": "pipeline-stage",
+      "ref": "tâche publier-paquet-snum.yml, mode page seule",
+      "file": ".github/workflows/publier-paquet-snum.yml",
+      "actions": [
+        {
+          "seed": 1,
+          "input_summary": "tâche publier-paquet-snum.yml, mode page seule",
+          "evidence": "reasoned",
+          "confidence": "high",
+          "assumptions": [
+            "lecture du YAML ; fragments joués localement, pas sur GitHub"
+          ],
+          "before": {
+            "outcome": "ok",
+            "output": "paquet exigé, écartés et rapport facultatifs."
+          },
+          "after": {
+            "outcome": "ok",
+            "output": "état repris ; en phase titres seul le rapport est exigé ; chaque lecture retentée trois fois."
+          },
+          "delta": "output-changed",
+          "surprise": false,
+          "observation": "Mesuré séparément en bash -eo pipefail avec le vrai curl (preuves 03) : états titres, resumes, collecte, site antérieur, 503 passagers."
+        }
+      ],
+      "verdict": "behavior-changed",
+      "impacted_backend": {
+        "endpoint": "tâche publier-paquet-snum.yml, mode page seule",
+        "reason": "Mesuré séparément en bash -eo pipefail avec le vrai curl (preuves 03) : états titres, resumes, collecte, site antérieur,",
+        "severity": "medium"
+      }
+    },
+    {
+      "id": "u07",
+      "kind": "pipeline-stage",
+      "ref": "tâche repecher-candidat.yml, publication du résultat",
+      "file": ".github/workflows/repecher-candidat.yml",
+      "actions": [
+        {
+          "seed": 1,
+          "input_summary": "tâche repecher-candidat.yml, publication du résultat",
+          "evidence": "reasoned",
+          "confidence": "high",
+          "assumptions": [
+            "lecture du YAML ; fragments joués localement, pas sur GitHub"
+          ],
+          "before": {
+            "outcome": "ok",
+            "output": "un git fetch en échec arrêtait la tâche."
+          },
+          "after": {
+            "outcome": "ok",
+            "output": "nouvel essai, cinq au plus."
+          },
+          "delta": "now-recovers",
+          "surprise": false,
+          "observation": "Mesuré séparément avec le vrai git contre un dépôt nu local (preuves 10)."
+        }
+      ],
+      "verdict": "behavior-changed",
+      "impacted_backend": {
+        "endpoint": "tâche repecher-candidat.yml, publication du résultat",
+        "reason": "Mesuré séparément avec le vrai git contre un dépôt nu local (preuves 10).",
+        "severity": "medium"
+      }
+    }
+  ],
+  "impacted_backend": [
+    {
+      "endpoint": "publier.main sans --mode",
+      "reason": "Le mode par défaut de publier.main écrit en plus etat-collecte.json (phase collecte) ; paquet, écartés et rapport inchan",
+      "severity": "medium"
+    },
+    {
+      "endpoint": "publier.main --mode titres",
+      "reason": "Nouveau mode titres : état et rapport seulement, sans paquet. L'ancienne version refusait l'option.",
+      "severity": "medium"
+    },
+    {
+      "endpoint": "archiver.entree",
+      "reason": "L'entrée d'archive porte en plus titres_started_at quand le rapport a started_at_utc ; inchangée sinon.",
+      "severity": "medium"
+    },
+    {
+      "endpoint": "tâche publier-paquet-snum.yml, lancement sans entrée mode",
+      "reason": "Changement voulu par le contrat ; une page restée ouverte avec l'ancien script lance donc des titres sans savoir les aff",
+      "severity": "medium"
+    },
+    {
+      "endpoint": "tâche publier-paquet-snum.yml, mode collecte",
+      "reason": "Un archivage en échec empêche désormais la publication : la page l'annonce comme un échec, à relancer. La publication ar",
+      "severity": "medium"
+    },
+    {
+      "endpoint": "tâche publier-paquet-snum.yml, mode page seule",
+      "reason": "Mesuré séparément en bash -eo pipefail avec le vrai curl (preuves 03) : états titres, resumes, collecte, site antérieur,",
+      "severity": "medium"
+    },
+    {
+      "endpoint": "tâche repecher-candidat.yml, publication du résultat",
+      "reason": "Mesuré séparément avec le vrai git contre un dépôt nu local (preuves 10).",
+      "severity": "medium"
+    }
+  ],
+  "impacted_ui_routes": [
+    {
+      "route": "/",
+      "reason": "la page lit etat-collecte.json pour choisir entre titres et paquet",
+      "severity": "medium"
+    }
+  ],
+  "skipped": [
+    {
+      "file": "veille_snum/core.py",
+      "reason": "hors périmètre, non modifié"
+    },
+    {
+      "file": "veille_snum/web.py",
+      "reason": "hors périmètre, non modifié"
+    },
+    {
+      "file": "README.md, docs/",
+      "reason": "documentation"
+    }
+  ],
+  "uncovered": [
+    "resumer.publier_resumes : module nouveau, sans version antérieure à comparer (couvert par le contrôle de logique)",
+    "exécution réelle des tâches sur GitHub Actions : non lancée"
+  ]
+}
