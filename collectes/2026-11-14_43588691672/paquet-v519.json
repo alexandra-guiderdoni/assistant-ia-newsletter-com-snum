@@ -1,0 +1,111 @@
+{
+  "schema_version": "SNUM_PAQUET_RENDU_V519",
+  "edition_date": "2026-11-14",
+  "edition_date_long": "14 novembre 2026",
+  "window_start": "2026-11-07",
+  "window_end": "2026-11-14",
+  "articles": [
+    {
+      "id": "U01",
+      "rubric": "securite",
+      "title": "6 millions d'identifiants volés ont été récupérés par la police : comment savoir si vous êtes concerné ?",
+      "source": "01net",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://www.01net.com/actualites/6-millions-identifiants-voles-recuperes-police-verifiez-si-vous-etes-concerne.html",
+      "fact": "Europol a démantelé l’infrastructure de trois malwares, récupérant plus de 6 millions d’identifiants volés, dans le cadre de l’opération Endgame.",
+      "keywords": [
+        "Europol",
+        "malware",
+        "ransomware",
+        "identifiants volés",
+        "Endgame"
+      ],
+      "takeaway": "Vérifiez si vos identifiants figurent parmi les 6 millions récupérés, renforcez votre cybersécurité.",
+      "snum_interest": "Sensibiliser les administrations aux risques de malwares et encourager la vérification des identifiants.",
+      "essential": false
+    },
+    {
+      "id": "U02",
+      "rubric": "applications",
+      "title": "Une panne de Microsoft 365 paralyse les entreprises dans de nombreux pays",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://www.journaldunet.com/business/1557967-une-panne-de-microsoft-365-paralyse-des-organisations-dans-de-nombreux-pays/",
+      "fact": "Une panne majeure de Microsoft 365 bloque la messagerie Outlook et d’autres services, paralysant administrations, écoles, hôpitaux et entreprises dans plusieurs pays.",
+      "keywords": [
+        "Microsoft 365",
+        "panne",
+        "services publics",
+        "messagerie Outlook",
+        "administrations"
+      ],
+      "takeaway": "Les dépendances aux services cloud exposent la continuité des services publics.",
+      "snum_interest": "Surveiller la résilience des outils cloud et prévoir solutions de continuité pour les services publics.",
+      "essential": false
+    }
+  ],
+  "watch": [
+    {
+      "title": "Rubrique sans article : ia",
+      "summary": "Aucun article admissible établi pour cette rubrique."
+    },
+    {
+      "title": "Rubrique sans article : administration",
+      "summary": "Aucun article admissible établi pour cette rubrique."
+    },
+    {
+      "title": "Rubrique sans article : dsi",
+      "summary": "Aucun article admissible établi pour cette rubrique."
+    },
+    {
+      "title": "Rubrique sans article : economie",
+      "summary": "Aucun article admissible établi pour cette rubrique."
+    },
+    {
+      "title": "Rubrique sans article : infrastructure",
+      "summary": "Aucun article admissible établi pour cette rubrique."
+    },
+    {
+      "title": "Rubrique sans article : droit",
+      "summary": "Aucun article admissible établi pour cette rubrique."
+    },
+    {
+      "title": "Rubrique sans article : commande",
+      "summary": "Aucun article admissible établi pour cette rubrique."
+    },
+    {
+      "title": "Rubrique sans article : rh",
+      "summary": "Aucun article admissible établi pour cette rubrique."
+    },
+    {
+      "title": "Rubrique sans article : bercy",
+      "summary": "Aucun article admissible établi pour cette rubrique."
+    },
+    {
+      "title": "Collecte limitée",
+      "summary": "Moins de cinq articles admissibles ont été établis."
+    },
+    {
+      "title": "Sources non couvertes",
+      "summary": "Sources en échec technique ou non traitées faute de temps : Vie publique."
+    },
+    {
+      "title": "Sources protégées contre les robots",
+      "summary": "Accès automatisé refusé, à couvrir autrement : Ministères économiques et financiers, Légifrance, Le Monde."
+    },
+    {
+      "title": "Source interne non traitée",
+      "summary": "La source métier interne exige une configuration privée : à compléter manuellement."
+    },
+    {
+      "title": "Découverte bornée",
+      "summary": "9291 URL découvertes n'ont pas été analysées (plafond ou budget temporel)."
+    },
+    {
+      "title": "Analyse partielle",
+      "summary": "0 échec(s) Albert, 1 page(s) non relue(s) et 0 article(s) non résumé(s) par manque de temps."
+    }
+  ]
+}
