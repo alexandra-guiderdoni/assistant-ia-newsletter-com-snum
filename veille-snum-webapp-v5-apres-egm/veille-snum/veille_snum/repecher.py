@@ -185,6 +185,8 @@ def repecher(url, rubrique, debut, fin, client, resumer):
             raise Refus("Rubrique inconnue : attendu " + ", ".join(RUBRICS) + ".")
         if debut > fin:
             raise Refus("Période invalide : le début suit la fin.")
+        if (fin - debut).days > 60:
+            raise Refus("Période invalide : 61 jours au plus, comme pour la collecte.")
         source, adresse = source_publique(url)
         candidat = lire_candidat(adresse, source, debut, fin, client)
     except Refus as exc:

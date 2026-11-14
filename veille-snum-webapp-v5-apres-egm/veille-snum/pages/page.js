@@ -243,5 +243,5 @@
   byId('archive-title').textContent = 'Collecte archivée introuvable';
   byId('archive-text').textContent = 'Identifiant de collecte invalide.';
   S.showLoadError(`L’identifiant de collecte « ${target.value} » n’est pas valide : rouvrez la collecte depuis la page des archives.`);
- } else load('').then(() => { if (target.mode === 'current') L.announceActive(); });
+ } else load('').then(() => { if (target.mode === 'current') L.announceActive(); }).catch(() => S.showLoadError('La page n’a pas pu afficher les fichiers publiés : rechargez-la dans une minute.'));
 })(typeof window !== 'undefined' ? window : globalThis);

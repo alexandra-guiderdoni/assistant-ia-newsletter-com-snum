@@ -82,10 +82,18 @@ def main(argv=None):
             entree(args.site, args.run_id, dt.datetime.now(dt.timezone.utc)),
         )
     else:
+        # Fichier absent : première archive. Fichier présent mais illisible : arrêt, pour
+        # ne pas remplacer l'index existant par un index réduit à la nouvelle entrée.
         try:
             ancien = lire(args.ancien)
-        except (OSError, ValueError):
+        except OSError:
             ancien = None
+        except ValueError:
+            print(
+                "Index des archives illisible : fusion abandonnée, rien n'est écrit.",
+                file=sys.stderr,
+            )
+            return 1
         ecrire(args.sortie, fusionner(ancien, lire(args.entree)))
     return 0
 

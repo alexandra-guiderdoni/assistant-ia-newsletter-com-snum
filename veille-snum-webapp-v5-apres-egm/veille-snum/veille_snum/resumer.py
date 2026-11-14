@@ -14,6 +14,7 @@ import json
 import os
 import sys
 import time
+from collections import Counter
 from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
 from pathlib import Path
 from urllib.error import HTTPError
@@ -68,7 +69,7 @@ def lire_selection(texte):
             or not set(element) <= {"url", "rubrique"}
         ):
             raise Refus(
-                f"Sélection refusée : l'élément {rang} doit porter « url » et « rubrique »."
+                f"Sélection refusée : l'élément {rang} doit porter « url » (texte) et, facultative, « rubrique »."
             )
         rubrique = element.get("rubrique", "")
         if not isinstance(rubrique, str) or (rubrique and rubrique not in RUBRICS):
@@ -365,9 +366,11 @@ def publier_resumes(
     )
     paquet = rapport["packet"]
     if not paquet:
+        motifs = Counter(e["reason"] for e in rapport["excluded"])
         print(
-            f"Aucun paquet publiable : {len(rapport['errors'])} échec(s) Albert "
-            f"sur {len(choix)} article(s) gardé(s).",
+            f"Aucun paquet publiable sur {len(choix)} article(s) gardé(s) : "
+            f"{len(rapport['errors'])} échec(s) Albert, {motifs[PAGE_NON_RELUE]} page(s) non relue(s), "
+            f"{motifs['BUDGET_DUREE_ALBERT']} non résumé(s) faute de temps.",
             file=sys.stderr,
         )
         return 1

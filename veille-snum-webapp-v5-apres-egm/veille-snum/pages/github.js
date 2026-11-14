@@ -64,7 +64,7 @@
 
  // Première étape en échec d'un run terminé : {job, step}, ou null si GitHub ne la donne pas.
  function failedStep(jobs) {
-  const job = (jobs && Array.isArray(jobs.jobs) ? jobs.jobs : []).find(j => j && FAILED.includes(j.conclusion));
+  const job = (jobs && Array.isArray(jobs.jobs) ? jobs.jobs : []).filter(Boolean).find(j => FAILED.includes(j.conclusion));
   if (!job) return null;
   const step = (job.steps || []).find(s => s && FAILED.includes(s.conclusion));
   return {job: String(job.name || ''), step: String((step || job).name || '')};
@@ -80,11 +80,11 @@
    return {state: 'failure', text: `Terminé sans succès : ${CONCLUSIONS[run.conclusion] || 'issue inconnue'}${where}`, failedJob: failed ? failed.job : ''};
   }
   if (WAITING.includes(run.status)) return {state: 'pending', text: 'En file d’attente sur GitHub Actions'};
-  const list = jobs && Array.isArray(jobs.jobs) ? jobs.jobs : [];
+  const list = (jobs && Array.isArray(jobs.jobs) ? jobs.jobs : []).filter(Boolean);
   const job = list.find(j => j.status === 'in_progress') || list.find(j => WAITING.includes(j.status));
   if (!job) return {state: 'pending', text: 'Exécution en cours'};
   if (job.name === 'deploiement') return {state: 'pending', text: 'Déploiement de la page sur GitHub Pages'};
-  const step = (job.steps || []).find(s => s.status === 'in_progress');
+  const step = (job.steps || []).filter(Boolean).find(s => s.status === 'in_progress');
   if (step) return {state: 'pending', text: `Étape en cours : ${step.name}`};
   return {state: 'pending', text: job.status === 'in_progress' ? 'Passage à l’étape suivante' : 'Tâche en attente d’un exécuteur'};
  }
@@ -129,7 +129,9 @@
   } catch (_) { known = null; }
   const sentAt = Date.now();
   const {url, init} = dispatchRequest(workflow, inputs, token);
-  const r = await call(url, init);
+  // Sans réponse, la demande a pu partir quand même : ne jamais annoncer qu'elle n'a pas été lancée.
+  let r;
+  try { r = await call(url, init); } catch (_) { throw lost('GitHub n’a pas répondu à l’envoi : la demande a pu partir quand même.'); }
   if (r.status === 200) {
    const x = await r.json().catch(() => null);
    if (x && x.workflow_run_id) return {id: runId(x.workflow_run_id), htmlUrl: githubLink(x.html_url)};
@@ -186,7 +188,7 @@
    if (attempt) await sleep(4000);
    let r;
    try { r = await fetch(repechageResultUrl(id, Date.now()), timed({cache: 'no-store'})); } catch (_) { continue; }
-   if (r.ok) return r.json();
+   if (r.ok) return r.json().catch(() => { throw new Error('Résultat du repêchage illisible : réessayez dans une minute.'); });
    if (r.status !== 404) throw new Error(`Résultat du repêchage illisible (erreur ${r.status}).`);
   }
   throw new Error('Le résultat du repêchage n’est pas encore publié : réessayez dans une minute.');
