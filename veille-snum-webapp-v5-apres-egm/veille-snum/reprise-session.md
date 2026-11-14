@@ -37,8 +37,8 @@ python3 -m veille_snum.web
 ## Tests
 
 ```bash
-python3 -m unittest discover -s tests            # 228 tests
-node --test tests/test_pages_*.cjs               # 74 tests de la page en ligne
+python3 -m unittest discover -s tests            # 229 tests
+node --test tests/test_pages_*.cjs               # 76 tests de la page en ligne
 node --test tests/test_storage.cjs               # 19 tests du stockage local
 ```
 

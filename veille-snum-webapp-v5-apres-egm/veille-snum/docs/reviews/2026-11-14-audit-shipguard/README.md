@@ -38,6 +38,8 @@ Ce relevé n'est pas un audit. Trois signalements sur la page de sélection, un 
 - Après confirmation du numéro de run, la page vérifie que le paquet lu est bien celui que décrit l'état publié ; sinon elle invite à recharger.
 - Chaque appel Albert du second temps est borné par le temps restant du budget, comme pour la collecte complète.
 - Un repêchage dont le script s'arrête sans résultat rend la tâche rouge, une fois son motif publié ; un refus motivé la laisse verte.
+- Repêchage en deux tâches : celle qui appelle Albert n'a plus aucun droit d'écriture ; seule la tâche de publication peut écrire, sans le jeton Albert. Si la première dépasse son délai, un résultat de repli est publié quand même.
+- Notes de collecte et messages d'erreur du jeton en français ; zones de messages sans paragraphe vide.
 
 ## Restent ouverts, par choix
 
@@ -45,7 +47,7 @@ Ce relevé n'est pas un audit. Trois signalements sur la page de sélection, un 
 - Jeton partagé par l'équipe (choix du 14 novembre 2026) : les lancements ne sont pas nominatifs.
 - Une page restée ouverte sur d'anciens titres peut demander leur rédaction si le cache du site sert encore leur rapport ; la page relit l'état avant l'envoi, le serveur n'a pas d'autre moyen de le savoir.
 - « Page seule » lancée juste après une publication peut republier d'anciens fichiers si le cache du site les sert encore.
-- Repêchage : son jeton d'écriture couvre tout le dépôt pendant la tâche ; au-delà de dix minutes, aucun résultat n'est publié.
+- Repêchage : le droit d'écriture de la tâche de publication vaut pour tout le dépôt, GitHub ne permettant pas de le limiter à une branche ; cette tâche n'exécute aucun code du prototype.
 - Groupe de concurrence `pages` : GitHub ne garde qu'une demande en attente et annule la précédente. La page prévient avant tout second envoi.
 - Balises `og` et `canonical` absentes : sans objet pour un outil interne.
 - Accessibilité : préaudit du 14 novembre dans `../2026-11-14-accessibilite/` ; aucun audit RGAA n'a été réalisé.
