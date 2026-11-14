@@ -1,0 +1,102 @@
+{
+  "schema_version": "SNUM_PAQUET_RENDU_V519",
+  "edition_date": "2026-11-14",
+  "edition_date_long": "14 novembre 2026",
+  "window_start": "2026-11-07",
+  "window_end": "2026-11-14",
+  "articles": [
+    {
+      "id": "U01",
+      "rubric": "numerique",
+      "title": "Le Gouvernement propose des mesures pour augmenter le pouvoir d'achat de 1,3 million d'agents publics et ouvre cinq chantiers structurels en faveur de la fonction publique",
+      "source": "Presse Bercy",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://presse.economie.gouv.fr/le-gouvernement-propose-des-mesures-pour-augmenter-le-pouvoir-dachat-de-13-million-dagents-publics-et-ouvre-cinq-chantiers-structurels-en-faveur-de-la-fonction-publique/",
+      "fact": "Le gouvernement propose une revalorisation du SMIC de 1,6 % et des points d’indice pour 1,3 million d’agents publics.",
+      "keywords": [
+        "pouvoir d'achat",
+        "agents publics",
+        "SMIC",
+        "points d’indice",
+        "fonction publique"
+      ],
+      "takeaway": "Des mesures salariales visent à soutenir les agents publics les moins bien rémunérés.",
+      "snum_interest": "Impact sur la motivation des agents du numérique public et la continuité des services.",
+      "essential": true
+    },
+    {
+      "id": "U02",
+      "rubric": "numerique",
+      "title": "Vincent Franceschini (Biomemory) : « Une fois dans l’ADN, l’information numérique ne peut plus être modifiée »",
+      "source": "IT for Business",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://www.itforbusiness.fr/biomemory-dna-shield-stockage-adn-109764",
+      "fact": "Biomemory lance DNA Shield, stocke données critiques en ADN synthétique, offrant densité exceptionnelle, stabilité séculaire et immuabilité hors ligne.",
+      "keywords": [
+        "stockage ADN",
+        "données critiques",
+        "souveraineté numérique",
+        "DNA Shield"
+      ],
+      "takeaway": "Le stockage ADN promet un coffre-fort numérique durable pour les informations sensibles de l’État.",
+      "snum_interest": "Intérêt pour la souveraineté des données publiques et l’innovation d’infrastructures numériques.",
+      "essential": true
+    },
+    {
+      "id": "U03",
+      "rubric": "numerique",
+      "title": "Alice Huang était proche du plus important concurrent chinois de Nvidia",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-13",
+      "publication_date_long": "13 novembre 2026",
+      "url": "https://www.journaldunet.com/business/1557957-alice-huang-a-detenu-des-participations-dans-des-entreprises-ayant-beneficie-a-huawei/",
+      "fact": "Alice Huang aurait détenu des participations dans des entreprises fournissant des puces Nvidia à Huawei, soulevant des enjeux de souveraineté numérique.",
+      "keywords": [
+        "Huawei",
+        "Nvidia",
+        "sécurité nationale",
+        "souveraineté numérique",
+        "puces IA"
+      ],
+      "takeaway": "Surveiller les liens entre fournisseurs de puces et acteurs stratégiques étrangers.",
+      "snum_interest": "Renforcer la vigilance sur la chaîne d'approvisionnement des technologies critiques.",
+      "essential": true
+    }
+  ],
+  "watch": [
+    {
+      "title": "Rubrique sans article : ia",
+      "summary": "Aucun article admissible établi pour cette rubrique."
+    },
+    {
+      "title": "Rubrique sans article : commande",
+      "summary": "Aucun article admissible établi pour cette rubrique."
+    },
+    {
+      "title": "Rubrique sans article : rh",
+      "summary": "Aucun article admissible établi pour cette rubrique."
+    },
+    {
+      "title": "Rubrique sans article : bercy",
+      "summary": "Aucun article admissible établi pour cette rubrique."
+    },
+    {
+      "title": "Collecte limitée",
+      "summary": "Moins de cinq articles admissibles ont été établis."
+    },
+    {
+      "title": "Sources protégées contre les robots",
+      "summary": "Accès automatisé refusé, à couvrir autrement : Ministères économiques et financiers, Vie publique, Légifrance, Le Monde."
+    },
+    {
+      "title": "Source interne non traitée",
+      "summary": "La source métier interne exige une configuration privée : à compléter manuellement."
+    },
+    {
+      "title": "Découverte bornée",
+      "summary": "9282 URL découvertes n'ont pas été analysées (plafond ou budget temporel)."
+    }
+  ]
+}

@@ -1,0 +1,328 @@
+{
+  "schema_version": "SNUM_CANDIDATS_ECARTES_V1",
+  "edition_date": "2026-11-14",
+  "window_start": "2026-11-07",
+  "window_end": "2026-11-14",
+  "candidates": [
+    {
+      "title": "Mathilde, data scientist - Direction du numérique pour l'Éducation",
+      "source": "DINUM",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://numerique.gouv.fr/rejoignez-nous/les-visages-de-numeriquegouv/mathilde-da-cruz-data-scientist-direction-du-numerique-pour-leducation/",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    },
+    {
+      "title": "Rémi, chef de projet de la plateforme d'apprentissage Éléa - Direction du numérique pour l'Éducation",
+      "source": "DINUM",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://numerique.gouv.fr/rejoignez-nous/les-visages-de-numeriquegouv/remi-chef-de-projet-de-la-plateforme-dapprentissage-elea-direction-du-numerique-pour-leducation/",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Les réserves nettes de change",
+      "source": "Presse Bercy",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://presse.economie.gouv.fr/les-reserves-nettes-de-change-186829/",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "55 000 € pour une batterie d’occasion : Mercedes propose de remplacer un pack défectueux avec 300 000 km",
+      "source": "01net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.01net.com/actualites/55-000-euros-batterie-occasion-mercedes-propose-remplacer-pack-defectueux-modele-300-000-km.html",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "HORS_THEMATIQUE"
+    },
+    {
+      "title": "6 millions d'identifiants volés ont été récupérés par la police : comment savoir si vous êtes concerné ?",
+      "source": "01net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.01net.com/actualites/6-millions-identifiants-voles-recuperes-police-verifiez-si-vous-etes-concerne.html",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Après le scandale Nvidia, Washington envisage de nouvelles restrictions contre la Chine",
+      "source": "01net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.01net.com/actualites/apres-le-scandale-nvidia-washington-envisage-de-nouvelles-restrictions-contre-la-chine.html",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Hugging Face perd son meilleur allié pour l'IA open source chez Nvidia, deux mois après le rachat",
+      "source": "01net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.01net.com/actualites/hugging-face-perd-son-meilleur-allie-pour-lia-open-source-chez-nvidia-deux-mois-apres-le-rachat.html",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "BYD a trouvé la solution pour simplifier à l'extrême la charge de votre voiture électrique : vous n'aurez même plus à sortir",
+      "source": "01net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.01net.com/actualites/la-solution-ultime-pour-simplifier-la-charge-de-votre-voiture-electrique-vous-naurez-meme-plus-a-sortir.html",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Outlook, Hotmail, Live, MSN : des mails ont été bloqué pendant 4 jours, Microsoft annonce une mauvaise nouvelle",
+      "source": "01net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.01net.com/actualites/outlook-hotmail-live-msn-des-mails-ont-ete-bloque-pendant-4-jours-microsoft-annonce-une-mauvaise-nouvelle.html",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Panne Microsoft : ChatGPT et Claude également touchés, et ils ne sont pas les seuls",
+      "source": "01net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.01net.com/actualites/panne-microsoft-chatgpt-et-claude-egalement-touches-et-ils-ne-sont-pas-les-seuls.html",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Lutte anti-cybercriminalité : Europol annonce 354 arrestations dans l'opération TorNado",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.journaldunet.com/business/1557959-europol-annonce-354-arrestations-dans-l-operation-tornado/",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Distribution : L'Autorité de la concurrence soupçonne l'alliance Aura de pratiques anticoncurrentielles",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.journaldunet.com/business/1557965-l-autorite-de-la-concurrence-soupconne-l-alliance-aura-de-pratiques-anticoncurrentielles/",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Une panne de Microsoft 365 paralyse les entreprises dans de nombreux pays",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.journaldunet.com/business/1557967-une-panne-de-microsoft-365-paralyse-des-organisations-dans-de-nombreux-pays/",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "L'ancien gouverneur de la Banque de France estime que la France peut rétablir la confiance des marchés",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.journaldunet.com/business/action-publique/1557961-christian-noyer-estime-que-la-france-peut-retablir-la-confiance-des-marches/",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "SpaceX va essayer de rattraper les deux étages de Starship",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-13",
+      "url": "https://www.journaldunet.com/economie/industrie/1557963-spacex-va-essayer-de-rattraper-les-deux-etages-de-starship/",
+      "publication_date_long": "13 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "À Bercy, des hauts fonctionnaires critiquent le manque de transparence autour de l’individualisation de leurs primes",
+      "source": "Acteurs publics",
+      "publication_date_iso": "2026-11-12",
+      "url": "https://acteurspublics.fr/articles/a-bercy-des-hauts-fonctionnaires-critiquent-le-manque-de-transparence-autour-de-lindividualisation-de-leurs-primes/",
+      "publication_date_long": "12 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "À la Justice, une nouvelle gouvernance numérique à plusieurs étages",
+      "source": "Acteurs publics",
+      "publication_date_iso": "2026-11-12",
+      "url": "https://acteurspublics.fr/articles/a-la-justice-une-nouvelle-gouvernance-numerique-a-plusieurs-etages/",
+      "publication_date_long": "12 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Données de santé : de la migration vers un cloud souverain à la préparation du cadre européen",
+      "source": "DINUM",
+      "publication_date_iso": "2026-11-12",
+      "url": "https://numerique.gouv.fr/actualites/donnees-de-sante-de-la-migration-vers-un-cloud-souverain-a-la-preparation-du-cadre-europeen/",
+      "publication_date_long": "12 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Presse - Ministère des Finances",
+      "source": "Presse Bercy",
+      "publication_date_iso": "2026-11-12",
+      "url": "https://presse.economie.gouv.fr/",
+      "publication_date_long": "12 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Nvidia sans Jensen Huang : qui pourrait remplacer l’illustre PDG ?",
+      "source": "01net",
+      "publication_date_iso": "2026-11-12",
+      "url": "https://www.01net.com/actualites/nvidia-sans-jensen-huang-qui-pourrait-remplacer-lillustre-pdg.html",
+      "publication_date_long": "12 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Actualité du CEPD : adéquation de la Corée du Sud, versions finales des BCR-ST, et action coordonnée sur le recrutement via IA",
+      "source": "CNIL",
+      "publication_date_iso": "2026-11-12",
+      "url": "https://www.cnil.fr/fr/actualite-du-cepd-adequation-de-la-coree-du-sud-versions-finales-des-bcr-st-et-action-coordonnee-sur",
+      "publication_date_long": "12 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Yandex : près de 3% de données définitivement perdues après les frappes ukrainiennes",
+      "source": "IT for Business",
+      "publication_date_iso": "2026-11-12",
+      "url": "https://www.itforbusiness.fr/yandex-cloud-perte-de-donnees-frappes-drones-109759",
+      "publication_date_long": "12 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "La crise climatique pourrait représenter un tiers de l'inflation alimentaire en 2027, selon Oxfam",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-12",
+      "url": "https://www.journaldunet.com/business/1557883-la-crise-climatique-pourrait-representer-un-tiers-de-l-inflation-alimentaire-en-2027-selon-oxfam/",
+      "publication_date_long": "12 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Ce que l'on sait de Megaspeed et sa fondatrice Alice Huang, à l'origine de la chute du patron de Nvidia",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-12",
+      "url": "https://www.journaldunet.com/business/1557889-ce-que-l-on-sait-de-megaspeed-et-sa-fondatrice-alice-huang-a-l-origine-de-la-chute-du-patron-de-nvidia/",
+      "publication_date_long": "12 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Face à l'impuissance de l'Etat, deux hauts fonctionnaires appellent à transformer l'action publique",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-12",
+      "url": "https://www.journaldunet.com/business/action-publique/1557887-face-a-l-impuissance-de-l-etat-deux-hauts-fonctionnaires-proposent-de-transformer-l-action-publique/",
+      "publication_date_long": "12 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "A Douvrin, la gigafactory ACC espère fabriquer 300 000 modules de batteries automobiles en 2026",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-12",
+      "url": "https://www.journaldunet.com/economie/industrie/1557885-acc-espere-fabriquer-300-000-modules-de-batteries-en-2026/",
+      "publication_date_long": "12 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Fonction publique : les députés veulent pousser l’État à affiner les données sur le recours au temps partiel thérapeutique",
+      "source": "Acteurs publics",
+      "publication_date_iso": "2026-11-10",
+      "url": "https://acteurspublics.fr/articles/les-deputes-veulent-pousser-letat-a-affiner-les-donnees-sur-le-recours-au-temps-partiel-therapeutique-dans-la-fonction-publique/",
+      "publication_date_long": "10 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Recrutements, IA, cloisonnement administratif, chatbot… La revue de presse internationale",
+      "source": "Acteurs publics",
+      "publication_date_iso": "2026-11-10",
+      "url": "https://acteurspublics.fr/articles/recrutements-ia-cloisonnement-administratif-chatbot-la-revue-de-presse-internationale/",
+      "publication_date_long": "10 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "France 2030 : avec l'appel à projets « Première Usine », le Gouvernement soutient 13 nouveaux projets industriels pour accélérer la réindustrialisation du pays",
+      "source": "Presse Bercy",
+      "publication_date_iso": "2026-11-10",
+      "url": "https://presse.economie.gouv.fr/france-2030-avec-lappel-a-projets-premiere-usine-le-gouvernement-soutient-13-nouveaux-projets-industriels-pour-accelerer-la-reindustrialisation-du-pays/",
+      "publication_date_long": "10 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "La communauté internationale soutient le fonds géré par la BERD destiné à la remise en état de l'arche de confinement de Tchernobyl",
+      "source": "Presse Bercy",
+      "publication_date_iso": "2026-11-10",
+      "url": "https://presse.economie.gouv.fr/la-communaute-internationale-soutient-le-fonds-gere-par-la-berd-destine-a-la-remise-en-etat-de-larche-de-confinement-de-tchernobyl/",
+      "publication_date_long": "10 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "La France poursuit ses engagements en matière de financements pour le climat et la biodiversité dans les pays en développement en 2025",
+      "source": "Presse Bercy",
+      "publication_date_iso": "2026-11-10",
+      "url": "https://presse.economie.gouv.fr/la-france-poursuit-ses-engagements-en-matiere-de-financements-pour-le-climat-et-la-biodiversite-dans-les-pays-en-developpement-en-2025/",
+      "publication_date_long": "10 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "La CNIL sera présente au Salon des maires et des collectivités locales 2026",
+      "source": "CNIL",
+      "publication_date_iso": "2026-11-10",
+      "url": "https://www.cnil.fr/fr/salon-maires-collectivites-2026",
+      "publication_date_long": "10 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Cyberattaques iraniennes : Paris prêt à dégainer ses capacités cyberoffensives ?",
+      "source": "IT for Business",
+      "publication_date_iso": "2026-11-10",
+      "url": "https://www.itforbusiness.fr/cyberattaques-iraniennes-france-riposte-cyber-109661",
+      "publication_date_long": "10 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Les magasins BHV Marais et BHV Parly 2 ferment temporairement",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-10",
+      "url": "https://www.journaldunet.com/business/1557791-les-magasins-bhv-marais-et-bhv-parly-2-ferment-temporairement/",
+      "publication_date_long": "10 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Pablo Hernandez de Cos et Klaas Knot s'opposent pour présider la BCE",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-10",
+      "url": "https://www.journaldunet.com/business/action-publique/1557797-pablo-hernandez-de-cos-et-klaas-knot-s-opposent-pour-presider-la-bce/",
+      "publication_date_long": "10 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Le taux de chômage en France baisse à 8,2% au troisième trimestre 2026",
+      "source": "Journal du Net",
+      "publication_date_iso": "2026-11-10",
+      "url": "https://www.journaldunet.com/business/action-publique/1557805-le-taux-de-chomage-en-france-baisse-a-8-2-au-troisieme-trimestre-2026/",
+      "publication_date_long": "10 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "France Expérimentation : quand l'administration accompagne les innovations sur le terrain | DITP",
+      "source": "Modernisation de l'action publique",
+      "publication_date_iso": "2026-11-10",
+      "url": "https://www.modernisation.gouv.fr/publications/france-experimentation-quand-ladministration-accompagne-les-innovations-sur-le-terrain",
+      "publication_date_long": "10 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Avec la mise en place des emplois fonctionnels, l’Insee entre de plain-pied dans la réforme de la haute fonction publique",
+      "source": "Acteurs publics",
+      "publication_date_iso": "2026-11-09",
+      "url": "https://acteurspublics.fr/articles/avec-la-mise-en-place-des-emplois-fonctionnels-linsee-entre-de-plain-pied-dans-la-reforme-de-la-haute-fonction-publique/",
+      "publication_date_long": "9 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Les Enchères du Domaine organisent une nouvelle vente exceptionnelle pour le compte de l'Agrasc le 10 novembre à Bordeaux",
+      "source": "Presse Bercy",
+      "publication_date_iso": "2026-11-09",
+      "url": "https://presse.economie.gouv.fr/les-encheres-du-domaine-organisent-une-nouvelle-vente-exceptionnelle-pour-le-compte-de-lagrasc-le-10-novembre-a-bordeaux/",
+      "publication_date_long": "9 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    },
+    {
+      "title": "Cybersécurité des collectivités territoriales : la CNIL prononce dix sanctions",
+      "source": "CNIL",
+      "publication_date_iso": "2026-11-09",
+      "url": "https://www.cnil.fr/fr/sanctions-cybersecurite-collectivites-territoriales",
+      "publication_date_long": "9 novembre 2026",
+      "reason": "NON_SELECTIONNE"
+    }
+  ]
+}
