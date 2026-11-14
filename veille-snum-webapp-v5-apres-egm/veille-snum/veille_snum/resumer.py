@@ -15,6 +15,7 @@ import os
 import sys
 import time
 from concurrent.futures import FIRST_COMPLETED, ThreadPoolExecutor, wait
+from pathlib import Path
 from urllib.error import HTTPError
 
 from .core import (
@@ -103,10 +104,19 @@ def lire_rapport(client, adresse=RAPPORT_EN_LIGNE):
             raise ValueError("période inversée")
         iso_date(rapport["edition_date"])
         sources, candidats = rapport["sources"], rapport["candidates"]
+        exclus = rapport.get("excluded") or []
         valide = (
             isinstance(sources, list)
             and isinstance(candidats, list)
-            and isinstance(rapport.get("excluded") or [], list)
+            and isinstance(exclus, list)
+            # Relus après les appels Albert : contrôlés ici, avant toute dépense.
+            and all(
+                isinstance(e, dict)
+                and isinstance(e.get("url"), str)
+                and isinstance(e.get("reason"), str)
+                for e in exclus
+            )
+            and isinstance(rapport.get("limits") or {}, dict)
             and all(
                 isinstance(s, dict)
                 and isinstance(s.get("label"), str)
@@ -269,13 +279,43 @@ def resumer_gardes(choix, premier, edition, client, resumer):
     return rapport
 
 
+def deja_archive(premier, archives):
+    """Identifiant de l'archive qui résume déjà cette collecte de titres, ou None.
+
+    Le site est servi par un cache qui peut rendre un rapport périmé ; l'index des
+    archives, lu par git, ne l'est jamais. Un index absent ou illisible ne refuse rien.
+    """
+    instant = premier.get("started_at_utc")
+    collectes = archives.get("collectes") if isinstance(archives, dict) else None
+    if not isinstance(instant, str) or not isinstance(collectes, list):
+        return None
+    for collecte in collectes:
+        if isinstance(collecte, dict) and collecte.get("titres_started_at") == instant:
+            return str(collecte.get("id"))
+    return None
+
+
 def publier_resumes(
-    selection, sortie, client, resumer, edition=None, debut=None, fin=None, run_id=0
+    selection,
+    sortie,
+    client,
+    resumer,
+    edition=None,
+    debut=None,
+    fin=None,
+    run_id=0,
+    archives=None,
 ):
     """Code de sortie 0 si le paquet est écrit ; `edition`, `debut` et `fin` sont des dates ou None."""
     try:
         choix = lire_selection(selection)
         premier = lire_rapport(client)
+        archive = deja_archive(premier, archives)
+        if archive:
+            raise Refus(
+                f"Ces titres ont déjà été résumés (collecte archivée {archive}) : "
+                "recharger la page, qui affiche le paquet publié."
+            )
         for saisie, champ in ((debut, "window_start"), (fin, "window_end")):
             if saisie and saisie.isoformat() != premier[champ]:
                 raise Refus(
@@ -342,7 +382,17 @@ def main(argv=None):
     parser.add_argument(
         "--run-id", type=int, default=0, help="numéro du run GitHub, écrit dans l'état"
     )
+    parser.add_argument(
+        "--archives",
+        help="index des archives (collectes/index.json) lu par git ; absent : aucun contrôle",
+    )
     args = parser.parse_args(argv)
+    archives = None
+    if args.archives:
+        try:
+            archives = json.loads(Path(args.archives).read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            archives = None
     cle = os.environ.get("ALBERT_API_KEY", "").strip()
     modele = os.environ.get("ALBERT_MODEL", "").strip()
     if not cle or not modele:
@@ -371,6 +421,7 @@ def main(argv=None):
         debut=args.debut,
         fin=args.fin,
         run_id=args.run_id,
+        archives=archives,
     )
 
 

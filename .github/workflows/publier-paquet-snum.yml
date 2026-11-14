@@ -84,6 +84,15 @@ jobs:
           [ -n "${EDITION:-}" ] && args+=(--edition "$EDITION")
           [ -n "${DEBUT:-}" ] && args+=(--debut "$DEBUT")
           [ -n "${FIN:-}" ] && args+=(--fin "$FIN")
+          # Index des archives lu par git, jamais servi par un cache : des titres déjà
+          # résumés sont refusés même si le site sert encore leur rapport. Sans index
+          # (première collecte, panne passagère), le contrôle du rapport en ligne reste seul.
+          index="$RUNNER_TEMP/archives-index.json"
+          if git fetch --quiet --depth 1 origin donnees-veille && git show FETCH_HEAD:collectes/index.json > "$index" 2>/dev/null; then
+            args+=(--archives "$index")
+          else
+            echo "Index des archives indisponible : contrôle par le seul rapport en ligne."
+          fi
           python -m veille_snum.resumer "${args[@]}"
 
       - name: Collecte et paquet V519

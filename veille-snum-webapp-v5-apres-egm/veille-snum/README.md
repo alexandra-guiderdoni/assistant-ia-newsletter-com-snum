@@ -48,7 +48,7 @@ Ce que la page vérifie pour vous :
 - le fichier `etat-collecte.json` porte le numéro de l'exécution qui l'a publié. Après un lancement, la page attend que le site serve bien ce numéro avant d'afficher le résultat : GitHub Pages garde ses fichiers dix minutes en cache et peut servir un court moment l'ancienne version ;
 - une collecte déjà en cours (autre personne, autre onglet, page rechargée) est signalée à l'ouverture et avant tout nouvel envoi ;
 - si le suivi se perd (jeton expiré, réseau), la tâche continue sur GitHub : recharger la page quelques minutes plus tard, sans relancer ;
-- le second temps refuse des titres déjà résumés ou remplacés : la page se recharge et l'explique.
+- le second temps refuse des titres déjà résumés ou remplacés : la page se recharge et l'explique. Ce refus s'appuie sur le rapport en ligne et, pour ne pas dépendre du cache du site, sur l'index des archives lu par git (champ `titres_started_at` de chaque archive).
 
 Chaque collecte résumée est archivée sur la branche publique `donnees-veille` (`collectes/<édition>_<run>/` : paquet, candidats écartés, rapport ; index `collectes/index.json`), avec les résultats de repêchage (`repechages/`). Des titres jamais résumés ne sont pas archivés. La page [archives.html](https://alexandra-guiderdoni.github.io/assistant-ia-newsletter-com-snum/archives.html) liste les archives et rouvre une ancienne collecte dans la page de sélection, sans jeton ; une archive peut mettre jusqu'à cinq minutes à y apparaître (cache de raw.githubusercontent.com).
 

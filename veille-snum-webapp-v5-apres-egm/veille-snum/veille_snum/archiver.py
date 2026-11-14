@@ -24,7 +24,10 @@ def entree(site, run_id, maintenant):
     paquet = lire(site / "paquet-v519.json")
     rapport = lire(site / "rapport-collecte.json")
     ecartes = lire(site / "candidats-ecartes.json")
-    return {
+    # Instant de la collecte des titres que cette archive résume : le second temps
+    # s'en sert pour refuser de résumer deux fois les mêmes titres.
+    origine = rapport.get("started_at_utc")
+    return ({"titres_started_at": origine} if isinstance(origine, str) else {}) | {
         "id": f"{paquet['edition_date']}_{run_id}",
         "run_id": run_id,
         "edition_date": paquet["edition_date"],
