@@ -33,7 +33,7 @@ Tests : 130 Python et 19 Node réussis hors réseau. Recette avec une vraie clé
 
 ## Sans Python : la page GitHub Pages
 
-https://alexandra-guiderdoni.github.io/assistant-ia-newsletter-com-snum/ offre le même usage sans serveur local : la collecte et Albert passent par GitHub Actions (tâches « Publier le paquet Veille SNUM » et « Repêcher un candidat Veille SNUM »), la sélection et l'export JSON V519 se font dans le navigateur. Lancer une collecte, une rédaction de résumés ou un repêchage depuis la page demande un jeton GitHub personnel : procédure, permissions, sécurité et dépannage dans [docs/jeton-github.md](docs/jeton-github.md), liée depuis la page.
+https://alexandra-guiderdoni.github.io/assistant-ia-newsletter-com-snum/ offre le même usage sans serveur local : la collecte et Albert passent par GitHub Actions (tâches « Publier le paquet Veille SNUM » et « Repêcher un candidat Veille SNUM »), la sélection et l'export JSON V519 se font dans le navigateur. Lancer une collecte, une rédaction de résumés ou un repêchage depuis la page demande le jeton GitHub partagé par l'équipe : procédure, permissions, sécurité et dépannage dans [docs/jeton-github.md](docs/jeton-github.md), liée depuis la page.
 
 La collecte se fait en deux temps :
 

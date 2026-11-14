@@ -10,17 +10,24 @@ Sans jeton, la page reste utilisable pour tout le reste : lire les titres trouv�
 
 Le jeton Albert n'a rien à voir : il reste dans les secrets du dépôt (`ALBERT_API_KEY`) et n'apparaît jamais dans la page.
 
-## Qui peut créer quel jeton
+## Un jeton partagé par l'équipe
 
-- **Propriétaire du dépôt** (compte `alexandra-guiderdoni`) : jeton « fine-grained », limité à ce seul dépôt. C'est la procédure ci-dessous.
-- **Collaborateur d'un dépôt personnel** : GitHub n'accepte pas de jeton « fine-grained » sur le dépôt d'un autre compte personnel (limitation documentée). Il ne reste que le jeton « classique », de portée `repo`, qui donne accès à tous les dépôts de la personne : à éviter. La solution propre est de transférer le dépôt dans une organisation GitHub, dont les membres peuvent alors créer un jeton « fine-grained » limité à ce dépôt. L'adresse de la page devient alors `<organisation>.github.io/assistant-ia-newsletter-com-snum/`.
+Choix du 14 novembre 2026 : le dépôt reste sur le compte personnel `alexandra-guiderdoni`, et l'équipe utilise un seul jeton, créé par la personne propriétaire du dépôt.
+
+- **Pourquoi un seul jeton** : GitHub n'accepte pas de jeton « fine-grained » sur le dépôt d'un autre compte personnel. Un collaborateur ne pourrait créer qu'un jeton « classique », qui ouvre tous ses dépôts. Le jeton partagé, lui, est limité à ce seul dépôt.
+- **Ce qu'il permet** : lancer et suivre les tâches de ce dépôt, lire son contenu. Il ne permet ni de modifier le code, ni d'accéder à un autre dépôt.
+- **Ce que cela implique** : toutes les collectes apparaissent sur GitHub comme lancées par le compte propriétaire, sans distinguer les personnes. Quiconque détient le jeton peut lancer une collecte, donc consommer des appels Albert et remplacer ce que la page publie.
+- **Le transmettre** : par un gestionnaire de mots de passe partagé, ou de vive voix. Jamais dans un courriel, une messagerie, un ticket ou un fichier du dépôt.
+- **Le renouveler** : à son expiration, au départ d'une personne de l'équipe, ou au moindre doute. Créer le nouveau jeton, le transmettre, puis supprimer l'ancien (section « Révoquer »).
+
+Alternative écartée pour l'instant : transférer le dépôt dans une organisation GitHub, où chaque membre crée son propre jeton limité au dépôt. Elle rendrait les lancements nominatifs, mais change l'adresse de la page.
 
 ## Créer le jeton (propriétaire)
 
 Connecté à GitHub avec le compte propriétaire :
 
 1. Ouvrir https://github.com/settings/personal-access-tokens/new
-2. « Token name » : par exemple `Veille SNUM page` ; « Expiration » : une durée courte, par exemple 30 jours.
+2. « Token name » : par exemple `Veille SNUM équipe` ; « Expiration » : 90 jours au plus, pour un jeton partagé.
 3. « Resource owner » : `alexandra-guiderdoni`.
 4. « Repository access » : « Only select repositories », puis `assistant-ia-newsletter-com-snum`.
 5. « Permissions », « Repository permissions » :
@@ -31,7 +38,7 @@ Connecté à GitHub avec le compte propriétaire :
 
 ## L'utiliser
 
-1. Ouvrir la page, section « Connexion à GitHub », coller le jeton.
+1. Ouvrir la page, section « Connexion à GitHub », coller le jeton partagé.
 2. Section « Lancer une collecte » : vérifier les dates, puis « Lancer la collecte ». Laisser la page ouverte : la recherche des titres dure trois à quatre minutes, la progression s'affiche, puis les titres trouvés apparaissent.
 3. Section « Titres trouvés » : cocher « Garder » pour chaque titre utile, puis « Rédiger les résumés ». Comptez une à deux minutes pour dix articles, puis environ deux minutes de publication ; le paquet, le rapport et les candidats écartés s'affichent ensuite.
 4. Pour un candidat écarté : choisir la thématique, puis « Repêcher avec Albert » (une à deux minutes). L'article arrive coché dans la sélection.
@@ -50,7 +57,7 @@ Effacer le jeton de la page ne le révoque pas. En fin d'usage, en cas de doute 
 
 Messages affichés par la page :
 
-- **Erreur 401** « GitHub a refusé le jeton » : jeton incomplet, expiré ou révoqué. Le coller de nouveau en entier, ou le recréer.
+- **Erreur 401** « GitHub a refusé le jeton » : jeton incomplet, expiré ou révoqué. Le coller de nouveau en entier ; s'il a été renouvelé, demander le jeton à jour à la personne qui gère le dépôt.
 - **Erreur 403** « GitHub a refusé la demande » : la permission « Actions : Read and write » manque, ou GitHub limite les appels. Vérifier les permissions du jeton, sinon réessayer une heure plus tard.
 - **Erreur 404** « GitHub ne trouve pas le dépôt avec ce jeton » : le jeton ne donne pas accès au dépôt (mauvais « Resource owner » ou dépôt non sélectionné).
 - **Erreur 422** « GitHub a refusé la demande » : dates ou sélection refusées. Recharger la page puis réessayer.
