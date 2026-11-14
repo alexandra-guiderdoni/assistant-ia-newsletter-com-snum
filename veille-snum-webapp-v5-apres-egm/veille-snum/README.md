@@ -47,6 +47,7 @@ Les titres non gardés, jugés hors thématique, non résumés faute de temps ou
 
 Ce que la page vérifie pour vous :
 
+- un article déjà publié dans l'une des quatre éditions précédentes archivées est signalé par « Déjà publié dans l'édition du … », dans la phase titres comme dans la sélection ; dans la sélection, il n'est pas gardé par défaut tant que vous n'avez rien modifié. Si les archives sont injoignables, la page le dit et fonctionne comme avant ;
 - le fichier `etat-collecte.json` porte le numéro de l'exécution qui l'a publié. Après un lancement, la page attend que le site serve bien ce numéro avant d'afficher le résultat : GitHub Pages garde ses fichiers dix minutes en cache et peut servir un court moment l'ancienne version ;
 - une collecte déjà en cours (autre personne, autre onglet, page rechargée) est signalée à l'ouverture et avant tout nouvel envoi ;
 - si le suivi se perd (jeton expiré, réseau), la tâche continue sur GitHub : recharger la page quelques minutes plus tard, sans relancer ;
