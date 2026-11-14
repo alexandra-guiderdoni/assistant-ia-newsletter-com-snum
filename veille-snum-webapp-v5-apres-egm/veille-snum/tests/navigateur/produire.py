@@ -83,6 +83,9 @@ def albert(
         raise HTTPError(
             ALBERT, albert_cfg.get("code", 401), f"refus {JETON_ALBERT}", {}, None
         )
+    # refuse_toujours : Albert refuse même avec la consigne de garder (échec, jamais hors thématique).
+    if url in albert_cfg.get("refuse_toujours", []):
+        return {"relevant": False}
     if url in albert_cfg.get("hors", []) and not forced_rubric and not keep:
         return {"relevant": False}
     resume = good_summary(candidat)

@@ -26,9 +26,14 @@ class Resumeur:
         self.reponses = list(reponses)
         self.appels = []
 
-    def __call__(self, candidat, feedback=None, forced_rubric=None):
+    def __call__(self, candidat, feedback=None, forced_rubric=None, keep=False):
         self.appels.append(
-            {"candidat": candidat, "feedback": feedback, "forced_rubric": forced_rubric}
+            {
+                "candidat": candidat,
+                "feedback": feedback,
+                "forced_rubric": forced_rubric,
+                "keep": keep,
+            }
         )
         reponse = self.reponses.pop(0) if self.reponses else good_summary(candidat)
         if isinstance(reponse, Exception):
@@ -41,7 +46,9 @@ def erreur_http(code, entetes=None):
 
 
 class RepechageTests(unittest.TestCase):
-    def lancer(self, url=URL, rubrique="administration", client=None, resumer=None, **dates):
+    def lancer(
+        self, url=URL, rubrique="administration", client=None, resumer=None, **dates
+    ):
         self.client = client or FakeHttp()
         self.resumer = resumer or Resumeur()
         return repecher(

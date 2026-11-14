@@ -20,7 +20,6 @@ from pathlib import Path
 from urllib.error import HTTPError
 
 from .core import (
-    ALBERT_THROTTLE_RETRIES,
     ALBERT_TIMEOUT,
     ALBERT_WORKERS,
     MAX_ALBERT_SECONDS,
@@ -28,7 +27,6 @@ from .core import (
     RUBRICS,
     STATE_STATUSES,
     HttpClient,
-    _retry_delay,
     albert_summary,
     iso_date,
     packet_for,
@@ -37,7 +35,14 @@ from .core import (
     validate_summary,
 )
 from .publier import CHAMPS_CANDIDAT, date_saisie, ecrire_site
-from .repecher import Refus, lire_candidat, motif, resumer_valide, source_publique
+from .repecher import (
+    ALBERT_CHOISIT,
+    Refus,
+    lire_candidat,
+    motif,
+    resumer_valide,
+    source_publique,
+)
 
 DOMAINE_SITE = "alexandra-guiderdoni.github.io"
 RAPPORT_EN_LIGNE = (
@@ -150,28 +155,6 @@ class HorsBudget(Exception):
     """Échéance atteinte avant l'appel Albert : le titre reste « non résumé faute de temps »."""
 
 
-def classer_valide(candidat, resumer, limite):
-    """Classement libre, comme analyze de la collecte : None signifie hors thématique."""
-    feedback, repris, attentes = None, False, 0
-    while True:
-        try:
-            return validate_summary(resumer(candidat, feedback=feedback))
-        except HTTPError as exc:
-            if exc.code in (429, 503) and attentes < ALBERT_THROTTLE_RETRIES:
-                delai = _retry_delay(exc, attentes)
-                if time.monotonic() + delai < limite:
-                    attentes += 1
-                    time.sleep(delai)
-                    continue
-            raise
-        except Exception as exc:
-            if repris or time.monotonic() >= limite:
-                raise
-            repris = True
-            # Jamais le texte brut de l'exception : il peut porter le jeton.
-            feedback = motif(exc)
-
-
 def resumer_gardes(choix, premier, edition, client, resumer, sur_echeance=None):
     """Rapport du second temps, de même forme que celui de collect, paquet compris s'il existe.
 
@@ -190,11 +173,10 @@ def resumer_gardes(choix, premier, edition, client, resumer, sur_echeance=None):
         candidat = lire_candidat(adresse, source, debut, fin, client)
         if time.monotonic() >= limite:
             raise HorsBudget
-        if element["rubrique"]:
-            return candidat, resumer_valide(
-                candidat, element["rubrique"], resumer, limite
-            )
-        return candidat, classer_valide(candidat, resumer, limite)
+        # Titre coché par l'éditeur : jamais écarté comme hors thématique. Sans rubrique
+        # imposée, Albert choisit la plus proche, comme pour un repêchage.
+        rubrique = element["rubrique"] or ALBERT_CHOISIT
+        return candidat, resumer_valide(candidat, rubrique, resumer, limite)
 
     issues = {}
     pool = ThreadPoolExecutor(max_workers=ALBERT_WORKERS)
@@ -434,7 +416,7 @@ def main(argv=None):
 
     echeance = {}
 
-    def resumer(candidat, feedback=None, forced_rubric=None):
+    def resumer(candidat, feedback=None, forced_rubric=None, keep=False):
         # Comme la collecte complète : le délai d'un appel ne dépasse pas le temps restant.
         reste = echeance.get("limite", float("inf")) - time.monotonic()
         return albert_summary(
@@ -444,6 +426,7 @@ def main(argv=None):
             timeout=max(1, min(ALBERT_TIMEOUT, reste)),
             feedback=feedback,
             forced_rubric=forced_rubric,
+            keep=keep,
         )
 
     return publier_resumes(

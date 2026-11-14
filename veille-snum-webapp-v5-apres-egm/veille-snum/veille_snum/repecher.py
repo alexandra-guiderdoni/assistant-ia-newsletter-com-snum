@@ -152,7 +152,10 @@ def resumer_valide(candidat, rubrique, resumer, limite=None):
     while True:
         try:
             imposee = None if rubrique == ALBERT_CHOISIT else rubrique
-            reponse = resumer(candidat, feedback=feedback, forced_rubric=imposee)
+            # Article choisi par l'éditeur (coché ou repêché) : Albert le garde toujours.
+            reponse = resumer(
+                candidat, feedback=feedback, forced_rubric=imposee, keep=True
+            )
             if not isinstance(reponse, dict):
                 raise ValueError("SORTIE_ALBERT_INVALIDE")  # noqa: TRY004 -- ValueError déclenche la seconde tentative
             impose = {"rubric": imposee} if imposee else {}
@@ -231,7 +234,7 @@ def main(argv=None):
     cle = os.environ.get("ALBERT_API_KEY", "").strip()
     modele = os.environ.get("ALBERT_MODEL", "").strip()
 
-    def resumer(candidat, feedback=None, forced_rubric=None):
+    def resumer(candidat, feedback=None, forced_rubric=None, keep=False):
         return albert_summary(
             candidat,
             cle,
@@ -239,7 +242,7 @@ def main(argv=None):
             timeout=ALBERT_TIMEOUT,
             feedback=feedback,
             forced_rubric=forced_rubric,
-            keep=True,
+            keep=keep,
         )
 
     try:

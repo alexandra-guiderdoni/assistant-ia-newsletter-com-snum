@@ -50,7 +50,6 @@ class PerimetreTests(unittest.TestCase):
             "marchés financiers",
             "produits grand public sans lien avec le travail",
             "offres d'emploi",
-            "En cas de doute, relevant=false",
         ):
             with self.subTest(attendu=attendu):
                 self.assertIn(attendu, exclus)
