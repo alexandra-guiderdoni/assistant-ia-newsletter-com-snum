@@ -109,7 +109,7 @@ jobs:
           [ -n "${EDITION:-}" ] && args+=(--edition "$EDITION")
           [ -n "${DEBUT:-}" ] && args+=(--debut "$DEBUT")
           [ -n "${FIN:-}" ] && args+=(--fin "$FIN")
-          python -m veille_snum.publier "${args[@]}"
+          python mesure_tri.py "${args[@]}"
 
       # Mode « page seule » : les fichiers en ligne sont repris tels quels. Après un
       # premier temps (phase titres), seul le rapport existe et il est exigé ; sinon
